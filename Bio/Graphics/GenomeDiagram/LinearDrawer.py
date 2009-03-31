@@ -754,6 +754,9 @@ class LinearDrawer(AbstractDrawer):
         """
         # Establish co-ordinates for drawing
         x0, x1 = self.x0 + x0, self.x0 + x1
+        assert btm <= ctr <= top
+        top = ctr + feature.height*(top-ctr)
+        btm = ctr - feature.height*(ctr-btm)
         btm, ctr, top = self.track_offsets[self.current_track_level]
         try:
             btm += self.fragment_lines[fragment][0]

@@ -66,7 +66,10 @@ class Feature:
         o hide      Boolean for whether the feature will be drawn or not
 
         o sigil     String denoting the type of sigil to use for the feature.
-                    Currently either "BOX" or "ARROW" are supported.
+                    Currently either "BOX" (default) or "ARROW" are supported.
+
+        o height    Float denoting relative height of this figure (vertical size),
+                    defaults to one.
 
         o arrowhead_length  Float denoting length of the arrow head to be drawn,
                             relative to the bounding box height.  The arrow shaft
@@ -134,6 +137,7 @@ class Feature:
         self._feature = None            # Bio.SeqFeature object to wrap
         self.hide = 0                   # show by default
         self.sigil = 'BOX'
+        self.height = 1.0
         self.arrowhead_length = 1.0 # 100% of the box height
         self.arrowshaft_height = 0.4 # 40% of the box height
         self.name_qualifiers = ['gene', 'label', 'name', 'locus_tag', 'product']

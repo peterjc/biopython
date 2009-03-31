@@ -398,6 +398,9 @@ class CircularDrawer(AbstractDrawer):
             for it
         """
         # Establish the co-ordinates for the sigil
+        assert btm <= ctr <= top
+        top = ctr + feature.height*(top-ctr)
+        btm = ctr - feature.height*(ctr-btm)
         btm, ctr, top = self.track_radii[self.current_track_level]
         startangle, startcos, startsin = self.canvas_angle(locstart)
         endangle, endcos, endsin = self.canvas_angle(locend)
