@@ -270,6 +270,14 @@ class DiagramTest(unittest.TestCase):
                 #Out of frame (too far right)
                 continue
 
+            #This URL should work in SVG output from recent versions
+            #of ReportLab.  You need something newer than ReportLab 2.3
+            try :
+                url = "http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi"+\
+                      "?db=protein&id=%s" % feature.qualifiers["protein_id"][0]
+            except KeyError :
+                url = None
+                
             #Note that I am using strings for color names, instead
             #of passing in color objects.  This should also work!
             if len(gds_features) % 2 == 0 :
@@ -279,6 +287,7 @@ class DiagramTest(unittest.TestCase):
             #Checking it can cope with the old UK spelling colour.
             #Also show the labels perpendicular to the track.
             gds_features.add_feature(feature, colour=color,
+                                     url = url,
                                      sigil="ARROW",
                                      label_position = "start",
                                      label_size = 8,

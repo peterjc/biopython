@@ -385,7 +385,7 @@ class CircularDrawer(AbstractDrawer):
         return feature_elements, label_elements
 
 
-    def get_feature_sigil(self, feature, locstart, locend):
+    def get_feature_sigil(self, feature, locstart, locend, **kwargs):
         """ get_feature_sigil(self, feature, x0, x1, fragment) -> (element, element)
 
             o feature       Feature object
@@ -410,6 +410,13 @@ class CircularDrawer(AbstractDrawer):
                         'ARROW': self._draw_arc_arrow,
                         }
                         
+        #Support for clickable links... needs a recent version of
+        #ReportLab.   Support for links in SVG output was added
+        #in Feb 2009, just after ReportLab 2.3 was released.
+        if hasattr(feature, "url") :
+            kwargs["hrefURL"] = feature.url
+            kwargs["hrefTitle"] = feature.name
+
         # Get sigil for the feature, location dependent on the feature strand        
         method = draw_methods[feature.sigil]
         if feature.color == colors.white:
@@ -418,13 +425,13 @@ class CircularDrawer(AbstractDrawer):
             border = feature.color
         if feature.strand == 0:
             sigil = method(btm, top, startangle, endangle, feature.color,
-                           border)
+                           border, **kwargs)
         if feature.strand == 1:
             sigil = method(ctr, top, startangle, endangle, feature.color,
-                           border, orientation='right')
+                           border, orientation='right', **kwargs)
         if feature.strand == -1:
             sigil = method(btm, ctr, startangle, endangle, feature.color,
-                           border, orientation='left')
+                           border, orientation='left', **kwargs)
         if feature.label:   # Feature needs a label
             label = String(0, 0, feature.name.strip(),
                            fontName=feature.label_font,
@@ -976,7 +983,6 @@ class CircularDrawer(AbstractDrawer):
             # Calculate trig values for angle and coordinates
             startcos, startsin = cos(startangle), sin(startangle)
             endcos, endsin = cos(endangle), sin(endangle)
-            boxes = Group()     # Holds arc elements
             x0,y0 = self.xcenter, self.ycenter      # origin of the circle
             x1,y1 = (x0+inner_radius*startsin, y0+inner_radius*startcos)
             x2,y2 = (x0+inner_radius*endsin, y0+inner_radius*endcos)
@@ -1043,7 +1049,6 @@ class CircularDrawer(AbstractDrawer):
         x0,y0 = self.xcenter, self.ycenter      # origin of the circle
         if abs(headangle_delta) >= abs(angle) :
             #Cheat and just use a triangle.
-            boxes = Group()     # Holds arc elements
             if orientation=="right" :
                 x1,y1 = (x0+inner_radius*startsin, y0+inner_radius*startcos)
                 x2,y2 = (x0+outer_radius*startsin, y0+outer_radius*startcos)
@@ -1052,11 +1057,13 @@ class CircularDrawer(AbstractDrawer):
                 x1,y1 = (x0+inner_radius*endsin, y0+inner_radius*endcos)
                 x2,y2 = (x0+outer_radius*endsin, y0+outer_radius*endcos)
                 x3,y3 = (x0+middle_radius*startsin, y0+middle_radius*startcos)
-            return draw_polygon([(x1,y1),(x2,y2),(x3,y3)], color, border)
+            return draw_polygon([(x1,y1),(x2,y2),(x3,y3)], color, border,
+                                **kwargs)
         elif orientation=="right" :
             p = ArcPath(strokeColor=strokecolor,
                         fillColor=color,
-                        strokewidth=0)
+                        strokewidth=0,
+                        **kwargs)
             #Note reportlab counts angles anti-clockwise from the horizontal
             #(as in mathematics, e.g. complex numbers and polar coordinates)
             #but we use clockwise from the vertical.  Also reportlab uses
@@ -1075,7 +1082,8 @@ class CircularDrawer(AbstractDrawer):
         else :
             p = ArcPath(strokeColor=strokecolor,
                         fillColor=color,
-                        strokewidth=0)
+                        strokewidth=0,
+                        **kwargs)
             #Note reportlab counts angles anti-clockwise from the horizontal
             #(as in mathematics, e.g. complex numbers and polar coordinates)
             #but we use clockwise from the vertical.  Also reportlab uses
