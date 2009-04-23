@@ -1,4 +1,4 @@
-# Copyright 2007-2008 by Peter Cock.  All rights reserved.
+# Copyright 2007-2009 by Peter Cock.  All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
@@ -14,7 +14,7 @@ except NameError:
 from Bio import SeqIO
 from Bio import AlignIO
 from Bio.SeqRecord import SeqRecord
-from Bio.Seq import Seq
+from Bio.Seq import Seq, UnknownSeq
 from StringIO import StringIO
 from Bio import Alphabet
 
@@ -25,7 +25,7 @@ nucleotide_alphas = [Alphabet.generic_nucleotide,
                      Alphabet.Gapped(Alphabet.generic_nucleotide)]
 no_alpha_formats = ["fasta","clustal","phylip","tab","ig","stockholm","emboss",
                     "fastq","fastq-solexa","qual"]
-possible_None_seq_formats = ["qual"] #include genbank and embl too?
+possible_unknown_seq_formats = ["qual", "genbank", "gb", "embl"]
 
 #List of formats including alignment only file formats we can read AND write.
 #The list is initially hard coded to preserve the original order of the unit
@@ -37,6 +37,7 @@ for format in SeqIO._FormatToWriter :
 for format in AlignIO._FormatToWriter :
     if format not in test_write_read_alignment_formats :
         test_write_read_alignment_formats.append(format)
+test_write_read_alignment_formats.remove("gb") #an alias for genbank
 
 # test_files is a list of tuples containing:
 # - string:  file format
@@ -68,6 +69,10 @@ test_files = [ \
     ("fasta",  False, 'Fasta/f002', 3), #DNA
     #("fasta", False, 'Fasta/f003', 2), #Protein with comments
     ("fasta",  False, 'Fasta/fa01', 2), #Protein with gaps
+#Following are also used in test_SeqIO_features.py, see also NC_005816.gb
+    ("fasta",  False, 'GenBank/NC_005816.fna', 1),
+    ("fasta",  False, 'GenBank/NC_005816.ffn', 10),
+    ("fasta",  False, 'GenBank/NC_005816.faa', 10),
 #Following examples are also used in test_GFF.py
     ("fasta",  False, 'GFF/NC_001802.fna', 1), #upper case
     ("fasta",  False, 'GFF/NC_001802lc.fna', 1), #lower case
@@ -109,7 +114,8 @@ test_files = [ \
     ("genbank",False, 'GenBank/origin_line.gb', 1),
     ("genbank",False, 'GenBank/blank_seq.gb', 1),
     ("genbank",False, 'GenBank/dbsource_wrap.gb', 1),
-    ("genbank",False, 'GenBank/NC_005816.gb', 1),
+    ("genbank",False, 'GenBank/NC_005816.gb', 1), #See also AE017046.embl
+    #("genbank",False, 'GenBank/NC_006980.gb', 1), #Slow!
 # The next example is a truncated copy of gbvrl1.seq from
 # ftp://ftp.ncbi.nih.gov/genbank/gbvrl1.seq.gz
 # This includes an NCBI header, and the first three records:
@@ -122,6 +128,7 @@ test_files = [ \
     ("embl",   False, 'EMBL/SC10H5.embl', 1), # Pre 2006 style ID line
     ("embl",   False, 'EMBL/U87107.embl', 1), # Old ID line with SV line
     ("embl",   False, 'EMBL/AAA03323.embl', 1), # 2008, PA line but no AC
+    ("embl",   False, 'EMBL/AE017046.embl', 1), #See also NC_005816.gb
     ("stockholm", True,  'Stockholm/simple.sth', 2),
     ("stockholm", True,  'Stockholm/funny.sth', 5),
 #Following PHYLIP files are currently only used here and in test_AlignIO.py,
@@ -261,6 +268,12 @@ def alignment_summary(alignment, index=" ") :
 def check_simple_write_read(records, indent=" ") :
     #print indent+"Checking we can write and then read back these records"
     for format in test_write_read_alignment_formats :
+        if format not in possible_unknown_seq_formats \
+        and isinstance(records[0].seq, UnknownSeq) \
+        and len(records[0].seq) > 100 :
+           #Skipping for speed.  Some of the unknown sequences are
+           #rather long, and it seems a bit pointless to record them.
+           continue
         print indent+"Checking can write/read as '%s' format" % format
         
         #Going to write to a handle...
@@ -309,11 +322,12 @@ def check_simple_write_read(records, indent=" ") :
             #many formats can't store more than that.
 
             #Check the sequence
-            if format == "genbank" :
+            if format in ["gb", "genbank"] :
                 #The GenBank parser will convert everything to upper case.
                 assert r1.seq.tostring().upper() == r2.seq.tostring()
             elif format == "qual" :
-                assert r2.seq is None
+                assert isinstance(r2.seq, UnknownSeq)
+                assert len(r2) == len(r1)
             else :
                 assert r1.seq.tostring() == r2.seq.tostring()
             #Beware of different quirks and limitations in the
@@ -403,8 +417,9 @@ for (t_format, t_alignment, t_filename, t_count) in test_files :
 
         #Check returned expected object type
         assert isinstance(record, SeqRecord)
-        if t_format in possible_None_seq_formats :
-            assert isinstance(record.seq, Seq) or record.seq is None
+        if t_format in possible_unknown_seq_formats :
+            assert isinstance(record.seq, Seq) or \
+                   isinstance(record.seq, UnknownSeq)
         else :
             assert isinstance(record.seq, Seq)
         assert isinstance(record.id, basestring)
@@ -455,10 +470,6 @@ for (t_format, t_alignment, t_filename, t_count) in test_files :
 
     # Check alphabets
     for record in records :
-        if record.seq is None :
-            assert t_format in possible_None_seq_formats
-            base_alpha = None
-            continue
         base_alpha = Alphabet._get_base_alphabet(record.seq.alphabet)
         assert isinstance(base_alpha, Alphabet.SingleLetterAlphabet)
         if t_format in no_alpha_formats :

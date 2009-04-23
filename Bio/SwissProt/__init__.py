@@ -110,14 +110,14 @@ class Reference:
 
 def parse(handle):
     while True:
-        record = __read(handle)
+        record = _read(handle)
         if not record:
             return
         yield record
 
 
 def read(handle):
-    record = __read(handle)
+    record = _read(handle)
     if not record:
         raise ValueError("No SwissProt record found")
     # We should have reached the end of the record by now
@@ -130,7 +130,7 @@ def read(handle):
 # Everything below is considered private
 
 
-def __read(handle):
+def _read(handle):
     record = None
     for line in handle:
         key, value = line[:2], line[5:].rstrip()
@@ -144,13 +144,13 @@ def __read(handle):
             pass
         elif key=='ID':
             record = Record()
-            __read_id(record, line)
+            _read_id(record, line)
             _sequence_lines = []
         elif key=='AC':
             accessions = [word for word in value.rstrip(";").split("; ")]
             record.accessions.extend(accessions)
         elif key=='DT':
-            __read_dt(record, line)
+            _read_dt(record, line)
         elif key=='DE':
             record.description += line[5:]
         elif key=='GN':
@@ -163,12 +163,12 @@ def __read(handle):
             cols = [col for col in value.rstrip(";.").split("; ")]
             record.organism_classification.extend(cols)
         elif key=='OX':
-            __read_ox(record, line)
+            _read_ox(record, line)
         elif key=='OH':
-            __read_oh(record, line)
+            _read_oh(record, line)
         elif key=='RN':
             reference = Reference()
-            __read_rn(reference, value)
+            _read_rn(reference, value)
             record.references.append(reference)
         elif key=='RP':
             assert record.references, "RP: missing RN"
@@ -176,11 +176,11 @@ def __read(handle):
         elif key=='RC':
             assert record.references, "RC: missing RN"
             reference = record.references[-1]
-            __read_rc(reference, value)
+            _read_rc(reference, value)
         elif key=='RX':
             assert record.references, "RX: missing RN"
             reference = record.references[-1]
-            __read_rx(reference, value)
+            _read_rx(reference, value)
         elif key=='RL':
             assert record.references, "RL: missing RN"
             reference = record.references[-1]
@@ -201,9 +201,9 @@ def __read(handle):
             reference = record.references[-1]
             reference.title += line[5:]
         elif key=='CC':
-            __read_cc(record, line)
+            _read_cc(record, line)
         elif key=='DR':
-            __read_dr(record, value)
+            _read_dr(record, value)
         elif key=='PE':
             #TODO - Record this information?
             pass
@@ -211,7 +211,7 @@ def __read(handle):
             cols = value.rstrip(";.").split('; ')
             record.keywords.extend(cols)
         elif key=='FT':
-            __read_ft(record, line)
+            _read_ft(record, line)
         elif key=='SQ':
             cols = value.split()
             assert len(cols) == 7, "I don't understand SQ line %s" % line
@@ -238,7 +238,7 @@ def __read(handle):
         raise ValueError("Unexpected end of stream.")
 
 
-def __read_id(record, line):
+def _read_id(record, line):
     cols = line[5:].split()
     #Prior to release 51, included with MoleculeType:
     #ID   EntryName DataClass; MoleculeType; SequenceLength AA.
@@ -269,7 +269,7 @@ def __read_id(record, line):
               (record.molecule_type, line))
 
 
-def __read_dt(record, line):
+def _read_dt(record, line):
     value = line[5:]
     uprline = value.upper()
     cols = value.rstrip().split()
@@ -310,13 +310,14 @@ def __read_dt(record, line):
         # integer versioned
         else:
             version = int(str_version)
+        date = cols[0]
 
         if 'CREATED' in uprline:
-            record.created = cols[1], version
+            record.created = date, version
         elif 'LAST SEQUENCE UPDATE' in uprline:
-            record.sequence_update = cols[1], version
+            record.sequence_update = date, version
         elif 'LAST ANNOTATION UPDATE' in uprline:
-            record.annotation_update = cols[1], version
+            record.annotation_update = date, version
         else:
             assert False, "Shouldn't reach this line!"
     elif 'INTEGRATED INTO' in uprline \
@@ -346,22 +347,23 @@ def __read_dt(record, line):
             version = int(cols[-1])
         except ValueError :
             version = 0
+        date = cols[0].rstrip(",")
 
         # Re-use the historical property names, even though
         # the meaning has changed slighty:
         if "INTEGRATED"  in uprline:
-            record.created = cols[1], version
+            record.created = date, version
         elif 'SEQUENCE VERSION' in uprline:
-            record.sequence_update = cols[1], version
+            record.sequence_update = date, version
         elif 'ENTRY VERSION' in uprline:
-            record.annotation_update = cols[1], version
+            record.annotation_update = date, version
         else:
             assert False, "Shouldn't reach this line!"
     else:
         raise ValueError("I don't understand the date line %s" % line)
 
 
-def __read_ox(record, line):
+def _read_ox(record, line):
     # The OX line is in the format:
     # OX   DESCRIPTION=ID[, ID]...;
     # If there are too many id's to fit onto a line, then the ID's
@@ -380,7 +382,7 @@ def __read_ox(record, line):
     record.taxonomy_id.extend(ids.split(', '))
 
 
-def __read_oh(record, line):
+def _read_oh(record, line):
     # Line type OH (Organism Host) for viral hosts
     # same code as in taxonomy_id()
     if record.host_organism:
@@ -391,12 +393,12 @@ def __read_oh(record, line):
     record.host_organism.extend(ids.split(', '))
 
 
-def __read_rn(reference, rn):
+def _read_rn(reference, rn):
     assert rn[0] == '[' and rn[-1] == ']', "Missing brackets %s" % rn
     reference.number = int(rn[1:-1])
 
 
-def __read_rc(reference, value):
+def _read_rc(reference, value):
     cols = value.split(';')
     for col in cols:
         if not col:  # last column will be the empty string
@@ -413,7 +415,7 @@ def __read_rc(reference, value):
             reference.comments[-1] = comment
 
 
-def __read_rx(reference, value):
+def _read_rx(reference, value):
     # The basic (older?) RX line is of the form:
     # RX   MEDLINE; 85132727.
     # but there are variants of this that need to be dealt with (see below)
@@ -448,7 +450,7 @@ def __read_rx(reference, value):
         reference.references.append((cols[0].rstrip(";"), cols[1].rstrip(".")))
 
 
-def __read_cc(record, line):
+def _read_cc(record, line):
     key, value = line[5:8], line[8:]
     if key=='-!-':   # Make a new comment
         record.comments.append(value)
@@ -469,7 +471,7 @@ def __read_cc(record, line):
         record.comments[-1] += line[5:]
 
 
-def __read_dr(record, value):
+def _read_dr(record, value):
     # Remove the comments at the end of the line
     i = value.find(' [')
     if i >= 0:
@@ -478,7 +480,7 @@ def __read_dr(record, value):
     record.cross_references.append(tuple(cols))
 
 
-def __read_ft(record, line):
+def _read_ft(record, line):
     line = line[5:]    # get rid of junk in front
     name = line[0:8].rstrip()
     try:
