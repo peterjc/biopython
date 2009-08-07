@@ -133,6 +133,17 @@ For sequential files formats (e.g. fasta, genbank) each "record block" holds
 a single sequence.  For these files it would probably be safe to call
 write() multiple times.
 
+Conversion
+==========
+The Bio.SeqIO.convert(...) function allows an easy interface for simple
+file format conversions. Additionally, it may use file format specific
+optimisations so this should be the fastest way too.
+
+In general however, you can combine the Bio.SeqIO.parse(...) function with the
+Bio.SeqIO.write(...) function for sequence file conversion. Using generator
+expressions provides a memory efficient way to perform filtering or other
+extra operations as part of the process.
+
 File Formats
 ============
 When specifying the file format, use lowercase strings.  The same format
@@ -635,6 +646,39 @@ def to_alignment(sequences, alphabet=None, strict=True) :
         #but which takes SeqRecord objects.  See also Bug 1944
         alignment._records.append(record)
     return alignment
+
+def convert(input, in_format, output, out_format, alphabet=None) :
+    """Convert between two sequence file formats.
+
+     - input - an input handle or filename
+     - in_format - input file format, lower case string
+     - output - an output handle or filename
+     - out_format - output file format, lower case string
+     - alphabet - optional alphabet to assume
+
+    NOTE - If you provide an output filename, it will be opened which will
+    overwrite any existing file without warning.
+    """
+    #TODO - Add optimised versions of important conversions
+    #For now just off load the work to SeqIO parse/write    
+    if isinstance(input, basestring) :
+        in_handle = open(input, "rU")
+        in_close = True
+    else :
+        in_handle = input
+        in_close = False
+    records = parse(in_handle, in_format, alphabet)
+    #Don't open the output file until we've check the input is OK
+    if isinstance(output, basestring) :
+        out_handle = open(output, "w")
+        out_close = True
+    else :
+        out_handle = output
+        out_close = False
+    write(records, out_handle, out_format)
+    #Must now close any handles we opened
+    if in_close : in_handle.close()
+    if out_close : out_handle.close()
            
 def _test():
     """Run the Bio.SeqIO module's doctests.
