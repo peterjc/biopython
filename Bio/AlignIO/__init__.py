@@ -412,7 +412,7 @@ def convert(in_file, in_format, out_file, out_format, alphabet=None) :
 
     NOTE - If you provide an output filename, it will be opened which will
     overwrite any existing file without warning. This may happen if even the
-    conversion is aborted (e.g. an invalid out_format name is even).
+    conversion is aborted (e.g. an invalid out_format name is given).
     """
     #TODO - Add optimised versions of important conversions
     #For now just off load the work to SeqIO parse/write    
