@@ -411,7 +411,8 @@ def convert(in_file, in_format, out_file, out_format, alphabet=None) :
      - alphabet - optional alphabet to assume
 
     NOTE - If you provide an output filename, it will be opened which will
-    overwrite any existing file without warning.
+    overwrite any existing file without warning. This may happen if even the
+    conversion is aborted (e.g. an invalid out_format name is even).
     """
     #TODO - Add optimised versions of important conversions
     #For now just off load the work to SeqIO parse/write    
@@ -421,15 +422,18 @@ def convert(in_file, in_format, out_file, out_format, alphabet=None) :
     else :
         in_handle = in_file
         in_close = False
-    records = parse(in_handle, in_format, alphabet)
-    #Don't open the output file until we've check the input is OK
+    #This will check the arguments and issue error messages,
+    alignments = parse(in_handle, in_format, alphabet)
+    #Don't open the output file until we've checked the input is OK:
     if isinstance(out_file, basestring) :
         out_handle = open(out_file, "w")
         out_close = True
     else :
         out_handle = out_file
         out_close = False
-    count = write(records, out_handle, out_format)
+    #This will check the arguments and issue error messages,
+    #after we have opened the file which is a shame.
+    count = write(alignments, out_handle, out_format)
     #Must now close any handles we opened
     if in_close : in_handle.close()
     if out_close : out_handle.close()
