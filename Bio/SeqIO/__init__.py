@@ -648,7 +648,7 @@ def to_alignment(sequences, alphabet=None, strict=True) :
     return alignment
 
 def convert(input, in_format, output, out_format, alphabet=None) :
-    """Convert between two sequence file formats.
+    """Convert between two sequence file formats, return number of records.
 
      - input - an input handle or filename
      - in_format - input file format, lower case string
@@ -675,10 +675,11 @@ def convert(input, in_format, output, out_format, alphabet=None) :
     else :
         out_handle = output
         out_close = False
-    write(records, out_handle, out_format)
+    count = write(records, out_handle, out_format)
     #Must now close any handles we opened
     if in_close : in_handle.close()
     if out_close : out_handle.close()
+    return count
            
 def _test():
     """Run the Bio.SeqIO module's doctests.
