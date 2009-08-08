@@ -401,13 +401,13 @@ def read(handle, format, seq_count=None, alphabet=None) :
         assert len(first.get_all_seqs())==seq_count
     return first
 
-def convert(input, in_format, output, out_format, alphabet=None) :
+def convert(in_file, in_format, out_file, out_format, alphabet=None) :
     """Convert between two alignment files, returns number of alignments.
 
-     - input - an input handle or filename
+     - in_file - an input handle or filename
      - in_format - input file format, lower case string
      - output - an output handle or filename
-     - out_format - output file format, lower case string
+     - out_file - output file format, lower case string
      - alphabet - optional alphabet to assume
 
     NOTE - If you provide an output filename, it will be opened which will
@@ -415,19 +415,19 @@ def convert(input, in_format, output, out_format, alphabet=None) :
     """
     #TODO - Add optimised versions of important conversions
     #For now just off load the work to SeqIO parse/write    
-    if isinstance(input, basestring) :
-        in_handle = open(input, "rU")
+    if isinstance(in_file, basestring) :
+        in_handle = open(in_file, "rU")
         in_close = True
     else :
-        in_handle = input
+        in_handle = in_file
         in_close = False
     records = parse(in_handle, in_format, alphabet)
     #Don't open the output file until we've check the input is OK
-    if isinstance(output, basestring) :
-        out_handle = open(output, "w")
+    if isinstance(out_file, basestring) :
+        out_handle = open(out_file, "w")
         out_close = True
     else :
-        out_handle = output
+        out_handle = out_file
         out_close = False
     count = write(records, out_handle, out_format)
     #Must now close any handles we opened
