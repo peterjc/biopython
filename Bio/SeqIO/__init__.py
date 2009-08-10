@@ -159,6 +159,7 @@ names are also used in Bio.AlignIO and include the following:
  - pir     - A "FASTA like" format introduced by the National Biomedical
              Research Foundation (NBRF) for the Protein Information Resource
              (PIR) database, now part of UniProt.
+ - sff     - Roche SFF file.
  - swiss   - Plain text Swiss-Prot aka UniProt format.
  - tab     - Simple two column tab separated sequence files, where each
              line holds a record's identifier and sequence. For example,
@@ -236,6 +237,7 @@ import IgIO #IntelliGenetics or MASE format
 import InsdcIO #EMBL and GenBank
 import PhdIO
 import PirIO
+import SffIO
 import SwissIO
 import TabIO
 import QualityIO #FastQ and qual files
@@ -267,6 +269,7 @@ _FormatToIterator ={"fasta" : FastaIO.FastaIterator,
                     "fastq-solexa" : QualityIO.FastqSolexaIterator,
                     "fastq-illumina" : QualityIO.FastqIlluminaIterator,
                     "qual" : QualityIO.QualPhredIterator,
+                    "sff": SffIO.SffIterator,
                     }
 
 _FormatToWriter ={"fasta" : FastaIO.FastaWriter,
