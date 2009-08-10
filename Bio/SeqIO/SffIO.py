@@ -155,8 +155,6 @@ class _SffReader(object):
     #pylint: disable-msg=R0903
     def __init__(self, handle):
         'inits the SffReader class. It requires an sff file opened in binary mode.'
-        if "b" not in handle.mode.lower() :
-            raise ValueError("Requires the handle be opened in binary mode.")
         self._sff_bin = _BinaryFile(handle)
         #sff file are big endian
         self._sff_bin.endianess = 'big'
@@ -314,8 +312,8 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
 if __name__ == "__main__" :
     print "Running quick self test"
     filename = "../../Tests/Roche/E3MFGYR02_random_10_reads.sff"
-    sff = list(SffIterator(open(filename,"rb")))
-    sff_trim = list(SffIterator(open(filename,"rb"), trim=True))
+    sff = list(SffIterator(open(filename)))
+    sff_trim = list(SffIterator(open(filename), trim=True))
 
     from Bio import SeqIO
     filename = "../../Tests/Roche/E3MFGYR02_random_10_reads_no_trim.fasta"
