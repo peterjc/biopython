@@ -647,7 +647,7 @@ def to_alignment(sequences, alphabet=None, strict=True) :
         alignment._records.append(record)
     return alignment
 
-def convert(input, in_file, output, out_file, alphabet=None) :
+def convert(in_file, in_format, out_file, out_format, alphabet=None) :
     """Convert between two sequence file formats, return number of records.
 
      - in_file - an input handle or filename
@@ -659,6 +659,22 @@ def convert(input, in_file, output, out_file, alphabet=None) :
     NOTE - If you provide an output filename, it will be opened which will
     overwrite any existing file without warning. This may happen if even the
     conversion is aborted (e.g. an invalid out_format name is given).
+
+    For example, going from a filename to a handle:
+
+    >>> from Bio import SeqIO
+    >>> from StringIO import StringIO
+    >>> handle = StringIO("")
+    >>> SeqIO.convert("Quality/example.fastq", "fastq", handle, "fasta")
+    3
+    >>> print handle.getvalue()
+    >EAS54_6_R1_2_1_413_324
+    CCCTTCTTGTCTTCAGCGTTTCTCC
+    >EAS54_6_R1_2_1_540_792
+    TTGGCAGGCCAAGGCCGATGGATCA
+    >EAS54_6_R1_2_1_443_348
+    GTTGCTTCTGGCGTGGGTGGGGGGG
+    <BLANKLINE>
     """
     #TODO - Add optimised versions of important conversions
     #For now just off load the work to SeqIO parse/write    
@@ -668,9 +684,7 @@ def convert(input, in_file, output, out_file, alphabet=None) :
     else :
         in_handle = in_file
         in_close = False
-    #This will check the arguments and issue error messages,
-    records = parse(in_handle, in_format, alphabet)
-    #Don't open the output file until we've checked the input is OK:
+    #Don't open the output file until we've checked the input is OK?
     if isinstance(out_file, basestring) :
         out_handle = open(out_file, "w")
         out_close = True
@@ -679,7 +693,10 @@ def convert(input, in_file, output, out_file, alphabet=None) :
         out_close = False
     #This will check the arguments and issue error messages,
     #after we have opened the file which is a shame.
-    count = write(records, out_handle, out_format)
+    from _convert import _handle_convert #Lazy import
+    count = _handle_convert(in_handle, in_format,
+                            out_handle, out_format,
+                            alphabet)
     #Must now close any handles we opened
     if in_close : in_handle.close()
     if out_close : out_handle.close()
