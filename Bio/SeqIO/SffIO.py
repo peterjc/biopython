@@ -299,7 +299,8 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
                   seq[clip_qual_right:].lower()
         record = SeqRecord(Seq(seq, alphabet),
                            id=read["name"],
-                           name=read["name"])
+                           name=read["name"],
+                           description="")
         #for key in ["clip_qual_left", "clip_qual_right",
         #            "clip_adapter_left", "clip_adapter_right"] :
         #    record.annotations[key] = read[key]
@@ -308,6 +309,11 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
         #TODO - paired reads
         #Return the record and then continue...
         yield record
+
+#This is a generator function!
+def _SffTrimIterator(handle, alphabet = generic_dna) :
+    """Iterate over Roche 454 SFF reads (as SeqRecord objects) with trimming (PRIVATE)."""
+    return SffIterator(handle, alphabet, trim=True)
 
 if __name__ == "__main__" :
     print "Running quick self test"
