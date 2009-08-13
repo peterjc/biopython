@@ -41,9 +41,10 @@ def _sff_file_header(handle) :
     #flowgram_format_code       B
     #[rest of file header depends on the number of flows and how many keys]
     fmt = '>I4BQIIHHHB'
+    assert 31 == struct.calcsize(fmt)
     magic_number, ver0, ver1, ver2, ver3, index_offset, index_length, \
     number_of_reads, header_length, key_length, number_of_flows_per_read, \
-    flowgram_format = struct.unpack(fmt, handle.read(struct.calcsize(fmt)))
+    flowgram_format = struct.unpack(fmt, handle.read(31))
     if magic_number != 779314790 :
         raise ValueError("Wrong SFF magic number in header")
     if (ver0, ver1, ver2, ver3) != (0,0,0,1) :
@@ -52,13 +53,18 @@ def _sff_file_header(handle) :
     if flowgram_format != 1 :
         raise ValueError("Flowgram format code %i not supported" \
                          % flowgram_format)
-    #now we can read the rest of the header
-    fmt2 = "<%is%is" % (number_of_flows_per_read, key_length)
-    # add in eight byte padding
-    while struct.calcsize(fmt + fmt2[1:]) % 8 != 0:
-        fmt2 += 'x'
-    flow_chars, key_sequence = struct.unpack(fmt2, handle.read(struct.calcsize(fmt2)))
-    assert "TCAG" == key_sequence
+    flow_chars = handle.read(number_of_flows_per_read)
+    key_sequence = handle.read(key_length)
+    #According to the spec, the header_length field should be the total number
+    #of bytes required by this set of header fields, and should be equal to
+    #"31 + number_of_flows_per_read + key_length" rounded up to the next value
+    #divisible by 8.
+    assert header_length % 8 == 0
+    padding = header_length - number_of_flows_per_read - key_length - 31
+    assert 0 <= padding < 8, padding
+    if chr(0)*padding != handle.read(padding) :
+        raise ValueError("Post header %i byte padding region contained data" \
+                         % padding)
     return number_of_reads, number_of_flows_per_read
 
 #This is a generator function!
@@ -96,7 +102,7 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
         #First the fixed header
         read_header_length, name_length, number_of_bases, clip_qual_left, \
         clip_qual_right, clip_adapter_left, clip_adapter_right \
-                         = struct.unpack(read_header_fmt, handle.read(read_header_size))
+            = struct.unpack(read_header_fmt, handle.read(read_header_size))
         if clip_qual_left : clip_qual_left -= 1 #python counting
         if clip_adapter_left : clip_adapter_left -= 1 #python counting
         if read_header_length < 10 :
@@ -106,20 +112,24 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
         name = handle.read(name_length)
         padding = read_header_length - read_header_size - name_length
         if chr(0)*padding != handle.read(padding) :
-            raise ValueError("Post name %i byte padding region contained data" % padding)
+            raise ValueError("Post name %i byte padding region contained data" \
+                             % padding)
         #now the flowgram values, flowgram index, bases and qualities
         #NOTE - assuming flowgram_format==1, which means struct type H
         flow_values = struct.unpack(">%iH" % number_of_flows_per_read,
-                                    handle.read(number_of_flows_per_read * H_size))
-        flow_index = struct.unpack(">%iB" % number_of_bases, handle.read(number_of_bases))
+                                    handle.read(number_of_flows_per_read*H_size))
+        flow_index = struct.unpack(">%iB" % number_of_bases,
+                                   handle.read(number_of_bases))
         seq = handle.read(number_of_bases)
-        quals = list(struct.unpack(">%iB" % number_of_bases, handle.read(number_of_bases)))
+        quals = list(struct.unpack(">%iB" % number_of_bases,
+                                   handle.read(number_of_bases)))
         #now any padding...
         padding = (number_of_flows_per_read*H_size + number_of_bases*3)%8
         if padding :
             padding = 8 - padding
             if chr(0)*padding != handle.read(padding) :
-                raise ValueError("Post quality %i byte padding region contained data" % padding)
+                raise ValueError("Post quality %i byte padding region contained data" \
+                                 % padding)
         #Yield this read as a SeqRecord :)
         if trim :
             seq = seq[clip_qual_left:clip_qual_right].upper()
