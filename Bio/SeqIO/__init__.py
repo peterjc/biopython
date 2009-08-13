@@ -597,14 +597,16 @@ def indexed_dict(filename, format, alphabet=None) :
     SeqRecord objects as values:
 
     >>> from Bio import SeqIO
-    >>> records = SeqIO.indexed_dict("GenBank/cor6_6.gb", "gb")
+    >>> records = SeqIO.indexed_dict("Quality/example.fastq", "fastq")
     >>> len(records)
-    6
-    >>> records.keys()
-    ['L31939.1', 'AJ237582.1', 'X62281.1', 'AF297471.1', 'X55053.1', 'M81224.1']
-    >>> records["X62281.1"]
-    SeqRecord(seq=Seq('ATTTGGCCTATAAATATAAACCCTTAAGCCCACATATCTTCTCAATCCATCACA...ATA', IUPACAmbiguousDNA()), id='X62281.1', name='ATKIN2', description='A.thaliana kin2 gene.', dbxrefs=[])
-    >>> "AF297471.1" in records
+    3
+    >>> sorted(records.keys())
+    ['EAS54_6_R1_2_1_413_324', 'EAS54_6_R1_2_1_443_348', 'EAS54_6_R1_2_1_540_792']
+    >>> print records["EAS54_6_R1_2_1_540_792"].format("fasta")
+    >EAS54_6_R1_2_1_540_792
+    TTGGCAGGCCAAGGCCGATGGATCA
+    <BLANKLINE>
+    >>> "EAS54_6_R1_2_1_540_792" in records
     True
     >>> print records.get("Missing", None)
     None
@@ -627,13 +629,15 @@ def indexed_dict(filename, format, alphabet=None) :
     dictionary, e.g.
 
     >>> from Bio import SeqIO
-    >>> records = SeqIO.to_dict(SeqIO.parse(open("GenBank/cor6_6.gb"), "gb"))
+    >>> records = SeqIO.to_dict(SeqIO.parse(open("Quality/example.fastq"), "fastq"))
     >>> len(records)
-    6
-    >>> records.keys()
-    ['L31939.1', 'AJ237582.1', 'X62281.1', 'AF297471.1', 'X55053.1', 'M81224.1']
-    >>> records["X62281.1"]
-    SeqRecord(seq=Seq('ATTTGGCCTATAAATATAAACCCTTAAGCCCACATATCTTCTCAATCCATCACA...ATA', IUPACAmbiguousDNA()), id='X62281.1', name='ATKIN2', description='A.thaliana kin2 gene.', dbxrefs=[])
+    3
+    >>> sorted(records.keys())
+    ['EAS54_6_R1_2_1_413_324', 'EAS54_6_R1_2_1_443_348', 'EAS54_6_R1_2_1_540_792']
+    >>> print records["EAS54_6_R1_2_1_540_792"].format("fasta")
+    >EAS54_6_R1_2_1_540_792
+    TTGGCAGGCCAAGGCCGATGGATCA
+    <BLANKLINE>
 
     As with the to_dict() function defaults, the id string of each record is
     used as the key. It would be possible to extend the indexing code so that
@@ -641,10 +645,27 @@ def indexed_dict(filename, format, alphabet=None) :
     done for the to_dict() function), but doing so would impose a severe
     performance penalty as it require the file to be completely parsed while
     building the index. Right now this is usually avoided.
-    
     """
-    #Hack for testing
-    return to_dict(parse(open(filename, "rU"), format, alphabet))
+    #Try and give helpful error messages:
+    if not isinstance(filename, basestring) :
+        raise TypeError("Need a filename (not a handle)")
+    if not isinstance(format, basestring) :
+        raise TypeError("Need a string for the file format (lower case)")
+    if not format :
+        raise ValueError("Format required (lower case string)")
+    if format != format.lower() :
+        raise ValueError("Format string '%s' should be lower case" % format)
+    if alphabet is not None and not (isinstance(alphabet, Alphabet) or \
+                                     isinstance(alphabet, AlphabetEncoder)) :
+        raise ValueError("Invalid alphabet, %s" % repr(alphabet))
+
+    #Map the file format to a sequence iterator:    
+    import _index #Lazy import
+    try :
+        indexer = _index._FormatToIndexedDict[format]
+    except KeyError :
+        raise ValueError("Unsupported format '%s'" % format)
+    return indexer(filename, alphabet)
 
 def to_alignment(sequences, alphabet=None, strict=True) :
     """Returns a multiple sequence alignment (OBSOLETE).
@@ -800,6 +821,14 @@ def _test():
         print "Runing doctests..."
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..","..","Tests"))
+        doctest.testmod()
+        os.chdir(cur_dir)
+        del cur_dir
+        print "Done"
+    elif os.path.isdir(os.path.join("Tests", "Fasta")) :
+        print "Runing doctests..."
+        cur_dir = os.path.abspath(os.curdir)
+        os.chdir(os.path.join("Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
