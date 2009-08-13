@@ -53,6 +53,9 @@ def _sff_file_header(handle) :
     if flowgram_format != 1 :
         raise ValueError("Flowgram format code %i not supported" \
                          % flowgram_format)
+    if (index_offset!=0) ^ (index_length!=0) :
+        raise ValueError("Index offset %i but index length %i" \
+                         % (index_offset, index_length))
     flow_chars = handle.read(number_of_flows_per_read)
     key_sequence = handle.read(key_length)
     #According to the spec, the header_length field should be the total number
@@ -175,10 +178,10 @@ if __name__ == "__main__" :
     qual_trim = list(SeqIO.parse(open(filename,"rU"), "qual"))
 
     for s, sT, f, q, fT, qT in zip(sff, sff_trim, fasta_no_trim, qual_no_trim, fasta_trim, qual_trim) :
-        print
+        #print
         print s.id
-        print s.seq
-        print s.letter_annotations["phred_quality"]
+        #print s.seq
+        #print s.letter_annotations["phred_quality"]
         
         assert s.id == f.id == q.id
         assert str(s.seq) == str(f.seq)
