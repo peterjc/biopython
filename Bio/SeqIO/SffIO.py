@@ -118,9 +118,10 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
         #now the flowgram values, flowgram index, bases and qualities
         #NOTE - assuming flowgram_format==1, which means struct type H
         flow_values = struct.unpack(read_flow_fmt, handle.read(read_flow_size))
-        flow_index = struct.unpack(">%iB" % seq_len, handle.read(seq_len))
+        temp_fmt = ">%iB" % seq_len # used for flow index and quals
+        flow_index = struct.unpack(temp_fmt, handle.read(seq_len))
         seq = handle.read(seq_len)
-        quals = list(struct.unpack(">%iB" % seq_len, handle.read(seq_len)))
+        quals = list(struct.unpack(temp_fmt, handle.read(seq_len)))
         #now any padding...
         padding = (read_flow_size + seq_len*3)%8
         if padding :
@@ -128,11 +129,12 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
             if chr(0)*padding != handle.read(padding) :
                 raise ValueError("Post quality %i byte padding region contained data" \
                                  % padding)
-        #Yield this read as a SeqRecord :)
+        #Yield this read as a SeqRecord
         if trim :
             seq = seq[clip_qual_left:clip_qual_right].upper()
             quals = quals[clip_qual_left:clip_qual_right]
         else :
+            #This use of mixed case mimics the Roche SFF tool's FASTA output
             seq = seq[:clip_qual_left].lower() + \
                   seq[clip_qual_left:clip_qual_right].upper() + \
                   seq[clip_qual_right:].lower()
