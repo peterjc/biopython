@@ -93,7 +93,7 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
     #[rest of read header depends on the name length etc]
     read_header_fmt = '>2HI4H'
     read_header_size = struct.calcsize(read_header_fmt)
-    H_size = struct.calcsize(">H")
+    read_flow_size = struct.calcsize(">H") * number_of_flows_per_read
     assert 1 == struct.calcsize(">B")
     assert 1 == struct.calcsize(">s")
     assert 1 == struct.calcsize(">c")
@@ -117,14 +117,14 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
         #now the flowgram values, flowgram index, bases and qualities
         #NOTE - assuming flowgram_format==1, which means struct type H
         flow_values = struct.unpack(">%iH" % number_of_flows_per_read,
-                                    handle.read(number_of_flows_per_read*H_size))
+                                    handle.read(read_flow_size))
         flow_index = struct.unpack(">%iB" % number_of_bases,
                                    handle.read(number_of_bases))
         seq = handle.read(number_of_bases)
         quals = list(struct.unpack(">%iB" % number_of_bases,
                                    handle.read(number_of_bases)))
         #now any padding...
-        padding = (number_of_flows_per_read*H_size + number_of_bases*3)%8
+        padding = (read_flow_size + number_of_bases*3)%8
         if padding :
             padding = 8 - padding
             if chr(0)*padding != handle.read(padding) :
