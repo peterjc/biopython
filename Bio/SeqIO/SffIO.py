@@ -85,7 +85,7 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
     #the read header format (fixed part):
     #read_header_length     H
     #name_length            H
-    #number_of_bases        I
+    #seq_len                I
     #clip_qual_left         H
     #clip_qual_right        H
     #clip_adapter_left      H
@@ -101,7 +101,7 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
     assert read_header_size % 8 == 0 #Important for padding calc later!
     for read in range(number_of_reads) :
         #First the fixed header
-        read_header_length, name_length, number_of_bases, clip_qual_left, \
+        read_header_length, name_length, seq_len, clip_qual_left, \
         clip_qual_right, clip_adapter_left, clip_adapter_right \
             = struct.unpack(read_header_fmt, handle.read(read_header_size))
         if clip_qual_left : clip_qual_left -= 1 #python counting
@@ -117,15 +117,12 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
                              % padding)
         #now the flowgram values, flowgram index, bases and qualities
         #NOTE - assuming flowgram_format==1, which means struct type H
-        flow_values = struct.unpack(read_flow_fmt,
-                                    handle.read(read_flow_size))
-        flow_index = struct.unpack(">%iB" % number_of_bases,
-                                   handle.read(number_of_bases))
-        seq = handle.read(number_of_bases)
-        quals = list(struct.unpack(">%iB" % number_of_bases,
-                                   handle.read(number_of_bases)))
+        flow_values = struct.unpack(read_flow_fmt, handle.read(read_flow_size))
+        flow_index = struct.unpack(">%iB" % seq_len, handle.read(seq_len))
+        seq = handle.read(seq_len)
+        quals = list(struct.unpack(">%iB" % seq_len, handle.read(seq_len)))
         #now any padding...
-        padding = (read_flow_size + number_of_bases*3)%8
+        padding = (read_flow_size + seq_len*3)%8
         if padding :
             padding = 8 - padding
             if chr(0)*padding != handle.read(padding) :
