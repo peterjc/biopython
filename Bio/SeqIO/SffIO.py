@@ -93,6 +93,7 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
     #[rest of read header depends on the name length etc]
     read_header_fmt = '>2HI4H'
     read_header_size = struct.calcsize(read_header_fmt)
+    assert read_header_size % 8 == 0 #Important for padding calc later!
     read_flow_size = struct.calcsize(">H") * number_of_flows_per_read
     assert 1 == struct.calcsize(">B")
     assert 1 == struct.calcsize(">s")
