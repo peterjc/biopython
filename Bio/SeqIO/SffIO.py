@@ -142,7 +142,10 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
                            id=name,
                            name=name,
                            description="")
-        record.letter_annotations["phred_quality"] = quals
+        #Dirty trick to speed up this line:
+        #record.letter_annotations["phred_quality"] = quals
+        dict.__setitem__(record._per_letter_annotations,
+                         "phred_quality", quals)
         #TODO - flow data
         #TODO - adaptor clipping
         #TODO - paired reads
