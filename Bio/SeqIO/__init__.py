@@ -159,8 +159,8 @@ names are also used in Bio.AlignIO and include the following:
  - pir     - A "FASTA like" format introduced by the National Biomedical
              Research Foundation (NBRF) for the Protein Information Resource
              (PIR) database, now part of UniProt.
- - sff     - Roche SFF file (no trimming)
- - sff-trim - Roche SFF file (with trimming).
+ - sff     - Standard Flowgram Format (SFF), typical output for Roche 454.
+ - sff-trim - Standard Flowgram Format (SFF) with trimming.
  - swiss   - Plain text Swiss-Prot aka UniProt format.
  - tab     - Simple two column tab separated sequence files, where each
              line holds a record's identifier and sequence. For example,

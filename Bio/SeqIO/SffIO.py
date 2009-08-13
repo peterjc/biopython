@@ -4,27 +4,29 @@
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
-"""Bio.SeqIO support for the Roche binary SFF file format.
+"""Bio.SeqIO support for the binary Standard Flowgram Format (SFF) file format.
 
-You are expected to use this module via the Bio.SeqIO functions."""
+SFF was designed by 454 Life Sciences (Roche), the Whitehead Institute for
+Biomedical Research and the Wellcome Trust Sanger Institute. You are expected
+to use this module via the Bio.SeqIO functions under the format name "sff".
+
+For a description of the file format, please see:
+http://www.ncbi.nlm.nih.gov/Traces/trace.cgi?cmd=show&f=formats&m=doc&s=formats
+
+"""
+#TODO - Can we parse the (optional) index?
 
 from Bio.Alphabet import generic_dna
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 import struct
 
-#This is a generator function!
-def SffIterator(handle, alphabet = generic_dna, trim=False) :
-    """Iterate over Roche 454 SFF reads (as SeqRecord objects).
+def _sff_file_header(handle) :
+    """Read in an SFF file header (PRIVATE).
 
-    handle - input file, a Roche 454 SFF file.
-    alphabet - optional alphabet, defaults to generic DNA.
-    trim - should the sequences be trimmed?
-
-    The resulting SeqRecord objects should match those from a paired
-    FASTA and QUAL file converted from the SFF file using the Roche
-    454 tool ssfinfo. i.e. The sequence will be mixed case, with the
-    trim regions shown in lower case.
+    Assumes the handle is at the start of the file, will read forwards
+    though the header and leave the handle pointing at the first record.
+    Returns a tuple of values from the header.
     """
     #file header (part one)
     #use big endiean encdoing   >
@@ -57,6 +59,22 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
         fmt2 += 'x'
     flow_chars, key_sequence = struct.unpack(fmt2, handle.read(struct.calcsize(fmt2)))
     assert "TCAG" == key_sequence
+    return number_of_reads, number_of_flows_per_read
+
+#This is a generator function!
+def SffIterator(handle, alphabet = generic_dna, trim=False) :
+    """Iterate over Standard Flowgram Format (SFF) reads (as SeqRecord objects).
+
+    handle - input file, an SFF file, e.g. from Roche 454 sequencing.
+    alphabet - optional alphabet, defaults to generic DNA.
+    trim - should the sequences be trimmed?
+
+    The resulting SeqRecord objects should match those from a paired
+    FASTA and QUAL file converted from the SFF file using the Roche
+    454 tool ssfinfo. i.e. The sequence will be mixed case, with the
+    trim regions shown in lower case.
+    """
+    number_of_reads, number_of_flows_per_read = _sff_file_header(handle)
     #Now on to the reads...
     #the read header format (fixed part):
     #read_header_length     H
@@ -123,7 +141,7 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
 
 #This is a generator function!
 def _SffTrimIterator(handle, alphabet = generic_dna) :
-    """Iterate over Roche 454 SFF reads (as SeqRecord objects) with trimming (PRIVATE)."""
+    """Iterate over SFF reads (as SeqRecord objects) with trimming (PRIVATE)."""
     return SffIterator(handle, alphabet, trim=True)
 
 if __name__ == "__main__" :
