@@ -105,6 +105,9 @@ providing dictionary like access to any record. For example,
     >>> print len(record_dict["gi|1348917|gb|G26685|G26685"])
     413
 
+Many but not all of the supported input file formats can be indexed like
+this. For example "fasta", "fastq", "qual" and even the binary format "sff"
+work, but alignment formats like "phylip", "clustalw" and "nexus" will not.
 
 Input - Alignments
 ==================
@@ -190,8 +193,8 @@ names are also used in Bio.AlignIO and include the following:
  - pir     - A "FASTA like" format introduced by the National Biomedical
              Research Foundation (NBRF) for the Protein Information Resource
              (PIR) database, now part of UniProt.
- - sff     - Standard Flowgram Format (SFF), typical output for Roche 454.
- - sff-trim - Standard Flowgram Format (SFF) with trimming.
+ - sff     - Standard Flowgram Format (SFF), typical output from Roche 454.
+ - sff-trim - Standard Flowgram Format (SFF) with given trimming applied.
  - swiss   - Plain text Swiss-Prot aka UniProt format.
  - tab     - Simple two column tab separated sequence files, where each
              line holds a record's identifier and sequence. For example,
@@ -202,7 +205,7 @@ names are also used in Bio.AlignIO and include the following:
              in separate FASTA files).
 
 Note that while Bio.SeqIO can read all the above file formats, it cannot
-write to all of them.
+write to all of them. Nor can it index all of the above files.
 
 You can also use any file format supported by Bio.AlignIO, such as "nexus",
 "phlip" and "stockholm", which gives you access to the individual sequences
