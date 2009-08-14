@@ -61,7 +61,9 @@ class _IndexedSeqFileDict(object) :
         #For non-trivial file formats this must be over-ridden in the subclass
         handle = self._handle
         handle.seek(self._index[key])
-        return SeqIO.parse(handle, self._format, self._alphabet).next()
+        record = SeqIO.parse(handle, self._format, self._alphabet).next()
+        assert record.id == key
+        return record
 
     def get(self, k, d=None) :
         try :
@@ -78,8 +80,8 @@ class SffDict(_IndexedSeqFileDict) :
         header_length, index_offset, index_length, number_of_reads, \
         self._flows_per_read = SeqIO.SffIO._sff_file_header(handle)
         if index_offset and index_length:
+            #These is an index provided, try this the fast way:
             try :
-                #The fast way!
                 for name, offset in SeqIO.SffIO._sff_read_roche_index(handle) :
                     self._record_key(name, offset)
                 assert len(self) == number_of_reads, \
@@ -105,10 +107,11 @@ class SffDict(_IndexedSeqFileDict) :
     def __getitem__(self, key) :
         handle = self._handle
         handle.seek(self._index[key])
-        return SeqIO.SffIO._sff_read_seq_record(handle,
-                                                self._flows_per_read,
-                                                self._alphabet)
-
+        record = SeqIO.SffIO._sff_read_seq_record(handle,
+                                                  self._flows_per_read,
+                                                  self._alphabet)
+        assert record.id == key
+        return record
 
 class _SequentialSeqFileDict(_IndexedSeqFileDict) :
     """Subclass for easy cases (PRIVATE)."""
