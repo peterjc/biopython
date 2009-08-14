@@ -158,6 +158,10 @@ class PhdDict(_SequentialSeqFileDict) :
         _SequentialSeqFileDict.__init__(self, filename, alphabet, "phd",
                                         "BEGIN_SEQUENCE")
 
+class AceDict(_SequentialSeqFileDict) :
+    """Indexed dictionary like access to an ACE file."""
+    def __init__(self, filename, alphabet) :
+        _SequentialSeqFileDict.__init__(self, filename, alphabet, "ace", "CO ")
 
 
 #######################################
@@ -301,7 +305,8 @@ class FastqIlluminaDict(_FastqSeqFileDict) :
 
 ###############################################################################
 
-_FormatToIndexedDict = {"embl" : EmblDict,
+_FormatToIndexedDict = {"ace" : AceDict,
+                        "embl" : EmblDict,
                         "fasta" : FastaDict,
                         "fastq" : FastqSangerDict,
                         "fastq-sanger" : FastqSangerDict, #alias of the above

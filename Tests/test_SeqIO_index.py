@@ -25,6 +25,9 @@ class IndexDictTests(unittest.TestCase) :
             self.assertEqual(key, rec_dict[key].id)
             
 tests = [
+    ("Ace/contig1.ace", "ace", generic_dna),
+    ("Ace/consed_sample.ace", "ace", None),
+    ("Ace/seq.cap.ace", "ace", generic_dna),
     ("Quality/example.fastq", "fastq", None),
     ("Quality/example.fastq", "fastq-sanger", generic_dna),
     #Can't yet index line wrapped FASTQ files...
