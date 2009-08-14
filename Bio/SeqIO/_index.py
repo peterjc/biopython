@@ -80,7 +80,7 @@ class SffDict(_IndexedSeqFileDict) :
         header_length, index_offset, index_length, number_of_reads, \
         self._flows_per_read = SeqIO.SffIO._sff_file_header(handle)
         if index_offset and index_length:
-            #These is an index provided, try this the fast way:
+            #There is an index provided, try this the fast way:
             try :
                 for name, offset in SeqIO.SffIO._sff_read_roche_index(handle) :
                     self._record_key(name, offset)
