@@ -98,7 +98,7 @@ def _sff_do_slow_index(handle) :
     assert read_header_size % 8 == 0 #Important for padding calc later!
     for read in range(number_of_reads) :
         record_offset = handle.tell()
-        assert record_offset%8 == 0
+        #assert record_offset%8 == 0 #Worth checking, but slow
         #First the fixed header
         read_header_length, name_length, seq_len, clip_qual_left, \
         clip_qual_right, clip_adapter_left, clip_adapter_right \
@@ -115,8 +115,7 @@ def _sff_do_slow_index(handle) :
         assert record_offset + read_header_length == handle.tell()
         #now the flowgram values, flowgram index, bases and qualities
         size = read_flow_size + 3*seq_len
-        #handle.seek(size,1)
-        handle.read(size)
+        handle.seek(size,1)
         #now any padding...
         padding = size%8
         if padding :
@@ -126,6 +125,8 @@ def _sff_do_slow_index(handle) :
                                  % padding)
         #print read, name, record_offset
         yield name, record_offset
+    if handle.tell() % 8 != 0 :
+        raise ValueError("After scanning reads, did not end on a multiple of 8")
 
 #This is a generator function!
 def _sff_read_roche_index(handle) :
@@ -161,8 +162,7 @@ def _sff_read_roche_index(handle) :
                          "Got %i bytes" % (20 * number_of_reads, data_size))
     #print "XML block %i bytes, index data %i bytes" % (xml_size, data_size)
     #xml = handle.read(xml_size)
-    #handle.seek(xml_size,1)
-    handle.read(xml_size)
+    handle.seek(xml_size,1)
     #Now do the index...    
     fmt = ">14s6B"
     assert 20 == struct.calcsize(fmt)
