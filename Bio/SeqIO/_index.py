@@ -54,6 +54,9 @@ class _IndexedSeqFileDict(object) :
     def __len__(self) :
         return len(self._index)
 
+    def __iter__(self) :
+        return iter(self._index)
+
     def __contains__(self, value) :
         return value in self._index
 
