@@ -62,7 +62,7 @@ class _IndexedSeqFileDict(object) :
         handle = self._handle
         handle.seek(self._index[key])
         record = SeqIO.parse(handle, self._format, self._alphabet).next()
-        assert record.id == key
+        assert record.id == key, "Requested key %s, found record.id %s" % (key, record.id)
         return record
 
     def get(self, k, d=None) :
@@ -71,6 +71,9 @@ class _IndexedSeqFileDict(object) :
         except KeyError :
             return d
 
+####################
+# Special indexers #
+####################
 
 class SffDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to a Standard Flowgram Format (SFF) file."""
@@ -113,6 +116,10 @@ class SffDict(_IndexedSeqFileDict) :
         assert record.id == key
         return record
 
+###################
+# Simple indexers #
+###################
+
 class _SequentialSeqFileDict(_IndexedSeqFileDict) :
     """Subclass for easy cases (PRIVATE)."""
     def __init__(self, filename, alphabet, format, marker) :
@@ -122,13 +129,13 @@ class _SequentialSeqFileDict(_IndexedSeqFileDict) :
         marker_re = re.compile("^%s" % marker)
         offset = len(marker)
         while True :
-            pos = handle.tell()
+            offset = handle.tell()
             line = handle.readline()
             if not line : break #End of file
             if marker_re.match(line) :
                 #Here we can assume the record.id is the first word after the
-                #marker. This is generally fine...
-                self._record_key(line[offset:].rstrip().split(None,1)[0],pos)
+                #marker. This is generally fine... but not for GenBank, EMBL, Swiss
+                self._record_key(line[offset:].strip().split(None,1)[0], offset)
 
 class FastaDict(_SequentialSeqFileDict) :
     """Indexed dictionary like access to a FASTA file."""
@@ -140,22 +147,86 @@ class QualDict(_SequentialSeqFileDict) :
     def __init__(self, filename, alphabet) :
         _SequentialSeqFileDict.__init__(self, filename, alphabet, "qual", ">")
 
-#TODO - We can't just look at the LOCUS line if we want to mimic the SeqIO parser.
-#class GenBankDict(_SequentialSeqFileDict) :
-#    """Indexed dictionary like access to a GenBank file."""
-#    def __init__(self, filename, alphabet) :
-#        _SequentialSeqFileDict.__init__(self, filename, alphabet, "gb", "LOCUS ")
+#######################################
+# Fiddly indexers: GenBank, EMBL, ... #
+#######################################
 
-class EmblDict(_SequentialSeqFileDict) :
-    """Indexed dictionary like access to a EMBL file."""
+class GenBankDict(_IndexedSeqFileDict) :
+    """Indexed dictionary like access to a GenBank file."""
     def __init__(self, filename, alphabet) :
-        _SequentialSeqFileDict.__init__(self, filename, alphabet, "embl", "ID ")
+        _IndexedSeqFileDict.__init__(self, filename, alphabet)
+        self._format = "genbank"
+        handle = self._handle
+        marker_re = re.compile("^LOCUS ")
+        while True :
+            offset = handle.tell()
+            line = handle.readline()
+            if not line : break #End of file
+            if marker_re.match(line) :
+                #We cannot assume the record.id is the first word after LOCUS,
+                #normally the first entry on the VERSION or ACCESSION line is used.
+                key = None
+                done = False
+                while not done :
+                    line = handle.readline()
+                    if line.startswith("ACCESSION ") :
+                        key = line.rstrip().split()[1]
+                    elif line.startswith("VERSION ") :
+                        version_id = line.rstrip().split()[1]
+                        if version_id.count(".")==1 and version_id.split(".")[1].isdigit() :
+                            #This should mimics the GenBank parser...
+                            key = version_id
+                            done = True
+                            break
+                    elif line.startswith("FEATURES ") \
+                    or line.startswith("ORIGIN ") \
+                    or line.startswith("//") \
+                    or marker_re.match(line) \
+                    or not line:
+                        done = True
+                        break
+                if not key :
+                    raise ValueError("Did not find ACCESSION/VERSION lines")
+                self._record_key(key, offset)
 
-class SwissDict(_SequentialSeqFileDict) :
-    """Indexed dictionary like access to a SwissProt file."""
+class EmblDict(_IndexedSeqFileDict) :
+    """Indexed dictionary like access to an EMBL file."""
     def __init__(self, filename, alphabet) :
-        _SequentialSeqFileDict.__init__(self, filename, alphabet, "swiss", "ID ")
+        _IndexedSeqFileDict.__init__(self, filename, alphabet)
+        self._format = "embl"
+        handle = self._handle
+        marker_re = re.compile("^ID ")
+        while True :
+            offset = handle.tell()
+            line = handle.readline()
+            if not line : break #End of file
+            if marker_re.match(line) :
+                #We cannot assume the record.id is the first word after LOCUS,
+                #normally the SV line is used.
+                parts = line[3:].rstrip().split(";")
+                if parts[1].strip().startswith("SV ") :
+                    #The SV bit gives the version
+                    key = "%s.%s" % (parts[0].strip(),parts[1].strip().split()[1])
+                else :
+                    key = parts[0].strip()
+                while True :
+                    line = handle.readline()
+                    if line.startswith("SV ") :
+                        key = line.rstrip().split()[1]
+                        break
+                    elif line.startswith("FH ") \
+                    or line.startswith("FT ") \
+                    or line.startswith("SQ ") \
+                    or line.startswith("//") \
+                    or marker_re.match(line) \
+                    or not line :
+                        break
+                self._record_key(key, offset)
 
+##########################
+# Now the FASTQ indexers #
+##########################
+         
 class _FastqSeqFileDict(_IndexedSeqFileDict) :
     """Subclass for easy cases (PRIVATE).
 
@@ -204,10 +275,10 @@ _FormatToIndexedDict = {"embl" : EmblDict,
                         "fastq-sanger" : FastqSangerDict, #alias of the above
                         "fastq-solexa" : FastqSolexaDict,
                         "fastq-illumina" : FastqIlluminaDict,
-                        #"genbank" : GenBankDict,
-                        #"gb" : GenBankDict, #alias of the above
+                        "genbank" : GenBankDict,
+                        "gb" : GenBankDict, #alias of the above
                         "sff" : SffDict,
-                        "swiss" : SwissDict,
+                        #"swiss" : SwissDict,
                         "qual" : QualDict
                         }
 
