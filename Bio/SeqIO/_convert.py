@@ -87,24 +87,6 @@ def _fastq_sanger_convert_fastq_sanger(in_handle, out_handle, alphabet=None) :
 
     Avoids creating SeqRecord and Seq objects in order to speed up this
     conversion.
-
-    >>> from StringIO import StringIO
-    >>> handle = StringIO("")
-    >>> print _fastq_sanger_convert_fastq_sanger(open("Quality/sanger_93.fastq", "rU"),
-    ...                                          handle)
-    1
-    >>> new = handle.getvalue()
-
-    Versus:
-
-    >>> from Bio import SeqIO
-    >>> records = SeqIO.parse(open("Quality/sanger_93.fastq", "rU"), "fastq")
-    >>> handle = StringIO("")
-    >>> print SeqIO.write(records, handle, "fastq")
-    1
-    >>> old = handle.getvalue()
-    >>> new == old
-    True
     """
     #Map unexpected chars to null
     mapping = "".join([chr(0) for ascii in range(0,33)] \
