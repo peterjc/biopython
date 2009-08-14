@@ -147,6 +147,12 @@ class QualDict(_SequentialSeqFileDict) :
     def __init__(self, filename, alphabet) :
         _SequentialSeqFileDict.__init__(self, filename, alphabet, "qual", ">")
 
+class PirDict(_SequentialSeqFileDict) :
+    """Indexed dictionary like access to a PIR/NBRF file."""
+    def __init__(self, filename, alphabet) :
+        _SequentialSeqFileDict.__init__(self, filename, alphabet, "pir", ">..;")
+
+
 #######################################
 # Fiddly indexers: GenBank, EMBL, ... #
 #######################################
@@ -296,6 +302,7 @@ _FormatToIndexedDict = {"embl" : EmblDict,
                         "fastq-illumina" : FastqIlluminaDict,
                         "genbank" : GenBankDict,
                         "gb" : GenBankDict, #alias of the above
+                        "pir" : PirDict,
                         "sff" : SffDict,
                         "swiss" : SwissDict,
                         "qual" : QualDict
