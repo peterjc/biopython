@@ -281,6 +281,27 @@ class IntelliGeneticsDict(_IndexedSeqFileDict) :
                         self._record_key(key, offset)
                         break
 
+class TabDict(_IndexedSeqFileDict) :
+    """Indexed dictionary like access to a simple tabbed file."""
+    def __init__(self, filename, alphabet) :
+        _IndexedSeqFileDict.__init__(self, filename, alphabet)
+        self._format = "tab"
+        handle = self._handle
+        while True :
+            offset = handle.tell()
+            line = handle.readline()
+            if not line : break #End of file
+            try :
+                key, rest = line.split("\t")
+            except ValueError, err :
+                if not line.strip() :
+                    #Ignore blank lines
+                    continue
+                else :
+                    raise err
+            else :
+                self._record_key(key, offset)
+
 ##########################
 # Now the FASTQ indexers #
 ##########################
@@ -341,6 +362,7 @@ _FormatToIndexedDict = {"ace" : AceDict,
                         "pir" : PirDict,
                         "sff" : SffDict,
                         "swiss" : SwissDict,
+                        "tab" : TabDict,
                         "qual" : QualDict
                         }
 
