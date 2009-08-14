@@ -201,7 +201,7 @@ class EmblDict(_IndexedSeqFileDict) :
             line = handle.readline()
             if not line : break #End of file
             if marker_re.match(line) :
-                #We cannot assume the record.id is the first word after LOCUS,
+                #We cannot assume the record.id is the first word after ID,
                 #normally the SV line is used.
                 parts = line[3:].rstrip().split(";")
                 if parts[1].strip().startswith("SV ") :
@@ -221,6 +221,25 @@ class EmblDict(_IndexedSeqFileDict) :
                     or marker_re.match(line) \
                     or not line :
                         break
+                self._record_key(key, offset)
+
+class SwissDict(_IndexedSeqFileDict) :
+    """Indexed dictionary like access to a SwissProt file."""
+    def __init__(self, filename, alphabet) :
+        _IndexedSeqFileDict.__init__(self, filename, alphabet)
+        self._format = "swiss"
+        handle = self._handle
+        marker_re = re.compile("^ID ")
+        while True :
+            offset = handle.tell()
+            line = handle.readline()
+            if not line : break #End of file
+            if marker_re.match(line) :
+                #We cannot assume the record.id is the first word after ID,
+                #normally the following AC line is used.
+                line = handle.readline()
+                assert line.startswith("AC ")
+                key = line[3:].strip().split(";")[0].strip()
                 self._record_key(key, offset)
 
 ##########################
@@ -278,7 +297,7 @@ _FormatToIndexedDict = {"embl" : EmblDict,
                         "genbank" : GenBankDict,
                         "gb" : GenBankDict, #alias of the above
                         "sff" : SffDict,
-                        #"swiss" : SwissDict,
+                        "swiss" : SwissDict,
                         "qual" : QualDict
                         }
 

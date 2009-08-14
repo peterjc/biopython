@@ -40,7 +40,9 @@ tests = [
     ("GenBank/NC_005816.fna", "fasta", generic_dna),
     ("GenBank/NC_005816.gb", "gb", None),
     ("GenBank/cor6_6.gb", "genbank", None),
-    #("SwissProt/sp016", "swiss", None),
+    ("SwissProt/sp001", "swiss", None),
+    ("SwissProt/sp010", "swiss", None),
+    ("SwissProt/sp016", "swiss", None),
     ("Roche/E3MFGYR02_random_10_reads.sff", "sff", generic_dna),
     ]
 for filename, format, alphabet in tests :
