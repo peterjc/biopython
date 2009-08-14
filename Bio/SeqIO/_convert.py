@@ -35,7 +35,7 @@ def _genbank_convert_fasta(in_handle, out_handle, alphabet=None) :
         records = SeqIO._force_alphabet(records)
     return SeqIO.write(records, out_handle, "fasta")
 
-def _embl_convert_fasta(in_handle, in_format, out_handle, out_format, alphabet=None) :
+def _embl_convert_fasta(in_handle, out_handle, alphabet=None) :
     """Fast EMBL to FASTA (PRIVATE)."""
     #We don't need to parser the features...
     from Bio.GenBank.Scanner import EmblScanner
