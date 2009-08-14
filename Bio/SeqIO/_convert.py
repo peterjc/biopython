@@ -21,6 +21,7 @@ count = SeqIO.convert(in_handle, in_format, out_handle, out_format)
 
 Also, the convert function can take a number of special case optimisations. This
 means that using Bio.SeqIO.convert() may be faster, as well as more convenient.
+All these file format specific optimisations are handled by this (private) module.
 """
 
 from Bio import SeqIO
@@ -28,7 +29,7 @@ from Bio import SeqIO
 
 def _genbank_convert_fasta(in_handle, out_handle, alphabet=None) :
     """Fast GenBank to FASTA (PRIVATE)."""
-    #We don't need to parser the features...
+    #We don't need to parse the features...
     from Bio.GenBank.Scanner import GenBankScanner
     records = GenBankScanner().parse_records(in_handle, do_features=False)
     if alphabet :
@@ -37,7 +38,7 @@ def _genbank_convert_fasta(in_handle, out_handle, alphabet=None) :
 
 def _embl_convert_fasta(in_handle, out_handle, alphabet=None) :
     """Fast EMBL to FASTA (PRIVATE)."""
-    #We don't need to parser the features...
+    #We don't need to parse the features...
     from Bio.GenBank.Scanner import EmblScanner
     records = EmblScanner().parse_records(in_handle, do_features=False)
     if alphabet :
