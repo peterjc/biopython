@@ -259,6 +259,28 @@ class SwissDict(_IndexedSeqFileDict) :
                 key = line[3:].strip().split(";")[0].strip()
                 self._record_key(key, offset)
 
+class IntelliGeneticsDict(_IndexedSeqFileDict) :
+    """Indexed dictionary like access to a IntelliGenetics file."""
+    def __init__(self, filename, alphabet) :
+        _IndexedSeqFileDict.__init__(self, filename, alphabet)
+        self._format = "ig"
+        handle = self._handle
+        marker_re = re.compile("^;")
+        while True :
+            offset = handle.tell()
+            line = handle.readline()
+            if not line : break #End of file
+            if marker_re.match(line) :
+                #Now look for the first line which doesn't start ";"
+                while True :
+                    line = handle.readline()
+                    if not line :
+                        raise ValueError("Premature end of file?")
+                    if line[0] != ";" and line.strip() :
+                        key = line.split()[0]
+                        self._record_key(key, offset)
+                        break
+
 ##########################
 # Now the FASTQ indexers #
 ##########################
@@ -314,6 +336,7 @@ _FormatToIndexedDict = {"ace" : AceDict,
                         "fastq-illumina" : FastqIlluminaDict,
                         "genbank" : GenBankDict,
                         "gb" : GenBankDict, #alias of the above
+                        "ig" : IntelliGeneticsDict,
                         "phd" : PhdDict,
                         "pir" : PirDict,
                         "sff" : SffDict,
