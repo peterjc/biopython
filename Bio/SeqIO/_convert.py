@@ -35,7 +35,7 @@ def _genbank_convert_fasta(in_handle, out_handle, alphabet=None) :
         records = SeqIO._force_alphabet(records)
     return SeqIO.write(records, out_handle, "fasta")
 
-def _embl_convert_fasta(in_handle, in_format, out_handle, out_format, alphabet=None) :
+def _embl_convert_fasta(in_handle, out_handle, alphabet=None) :
     """Fast EMBL to FASTA (PRIVATE)."""
     #We don't need to parser the features...
     from Bio.GenBank.Scanner import EmblScanner
@@ -418,14 +418,12 @@ def _fastq_convert_tab(in_handle, out_handle, alphabet=None) :
 
     NOTE - This does NOT check the characters used in the FASTQ quality string are valid!
     """
-    assert in_format in ["fastq", "fastq-sanger","fastq-solexa", "fastq-illumina"]
-    assert out_format == "tab"
     from Bio.SeqIO.QualityIO import FastqGeneralIterator
     #For real speed, don't even make SeqRecord and Seq objects!
     count = 0
     for title, seq, qual in FastqGeneralIterator(in_handle) :
         count += 1
-        out_handle.write("%s\t%s\n" % (title, seq))
+        out_handle.write("%s\t%s\n" % (title.split(None,1)[0], seq))
     return count
 
 #TODO - Handling aliases explicitly would let us shorten this list:
