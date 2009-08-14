@@ -258,7 +258,7 @@ def _fastq_convert_tab(in_handle, out_handle, alphabet=None) :
         out_handle.write("%s\t%s\n" % (title.split(None,1)[0], seq))
     return count
 
-#TODO - Handling aliases explicitly would let us shorten this list:
+#TODO? - Handling aliases explicitly would let us shorten this list:
 _converter = {
     ("genbank", "fasta") : _genbank_convert_fasta,
     ("gb", "fasta") : _genbank_convert_fasta,
@@ -300,26 +300,3 @@ def _handle_convert(in_handle, in_format, out_handle, out_format, alphabet=None)
     else :
         records = SeqIO.parse(in_handle, in_format, alphabet)
         return SeqIO.write(records, out_handle, out_format)
-    
-
-def _test():
-    """Run the Bio.SeqIO module's doctests.
-
-    This will try and locate the unit tests directory, and run the doctests
-    from there in order that the relative paths used in the examples work.
-    """
-    import doctest
-    import os
-    if os.path.isdir(os.path.join("..","..","Tests")) :
-        print "Runing doctests..."
-        cur_dir = os.path.abspath(os.curdir)
-        os.chdir(os.path.join("..","..","Tests"))
-        assert os.path.isfile("Quality/example.fastq")
-        assert os.path.isfile("Quality/example.fasta")
-        doctest.testmod(verbose=0)
-        os.chdir(cur_dir)
-        del cur_dir
-        print "Done"
-        
-if __name__ == "__main__" :
-    _test()
