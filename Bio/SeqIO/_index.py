@@ -127,7 +127,7 @@ class _SequentialSeqFileDict(_IndexedSeqFileDict) :
         self._format = format
         handle = self._handle
         marker_re = re.compile("^%s" % marker)
-        offset = len(marker)
+        marker_offset = len(marker)
         while True :
             offset = handle.tell()
             line = handle.readline()
@@ -135,7 +135,7 @@ class _SequentialSeqFileDict(_IndexedSeqFileDict) :
             if marker_re.match(line) :
                 #Here we can assume the record.id is the first word after the
                 #marker. This is generally fine... but not for GenBank, EMBL, Swiss
-                self._record_key(line[offset:].strip().split(None,1)[0], offset)
+                self._record_key(line[marker_offset:].strip().split(None,1)[0], offset)
 
 class FastaDict(_SequentialSeqFileDict) :
     """Indexed dictionary like access to a FASTA file."""
