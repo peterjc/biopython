@@ -28,6 +28,9 @@ def _sff_file_header(handle) :
     though the header and leave the handle pointing at the first record.
     Returns a tuple of values from the header.
     """
+    if hasattr(handle,"mode") and "U" in handle.mode.upper() :
+        raise ValueError("SFF files must not be opened in universal new lines mode. "
+                         "Default or binary mode is fine.")
     #file header (part one)
     #use big endiean encdoing   >
     #magic_number               I
@@ -93,7 +96,6 @@ def _sff_do_slow_index(handle) :
     assert 1 == struct.calcsize(">s")
     assert 1 == struct.calcsize(">c")
     assert read_header_size % 8 == 0 #Important for padding calc later!
-    assert header_length == handle.tell()
     for read in range(number_of_reads) :
         record_offset = handle.tell()
         assert record_offset%8 == 0
@@ -122,7 +124,7 @@ def _sff_do_slow_index(handle) :
             if chr(0)*padding != handle.read(padding) :
                 raise ValueError("Post quality %i byte padding region contained data" \
                                  % padding)
-        print read, name, record_offset
+        #print read, name, record_offset
         yield name, record_offset
 
 #This is a generator function!
@@ -253,6 +255,7 @@ def SffIterator(handle, alphabet=generic_dna, trim=False) :
     """Iterate over Standard Flowgram Format (SFF) reads (as SeqRecord objects).
 
     handle - input file, an SFF file, e.g. from Roche 454 sequencing.
+             This must NOT be opened in universal read lines mode!
     alphabet - optional alphabet, defaults to generic DNA.
     trim - should the sequences be trimmed?
 
@@ -298,10 +301,19 @@ if __name__ == "__main__" :
     print "Running quick self test"
     filename = "../../Tests/Roche/E3MFGYR02_random_10_reads.sff"
     index1 = sorted(_sff_read_roche_index(open(filename)))
-    index2 = sorted(_sff_read_roche_index(open(filename, "rU"))) #works by luck here?
+    index2 = sorted(_sff_read_roche_index(open(filename, "rB")))
     assert index1 == index2
-    index2 = sorted(_sff_do_slow_index(open(filename, "rB"))) #should work?
+    index2 = sorted(_sff_do_slow_index(open(filename)))
     assert index1 == index2
+    index2 = sorted(_sff_do_slow_index(open(filename, "rB")))
+    assert index1 == index2
+    assert len(index1) == len(list(SffIterator(open(filename))))
+    assert len(index1) == len(list(SffIterator(open(filename, "r"))))
+    assert len(index1) == len(list(SffIterator(open(filename, "rB"))))
+    from StringIO import StringIO
+    assert len(index1) == len(list(SffIterator(StringIO(open(filename).read()))))
+    assert len(index1) == len(list(SffIterator(StringIO(open(filename,"r").read()))))
+    assert len(index1) == len(list(SffIterator(StringIO(open(filename,"rB").read()))))
                     
     sff = list(SffIterator(open(filename)))
     sff_trim = list(SffIterator(open(filename), trim=True))

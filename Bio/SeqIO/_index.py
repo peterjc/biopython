@@ -35,8 +35,8 @@ class _IndexedSeqFileDict(object) :
     identifiers) are not allowed. If this happens, a ValueError
     exception is raised.
     """
-    def __init__(self, filename, alphabet) :
-        self._handle = open(filename, "rU")
+    def __init__(self, filename, alphabet, mode="rU") :
+        self._handle = open(filename, mode)
         self._index = dict()
         self._alphabet = alphabet
         self._format = ""
@@ -69,20 +69,15 @@ class _IndexedSeqFileDict(object) :
         except KeyError :
             return d
 
+
 class SffDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to a Standard Flowgram Format (SFF) file."""
     def __init__(self, filename, alphabet) :
-        if False :
-            _IndexedSeqFileDict.__init__(self, filename, alphabet)
-        else :
-            self._handle = open(filename, "rb") #NOTE not rU mode!
-            self._index = dict()
-            self._alphabet = alphabet
+        _IndexedSeqFileDict.__init__(self, filename, alphabet, "r")
         handle = self._handle
         header_length, index_offset, index_length, number_of_reads, \
         self._flows_per_read = SeqIO.SffIO._sff_file_header(handle)
-        if index_offset and index_length :
-            print "Index %i, len %i" % (index_offset, index_length)
+        if index_offset and index_length:
             try :
                 #The fast way!
                 for name, offset in SeqIO.SffIO._sff_read_roche_index(handle) :
@@ -113,6 +108,7 @@ class SffDict(_IndexedSeqFileDict) :
         return SeqIO.SffIO._sff_read_seq_record(handle,
                                                 self._flows_per_read,
                                                 self._alphabet)
+
 
 class _SequentialSeqFileDict(_IndexedSeqFileDict) :
     """Subclass for easy cases (PRIVATE)."""
