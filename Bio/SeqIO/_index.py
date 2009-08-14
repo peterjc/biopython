@@ -69,6 +69,51 @@ class _IndexedSeqFileDict(object) :
         except KeyError :
             return d
 
+class SffDict(_IndexedSeqFileDict) :
+    """Indexed dictionary like access to a Standard Flowgram Format (SFF) file."""
+    def __init__(self, filename, alphabet) :
+        if False :
+            _IndexedSeqFileDict.__init__(self, filename, alphabet)
+        else :
+            self._handle = open(filename, "rb") #NOTE not rU mode!
+            self._index = dict()
+            self._alphabet = alphabet
+        handle = self._handle
+        header_length, index_offset, index_length, number_of_reads, \
+        self._flows_per_read = SeqIO.SffIO._sff_file_header(handle)
+        if index_offset and index_length :
+            print "Index %i, len %i" % (index_offset, index_length)
+            try :
+                #The fast way!
+                for name, offset in SeqIO.SffIO._sff_read_roche_index(handle) :
+                    self._record_key(name, offset)
+                assert len(self) == number_of_reads, \
+                       "Indexed %i records, expected %i" \
+                       % (len(self), number_of_reads)
+                return
+            except ValueError, err :
+                import warnings
+                warnings.warn("Could not parse the SFF index: %s" % err)
+                self._index = {} #reset in case partially populated
+                handle.seek(0)
+        else :
+            #TODO - Remove this debug warning?
+            import warnings
+            warnings.warn("No SFF index, doing it the slow way")
+        #Fall back on the slow way!
+        for name, offset in SeqIO.SffIO._sff_do_slow_index(handle) :
+            #print "%s -> %i" % (name, offset)
+            self._record_key(name, offset)
+        assert len(self) == number_of_reads, \
+               "Indexed %i records, expected %i" % (len(self), number_of_reads)
+
+    def __getitem__(self, key) :
+        handle = self._handle
+        handle.seek(self._index[key])
+        return SeqIO.SffIO._sff_read_seq_record(handle,
+                                                self._flows_per_read,
+                                                self._alphabet)
+
 class _SequentialSeqFileDict(_IndexedSeqFileDict) :
     """Subclass for easy cases (PRIVATE)."""
     def __init__(self, filename, alphabet, format, marker) :
@@ -162,6 +207,7 @@ _FormatToIndexedDict = {"embl" : EmblDict,
                         "fastq-illumina" : FastqIlluminaDict,
                         #"genbank" : GenBankDict,
                         #"gb" : GenBankDict, #alias of the above
+                        "sff" : SffDict,
                         "swiss" : SwissDict,
                         "qual" : QualDict
                         }

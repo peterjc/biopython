@@ -86,6 +86,7 @@ def _sff_do_slow_index(handle) :
     #Now on to the reads...
     read_header_fmt = '>2HI4H'
     read_header_size = struct.calcsize(read_header_fmt)
+    #NOTE - assuming flowgram_format==1, which means struct type H
     read_flow_fmt = ">%iH" % number_of_flows_per_read
     read_flow_size = struct.calcsize(read_flow_fmt)
     assert 1 == struct.calcsize(">B")
@@ -95,11 +96,12 @@ def _sff_do_slow_index(handle) :
     assert header_length == handle.tell()
     for read in range(number_of_reads) :
         record_offset = handle.tell()
+        assert record_offset%8 == 0
         #First the fixed header
         read_header_length, name_length, seq_len, clip_qual_left, \
         clip_qual_right, clip_adapter_left, clip_adapter_right \
             = struct.unpack(read_header_fmt, handle.read(read_header_size))
-        if read_header_length < 10 :
+        if read_header_length < 10 or read_header_length%8 != 0 :
             raise ValueError("Malformed read header, says length is %i" \
                              % read_header_length)
         #now the name and any padding (remainder of header)
@@ -110,14 +112,17 @@ def _sff_do_slow_index(handle) :
                              % padding)
         assert record_offset + read_header_length == handle.tell()
         #now the flowgram values, flowgram index, bases and qualities
-        #NOTE - assuming flowgram_format==1, which means struct type H
-        size = read_flow_size + seq_len*3
-        if size%8 > 0 :
-            size += (8 - size%8)
-            assert size%8 == 0
-        handle.seek(size,1) #or use read?
-        assert record_offset + read_header_length + size == handle.tell()
-        if read > 10 : break
+        size = read_flow_size + 3*seq_len
+        #handle.seek(size,1)
+        handle.read(size)
+        #now any padding...
+        padding = size%8
+        if padding :
+            padding = 8 - padding
+            if chr(0)*padding != handle.read(padding) :
+                raise ValueError("Post quality %i byte padding region contained data" \
+                                 % padding)
+        print read, name, record_offset
         yield name, record_offset
 
 #This is a generator function!
@@ -129,6 +134,7 @@ def _sff_read_roche_index(handle) :
     Note: There are a number of hard coded assumptions here (e.g. the read names are
     14 characters), some of which could be relaxed given some suitable example files.
     """
+    handle.seek(0)
     header_length, index_offset, index_length, number_of_reads, \
     number_of_flows_per_read = _sff_file_header(handle)
     #print "Index offset %i, length %i, reads %i" \
@@ -153,7 +159,8 @@ def _sff_read_roche_index(handle) :
                          "Got %i bytes" % (20 * number_of_reads, data_size))
     #print "XML block %i bytes, index data %i bytes" % (xml_size, data_size)
     #xml = handle.read(xml_size)
-    handle.seek(xml_size,1)
+    #handle.seek(xml_size,1)
+    handle.read(xml_size)
     #Now do the index...    
     fmt = ">14s6B"
     assert 20 == struct.calcsize(fmt)
@@ -161,18 +168,88 @@ def _sff_read_roche_index(handle) :
         data = handle.read(20)
         name, x0, off3, off2, off1, off0, x255 = struct.unpack(fmt, data)
         if x0 != 0 :
-            raise ValueError("Found $s instead of null at end of name for index entry %i" \
-                             % (hex(x0), read))
+            raise ValueError("Found %s instead of null at end of name for index entry %i,\n%s" \
+                             % (repr(x0), read, repr(data)))
         if x255 != 255 :
-            raise ValueError("Found $s instead of 0xff at end of index entry %i" \
-                             % (hex(x255), read))
+            raise ValueError("Found %s instead of 0xff at end of index entry %i,\n%s" \
+                             % (repr(x255), read, repr(data)))
         #TODO - Work out why struct doesn't do what I want with "L"
         offset = off0 + 255*off1 + 65025*off2 + 16581375*off3
-        assert header_length <= offset, offset
+        assert header_length <= offset <= index_offset, offset
+        #print read, name, offset
         yield name, offset
 
+def _sff_read_seq_record(handle, number_of_flows_per_read, alphabet,
+                         trim=False) :
+    """Parse the next read in the file, return data as a SeqRecord (PRIVATE)."""
+    #Now on to the reads...
+    #the read header format (fixed part):
+    #read_header_length     H
+    #name_length            H
+    #seq_len                I
+    #clip_qual_left         H
+    #clip_qual_right        H
+    #clip_adapter_left      H
+    #clip_adapter_right     H
+    #[rest of read header depends on the name length etc]
+    read_header_fmt = '>2HI4H'
+    read_header_size = struct.calcsize(read_header_fmt)
+    read_flow_fmt = ">%iH" % number_of_flows_per_read
+    read_flow_size = struct.calcsize(read_flow_fmt)
+
+    read_header_length, name_length, seq_len, clip_qual_left, \
+    clip_qual_right, clip_adapter_left, clip_adapter_right \
+        = struct.unpack(read_header_fmt, handle.read(read_header_size))
+    if clip_qual_left : clip_qual_left -= 1 #python counting
+    if clip_adapter_left : clip_adapter_left -= 1 #python counting
+    if read_header_length < 10 or read_header_length%8 != 0 :
+        raise ValueError("Malformed read header, says length is %i" \
+                         % read_header_length)
+    #now the name and any padding (remainder of header)
+    name = handle.read(name_length)
+    padding = read_header_length - read_header_size - name_length
+    if chr(0)*padding != handle.read(padding) :
+        raise ValueError("Post name %i byte padding region contained data" \
+                         % padding)
+    #now the flowgram values, flowgram index, bases and qualities
+    #NOTE - assuming flowgram_format==1, which means struct type H
+    flow_values = struct.unpack(read_flow_fmt, handle.read(read_flow_size))
+    temp_fmt = ">%iB" % seq_len # used for flow index and quals
+    flow_index = struct.unpack(temp_fmt, handle.read(seq_len))
+    seq = handle.read(seq_len)
+    quals = list(struct.unpack(temp_fmt, handle.read(seq_len)))
+    #now any padding...
+    padding = (read_flow_size + seq_len*3)%8
+    if padding :
+        padding = 8 - padding
+        if chr(0)*padding != handle.read(padding) :
+            raise ValueError("Post quality %i byte padding region contained data" \
+                             % padding)
+    #Now build a SeqRecord
+    if trim :
+        seq = seq[clip_qual_left:clip_qual_right].upper()
+        quals = quals[clip_qual_left:clip_qual_right]
+    else :
+        #This use of mixed case mimics the Roche SFF tool's FASTA output
+        seq = seq[:clip_qual_left].lower() + \
+              seq[clip_qual_left:clip_qual_right].upper() + \
+              seq[clip_qual_right:].lower()
+    record = SeqRecord(Seq(seq, alphabet),
+                       id=name,
+                       name=name,
+                       description="")
+    #Dirty trick to speed up this line:
+    #record.letter_annotations["phred_quality"] = quals
+    dict.__setitem__(record._per_letter_annotations,
+                     "phred_quality", quals)
+    #TODO - flow data
+    #TODO - adaptor clipping
+    #TODO - paired reads
+    #Return the record and then continue...
+    return record
+
 #This is a generator function!
-def SffIterator(handle, alphabet = generic_dna, trim=False) :
+def SffIterator(handle, alphabet=generic_dna, trim=False) :
     """Iterate over Standard Flowgram Format (SFF) reads (as SeqRecord objects).
 
     handle - input file, an SFF file, e.g. from Roche 454 sequencing.
@@ -208,57 +285,9 @@ def SffIterator(handle, alphabet = generic_dna, trim=False) :
     #of the reads. We can check that if we keep track of our position
     #in the file...
     for read in range(number_of_reads) :
-        #First the fixed header
-        read_header_length, name_length, seq_len, clip_qual_left, \
-        clip_qual_right, clip_adapter_left, clip_adapter_right \
-            = struct.unpack(read_header_fmt, handle.read(read_header_size))
-        if clip_qual_left : clip_qual_left -= 1 #python counting
-        if clip_adapter_left : clip_adapter_left -= 1 #python counting
-        if read_header_length < 10 :
-            raise ValueError("Malformed read header, says length is %i" \
-                             % read_header_length)
-        #now the name and any padding (remainder of header)
-        name = handle.read(name_length)
-        padding = read_header_length - read_header_size - name_length
-        if chr(0)*padding != handle.read(padding) :
-            raise ValueError("Post name %i byte padding region contained data" \
-                             % padding)
-        #now the flowgram values, flowgram index, bases and qualities
-        #NOTE - assuming flowgram_format==1, which means struct type H
-        flow_values = struct.unpack(read_flow_fmt, handle.read(read_flow_size))
-        temp_fmt = ">%iB" % seq_len # used for flow index and quals
-        flow_index = struct.unpack(temp_fmt, handle.read(seq_len))
-        seq = handle.read(seq_len)
-        quals = list(struct.unpack(temp_fmt, handle.read(seq_len)))
-        #now any padding...
-        padding = (read_flow_size + seq_len*3)%8
-        if padding :
-            padding = 8 - padding
-            if chr(0)*padding != handle.read(padding) :
-                raise ValueError("Post quality %i byte padding region contained data" \
-                                 % padding)
-        #Yield this read as a SeqRecord
-        if trim :
-            seq = seq[clip_qual_left:clip_qual_right].upper()
-            quals = quals[clip_qual_left:clip_qual_right]
-        else :
-            #This use of mixed case mimics the Roche SFF tool's FASTA output
-            seq = seq[:clip_qual_left].lower() + \
-                  seq[clip_qual_left:clip_qual_right].upper() + \
-                  seq[clip_qual_right:].lower()
-        record = SeqRecord(Seq(seq, alphabet),
-                           id=name,
-                           name=name,
-                           description="")
-        #Dirty trick to speed up this line:
-        #record.letter_annotations["phred_quality"] = quals
-        dict.__setitem__(record._per_letter_annotations,
-                         "phred_quality", quals)
-        #TODO - flow data
-        #TODO - adaptor clipping
-        #TODO - paired reads
-        #Return the record and then continue...
-        yield record
+        yield _sff_read_seq_record(handle,
+                                   number_of_flows_per_read,
+                                   alphabet, trim)
 
 #This is a generator function!
 def _SffTrimIterator(handle, alphabet = generic_dna) :
@@ -269,7 +298,9 @@ if __name__ == "__main__" :
     print "Running quick self test"
     filename = "../../Tests/Roche/E3MFGYR02_random_10_reads.sff"
     index1 = sorted(_sff_read_roche_index(open(filename)))
-    index2 = sorted(_sff_do_slow_index(open(filename)))
+    index2 = sorted(_sff_read_roche_index(open(filename, "rU"))) #works by luck here?
+    assert index1 == index2
+    index2 = sorted(_sff_do_slow_index(open(filename, "rB"))) #should work?
     assert index1 == index2
                     
     sff = list(SffIterator(open(filename)))
