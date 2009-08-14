@@ -24,11 +24,10 @@ def check_convert(in_filename, in_format, out_format, alphabet=None) :
     records2 = list(SeqIO.parse(handle, out_format, alphabet))
     compare_records(records, records2)
     #Finally, use the convert fuction, and check that agrees:
-    handle = StringIO()
-    SeqIO.convert(in_filename, in_format, handle, out_format, alphabet)
-    handle.seek(0)
-    records3 = list(SeqIO.parse(handle,out_format))
-    compare_records(records2, records3)
+    handle2 = StringIO()
+    SeqIO.convert(in_filename, in_format, handle2, out_format, alphabet)
+    #We could re-parse this, but it is simpler and stricter:
+    assert handle.getvalue() == handle2.getvalue()
 
 #TODO - move this to a shared test module...
 def compare_record(old, new, truncate=None) :
@@ -106,12 +105,8 @@ def compare_records(old_list, new_list, truncate_qual=None) :
             return False
     return True
 
-class ConvertFunction(unittest.TestCase) :
+class ConvertTests(unittest.TestCase) :
     """Cunning unit test where methods are added at run time."""
-    def multi_check(self, filename, format, alphabet) :
-        for (in_format, out_format) in converter_dict :
-            if in_format != format : continue
-            check_convert(filename, in_format, out_format, alphabet)
     def simple_check(self, filename, in_format, out_format, alphabet) :
         check_convert(filename, in_format, out_format, alphabet)
 
@@ -119,6 +114,7 @@ tests = [
     ("Quality/example.fastq", "fastq", None),
     ("Quality/example.fastq", "fastq-sanger", generic_dna),
     ("Quality/tricky.fastq", "fastq", generic_nucleotide),
+    #("Quality/sanger_93.fastq", "fastq-sanger", None),
     ("Quality/sanger_faked.fastq", "fastq-sanger", generic_dna),
     ("Quality/solexa_faked.fastq", "fastq-solexa", generic_dna),
     ("Quality/illumina_faked.fastq", "fastq-illumina", generic_dna),
@@ -134,7 +130,7 @@ for filename, format, alphabet in tests :
             f = lambda x : x.simple_check(fn, fmt1, fmt2, alpha)
             f.__doc__ = "Convert %s from %s to %s" % (fn, fmt1, fmt2)
             return f
-        setattr(ConvertFunction, "test_%s_%s_to_%s" \
+        setattr(ConvertTests, "test_%s_%s_to_%s" \
                 % (filename.replace("/","_").replace(".","_"), in_format, out_format),
                 funct(filename, in_format, out_format, alphabet))
     del funct

@@ -118,27 +118,8 @@ def _fastq_solexa_convert_fastq_solexa(in_handle, out_handle, alphabet=None) :
 
     Useful for removing line wrapping and the redundant second identifier
     on the plus lines. Will check also check the quality string is valid.
-
     Avoids creating SeqRecord and Seq objects in order to speed up this
     conversion.
-
-    >>> from StringIO import StringIO
-    >>> handle = StringIO("")
-    >>> print _fastq_solexa_convert_fastq_solexa(open("Quality/solexa_faked.fastq", "rU"),
-    ...                                          handle)
-    1
-    >>> new = handle.getvalue()
-
-    Versus:
-
-    >>> from Bio import SeqIO
-    >>> records = SeqIO.parse(open("Quality/solexa_faked.fastq", "rU"), "fastq-solexa")
-    >>> handle = StringIO("")
-    >>> print SeqIO.write(records, handle, "fastq-solexa")
-    1
-    >>> old = handle.getvalue()
-    >>> new == old
-    True
     """
     #Map unexpected chars to null
     mapping = "".join([chr(0) for ascii in range(0,59)] \
@@ -152,27 +133,8 @@ def _fastq_illumina_convert_fastq_illumina(in_handle, out_handle, alphabet=None)
 
     Useful for removing line wrapping and the redundant second identifier
     on the plus lines. Will check also check the quality string is valid.
-
     Avoids creating SeqRecord and Seq objects in order to speed up this
     conversion.
-
-    >>> from StringIO import StringIO
-    >>> handle = StringIO("")
-    >>> print _fastq_illumina_convert_fastq_illumina(open("Quality/illumina_faked.fastq", "rU"),
-    ...                                              handle)
-    1
-    >>> new = handle.getvalue()
-
-    Versus:
-
-    >>> from Bio import SeqIO
-    >>> records = SeqIO.parse(open("Quality/illumina_faked.fastq", "rU"), "fastq-illumina")
-    >>> handle = StringIO("")
-    >>> print SeqIO.write(records, handle, "fastq-illumina")
-    1
-    >>> old = handle.getvalue()
-    >>> new == old
-    True
     """
     #Map unexpected chars to null
     mapping = "".join([chr(0) for ascii in range(0,64)] \
@@ -186,24 +148,6 @@ def _fastq_illumina_convert_fastq_sanger(in_handle, out_handle, alphabet=None) :
 
     Avoids creating SeqRecord and Seq objects in order to speed up this
     conversion.
-
-    >>> from StringIO import StringIO
-    >>> handle = StringIO("")
-    >>> print _fastq_illumina_convert_fastq_sanger(open("Quality/illumina_faked.fastq", "rU"),
-    ...                                            handle)
-    1
-    >>> new = handle.getvalue()
-
-    Versus:
-
-    >>> from Bio import SeqIO
-    >>> records = SeqIO.parse(open("Quality/illumina_faked.fastq", "rU"), "fastq-illumina")
-    >>> handle = StringIO("")
-    >>> print SeqIO.write(records, handle, "fastq")
-    1
-    >>> old = handle.getvalue()
-    >>> new == old
-    True
     """
     #Map unexpected chars to null
     mapping = "".join([chr(0) for ascii in range(0,64)] \
@@ -218,24 +162,6 @@ def _fastq_sanger_convert_fastq_illumina(in_handle, out_handle, alphabet=None) :
     Avoids creating SeqRecord and Seq objects in order to speed up this
     conversion. Will issue a warning if the scores had to be truncated at 62
     (maximum possible in the Illumina 1.3+ FASTQ format)
-
-    >>> from StringIO import StringIO
-    >>> handle = StringIO("")
-    >>> print _fastq_sanger_convert_fastq_illumina(open("Quality/example.fastq", "rU"),
-    ...                                            handle)
-    3
-    >>> new = handle.getvalue()
-
-    Versus:
-
-    >>> from Bio import SeqIO
-    >>> records = SeqIO.parse(open("Quality/example.fastq", "rU"), "fastq")
-    >>> handle = StringIO("")
-    >>> print SeqIO.write(records, handle, "fastq-illumina")
-    3
-    >>> old = handle.getvalue()
-    >>> new == old
-    True
     """
     #Map unexpected chars to null
     trunc_char = chr(1)
@@ -252,24 +178,6 @@ def _fastq_solexa_convert_fastq_sanger(in_handle, out_handle, alphabet=None) :
 
     Avoids creating SeqRecord and Seq objects in order to speed up this
     conversion.
-
-    >>> from StringIO import StringIO
-    >>> handle = StringIO("")
-    >>> print _fastq_solexa_convert_fastq_sanger(open("Quality/solexa_faked.fastq", "rU"),
-    ...                                          handle)
-    1
-    >>> new = handle.getvalue()
-
-    Versus:
-
-    >>> from Bio import SeqIO
-    >>> records = SeqIO.parse(open("Quality/solexa_faked.fastq", "rU"), "fastq-solexa")
-    >>> handle = StringIO("")
-    >>> print SeqIO.write(records, handle, "fastq")
-    1
-    >>> old = handle.getvalue()
-    >>> new == old
-    True
     """
     #Map unexpected chars to null
     from Bio.SeqIO.QualityIO import phred_quality_from_solexa
@@ -286,24 +194,6 @@ def _fastq_sanger_convert_fastq_solexa(in_handle, out_handle, alphabet=None) :
     Avoids creating SeqRecord and Seq objects in order to speed up this
     conversion. Will issue a warning if the scores had to be truncated at 62
     (maximum possible in the Solexa FASTQ format)
-
-    >>> from StringIO import StringIO
-    >>> handle = StringIO("")
-    >>> print _fastq_sanger_convert_fastq_solexa(open("Quality/sanger_faked.fastq", "rU"),
-    ...                                          handle)
-    1
-    >>> new = handle.getvalue()
-
-    Versus:
-
-    >>> from Bio import SeqIO
-    >>> records = SeqIO.parse(open("Quality/sanger_faked.fastq", "rU"), "fastq")
-    >>> handle = StringIO("")
-    >>> print SeqIO.write(records, handle, "fastq-solexa")
-    1
-    >>> old = handle.getvalue()
-    >>> new == old
-    True
     """
     #Map unexpected chars to null
     from Bio.SeqIO.QualityIO import solexa_quality_from_phred
@@ -323,24 +213,6 @@ def _fastq_solexa_convert_fastq_illumina(in_handle, out_handle, alphabet=None) :
 
     Avoids creating SeqRecord and Seq objects in order to speed up this
     conversion.
-
-    >>> from StringIO import StringIO
-    >>> handle = StringIO("")
-    >>> print _fastq_solexa_convert_fastq_illumina(open("Quality/solexa_faked.fastq", "rU"),
-    ...                                            handle)
-    1
-    >>> new = handle.getvalue()
-
-    Versus:
-
-    >>> from Bio import SeqIO
-    >>> records = SeqIO.parse(open("Quality/solexa_faked.fastq", "rU"), "fastq-solexa")
-    >>> handle = StringIO("")
-    >>> print SeqIO.write(records, handle, "fastq-illumina")
-    1
-    >>> old = handle.getvalue()
-    >>> new == old
-    True
     """
     #Map unexpected chars to null
     from Bio.SeqIO.QualityIO import phred_quality_from_solexa
@@ -356,24 +228,6 @@ def _fastq_illumina_convert_fastq_solexa(in_handle, out_handle, alphabet=None) :
 
     Avoids creating SeqRecord and Seq objects in order to speed up this
     conversion.
-
-    >>> from StringIO import StringIO
-    >>> handle = StringIO("")
-    >>> print _fastq_illumina_convert_fastq_solexa(open("Quality/illumina_faked.fastq", "rU"),
-    ...                                            handle)
-    1
-    >>> new = handle.getvalue()
-
-    Versus:
-
-    >>> from Bio import SeqIO
-    >>> records = SeqIO.parse(open("Quality/illumina_faked.fastq", "rU"), "fastq-illumina")
-    >>> handle = StringIO("")
-    >>> print SeqIO.write(records, handle, "fastq-solexa")
-    1
-    >>> old = handle.getvalue()
-    >>> new == old
-    True
     """
     #Map unexpected chars to null
     from Bio.SeqIO.QualityIO import solexa_quality_from_phred
@@ -390,15 +244,7 @@ def _fastq_convert_fasta(in_handle, out_handle, alphabet=None) :
     """Fast FASTQ to FASTA conversion (PRIVATE).
 
     Avoids dealing with the FASTQ quality encoding, and creating SeqRecord and
-    Seq objects in order to speed up this conversion. For example,
-
-    >>> expected = open("Quality/example.fasta", "ru").read()
-    >>> from StringIO import StringIO
-    >>> handle = StringIO("")
-    >>> converted = _fastq_convert_fasta(open("Quality/example.fastq", "rU"),
-    ...                                  handle)
-    >>> expected == handle.getvalue()
-    True
+    Seq objects in order to speed up this conversion.
 
     NOTE - This does NOT check the characters used in the FASTQ quality string are valid!
     """
@@ -415,6 +261,9 @@ def _fastq_convert_fasta(in_handle, out_handle, alphabet=None) :
 
 def _fastq_convert_tab(in_handle, out_handle, alphabet=None) :
     """Fast FASTQ to simple tabbed conversion (PRIVATE).
+
+    Avoids dealing with the FASTQ quality encoding, and creating SeqRecord and
+    Seq objects in order to speed up this conversion.
 
     NOTE - This does NOT check the characters used in the FASTQ quality string are valid!
     """
