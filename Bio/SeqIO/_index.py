@@ -152,6 +152,13 @@ class PirDict(_SequentialSeqFileDict) :
     def __init__(self, filename, alphabet) :
         _SequentialSeqFileDict.__init__(self, filename, alphabet, "pir", ">..;")
 
+class PhdDict(_SequentialSeqFileDict) :
+    """Indexed dictionary like access to a PHD (PHRED) file."""
+    def __init__(self, filename, alphabet) :
+        _SequentialSeqFileDict.__init__(self, filename, alphabet, "phd",
+                                        "BEGIN_SEQUENCE")
+
+
 
 #######################################
 # Fiddly indexers: GenBank, EMBL, ... #
@@ -302,6 +309,7 @@ _FormatToIndexedDict = {"embl" : EmblDict,
                         "fastq-illumina" : FastqIlluminaDict,
                         "genbank" : GenBankDict,
                         "gb" : GenBankDict, #alias of the above
+                        "phd" : PhdDict,
                         "pir" : PirDict,
                         "sff" : SffDict,
                         "swiss" : SwissDict,
