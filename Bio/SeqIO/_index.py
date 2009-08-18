@@ -328,11 +328,27 @@ class _FastqSeqFileDict(_IndexedSeqFileDict) :
                 raise ValueError("Problem with FASTQ @ line:\n%s" % repr(line))
             #This record seems OK (so far)
             self._record_key(line[1:].rstrip().split(None,1)[0],pos)
-            handle.readline() #seq
-            line = handle.readline()
-            if line[0] != "+" :
-                raise ValueError("Problem with FASTQ + line:\n%s" % repr(line))
-            handle.readline() #qual
+            #Find the seq line(s)
+            seq_len = 0
+            while True :
+                line = handle.readline()
+                if not line :
+                    raise ValueError("Premature end of file in seq section")
+                if line.startswith("+") : break
+                seq_len += len(line.strip())
+            #assert line[0]=="+"
+            #Find the qual line(s)
+            qual_len = 0
+            while True :
+                line = handle.readline()
+                if not line :
+                    raise ValueError("Premature end of file in qual section")
+                qual_len += len(line.strip())
+                if seq_len == qual_len :
+                    break
+                elif seq_len < qual_len :
+                    raise ValueError("Problem with quality section")
+            #assert seq_len == qual_len
 
 class FastqSangerDict(_FastqSeqFileDict) :
     """Indexed dictionary like access to a standard Sanger FASTQ file."""

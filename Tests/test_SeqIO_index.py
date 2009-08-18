@@ -30,8 +30,7 @@ tests = [
     ("Ace/seq.cap.ace", "ace", generic_dna),
     ("Quality/example.fastq", "fastq", None),
     ("Quality/example.fastq", "fastq-sanger", generic_dna),
-    #Can't yet index line wrapped FASTQ files...
-    #("Quality/tricky.fastq", "fastq", generic_nucleotide),
+    ("Quality/tricky.fastq", "fastq", generic_nucleotide),
     ("Quality/sanger_faked.fastq", "fastq-sanger", generic_dna),
     ("Quality/solexa_faked.fastq", "fastq-solexa", generic_dna),
     ("Quality/illumina_faked.fastq", "fastq-illumina", generic_dna),
