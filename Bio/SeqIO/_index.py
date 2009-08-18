@@ -313,8 +313,7 @@ class _FastqSeqFileDict(_IndexedSeqFileDict) :
     """Subclass for easy cases (PRIVATE).
 
     With FASTQ the records all start with a "@" line, but so too can some
-    quality lines. For an initial implementation, this will only deal with
-    non-line-wrapped FASTQ files (four lines per record).
+    quality lines. Note this will cope with line-wrapped FASTQ files.
     """
     def __init__(self, filename, alphabet, fastq_format) :
         _IndexedSeqFileDict.__init__(self, filename, alphabet)
