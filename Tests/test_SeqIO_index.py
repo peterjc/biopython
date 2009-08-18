@@ -6,9 +6,8 @@
 """Additional unit tests for Bio.SeqIO.convert(...) function."""
 import os
 import unittest
-from Bio.Seq import UnknownSeq
 from Bio import SeqIO
-from Bio.SeqIO import QualityIO
+from Bio.SeqIO._index import _FormatToIndexedDict
 from Bio.Alphabet import generic_protein, generic_nucleotide, generic_dna
 
 class IndexDictTests(unittest.TestCase) :
@@ -58,6 +57,7 @@ tests = [
     ("Roche/E3MFGYR02_random_10_reads.sff", "sff", generic_dna),
     ]
 for filename, format, alphabet in tests :
+    assert format in _FormatToIndexedDict
     def funct(fn,fmt,alpha) :
         f = lambda x : x.simple_check(fn, fmt, alpha)
         f.__doc__ = "Index %s file %s" % (fmt, fn)
