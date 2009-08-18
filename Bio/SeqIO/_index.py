@@ -320,35 +320,42 @@ class _FastqSeqFileDict(_IndexedSeqFileDict) :
         _IndexedSeqFileDict.__init__(self, filename, alphabet)
         self._format = fastq_format
         handle = self._handle
-        while True :
-            pos = handle.tell()
-            line = handle.readline()
-            if not line : break #End of file
-            if line[0] != "@" :
-                raise ValueError("Problem with FASTQ @ line:\n%s" % repr(line))
+        pos = handle.tell()
+        line = handle.readline()
+        if not line :
+            #Empty file!
+            return
+        if line[0] != "@" :
+            raise ValueError("Problem with FASTQ @ line:\n%s" % repr(line))
+        while line :
+            #assert line[0]=="@"
             #This record seems OK (so far)
             self._record_key(line[1:].rstrip().split(None,1)[0],pos)
             #Find the seq line(s)
             seq_len = 0
-            while True :
+            while line :
                 line = handle.readline()
-                if not line :
-                    raise ValueError("Premature end of file in seq section")
                 if line.startswith("+") : break
                 seq_len += len(line.strip())
+            if not line :
+                raise ValueError("Premature end of file in seq section")
             #assert line[0]=="+"
             #Find the qual line(s)
             qual_len = 0
-            while True :
-                line = handle.readline()
-                if not line :
-                    raise ValueError("Premature end of file in qual section")
-                qual_len += len(line.strip())
+            while line :
                 if seq_len == qual_len :
+                    #Should be end of record...
+                    pos = handle.tell()
+                    line = handle.readline()
+                    if line and line[0]!="@" :
+                        ValueError("Problem with line %s" % repr(line))
                     break
-                elif seq_len < qual_len :
-                    raise ValueError("Problem with quality section")
-            #assert seq_len == qual_len
+                else :
+                    line = handle.readline()
+                    qual_len += len(line.strip())
+            if seq_len != qual_len :
+                raise ValueError("Problem with quality section")
+        #print "EOF"
 
 class FastqSangerDict(_FastqSeqFileDict) :
     """Indexed dictionary like access to a standard Sanger FASTQ file."""
