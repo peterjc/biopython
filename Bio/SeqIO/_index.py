@@ -43,24 +43,39 @@ class _IndexedSeqFileDict(object) :
         #Now scan it in a subclassed method, and set the format!
 
     def _record_key(self, key, seek_position) :
+        """Used by subclasses to record file offsets for keys (PRIVATE).
+
+        This will raise a ValueError if a key (record id string) occurs
+        more than once.
+        """
         if key in self._index :
             raise ValueError("Duplicate key '%s'" % key)
         else :
             self._index[key] = seek_position
 
     def keys(self) :
+        """List of the keys (id strings)."""
         return self._index.keys()
 
     def __len__(self) :
+        """Number of entries."""
         return len(self._index)
 
     def __iter__(self) :
+        """Iterate over the keys (id strings)."""
         return iter(self._index)
 
+    def iteritems(self) :
+        """Iterate over the (id strings, SeqRecord) items."""
+        for key in self._index :
+            yield key, self[key]
+
     def __contains__(self, value) :
+        """D.__contains__(k) -> True if D has a key k, else False."""
         return value in self._index
 
     def __getitem__(self, key) :
+        """x.__getitem__(y) <==> x[y]"""
         #For non-trivial file formats this must be over-ridden in the subclass
         handle = self._handle
         handle.seek(self._index[key])
@@ -69,6 +84,7 @@ class _IndexedSeqFileDict(object) :
         return record
 
     def get(self, k, d=None) :
+        """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None."""
         try :
             return self[k]
         except KeyError :

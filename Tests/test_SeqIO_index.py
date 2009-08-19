@@ -6,6 +6,7 @@
 """Additional unit tests for Bio.SeqIO.convert(...) function."""
 import os
 import unittest
+from Bio.SeqRecord import SeqRecord
 from Bio import SeqIO
 from Bio.SeqIO._index import _FormatToIndexedDict
 from Bio.Alphabet import generic_protein, generic_nucleotide, generic_dna
@@ -22,6 +23,20 @@ class IndexDictTests(unittest.TestCase) :
         for key in id_list :
             self.assert_(key in rec_dict)
             self.assertEqual(key, rec_dict[key].id)
+            self.assertEqual(key, rec_dict.get(key).id)
+        #Check non-existant keys,
+        try :
+            rec = rec_dict[chr(0)]
+            assert False, "Accessing a non-existant key should fail"
+        except KeyError :
+            pass
+        assert rec_dict.get(chr(0)) is None
+        assert chr(1) == rec_dict.get(chr(0), chr(1))
+        #Now check iteritems...
+        for key, rec in rec_dict.iteritems() :
+            assert key in id_list
+            assert isinstance(rec, SeqRecord)
+            assert rec.id == key
             
 tests = [
     ("Ace/contig1.ace", "ace", generic_dna),
