@@ -128,15 +128,14 @@ def _sff_do_slow_index(handle) :
     if handle.tell() % 8 != 0 :
         raise ValueError("After scanning reads, did not end on a multiple of 8")
 
-#This is a generator function!
-def _sff_read_roche_index(handle) :
-    """Reads any existing Roche style read index provided in the SFF file (PRIVATE).
+def _sff_find_roche_index(handle) :
+    """Locate any existing Roche style XML meta data and read index (PRIVATE).
 
-    Will use the handle seek/tell functions.
+    Makes a number of hard coded assumptions based on reverse engineered SFF
+    files from Roche 454 machines.
 
-    Note: There are a number of hard coded assumptions here (e.g. the read names are
-    14 characters), some of which could be relaxed given some suitable example files.
-    """
+    Returns a tuple of read count, SFF "index" offset and size, XML offset and
+    size, and the actual read index offset and size."""    
     handle.seek(0)
     header_length, index_offset, index_length, number_of_reads, \
     number_of_flows_per_read = _sff_file_header(handle)
@@ -148,22 +147,48 @@ def _sff_read_roche_index(handle) :
     #Now jump to the header...
     handle.seek(index_offset)
     fmt = ">I4BLL"
+    fmt_size = struct.calcsize(fmt)
     magic_number, ver0, ver1, ver2, ver3, xml_size, data_size \
-                  = struct.unpack(fmt, handle.read(struct.calcsize(fmt)))
+                  = struct.unpack(fmt, handle.read(fmt_size))
     if magic_number != 778921588 :
         raise ValueError("Wrong magic number in SFF index header")
     if (ver0, ver1, ver2, ver3) != (49,46,48,48) :
         raise ValueError("Unsupported version in index header, %i.%i.%i.%i" \
                          % (ver0, ver1, ver2, ver3))
-    if index_length != struct.calcsize(fmt) + xml_size + data_size :
+    if index_length != fmt_size + xml_size + data_size :
         raise ValueError("Problem understanding index header")
     if data_size != 20 * number_of_reads :
         raise ValueError("Expect index data block of %i bytes (20 bytes per read). "
                          "Got %i bytes" % (20 * number_of_reads, data_size))
-    #print "XML block %i bytes, index data %i bytes" % (xml_size, data_size)
-    #xml = handle.read(xml_size)
-    handle.seek(xml_size,1)
-    #Now do the index...    
+    return number_of_reads, header_length, \
+           index_offset, index_length, \
+           index_offset + fmt_size, xml_size, \
+           index_offset + fmt_size + xml_size, data_size
+
+def _sff_read_roche_index_xml(handle) :
+    """Reads any existing Roche style XML meta data in the SFF "index" (PRIVATE).
+
+    Will use the handle seek/tell functions. Returns a string.
+    """
+    number_of_reads, header_length, index_offset, index_length, xml_offset, \
+    xml_size, read_index_offset, read_index_size = _sff_find_roche_index(handle)
+    handle.seek(xml_offset)
+    return handle.read(xml_size)
+
+
+#This is a generator function!
+def _sff_read_roche_index(handle) :
+    """Reads any existing Roche style read index provided in the SFF file (PRIVATE).
+
+    Will use the handle seek/tell functions.
+
+    Note: There are a number of hard coded assumptions here (e.g. the read names are
+    14 characters), some of which could be relaxed given some suitable example files.
+    """
+    number_of_reads, header_length, index_offset, index_length, xml_offset, \
+    xml_size, read_index_offset, read_index_size = _sff_find_roche_index(handle)
+    #Now parse the read index...    
+    handle.seek(read_index_offset)
     fmt = ">14s6B"
     assert 20 == struct.calcsize(fmt)
     for read in range(number_of_reads) :
@@ -318,6 +343,8 @@ if __name__ == "__main__" :
     sff = list(SffIterator(open(filename)))
     sff_trim = list(SffIterator(open(filename), trim=True))
 
+    print _sff_read_roche_index_xml(open(filename))
+
     from Bio import SeqIO
     filename = "../../Tests/Roche/E3MFGYR02_random_10_reads_no_trim.fasta"
     fasta_no_trim = list(SeqIO.parse(open(filename,"rU"), "fasta"))
@@ -342,4 +369,5 @@ if __name__ == "__main__" :
         assert s.id == sT.id == fT.id == qT.id
         assert str(sT.seq) == str(fT.seq)
         assert sT.letter_annotations["phred_quality"] == qT.letter_annotations["phred_quality"]
+
     print "Done"

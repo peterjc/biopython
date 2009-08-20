@@ -26,7 +26,7 @@ temp lookup file might be one idea.
 import re
 from Bio import SeqIO
 
-class _IndexedSeqFileDict(object) :
+class _IndexedSeqFileDict(dict) :
     """Read only dictionary interface to a sequential sequence file.
 
     Keeps the keys in memory, reads the file to access entries as
@@ -34,45 +34,117 @@ class _IndexedSeqFileDict(object) :
     with the Bio.SeqIO.to_dict() function, duplicate keys (record
     identifiers) are not allowed. If this happens, a ValueError
     exception is raised.
+
+    Note that this dictionary is essentially read only. You cannot
+    add or change values, pop values, nor clear the dictionary.
     """
     def __init__(self, filename, alphabet, mode="rU") :
+        dict.__init__(self) #init as empty dict!
         self._handle = open(filename, mode)
-        self._index = dict()
         self._alphabet = alphabet
         self._format = ""
         #Now scan it in a subclassed method, and set the format!
 
+    def __repr__(self) :
+        return "SeqIO.indexed_dict(%s, %s, %s)" \
+               % (self._handle.name, self._format, self._alphabet)
+
+    def __str__(self) :
+        if self :
+            return "{%s : SeqRecord(...), ...}" % repr(self.keys()[0])
+        else :
+            return "{}"
+
     def _record_key(self, key, seek_position) :
-        if key in self._index :
+        """Used by subclasses to record file offsets for keys (PRIVATE).
+
+        This will raise a ValueError if a key (record id string) occurs
+        more than once.
+        """
+        if key in self :
             raise ValueError("Duplicate key '%s'" % key)
         else :
-            self._index[key] = seek_position
+            dict.__setitem__(self, key, seek_position)
 
-    def keys(self) :
-        return self._index.keys()
+    def values(self) :
+        """Would be a list of the SeqRecord objects, but not implemented.
 
-    def __len__(self) :
-        return len(self._index)
+        In general you can be indexing very very large files, with millions
+        of sequences. Loading all these into memory at once as SeqRecord
+        ojbects would (probably) use up all the RAM. Therefore we simply
+        don't support this dictionary method.
+        """
+        raise NotImplementedError("Due to memory concerns, when indexing a "
+                                  "sequence file you cannot access all the "
+                                  "records at once.")
 
-    def __iter__(self) :
-        return iter(self._index)
+    def items(self):
+        """Would be a list of the (key, SeqRecord) tuples, but not implemented.
 
-    def __contains__(self, value) :
-        return value in self._index
+        In general you can be indexing very very large files, with millions
+        of sequences. Loading all these into memory at once as SeqRecord
+        ojbects would (probably) use up all the RAM. Therefore we simply
+        don't support this dictionary method.
+        """
+        raise NotImplementedError("Due to memory concerns, when indexing a "
+                                  "sequence file you cannot access all the "
+                                  "records at once.")
+
+    def iteritems(self) :
+        """Iterate over the (id strings, SeqRecord) items."""
+        for key in self.__iter__() :
+            yield key, self.__getitem__(key)
 
     def __getitem__(self, key) :
+        """x.__getitem__(y) <==> x[y]"""
         #For non-trivial file formats this must be over-ridden in the subclass
         handle = self._handle
-        handle.seek(self._index[key])
+        handle.seek(dict.__getitem__(self, key))
         record = SeqIO.parse(handle, self._format, self._alphabet).next()
-        assert record.id == key, "Requested key %s, found record.id %s" % (key, record.id)
+        assert record.id == key, \
+               "Requested key %s, found record.id %s" % (key, record.id)
         return record
 
     def get(self, k, d=None) :
+        """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None."""
         try :
-            return self[k]
+            return self.__getitem__(k)
         except KeyError :
             return d
+
+    def __setitem__(self, key, value) :
+        """Would allow setting or replacing records, but not implemented."""
+        raise NotImplementedError("An indexed a sequence file is read only.")
+    
+    def update(self, **kwargs) :
+        """Would allow adding more values, but not implemented."""
+        raise NotImplementedError("An indexed a sequence file is read only.")
+
+    
+    def pop(self, key, default=None) :
+        """Would remove specified record, but not implemented."""
+        raise NotImplementedError("An indexed a sequence file is read only.")
+    
+    def popitem(self) :
+        """Would remove and return a SeqRecord, but not implemented."""
+        raise NotImplementedError("An indexed a sequence file is read only.")
+
+    
+    def clear(self) :
+        """Would clear dictionary, but not implemented."""
+        raise NotImplementedError("An indexed a sequence file is read only.")
+
+    def fromkeys(self, keys, value=None) :
+        """A dictionary method which we don't implement."""
+        raise NotImplementedError("An indexed a sequence file doesn't "
+                                  "support this.")
+
+    def copy(self) :
+        """A dictionary method which we don't implement."""
+        raise NotImplementedError("An indexed a sequence file doesn't "
+                                  "support this.")
+
+
 
 ####################
 # Special indexers #
@@ -112,7 +184,7 @@ class SffDict(_IndexedSeqFileDict) :
 
     def __getitem__(self, key) :
         handle = self._handle
-        handle.seek(self._index[key])
+        handle.seek(dict.__getitem__(self, key))
         record = SeqIO.SffIO._sff_read_seq_record(handle,
                                                   self._flows_per_read,
                                                   self._alphabet)
@@ -313,26 +385,48 @@ class _FastqSeqFileDict(_IndexedSeqFileDict) :
     """Subclass for easy cases (PRIVATE).
 
     With FASTQ the records all start with a "@" line, but so too can some
-    quality lines. For an initial implementation, this will only deal with
-    non-line-wrapped FASTQ files (four lines per record).
+    quality lines. Note this will cope with line-wrapped FASTQ files.
     """
     def __init__(self, filename, alphabet, fastq_format) :
         _IndexedSeqFileDict.__init__(self, filename, alphabet)
         self._format = fastq_format
         handle = self._handle
-        while True :
-            pos = handle.tell()
-            line = handle.readline()
-            if not line : break #End of file
-            if line[0] != "@" :
-                raise ValueError("Problem with FASTQ @ line:\n%s" % repr(line))
+        pos = handle.tell()
+        line = handle.readline()
+        if not line :
+            #Empty file!
+            return
+        if line[0] != "@" :
+            raise ValueError("Problem with FASTQ @ line:\n%s" % repr(line))
+        while line :
+            #assert line[0]=="@"
             #This record seems OK (so far)
             self._record_key(line[1:].rstrip().split(None,1)[0],pos)
-            handle.readline() #seq
-            line = handle.readline()
-            if line[0] != "+" :
-                raise ValueError("Problem with FASTQ + line:\n%s" % repr(line))
-            handle.readline() #qual
+            #Find the seq line(s)
+            seq_len = 0
+            while line :
+                line = handle.readline()
+                if line.startswith("+") : break
+                seq_len += len(line.strip())
+            if not line :
+                raise ValueError("Premature end of file in seq section")
+            #assert line[0]=="+"
+            #Find the qual line(s)
+            qual_len = 0
+            while line :
+                if seq_len == qual_len :
+                    #Should be end of record...
+                    pos = handle.tell()
+                    line = handle.readline()
+                    if line and line[0]!="@" :
+                        ValueError("Problem with line %s" % repr(line))
+                    break
+                else :
+                    line = handle.readline()
+                    qual_len += len(line.strip())
+            if seq_len != qual_len :
+                raise ValueError("Problem with quality section")
+        #print "EOF"
 
 class FastqSangerDict(_FastqSeqFileDict) :
     """Indexed dictionary like access to a standard Sanger FASTQ file."""

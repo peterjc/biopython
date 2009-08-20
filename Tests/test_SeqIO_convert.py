@@ -3,7 +3,7 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 
-"""Additional unit tests for Bio.SeqIO.convert(...) function."""
+"""Unit tests for Bio.SeqIO.convert(...) function."""
 import os
 import unittest
 import warnings

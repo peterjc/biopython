@@ -6,9 +6,9 @@
 """Additional unit tests for Bio.SeqIO.convert(...) function."""
 import os
 import unittest
-from Bio.Seq import UnknownSeq
+from Bio.SeqRecord import SeqRecord
 from Bio import SeqIO
-from Bio.SeqIO import QualityIO
+from Bio.SeqIO._index import _FormatToIndexedDict
 from Bio.Alphabet import generic_protein, generic_nucleotide, generic_dna
 
 class IndexDictTests(unittest.TestCase) :
@@ -20,9 +20,35 @@ class IndexDictTests(unittest.TestCase) :
         self.assertEqual(set(id_list), set(rec_dict.keys()))
         #This is redundant, I just want to make sure len works:
         self.assertEqual(len(id_list), len(rec_dict))
+        #Make sure boolean evaluation works
+        self.assertEqual(bool(id_list), bool(rec_dict))
         for key in id_list :
             self.assert_(key in rec_dict)
             self.assertEqual(key, rec_dict[key].id)
+            self.assertEqual(key, rec_dict.get(key).id)
+        #Check non-existant keys,
+        try :
+            rec = rec_dict[chr(0)]
+            raise ValueError("Accessing a non-existant key should fail")
+        except KeyError :
+            pass
+        self.assertEqual(rec_dict.get(chr(0)), None)
+        self.assertEqual(rec_dict.get(chr(0), chr(1)), chr(1))
+        #Now check iteritems...
+        for key, rec in rec_dict.iteritems() :
+            self.assert_(key in id_list)
+            self.assert_(isinstance(rec, SeqRecord))
+            self.assertEqual(rec.id, key)
+        #Now check non-defined methods...
+        self.assertRaises(NotImplementedError, rec_dict.values)
+        self.assertRaises(NotImplementedError, rec_dict.popitem)
+        self.assertRaises(NotImplementedError, rec_dict.pop, chr(0))
+        self.assertRaises(NotImplementedError, rec_dict.pop, chr(0), chr(1))
+        self.assertRaises(NotImplementedError, rec_dict.clear)
+        self.assertRaises(NotImplementedError, rec_dict.__setitem__, "X", None)
+        self.assertRaises(NotImplementedError, rec_dict.copy)
+        self.assertRaises(NotImplementedError, rec_dict.fromkeys, [])
+        #Done
             
 tests = [
     ("Ace/contig1.ace", "ace", generic_dna),
@@ -30,8 +56,7 @@ tests = [
     ("Ace/seq.cap.ace", "ace", generic_dna),
     ("Quality/example.fastq", "fastq", None),
     ("Quality/example.fastq", "fastq-sanger", generic_dna),
-    #Can't yet index line wrapped FASTQ files...
-    #("Quality/tricky.fastq", "fastq", generic_nucleotide),
+    ("Quality/tricky.fastq", "fastq", generic_nucleotide),
     ("Quality/sanger_faked.fastq", "fastq-sanger", generic_dna),
     ("Quality/solexa_faked.fastq", "fastq-solexa", generic_dna),
     ("Quality/illumina_faked.fastq", "fastq-illumina", generic_dna),
@@ -59,6 +84,7 @@ tests = [
     ("Roche/E3MFGYR02_random_10_reads.sff", "sff", generic_dna),
     ]
 for filename, format, alphabet in tests :
+    assert format in _FormatToIndexedDict
     def funct(fn,fmt,alpha) :
         f = lambda x : x.simple_check(fn, fmt, alpha)
         f.__doc__ = "Index %s file %s" % (fmt, fn)
