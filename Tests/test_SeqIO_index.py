@@ -20,6 +20,8 @@ class IndexDictTests(unittest.TestCase) :
         self.assertEqual(set(id_list), set(rec_dict.keys()))
         #This is redundant, I just want to make sure len works:
         self.assertEqual(len(id_list), len(rec_dict))
+        #Make sure boolean evaluation works
+        self.assertEqual(bool(id_list), bool(rec_dict))
         for key in id_list :
             self.assert_(key in rec_dict)
             self.assertEqual(key, rec_dict[key].id)
@@ -27,16 +29,25 @@ class IndexDictTests(unittest.TestCase) :
         #Check non-existant keys,
         try :
             rec = rec_dict[chr(0)]
-            assert False, "Accessing a non-existant key should fail"
+            raise ValueError("Accessing a non-existant key should fail")
         except KeyError :
             pass
-        assert rec_dict.get(chr(0)) is None
-        assert chr(1) == rec_dict.get(chr(0), chr(1))
+        self.assertEqual(rec_dict.get(chr(0)), None)
+        self.assertEqual(rec_dict.get(chr(0), chr(1)), chr(1))
         #Now check iteritems...
         for key, rec in rec_dict.iteritems() :
-            assert key in id_list
-            assert isinstance(rec, SeqRecord)
-            assert rec.id == key
+            self.assert_(key in id_list)
+            self.assert_(isinstance(rec, SeqRecord))
+            self.assertEqual(rec.id, key)
+        #Now check non-defined methods...
+        self.assertRaises(NotImplementedError, rec_dict.popitem)
+        self.assertRaises(NotImplementedError, rec_dict.pop, chr(0))
+        self.assertRaises(NotImplementedError, rec_dict.pop, chr(0), chr(1))
+        self.assertRaises(NotImplementedError, rec_dict.clear)
+        self.assertRaises(NotImplementedError, rec_dict.__setitem__, "X", None)
+        self.assertRaises(NotImplementedError, rec_dict.copy)
+        self.assertRaises(NotImplementedError, rec_dict.fromkeys, [])
+        #Done
             
 tests = [
     ("Ace/contig1.ace", "ace", generic_dna),
