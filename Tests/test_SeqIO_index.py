@@ -40,6 +40,7 @@ class IndexDictTests(unittest.TestCase) :
             self.assert_(isinstance(rec, SeqRecord))
             self.assertEqual(rec.id, key)
         #Now check non-defined methods...
+        self.assertRaises(NotImplementedError, rec_dict.values)
         self.assertRaises(NotImplementedError, rec_dict.popitem)
         self.assertRaises(NotImplementedError, rec_dict.pop, chr(0))
         self.assertRaises(NotImplementedError, rec_dict.pop, chr(0), chr(1))
