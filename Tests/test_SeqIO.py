@@ -369,6 +369,9 @@ def check_simple_write_read(records, indent=" ") :
 
 #Check parsers can cope with an empty file
 for t_format in SeqIO._FormatToIterator :
+    if t_format in ["sff", "sff-trim"] :
+        #Not allowed empty SFF files.
+        continue
     handle = StringIO()
     records = list(SeqIO.parse(handle, t_format))
     assert len(records) == 0
