@@ -11,11 +11,11 @@ the public interface for this.
 The basic idea is that we scan over a sequence file, looking for new record
 markers. We then try and extract the string that Bio.SeqIO.parse/read would
 use as the record id, ideally without actually parsing the full record. We
-then use a normal Python dictionary to record the file offset for the record
-start against the record id.
+then use a subclassed Python dictionary to record the file offset for the
+record start against the record id.
 
-Note that this means full parsing is on demand, so any invalid or problem record
-may not trigger an exception until it is accessed. This is by design.
+Note that this means full parsing is on demand, so any invalid or problem
+record may not trigger an exception until it is accessed. This is by design.
 
 This means our dictionary like objects have in memory ALL the keys (all the
 record identifiers), which shouldn't be a problem even with second generation
@@ -71,7 +71,7 @@ class _IndexedSeqFileDict(dict) :
 
         In general you can be indexing very very large files, with millions
         of sequences. Loading all these into memory at once as SeqRecord
-        ojbects would (probably) use up all the RAM. Therefore we simply
+        objects would (probably) use up all the RAM. Therefore we simply
         don't support this dictionary method.
         """
         raise NotImplementedError("Due to memory concerns, when indexing a "
@@ -83,7 +83,7 @@ class _IndexedSeqFileDict(dict) :
 
         In general you can be indexing very very large files, with millions
         of sequences. Loading all these into memory at once as SeqRecord
-        ojbects would (probably) use up all the RAM. Therefore we simply
+        objects would (probably) use up all the RAM. Therefore we simply
         don't support this dictionary method.
         """
         raise NotImplementedError("Due to memory concerns, when indexing a "
@@ -150,6 +150,11 @@ class _IndexedSeqFileDict(dict) :
 # Special indexers #
 ####################
 
+# Anything where the records cannot be read simply by parsing from
+# the record start. For example, anything requiring information from
+# a file header - e.g. SFF files where we would need to know the
+# number of flows.
+
 class SffDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to a Standard Flowgram Format (SFF) file."""
     def __init__(self, filename, alphabet) :
@@ -190,6 +195,7 @@ class SffDict(_IndexedSeqFileDict) :
                                                   self._alphabet)
         assert record.id == key
         return record
+
 
 ###################
 # Simple indexers #
