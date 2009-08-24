@@ -72,7 +72,8 @@ def _sff_file_header(handle) :
         raise ValueError("Post header %i byte padding region contained data" \
                          % padding)
     return header_length, index_offset, index_length, \
-           number_of_reads, number_of_flows_per_read
+           number_of_reads, number_of_flows_per_read, \
+           flow_chars, key_sequence
 
 #This is a generator function!
 def _sff_do_slow_index(handle) :
@@ -85,7 +86,8 @@ def _sff_do_slow_index(handle) :
     """
     handle.seek(0)
     header_length, index_offset, index_length, number_of_reads, \
-    number_of_flows_per_read = _sff_file_header(handle)
+    number_of_flows_per_read, flow_chars, key_sequence \
+        = _sff_file_header(handle)
     #Now on to the reads...
     read_header_fmt = '>2HI4H'
     read_header_size = struct.calcsize(read_header_fmt)
@@ -138,7 +140,8 @@ def _sff_find_roche_index(handle) :
     size, and the actual read index offset and size."""    
     handle.seek(0)
     header_length, index_offset, index_length, number_of_reads, \
-    number_of_flows_per_read = _sff_file_header(handle)
+    number_of_flows_per_read, flow_chars, key_sequence \
+        = _sff_file_header(handle)
     #print "Index offset %i, length %i, reads %i" \
     #      % (index_offset, index_length, number_of_reads)
     assert handle.tell() == header_length
@@ -290,7 +293,8 @@ def SffIterator(handle, alphabet=generic_dna, trim=False) :
     trim regions shown in lower case.
     """
     header_length, index_offset, index_length, number_of_reads, \
-    number_of_flows_per_read = _sff_file_header(handle)
+    number_of_flows_per_read, flow_chars, key_sequence \
+        = _sff_file_header(handle)
     #Now on to the reads...
     #the read header format (fixed part):
     #read_header_length     H
