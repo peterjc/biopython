@@ -209,8 +209,8 @@ def _sff_read_roche_index(handle) :
         #print read, name, offset
         yield name, offset
 
-def _sff_read_seq_record(handle, number_of_flows_per_read, alphabet,
-                         trim=False) :
+def _sff_read_seq_record(handle, number_of_flows_per_read, flow_chars,
+                         key_sequence, alphabet, trim=False) :
     """Parse the next read in the file, return data as a SeqRecord (PRIVATE)."""
     #Now on to the reads...
     #the read header format (fixed part):
@@ -259,22 +259,31 @@ def _sff_read_seq_record(handle, number_of_flows_per_read, alphabet,
     if trim :
         seq = seq[clip_qual_left:clip_qual_right].upper()
         quals = quals[clip_qual_left:clip_qual_right]
+        #Don't record the clipping values, flow etc, they make no sense now:
+        annotations = {}
     else :
         #This use of mixed case mimics the Roche SFF tool's FASTA output
         seq = seq[:clip_qual_left].lower() + \
               seq[clip_qual_left:clip_qual_right].upper() + \
               seq[clip_qual_right:].lower()
+        annotations = {"flow_values":flow_values,
+                       "flow_index":flow_index,
+                       "flow_chars":flow_chars,
+                       "flow_key":key_sequence,
+                       "clip_qual_left":clip_qual_left,
+                       "clip_qual_right":clip_qual_right,
+                       "clip_adapter_left":clip_adapter_left,
+                       "clip_adapter_right":clip_adapter_right}
     record = SeqRecord(Seq(seq, alphabet),
                        id=name,
                        name=name,
-                       description="")
+                       description="",
+                       annotations=annotations)
     #Dirty trick to speed up this line:
     #record.letter_annotations["phred_quality"] = quals
     dict.__setitem__(record._per_letter_annotations,
                      "phred_quality", quals)
-    #TODO - flow data
     #TODO - adaptor clipping
-    #TODO - paired reads
     #Return the record and then continue...
     return record
 
@@ -319,7 +328,10 @@ def SffIterator(handle, alphabet=generic_dna, trim=False) :
     for read in range(number_of_reads) :
         yield _sff_read_seq_record(handle,
                                    number_of_flows_per_read,
-                                   alphabet, trim)
+                                   flow_chars,
+                                   key_sequence,
+                                   alphabet,
+                                   trim)
 
 #This is a generator function!
 def _SffTrimIterator(handle, alphabet = generic_dna) :
