@@ -445,6 +445,26 @@ class TestWriteRead(unittest.TestCase) :
         write_read(os.path.join("Quality", "illumina_faked.fastq"), "fastq-illumina", "qual")
         write_read(os.path.join("Quality", "illumina_faked.fastq"), "fastq-illumina", "phd")
 
+    def test_E3MFGYR02(self) :
+        """Write and read back E3MFGYR02_random_10_reads.sff"""
+        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff", "fasta")
+        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff", "fastq")
+        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff", "fastq-sanger")
+        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff", "fastq-solexa")
+        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff", "fastq-illumina")
+        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff", "qual")
+        #write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff", "phd")
+
+    def test_E3MFGYR02_trimmed(self) :
+        """Write and read back E3MFGYR02_random_10_reads.sff (trimmed)"""
+        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff-trim", "fasta")
+        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff-trim", "fastq")
+        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff-trim", "fastq-sanger")
+        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff-trim", "fastq-solexa")
+        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff-trim", "fastq-illumina")
+        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff-trim", "qual")
+        #write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff-trim", "phd")
+
 class MappingTests(unittest.TestCase) :
     def setUp(self):
         warnings.resetwarnings()

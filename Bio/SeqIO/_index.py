@@ -161,7 +161,8 @@ class SffDict(_IndexedSeqFileDict) :
         _IndexedSeqFileDict.__init__(self, filename, alphabet, "r")
         handle = self._handle
         header_length, index_offset, index_length, number_of_reads, \
-        self._flows_per_read = SeqIO.SffIO._sff_file_header(handle)
+        self._flows_per_read, flow_chars, key_sequence \
+            = SeqIO.SffIO._sff_file_header(handle)
         if index_offset and index_length:
             #There is an index provided, try this the fast way:
             try :
@@ -174,7 +175,7 @@ class SffDict(_IndexedSeqFileDict) :
             except ValueError, err :
                 import warnings
                 warnings.warn("Could not parse the SFF index: %s" % err)
-                self._index = {} #reset in case partially populated
+                dict.clear(self) #reset in case partially populated
                 handle.seek(0)
         else :
             #TODO - Remove this debug warning?
@@ -195,6 +196,7 @@ class SffDict(_IndexedSeqFileDict) :
                                                   self._alphabet)
         assert record.id == key
         return record
+
 
 ###################
 # Simple indexers #
