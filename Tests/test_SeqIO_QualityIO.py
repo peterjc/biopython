@@ -182,15 +182,35 @@ class TestFastqErrors(unittest.TestCase) :
         self.check_fails("Quality/error_trunc_at_seq.fastq", 4)
         self.check_general_fails("Quality/error_trunc_at_seq.fastq", 4)
 
-    def test_trunc_at_seq(self):
+    def test_trunc_at_plus(self):
         """Reject FASTQ truncated at the plus line"""
         self.check_fails("Quality/error_trunc_at_plus.fastq", 4)
         self.check_general_fails("Quality/error_trunc_at_plus.fastq", 4)
 
-    def test_trunc_at_seq(self):
+    def test_trunc_at_qual(self):
         """Reject FASTQ truncated at the quality"""
         self.check_fails("Quality/error_trunc_at_qual.fastq", 4)
         self.check_general_fails("Quality/error_trunc_at_qual.fastq", 4)
+
+    def test_trunc_in_title(self):
+        """Reject FASTQ truncated during the title line"""
+        self.check_fails("Quality/error_trunc_in_title.fastq", 4)
+        self.check_general_fails("Quality/error_trunc_in_title.fastq", 4)
+
+    def test_trunc_in_seq(self):
+        """Reject FASTQ truncated during the sequence"""
+        self.check_fails("Quality/error_trunc_in_seq.fastq", 4)
+        self.check_general_fails("Quality/error_trunc_in_seq.fastq", 4)
+
+    def test_trunc_in_plus(self):
+        """Reject FASTQ truncated during the plus line"""
+        self.check_fails("Quality/error_trunc_in_seq.fastq", 4)
+        self.check_general_fails("Quality/error_trunc_in_seq.fastq", 4)
+
+    def test_trunc_in_qual(self):
+        """Reject FASTQ truncated during the quality"""
+        self.check_fails("Quality/error_trunc_in_qual.fastq", 4)
+        self.check_general_fails("Quality/error_trunc_in_qual.fastq", 4)
 
     def test_qual_null(self):
         """Reject FASTQ with null (ASCII 0) in the quality"""
@@ -226,6 +246,16 @@ class TestFastqErrors(unittest.TestCase) :
         """Reject FASTQ with delete (ASCI 127) in quality"""
         self.check_fails("Quality/error_qual_del.fastq", 3)
         self.check_general_passes("Quality/error_qual_del.fastq", 5)
+
+    def test_double_qual(self):
+        """Reject FASTQ with double quality block"""
+        self.check_fails("Quality/error_double_qual.fastq", 2)
+        self.check_general_fails("Quality/error_double_qual.fastq", 2)
+
+    def test_double_seq(self):
+        """Reject FASTQ with double sequence block"""
+        self.check_fails("Quality/error_double_seq.fastq", 3)
+        self.check_general_fails("Quality/error_double_seq.fastq", 3)
 
 class TestQual(unittest.TestCase):
     """Tests with QUAL files."""
@@ -366,33 +396,28 @@ class TestWriteRead(unittest.TestCase) :
             
     def test_tricky(self) :
         """Write and read back tricky.fastq"""
-        write_read(os.path.join("Quality", "tricky.fastq"), "fastq", "fastq")
-        write_read(os.path.join("Quality", "tricky.fastq"), "fastq", "fastq-sanger")
-        write_read(os.path.join("Quality", "tricky.fastq"), "fastq-sanger", "fastq")
-        write_read(os.path.join("Quality", "tricky.fastq"), "fastq-sanger", "fastq-sanger")
-        write_read(os.path.join("Quality", "tricky.fastq"), "fastq", "qual")
-        write_read(os.path.join("Quality", "tricky.fastq"), "fastq", "phd")
+        filename = os.path.join("Quality", "tricky.fastq")
+        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                  "fasta", "qual", "phd"] :
+            write_read(filename, "fastq", f)
 
     def test_sanger_93(self) :
         """Write and read back sanger_93.fastq"""
-        write_read(os.path.join("Quality", "sanger_93.fastq"), "fastq-sanger", "fasta")
-        write_read(os.path.join("Quality", "sanger_93.fastq"), "fastq-sanger", "fastq-sanger")
-        write_read(os.path.join("Quality", "sanger_93.fastq"), "fastq-sanger", "qual")
-        write_read(os.path.join("Quality", "sanger_93.fastq"), "fastq-sanger", "phd")
+        filename = os.path.join("Quality", "sanger_93.fastq")
+        for f in ["fastq", "fastq-sanger", "fasta", "qual", "phd"] :
+            write_read(filename, "fastq", f)
         #TODO - Have a Biopython defined "DataLossWarning?"
         #TODO - On Python 2.6+ we can check this warning is really triggered
         warnings.simplefilter('ignore', UserWarning)
-        write_read(os.path.join("Quality", "sanger_93.fastq"), "fastq-sanger", "fastq-solexa")
-        write_read(os.path.join("Quality", "sanger_93.fastq"), "fastq-sanger", "fastq-illumina")
+        write_read(filename, "fastq-sanger", "fastq-solexa")
+        write_read(filename, "fastq-sanger", "fastq-illumina")
 
     def test_sanger_faked(self) :
         """Write and read back sanger_faked.fastq"""
-        write_read(os.path.join("Quality", "sanger_faked.fastq"), "fastq-sanger", "fasta")
-        write_read(os.path.join("Quality", "sanger_faked.fastq"), "fastq-sanger", "fastq-sanger")
-        write_read(os.path.join("Quality", "sanger_faked.fastq"), "fastq-sanger", "fastq-solexa")
-        write_read(os.path.join("Quality", "sanger_faked.fastq"), "fastq-sanger", "fastq-illumina")
-        write_read(os.path.join("Quality", "sanger_faked.fastq"), "fastq-sanger", "qual")
-        write_read(os.path.join("Quality", "sanger_faked.fastq"), "fastq-sanger", "phd")
+        filename = os.path.join("Quality", "sanger_faked.fastq")
+        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                  "fasta", "qual", "phd"] :
+            write_read(filename, "fastq", f)
 
     def test_example_fasta(self) :
         """Write and read back example.fasta"""
@@ -401,49 +426,46 @@ class TestWriteRead(unittest.TestCase) :
 
     def test_example_fastq(self) :
         """Write and read back example.fastq"""
-        write_read(os.path.join("Quality", "example.fastq"), "fastq-sanger", "fasta")
-        write_read(os.path.join("Quality", "example.fastq"), "fastq-sanger", "fastq-sanger")
-        write_read(os.path.join("Quality", "example.fastq"), "fastq-sanger", "fastq-solexa")
-        write_read(os.path.join("Quality", "example.fastq"), "fastq-sanger", "fastq-illumina")
-        write_read(os.path.join("Quality", "example.fastq"), "fastq-sanger", "qual")
-        write_read(os.path.join("Quality", "example.fastq"), "fastq-sanger", "phd")
+        filename = os.path.join("Quality", "example.fastq")
+        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                  "fasta", "qual", "phd"] :
+            write_read(filename, "fastq", f)
 
     def test_example_qual(self) :
         """Write and read back example.qual"""
-        write_read(os.path.join("Quality", "example.qual"), "qual", "fasta")
-        write_read(os.path.join("Quality", "example.qual"), "qual", "qual")
-        write_read(os.path.join("Quality", "example.qual"), "qual", "phd")
-        write_read(os.path.join("Quality", "example.qual"), "qual", "fastq")
-        write_read(os.path.join("Quality", "example.qual"), "qual", "fastq-sanger")
-        write_read(os.path.join("Quality", "example.qual"), "qual", "fastq-solexa")
-        write_read(os.path.join("Quality", "example.qual"), "qual", "fastq-illumina")
+        filename = os.path.join("Quality", "example.qual")
+        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                  "fasta", "qual", "phd"] :
+            write_read(filename, "qual", f)
 
     def test_solexa_faked(self) :
         """Write and read back solexa_faked.fastq"""
-        write_read(os.path.join("Quality", "solexa_faked.fastq"), "fastq-solexa", "fasta")
-        write_read(os.path.join("Quality", "solexa_faked.fastq"), "fastq-solexa", "fastq-sanger")
-        write_read(os.path.join("Quality", "solexa_faked.fastq"), "fastq-solexa", "fastq-solexa")
-        write_read(os.path.join("Quality", "solexa_faked.fastq"), "fastq-solexa", "fastq-illumina")
-        write_read(os.path.join("Quality", "solexa_faked.fastq"), "fastq-solexa", "qual")
-        write_read(os.path.join("Quality", "solexa_faked.fastq"), "fastq-solexa", "phd")
+        filename = os.path.join("Quality", "solexa_faked.fastq")
+        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                  "fasta", "qual", "phd"] :
+            write_read(filename, "fastq-solexa", f)
 
     def test_solexa_example(self) :
         """Write and read back solexa_example.fastq"""
-        write_read(os.path.join("Quality", "solexa_example.fastq"), "fastq-solexa", "fasta")
-        write_read(os.path.join("Quality", "solexa_example.fastq"), "fastq-solexa", "fastq-sanger")
-        write_read(os.path.join("Quality", "solexa_example.fastq"), "fastq-solexa", "fastq-solexa")
-        write_read(os.path.join("Quality", "solexa_example.fastq"), "fastq-solexa", "fastq-illumina")
-        write_read(os.path.join("Quality", "solexa_example.fastq"), "fastq-solexa", "qual")
-        write_read(os.path.join("Quality", "solexa_example.fastq"), "fastq-solexa", "phd")
+        filename = os.path.join("Quality", "solexa_example.fastq")
+        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                  "fasta", "qual", "phd"] :
+            write_read(filename, "fastq-solexa", f)
 
     def test_illumina_faked(self) :
         """Write and read back illumina_faked.fastq"""
-        write_read(os.path.join("Quality", "illumina_faked.fastq"), "fastq-illumina", "fasta")
-        write_read(os.path.join("Quality", "illumina_faked.fastq"), "fastq-illumina", "fastq-sanger")
-        write_read(os.path.join("Quality", "illumina_faked.fastq"), "fastq-illumina", "fastq-solexa")
-        write_read(os.path.join("Quality", "illumina_faked.fastq"), "fastq-illumina", "fastq-illumina")
-        write_read(os.path.join("Quality", "illumina_faked.fastq"), "fastq-illumina", "qual")
-        write_read(os.path.join("Quality", "illumina_faked.fastq"), "fastq-illumina", "phd")
+        filename = os.path.join("Quality", "illumina_faked.fastq")
+        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                  "fasta", "qual", "phd"] :
+            write_read(filename, "fastq-illumina", f)
+
+    def test_evil_wrapped(self) :
+        """Write and read back evil_wrapped.fastq"""
+        filename = os.path.join("Quality", "evil_wrapping.fastq")
+        self.assertEqual(3, len(list(SeqIO.parse(open(filename),"fastq"))))
+        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                  "fasta", "qual", "phd"] :
+            write_read(filename, "fastq-sanger", f)
 
     def test_E3MFGYR02(self) :
         """Write and read back E3MFGYR02_random_10_reads.sff"""
