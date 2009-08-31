@@ -13,10 +13,14 @@ from Bio.Alphabet import generic_protein, generic_nucleotide, generic_dna
 
 class IndexDictTests(unittest.TestCase) :
     """Cunning unit test where methods are added at run time."""
+    def tearDown(self) :
+        if os.path.isfile("temp.idx") : os.remove("temp.idx")
+
     def simple_check(self, filename, format, alphabet) :
+        if os.path.isfile("temp.idx") : os.remove("temp.idx")
         id_list = [rec.id for rec in \
                    SeqIO.parse(open(filename), format, alphabet)]
-        rec_dict = SeqIO.indexed_dict(filename, format, alphabet)
+        rec_dict = SeqIO.indexed_dict(filename, "temp.idx", format, alphabet)
         self.assertEqual(set(id_list), set(rec_dict.keys()))
         #This is redundant, I just want to make sure len works:
         self.assertEqual(len(id_list), len(rec_dict))

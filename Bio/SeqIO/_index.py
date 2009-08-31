@@ -26,34 +26,54 @@ temp lookup file might be one idea.
 import re
 from Bio import SeqIO
 
-class _IndexedSeqFileDict(dict) :
+#Based on http://sebsauvage.net/python/snyppets/index.html#dbdict
+import os,os.path
+import UserDict
+from sqlite3 import dbapi2 as _sqlite
+
+class _IndexedSeqFileDict(UserDict.DictMixin) :
     """Read only dictionary interface to a sequential sequence file.
 
-    Keeps the keys in memory, reads the file to access entries as
-    SeqRecord objects using Bio.SeqIO for parsing them. Note - as
-    with the Bio.SeqIO.to_dict() function, duplicate keys (record
-    identifiers) are not allowed. If this happens, a ValueError
+    Scans the file and notes the record identifies (keys) and associated
+    offsets into the file.  When accessing a record, reads the file to
+    access entries as SeqRecord objects using Bio.SeqIO for parsing them.
+
+    By default, the record identifiers and their offsets are held in
+    memory, but if an index_filename is given this will be used for an
+    SQLite database.
+
+    Note - as with the Bio.SeqIO.to_dict() function, duplicate keys
+    (record identifiers) are not allowed. If this happens, a ValueError
     exception is raised.
 
     Note that this dictionary is essentially read only. You cannot
     add or change values, pop values, nor clear the dictionary.
     """
-    def __init__(self, filename, alphabet, mode="rU") :
-        dict.__init__(self) #init as empty dict!
+    def __init__(self, filename, index_filename, alphabet=None, mode="rU") :
         self._handle = open(filename, mode)
         self._alphabet = alphabet
         self._format = ""
+        self._index_filename = index_filename
+        if os.path.isfile(index_filename):
+            self._con = _sqlite.connect(index_filename)
+        else :
+            self._con = _sqlite.connect(index_filename)
+            self._con.execute("CREATE TABLE data (key PRIMARY KEY,value)")
         #Now scan it in a subclassed method, and set the format!
 
     def __repr__(self) :
-        return "SeqIO.indexed_dict(%s, %s, %s)" \
-               % (self._handle.name, self._format, self._alphabet)
+        return "SeqIO.indexed_dict(%s, %s, %s, mode=%s, index_filename=%s)" \
+               % (self._handle.name, self._format, self._alphabet,
+                  self._handle.mode, self._index_filename)
 
     def __str__(self) :
         if self :
             return "{%s : SeqRecord(...), ...}" % repr(self.keys()[0])
         else :
             return "{}"
+
+    def __contains__(self, key) :
+        return bool(self._con.execute("select key from data where key=?",(key,)).fetchone())
 
     def _record_key(self, key, seek_position) :
         """Used by subclasses to record file offsets for keys (PRIVATE).
@@ -63,8 +83,19 @@ class _IndexedSeqFileDict(dict) :
         """
         if key in self :
             raise ValueError("Duplicate key '%s'" % key)
-        else :
-            dict.__setitem__(self, key, seek_position)
+        self._con.execute("INSERT INTO data (key,value) VALUES (?,?)",
+                          (key, seek_position))
+
+    def _get_offset(self, key) :
+        #Separate method to help ease complex subclassing like SFF
+        row = self._con.execute("SELECT value FROM data WHERE key=?",(key,)).fetchone()
+        if not row: raise KeyError
+        return row[0]
+
+    def keys(self) :
+        """Return a list of all the keys (SeqRecord identifiers)."""
+        return [row[0] for row in \
+                self._con.execute("SELECT key FROM data").fetchall()]
 
     def values(self) :
         """Would be a list of the SeqRecord objects, but not implemented.
@@ -99,7 +130,7 @@ class _IndexedSeqFileDict(dict) :
         """x.__getitem__(y) <==> x[y]"""
         #For non-trivial file formats this must be over-ridden in the subclass
         handle = self._handle
-        handle.seek(dict.__getitem__(self, key))
+        handle.seek(self._get_offset(key))
         record = SeqIO.parse(handle, self._format, self._alphabet).next()
         assert record.id == key, \
                "Requested key %s, found record.id %s" % (key, record.id)
@@ -157,11 +188,12 @@ class _IndexedSeqFileDict(dict) :
 
 class SffDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to a Standard Flowgram Format (SFF) file."""
-    def __init__(self, filename, alphabet) :
-        _IndexedSeqFileDict.__init__(self, filename, alphabet, "r")
+    def __init__(self, filename, index_filename, alphabet) :
+        _IndexedSeqFileDict.__init__(self, filename, index_filename,
+                                     alphabet, "r")
         handle = self._handle
         header_length, index_offset, index_length, number_of_reads, \
-        self._flows_per_read, flow_chars, key_sequence \
+        self._flows_per_read, self._flow_chars, self._key_sequence \
             = SeqIO.SffIO._sff_file_header(handle)
         if index_offset and index_length:
             #There is an index provided, try this the fast way:
@@ -190,9 +222,11 @@ class SffDict(_IndexedSeqFileDict) :
 
     def __getitem__(self, key) :
         handle = self._handle
-        handle.seek(dict.__getitem__(self, key))
+        handle.seek(self._get_offset(key))
         record = SeqIO.SffIO._sff_read_seq_record(handle,
                                                   self._flows_per_read,
+                                                  self._flow_chars,
+                                                  self._key_sequence,
                                                   self._alphabet)
         assert record.id == key
         return record
@@ -204,8 +238,8 @@ class SffDict(_IndexedSeqFileDict) :
 
 class _SequentialSeqFileDict(_IndexedSeqFileDict) :
     """Subclass for easy cases (PRIVATE)."""
-    def __init__(self, filename, alphabet, format, marker) :
-        _IndexedSeqFileDict.__init__(self, filename, alphabet)
+    def __init__(self, filename, index_filename, alphabet, format, marker) :
+        _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet)
         self._format = format
         handle = self._handle
         marker_re = re.compile("^%s" % marker)
@@ -221,29 +255,33 @@ class _SequentialSeqFileDict(_IndexedSeqFileDict) :
 
 class FastaDict(_SequentialSeqFileDict) :
     """Indexed dictionary like access to a FASTA file."""
-    def __init__(self, filename, alphabet) :
-        _SequentialSeqFileDict.__init__(self, filename, alphabet, "fasta", ">")
+    def __init__(self, filename, index_filename, alphabet) :
+        _SequentialSeqFileDict.__init__(self, filename, index_filename,
+                                        alphabet, "fasta", ">")
 
 class QualDict(_SequentialSeqFileDict) :
     """Indexed dictionary like access to a QUAL file."""
-    def __init__(self, filename, alphabet) :
-        _SequentialSeqFileDict.__init__(self, filename, alphabet, "qual", ">")
+    def __init__(self, filename, index_filename, alphabet) :
+        _SequentialSeqFileDict.__init__(self, filename, index_filename,
+                                        alphabet, "qual", ">")
 
 class PirDict(_SequentialSeqFileDict) :
     """Indexed dictionary like access to a PIR/NBRF file."""
-    def __init__(self, filename, alphabet) :
-        _SequentialSeqFileDict.__init__(self, filename, alphabet, "pir", ">..;")
+    def __init__(self, filename, index_filename, alphabet) :
+        _SequentialSeqFileDict.__init__(self, filename, index_filename,
+                                        alphabet, "pir", ">..;")
 
 class PhdDict(_SequentialSeqFileDict) :
     """Indexed dictionary like access to a PHD (PHRED) file."""
-    def __init__(self, filename, alphabet) :
-        _SequentialSeqFileDict.__init__(self, filename, alphabet, "phd",
-                                        "BEGIN_SEQUENCE")
+    def __init__(self, filename, index_filename, alphabet) :
+        _SequentialSeqFileDict.__init__(self, filename, index_filename,
+                                        alphabet, "phd", "BEGIN_SEQUENCE")
 
 class AceDict(_SequentialSeqFileDict) :
     """Indexed dictionary like access to an ACE file."""
-    def __init__(self, filename, alphabet) :
-        _SequentialSeqFileDict.__init__(self, filename, alphabet, "ace", "CO ")
+    def __init__(self, filename, index_filename, alphabet) :
+        _SequentialSeqFileDict.__init__(self, filename, index_filename,
+                                        alphabet, "ace", "CO ")
 
 
 #######################################
@@ -252,8 +290,8 @@ class AceDict(_SequentialSeqFileDict) :
 
 class GenBankDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to a GenBank file."""
-    def __init__(self, filename, alphabet) :
-        _IndexedSeqFileDict.__init__(self, filename, alphabet)
+    def __init__(self, filename, index_filename, alphabet) :
+        _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet)
         self._format = "genbank"
         handle = self._handle
         marker_re = re.compile("^LOCUS ")
@@ -290,8 +328,8 @@ class GenBankDict(_IndexedSeqFileDict) :
 
 class EmblDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to an EMBL file."""
-    def __init__(self, filename, alphabet) :
-        _IndexedSeqFileDict.__init__(self, filename, alphabet)
+    def __init__(self, filename, index_filename, alphabet) :
+        _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet)
         self._format = "embl"
         handle = self._handle
         marker_re = re.compile("^ID ")
@@ -324,8 +362,8 @@ class EmblDict(_IndexedSeqFileDict) :
 
 class SwissDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to a SwissProt file."""
-    def __init__(self, filename, alphabet) :
-        _IndexedSeqFileDict.__init__(self, filename, alphabet)
+    def __init__(self, filename, index_filename, alphabet) :
+        _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet)
         self._format = "swiss"
         handle = self._handle
         marker_re = re.compile("^ID ")
@@ -343,8 +381,8 @@ class SwissDict(_IndexedSeqFileDict) :
 
 class IntelliGeneticsDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to a IntelliGenetics file."""
-    def __init__(self, filename, alphabet) :
-        _IndexedSeqFileDict.__init__(self, filename, alphabet)
+    def __init__(self, filename, index_filename, alphabet) :
+        _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet)
         self._format = "ig"
         handle = self._handle
         marker_re = re.compile("^;")
@@ -365,8 +403,8 @@ class IntelliGeneticsDict(_IndexedSeqFileDict) :
 
 class TabDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to a simple tabbed file."""
-    def __init__(self, filename, alphabet) :
-        _IndexedSeqFileDict.__init__(self, filename, alphabet)
+    def __init__(self, filename, index_filename, alphabet) :
+        _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet)
         self._format = "tab"
         handle = self._handle
         while True :
@@ -394,8 +432,8 @@ class _FastqSeqFileDict(_IndexedSeqFileDict) :
     With FASTQ the records all start with a "@" line, but so too can some
     quality lines. Note this will cope with line-wrapped FASTQ files.
     """
-    def __init__(self, filename, alphabet, fastq_format) :
-        _IndexedSeqFileDict.__init__(self, filename, alphabet)
+    def __init__(self, filename, index_filename, alphabet, fastq_format) :
+        _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet)
         self._format = fastq_format
         handle = self._handle
         pos = handle.tell()
@@ -437,18 +475,21 @@ class _FastqSeqFileDict(_IndexedSeqFileDict) :
 
 class FastqSangerDict(_FastqSeqFileDict) :
     """Indexed dictionary like access to a standard Sanger FASTQ file."""
-    def __init__(self, filename, alphabet) :
-        _FastqSeqFileDict.__init__(self, filename, alphabet, "fastq-sanger")
+    def __init__(self, filename, index_filename, alphabet) :
+        _FastqSeqFileDict.__init__(self, filename, index_filename,
+                                   alphabet, "fastq-sanger")
 
 class FastqSolexaDict(_FastqSeqFileDict) :
     """Indexed dictionary like access to a Solexa (or early Illumina) FASTQ file."""
-    def __init__(self, filename, alphabet) :
-        _FastqSeqFileDict.__init__(self, filename, alphabet, "fastq-solexa")
+    def __init__(self, filename, index_filename, alphabet) :
+        _FastqSeqFileDict.__init__(self, filename, index_filename,
+                                   alphabet, "fastq-solexa")
 
 class FastqIlluminaDict(_FastqSeqFileDict) :
     """Indexed dictionary like access to a Illumina 1.3+ FASTQ file."""
-    def __init__(self, filename, alphabet) :
-        _FastqSeqFileDict.__init__(self, filename, alphabet, "fastq-illumina")
+    def __init__(self, filename, index_filename, alphabet) :
+        _FastqSeqFileDict.__init__(self, filename, index_filename,
+                                   alphabet, "fastq-illumina")
 
 ###############################################################################
 

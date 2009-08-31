@@ -99,7 +99,7 @@ Instead, for *some* file formats Bio.SeqIO provides an indexing approach
 providing dictionary like access to any record. For example,
 
     >>> from Bio import SeqIO
-    >>> record_dict = SeqIO.indexed_dict("Fasta/f002", "fasta")
+    >>> record_dict = SeqIO.indexed_dict("Fasta/f002", "temp.idx", "fasta")
     >>> len(record_dict)
     3
     >>> print len(record_dict["gi|1348917|gb|G26685|G26685"])
@@ -593,10 +593,11 @@ def to_dict(sequences, key_function=None) :
         d[key] = record
     return d
 
-def indexed_dict(filename, format, alphabet=None) :
+def indexed_dict(filename, index_filename, format, alphabet=None) :
     """Indexes a sequence file and returns a dictionary like object.
 
      - filename - string giving name of file to be indexed
+     - index_filename - string giving filename for SQLite index
      - format   - lower case string describing the file format
      - alphabet - optional Alphabet object, useful when the sequence type
                   cannot be automatically inferred from the file itself
@@ -606,7 +607,7 @@ def indexed_dict(filename, format, alphabet=None) :
     SeqRecord objects as values:
 
     >>> from Bio import SeqIO
-    >>> records = SeqIO.indexed_dict("Quality/example.fastq", "fastq")
+    >>> records = SeqIO.indexed_dict("Quality/example.fastq", "tmp.idx", "fastq")
     >>> len(records)
     3
     >>> sorted(records.keys())
@@ -658,6 +659,8 @@ def indexed_dict(filename, format, alphabet=None) :
     #Try and give helpful error messages:
     if not isinstance(filename, basestring) :
         raise TypeError("Need a filename (not a handle)")
+    if not isinstance(index_filename, basestring) :
+        raise TypeError("Need an index filename (as a string)")
     if not isinstance(format, basestring) :
         raise TypeError("Need a string for the file format (lower case)")
     if not format :
@@ -674,7 +677,7 @@ def indexed_dict(filename, format, alphabet=None) :
         indexer = _index._FormatToIndexedDict[format]
     except KeyError :
         raise ValueError("Unsupported format '%s'" % format)
-    return indexer(filename, alphabet)
+    return indexer(filename, index_filename, alphabet)
 
 def to_alignment(sequences, alphabet=None, strict=True) :
     """Returns a multiple sequence alignment (OBSOLETE).
