@@ -63,6 +63,7 @@ class _IndexedSeqFileDict(UserDict.DictMixin) :
             self._con.execute("CREATE TABLE data (key TEXT PRIMARY KEY, "
                               "offset INTEGER)")
         #Now scan it in a subclassed method, and set the format!
+        #And commit!
 
     def __repr__(self) :
         return "SeqIO.indexed_dict(%s, %s, %s, mode=%s, index_filename=%s)" \
@@ -225,6 +226,7 @@ class SffDict(_IndexedSeqFileDict) :
         for name, offset in SeqIO.SffIO._sff_do_slow_index(handle) :
             #print "%s -> %i" % (name, offset)
             self._record_key(name, offset)
+        self._con.commit()
         assert len(self) == number_of_reads, \
                "Indexed %i records, expected %i" % (len(self), number_of_reads)
 
@@ -260,6 +262,7 @@ class _SequentialSeqFileDict(_IndexedSeqFileDict) :
                 #Here we can assume the record.id is the first word after the
                 #marker. This is generally fine... but not for GenBank, EMBL, Swiss
                 self._record_key(line[marker_offset:].strip().split(None,1)[0], offset)
+        self._con.commit()
 
 class FastaDict(_SequentialSeqFileDict) :
     """Indexed dictionary like access to a FASTA file."""
@@ -333,6 +336,7 @@ class GenBankDict(_IndexedSeqFileDict) :
                 if not key :
                     raise ValueError("Did not find ACCESSION/VERSION lines")
                 self._record_key(key, offset)
+        self._con.commit()
 
 class EmblDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to an EMBL file."""
@@ -367,6 +371,7 @@ class EmblDict(_IndexedSeqFileDict) :
                     or not line :
                         break
                 self._record_key(key, offset)
+        self._con.commit()
 
 class SwissDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to a SwissProt file."""
@@ -386,6 +391,7 @@ class SwissDict(_IndexedSeqFileDict) :
                 assert line.startswith("AC ")
                 key = line[3:].strip().split(";")[0].strip()
                 self._record_key(key, offset)
+        self._con.commit()
 
 class IntelliGeneticsDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to a IntelliGenetics file."""
@@ -408,6 +414,7 @@ class IntelliGeneticsDict(_IndexedSeqFileDict) :
                         key = line.split()[0]
                         self._record_key(key, offset)
                         break
+        self._con.commit()
 
 class TabDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to a simple tabbed file."""
@@ -429,6 +436,7 @@ class TabDict(_IndexedSeqFileDict) :
                     raise err
             else :
                 self._record_key(key, offset)
+        self._con.commit()
 
 ##########################
 # Now the FASTQ indexers #
@@ -480,6 +488,7 @@ class _FastqSeqFileDict(_IndexedSeqFileDict) :
             if seq_len != qual_len :
                 raise ValueError("Problem with quality section")
         #print "EOF"
+        self._con.commit()
 
 class FastqSangerDict(_FastqSeqFileDict) :
     """Indexed dictionary like access to a standard Sanger FASTQ file."""
