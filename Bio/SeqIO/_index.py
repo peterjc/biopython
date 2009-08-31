@@ -58,7 +58,7 @@ class _IndexedSeqFileDict(UserDict.DictMixin) :
             self._con = _sqlite.connect(index_filename)
         else :
             self._con = _sqlite.connect(index_filename)
-            self._con.execute("CREATE TABLE data (key PRIMARY KEY,value)")
+            self._con.execute("CREATE TABLE data (key PRIMARY KEY, offset INTEGER)")
         #Now scan it in a subclassed method, and set the format!
 
     def __repr__(self) :
@@ -83,18 +83,23 @@ class _IndexedSeqFileDict(UserDict.DictMixin) :
         """
         if key in self :
             raise ValueError("Duplicate key '%s'" % key)
-        self._con.execute("INSERT INTO data (key,value) VALUES (?,?)",
+        self._con.execute("INSERT INTO data (key,offset) VALUES (?,?)",
                           (key, seek_position))
 
     def _get_offset(self, key) :
         #Separate method to help ease complex subclassing like SFF
-        row = self._con.execute("SELECT value FROM data WHERE key=?",(key,)).fetchone()
+        row = self._con.execute("SELECT offset FROM data WHERE key=?",(key,)).fetchone()
         if not row: raise KeyError
         return row[0]
 
+    def __len__(self):
+        """How many records are there?"""
+        return self._con.execute("SELECT COUNT(key) FROM data").fetchone()[0]
+
     def keys(self) :
         """Return a list of all the keys (SeqRecord identifiers)."""
-        return [row[0] for row in \
+        #TODO - Stick a warning in here for large lists? Or just refuse?
+        return [str(row[0]) for row in \
                 self._con.execute("SELECT key FROM data").fetchall()]
 
     def values(self) :
