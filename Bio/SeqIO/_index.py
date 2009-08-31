@@ -161,7 +161,7 @@ class SffDict(_IndexedSeqFileDict) :
         _IndexedSeqFileDict.__init__(self, filename, alphabet, "r")
         handle = self._handle
         header_length, index_offset, index_length, number_of_reads, \
-        self._flows_per_read, flow_chars, key_sequence \
+        self._flows_per_read, self._flow_chars, self._key_sequence \
             = SeqIO.SffIO._sff_file_header(handle)
         if index_offset and index_length:
             #There is an index provided, try this the fast way:
@@ -193,6 +193,8 @@ class SffDict(_IndexedSeqFileDict) :
         handle.seek(dict.__getitem__(self, key))
         record = SeqIO.SffIO._sff_read_seq_record(handle,
                                                   self._flows_per_read,
+                                                  self._flow_chars,
+                                                  self._key_sequence,
                                                   self._alphabet)
         assert record.id == key
         return record
