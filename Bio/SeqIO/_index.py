@@ -24,6 +24,8 @@ temp lookup file might be one idea.
 """
 
 import re
+import shelve
+import os
 from Bio import SeqIO
 
 class _IndexedSeqFileDict(dict) :
@@ -43,7 +45,18 @@ class _IndexedSeqFileDict(dict) :
         self._handle = open(filename, mode)
         self._alphabet = alphabet
         self._format = ""
+        #TODO - take the index file as an argument?
+        index_filename = filename + ".idx"
+        if os.path.isfile(index_filename) :
+            os.remove(index_filename)
+        self._shelve = shelve.open(index_filename)
+        self._index_filename = index_filename
         #Now scan it in a subclassed method, and set the format!
+
+    def __del__(self) :
+        self._shelve.close()
+        if os.path.isfile(self._index_filename) :
+            os.remove(self._index_filename)
 
     def __repr__(self) :
         return "SeqIO.indexed_dict(%s, %s, %s)" \
@@ -64,7 +77,19 @@ class _IndexedSeqFileDict(dict) :
         if key in self :
             raise ValueError("Duplicate key '%s'" % key)
         else :
-            dict.__setitem__(self, key, seek_position)
+            self._shelve[key] = seek_position
+
+    def _get_offset(self, key) :
+        return self._shelve[key]
+
+    def __contains__(self, key) :
+        return key in self._shelve
+
+    def keys(self) :
+        return self._shelve.keys()
+
+    def __len__(self) :
+        return len(self._shelve)
 
     def values(self) :
         """Would be a list of the SeqRecord objects, but not implemented.
@@ -99,7 +124,7 @@ class _IndexedSeqFileDict(dict) :
         """x.__getitem__(y) <==> x[y]"""
         #For non-trivial file formats this must be over-ridden in the subclass
         handle = self._handle
-        handle.seek(dict.__getitem__(self, key))
+        handle.seek(self._get_offset(key))
         record = SeqIO.parse(handle, self._format, self._alphabet).next()
         assert record.id == key, \
                "Requested key %s, found record.id %s" % (key, record.id)
@@ -190,7 +215,7 @@ class SffDict(_IndexedSeqFileDict) :
 
     def __getitem__(self, key) :
         handle = self._handle
-        handle.seek(dict.__getitem__(self, key))
+        handle.seek(self._get_offset(key))
         record = SeqIO.SffIO._sff_read_seq_record(handle,
                                                   self._flows_per_read,
                                                   self._flow_chars,
