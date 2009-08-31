@@ -26,11 +26,13 @@ temp lookup file might be one idea.
 import re
 from Bio import SeqIO
 
-#Based on http://sebsauvage.net/python/snyppets/index.html#dbdict
 import os,os.path
 import UserDict
 from sqlite3 import dbapi2 as _sqlite
 
+#Based in part on this recipe for implementing a dictionary on top of SQLite:
+#http://sebsauvage.net/python/snyppets/index.html#dbdict
+#TODO - What about closing the connection nicely?
 class _IndexedSeqFileDict(UserDict.DictMixin) :
     """Read only dictionary interface to a sequential sequence file.
 
@@ -58,7 +60,8 @@ class _IndexedSeqFileDict(UserDict.DictMixin) :
             self._con = _sqlite.connect(index_filename)
         else :
             self._con = _sqlite.connect(index_filename)
-            self._con.execute("CREATE TABLE data (key PRIMARY KEY, offset INTEGER)")
+            self._con.execute("CREATE TABLE data (key TEXT PRIMARY KEY, "
+                              "offset INTEGER)")
         #Now scan it in a subclassed method, and set the format!
 
     def __repr__(self) :
