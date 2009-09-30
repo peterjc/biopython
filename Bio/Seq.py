@@ -153,6 +153,9 @@ class Seq(object):
         elif isinstance(other, basestring) :
             #other is a plain string - use the current alphabet
             return self.__class__(str(self) + other, self.alphabet)
+        elif isinstance(other, SeqRecord) :
+            #Get the SeqRecord's __radd__ to handle this
+            return NotImplemented
         else :
             raise TypeError
 
