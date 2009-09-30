@@ -87,6 +87,16 @@ class SeqRecord(object):
     >YP_025292.1 toxic membrane protein
     MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF
     <BLANKLINE>
+
+    You can also do things like slicing a SeqRecord, checking its length, etc
+
+    >>> len(record)
+    44
+    >>> edited = record[:10] + record[11:]
+    >>> print edited.seq
+    MKQHKAMIVAIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF
+    >>> print record.seq
+    MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF
     """
     def __init__(self, seq, id = "<unknown id>", name = "<unknown name>",
                  description = "<unknown description>", dbxrefs = None,
