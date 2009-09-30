@@ -145,6 +145,37 @@ class SeqFeature(object):
         answer.qualifiers = dict(self.qualifiers.iteritems())
         return answer
 
+    def _flip(self, length, strandless=["source"]) :
+        """Returns a copy of the feature with its location flipped (PRIVATE).
+
+        The argument length gives the length of the parent sequence. For
+        example a location 0..20 with parent length 30 becomes after flipping
+        complement(10..30) - unless the feature type is strandless, in which
+        case is would just become 10..30 after flipping.
+        
+        The annotation qaulifiers are copied."""
+        if self.type in strandless :
+            new_strand = self.strand
+        elif self.strand == +1 :
+            new_strand = -1
+        elif self.strand == -1 :
+            new_strand = +1
+        else :
+            assert self.strand == 0 or self.strand is None
+            new_strand = self.strand
+        answer = SeqFeature(location = self.location._flip(length),
+                   type = self.type,
+                   location_operator = self.location_operator,
+                   strand = new_strand,
+                   id = self.id,
+                   #qualifiers = dict(self.qualifiers.iteritems()),
+                   #sub_features = [f._shift(offset) for f in self.sub_features],
+                   ref = self.ref,
+                   ref_db = self.ref_db)
+        #TODO - Reverse the order of the sub-features?
+        answer.sub_features = [f._flip(length) for f in self.sub_features]
+        answer.qualifiers = dict(self.qualifiers.iteritems())
+        return answer
 # --- References
 
 # TODO -- Will this hold PubMed and Medline information decently?
@@ -251,6 +282,12 @@ class FeatureLocation(object):
         return FeatureLocation(start = self._start._shift(offset),
                                end = self._end._shift(offset))
 
+    def _flip(self, length) :
+        """Returns a copy of the location after the parent is reversed (PRIVATE)."""
+        #Note this will flip the start and end too!
+        return FeatureLocation(start = self._end._flip(length),
+                               end = self._start._flip(length))
+
     start = property(fget= lambda self : self._start,
                  doc="Start location (possibly a fuzzy position, read only).")
 
@@ -318,6 +355,11 @@ class AbstractPosition(object):
     def _shift(self, offset) :
         #We want this to maintain the subclass when called from a subclass
         return self.__class__(self.position + offset, self.extension)
+            
+    def _flip(self, length) :
+        #We want this to maintain the subclass when called from a subclass
+        return self.__class__(length - self.position - self.extension,
+                              self.extension)
             
 class ExactPosition(AbstractPosition):
     """Specify the specific position of a boundary.
@@ -405,6 +447,9 @@ class BeforePosition(AbstractPosition):
     def __str__(self):
         return "<%s" % self.position
 
+    def _flip(self, length) :
+        return AfterPosition(length - self.position)
+
 class AfterPosition(AbstractPosition):
     """Specify a position where the actual location is found after it.
 
@@ -430,6 +475,9 @@ class AfterPosition(AbstractPosition):
 
     def __str__(self):
         return ">%s" % self.position
+
+    def _flip(self, length) :
+        return BeforePosition(length - self.position)
 
 class OneOfPosition(AbstractPosition):
     """Specify a position where the location can be multiple positions.
@@ -475,6 +523,9 @@ class OneOfPosition(AbstractPosition):
         # replace the last comma with the closing parenthesis
         out = out[:-1] + ")"
         return out
+
+    def _flip(self, length) :
+        return OneOfPosition([(length - p) for p in self.position_list])
 
 class PositionGap(object):
     """Simple class to hold information about a gap between positions.
