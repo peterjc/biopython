@@ -228,7 +228,7 @@ class FeatureWriting(unittest.TestCase) :
         return compare_record(self.record, record2)
 
     def test_exact(self) :
-        """Features: write/read and flip of simple exact locations."""
+        """Features: write/read and flip simple exact locations."""
         #Note we don't have to explicitly give an ExactPosition object,
         #an integer will also work. First, a simple strand +1 feature:
         f = SeqFeature(FeatureLocation(10,20), strand=+1, type="CDS")
@@ -561,43 +561,73 @@ class FeatureWriting(unittest.TestCase) :
         self.write_read_check()
 
     def test_oneof(self) :
-        """Features: write/read simple one-of locations."""
+        """Features: write/read and flip simple one-of locations."""
         start = OneOfPosition([ExactPosition(0),ExactPosition(3),ExactPosition(6)])
         f = SeqFeature(FeatureLocation(start,21), strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "one-of(1,4,7)..21")
+        self.assertEqual(_insdc_feature_location_string(f._flip(100)),
+                         "complement(80..one-of(94,97,100))")
+        self.assertEqual(f.strand, +1)
+        self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
+
         start = OneOfPosition([ExactPosition(x) for x in [10,13,16]])
         end = OneOfPosition([ExactPosition(x) for x in [41,44,50]])
         f = SeqFeature(FeatureLocation(start,end), strand=+1, type="gene")
         self.assertEqual(_insdc_feature_location_string(f),
                          "one-of(11,14,17)..one-of(41,44,50)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(50)),
+                         "complement(one-of(1,7,10)..one-of(34,37,40))")
+        self.assertEqual(f.strand, +1)
+        self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
+
         end = OneOfPosition([ExactPosition(x) for x in [30,33]])
         f = SeqFeature(FeatureLocation(27,end), strand=+1, type="gene")
         self.assertEqual(_insdc_feature_location_string(f),
                          "28..one-of(30,33)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(40)),
+                         "complement(one-of(8,11)..13)")
+        self.assertEqual(f.strand, +1)
+        self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
+
         start = OneOfPosition([ExactPosition(x) for x in [36,40]])
         f = SeqFeature(FeatureLocation(start,46), strand=-1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(one-of(37,41)..46)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(50)),
+                         "5..one-of(10,14)")
+        self.assertEqual(f.strand, -1)
+        self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
+
         start = OneOfPosition([ExactPosition(x) for x in [45,60]])
         end = OneOfPosition([ExactPosition(x) for x in [70,90]])
         f = SeqFeature(FeatureLocation(start,end), strand=-1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(one-of(46,61)..one-of(70,90))")
+        self.assertEqual(_insdc_feature_location_string(f._flip(100)),
+                         "one-of(11,31)..one-of(40,55)")
+        self.assertEqual(f.strand, -1)
+        self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
+
         end = OneOfPosition([ExactPosition(x) for x in [60,63]])
         f = SeqFeature(FeatureLocation(55,end), strand=-1, type="tRNA")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(56..one-of(60,63))")
+        self.assertEqual(_insdc_feature_location_string(f._flip(100)),
+                         "one-of(38,41)..45")
+        self.assertEqual(f.strand, -1)
+        self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
+
         self.write_read_check()
 
     def test_within(self):
-        """Features: write/read simple within locations."""
+        """Features: write/read and flip simple within locations."""
         f = SeqFeature(FeatureLocation(WithinPosition(2,6),10), \
                        strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
