@@ -170,8 +170,7 @@ class SeqFeature(object):
                    #sub_features = [f._shift(offset) for f in self.sub_features],
                    ref = self.ref,
                    ref_db = self.ref_db)
-        #TODO - Reverse the order of the sub-features?
-        answer.sub_features = [f._flip(length) for f in self.sub_features]
+        answer.sub_features = [f._flip(length) for f in self.sub_features[::-1]]
         answer.qualifiers = dict(self.qualifiers.iteritems())
         return answer
 # --- References
