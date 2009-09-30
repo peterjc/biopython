@@ -330,6 +330,8 @@ class FeatureWriting(unittest.TestCase) :
         f = self.make_join_feature([f1,f2,f3], "CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "join(111..120,126..140,146..150)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(150)),
+                         "complement(join(1..5,11..25,31..40))")
         for sub_f in f._flip(100).sub_features :
             self.assertEqual(sub_f.strand,-1)
         self.assertEqual(f._flip(100).strand, -1)
@@ -339,6 +341,8 @@ class FeatureWriting(unittest.TestCase) :
         f = self.make_join_feature([f1,f2], ftype="gene")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(join(211..220,226..240))")
+        self.assertEqual(_insdc_feature_location_string(f._flip(300)),
+                         "join(61..75,81..90)")
         for sub_f in f._flip(100).sub_features :
             self.assertEqual(sub_f.strand, +1)
         self.assertEqual(f._flip(100).strand, +1)
@@ -349,6 +353,8 @@ class FeatureWriting(unittest.TestCase) :
         f = self.make_join_feature([f1,f2,f3], "CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(join(311..320,326..340,346..350))")
+        self.assertEqual(_insdc_feature_location_string(f._flip(350)),
+                         "join(1..5,11..25,31..40)")
         for sub_f in f._flip(100).sub_features :
             self.assertEqual(sub_f.strand, +1)
         self.assertEqual(f._flip(100).strand, +1)
@@ -362,6 +368,8 @@ class FeatureWriting(unittest.TestCase) :
         f = self.make_join_feature([f1,f2])
         self.assertEqual(_insdc_feature_location_string(f),
                          "join(<11..20,26..>40)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(100)),
+                         "complement(join(<61..75,81..>90))")
         self.assertEqual(f.strand, +1)
         for sub_f in f._flip(100).sub_features :
             self.assertEqual(sub_f.strand, -1)
@@ -416,32 +424,50 @@ class FeatureWriting(unittest.TestCase) :
                        strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "<6..10")
+        self.assertEqual(f.strand, +1)
+        self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
+
         f = SeqFeature(FeatureLocation(BeforePosition(15),BeforePosition(20)), \
                        strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "<16..<20")
+        self.assertEqual(f.strand, +1)
+        self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
+
         f = SeqFeature(FeatureLocation(25,BeforePosition(30)), \
                        strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "26..<30")
+        self.assertEqual(f.strand, +1)
+        self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
+
         f = SeqFeature(FeatureLocation(BeforePosition(35),40), \
                        strand=-1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(<36..40)")
+        self.assertEqual(f.strand, -1)
+        self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
+
         f = SeqFeature(FeatureLocation(BeforePosition(45),BeforePosition(50)), \
                        strand=-1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(<46..<50)")
+        self.assertEqual(f.strand, -1)
+        self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
+
         f = SeqFeature(FeatureLocation(55,BeforePosition(60)), \
                        strand=-1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(56..<60)")
+        self.assertEqual(f.strand, -1)
+        self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
+
         self.write_read_check()
         
     def test_after(self) :
