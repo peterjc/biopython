@@ -525,7 +525,7 @@ class OneOfPosition(AbstractPosition):
         return out
 
     def _flip(self, length) :
-        return OneOfPosition([(length - p) for p in self.position_list])
+        return OneOfPosition([p._flip(length) for p in self.position_choices[::-1]])
 
 class PositionGap(object):
     """Simple class to hold information about a gap between positions.

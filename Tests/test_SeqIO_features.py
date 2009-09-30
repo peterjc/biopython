@@ -11,6 +11,7 @@ and confirms they are consistent using our different parsers.
 import os
 import unittest
 from Bio.Alphabet import generic_dna
+from Bio.Alphabet import ProteinAlphabet, _get_base_alphabet
 from Bio import SeqIO
 from Bio.Seq import Seq, UnknownSeq, MutableSeq
 from Bio.SeqRecord import SeqRecord
@@ -30,6 +31,32 @@ def write_read(filename, in_format="gb", out_format="gb") :
     #Now load it back and check it agrees,
     gb_records2 = list(SeqIO.parse(handle,out_format))
     compare_records(gb_records, gb_records2)
+    #Now take the RC twice, and see if it still agrees!
+    def double_rc(record):
+        if isinstance(_get_base_alphabet(record.seq.alphabet), ProteinAlphabet) :
+            return record
+        #Explicitly opt to preserve all the annotations:
+        rc = record.reverse_complement(id=True, name=True, description=True,
+                                       annotations=True, dbxrefs=True)
+        return rc.reverse_complement(id=True, name=True, description=True,
+                                     annotations=True, dbxrefs=True)
+    for rec in gb_records2 : assert isinstance(rec, SeqRecord)
+    gb_records3 =[double_rc(rec) for rec in gb_records2]
+    for rec in gb_records3 : assert isinstance(rec, SeqRecord)
+    handle = StringIO()
+    SeqIO.write(gb_records2, handle, "gb")
+    data2 = handle.getvalue()
+    handle = StringIO()
+    SeqIO.write(gb_records3, handle, "gb")
+    data3 = handle.getvalue()
+    if data2 != data3 :
+        #handle = open("temp_old.txt", "w")
+        #handle.write(data2)
+        #handle.close()
+        #handle = open("temp_new.txt", "w")
+        #handle.write(data3)
+        #handle.close()
+        raise ValueError("Double RC changed %s output" % out_format)
 
 def compare_record(old, new, ignore_name=False) :
     #Note the name matching is a bit fuzzy

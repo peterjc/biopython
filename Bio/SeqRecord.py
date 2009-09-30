@@ -734,7 +734,7 @@ class SeqRecord(object):
 
     def reverse_complement(self, id=False, name=False, description=False,
                            features=True, annotations=False,
-                           letter_annotations=True):
+                           letter_annotations=True, dbxrefs=False):
         """Returns new SeqRecord with reverse complement sequence.
 
         You can specify the returned record's id, name and description as
@@ -857,6 +857,11 @@ class SeqRecord(object):
             answer.description = description
         elif description :
             answer.description = self.description
+        if isinstance(dbxrefs, list) :
+            answer.dbxrefs = dbxrefs
+        elif dbxrefs :
+            #Copy the old dbxrefs
+            answer.dbxrefs = self.dbxrefs[:]
         if isinstance(features, list) :
             answer.features = features
         elif features :
@@ -868,7 +873,7 @@ class SeqRecord(object):
             answer.annotations = annotations
         elif annotations :
             #Copy the old annotations,
-            answer.annotations = annotations.copy()
+            answer.annotations = self.annotations.copy()
         if isinstance(letter_annotations, dict) :
             answer.letter_annotations = letter_annotations
         elif letter_annotations :
