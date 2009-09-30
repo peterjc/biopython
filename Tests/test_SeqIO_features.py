@@ -632,34 +632,64 @@ class FeatureWriting(unittest.TestCase) :
                        strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "(3.9)..10")
+        self.assertEqual(_insdc_feature_location_string(f._flip(20)),
+                         "complement(11..(12.18))")
+        self.assertEqual(f.strand, +1)
+        self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
+
         f = SeqFeature(FeatureLocation(WithinPosition(12,6),
                                        WithinPosition(20,8)), \
                        strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "(13.19)..(20.28)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(30)),
+                         "complement((3.11)..(12.18))")
+        self.assertEqual(f.strand, +1)
+        self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
+
         f = SeqFeature(FeatureLocation(25,WithinPosition(30,3)), \
                        strand=+1, type="misc_feature")
         self.assertEqual(_insdc_feature_location_string(f),
                          "26..(30.33)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(40)),
+                         "complement((8.11)..15)")
+        self.assertEqual(f.strand, +1)
+        self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
+
         f = SeqFeature(FeatureLocation(WithinPosition(35,4),40), \
                        strand=-1, type="rRNA")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement((36.40)..40)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(40)),
+                         "1..(1.5)")
+        self.assertEqual(f.strand, -1)
+        self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
+
         f = SeqFeature(FeatureLocation(WithinPosition(45,2),
                                        WithinPosition(50,3)), \
                        strand=-1, type="repeat_region")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement((46.48)..(50.53))")
+        self.assertEqual(_insdc_feature_location_string(f._flip(60)),
+                         "(8.11)..(13.15)")
+        self.assertEqual(f.strand, -1)
+        self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
+
         f = SeqFeature(FeatureLocation(55,WithinPosition(60,5)), \
                        strand=-1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(56..(60.65))")
+        self.assertEqual(_insdc_feature_location_string(f._flip(100)),
+                         "(36.41)..45")
+        self.assertEqual(f.strand, -1)
+        self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
+
         self.write_read_check()
         
 class NC_000932(unittest.TestCase):
