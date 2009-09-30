@@ -228,7 +228,7 @@ class FeatureWriting(unittest.TestCase) :
         return compare_record(self.record, record2)
 
     def test_exact(self) :
-        """Features: write/read and flip (for rev comp) of simple exact locations."""
+        """Features: write/read and flip of simple exact locations."""
         #Note we don't have to explicitly give an ExactPosition object,
         #an integer will also work. First, a simple strand +1 feature:
         f = SeqFeature(FeatureLocation(10,20), strand=+1, type="CDS")
@@ -276,17 +276,25 @@ class FeatureWriting(unittest.TestCase) :
             self.assertEqual(f._flip(100).strand, f.strand)
 
     def test_between(self) :
-        """Features: write/read simple between locations."""
+        """Features: write/read and flip simple between locations."""
         #Note we don't use the BetweenPosition any more!
         f = SeqFeature(FeatureLocation(10,10), strand=+1, type="variation")
         self.assertEqual(_insdc_feature_location_string(f),
                          "10^11")
+        self.assertEqual(_insdc_feature_location_string(f._flip(20)),
+                         "complement(10^11)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(100)),
+                         "complement(90^91)")
         #TODO - Check flipped location
         self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(20,20), strand=-1, type="variation")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(20^21)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(40)),
+                         "20^21")
+        self.assertEqual(_insdc_feature_location_string(f._flip(100)),
+                         "80^81")
         #TODO - Check flipped location
         self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
@@ -309,7 +317,7 @@ class FeatureWriting(unittest.TestCase) :
         return jf
         
     def test_join(self):
-        """Features: write/read simple join locations."""
+        """Features: write/read and flip simple join locations."""
         f1 = SeqFeature(FeatureLocation(10,20), strand=+1)
         f2 = SeqFeature(FeatureLocation(25,40), strand=+1)
         f = self.make_join_feature([f1,f2])
@@ -362,7 +370,7 @@ class FeatureWriting(unittest.TestCase) :
         self.write_read_check()
 
     def test_fuzzy_join(self):
-        """Features: write/read fuzzy join locations."""
+        """Features: write/read and flip fuzzy join locations."""
         f1 = SeqFeature(FeatureLocation(BeforePosition(10),20), strand=+1)
         f2 = SeqFeature(FeatureLocation(25,AfterPosition(40)), strand=+1)
         f = self.make_join_feature([f1,f2])
@@ -384,6 +392,8 @@ class FeatureWriting(unittest.TestCase) :
         f = self.make_join_feature([f1,f2,f3], "CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "join(one-of(108,111)..120,126..140,146..(150.160))")
+        self.assertEqual(_insdc_feature_location_string(f._flip(200)),
+                         "complement(join((41.51)..55,61..75,81..one-of(90,93)))")
         self.assertEqual(f.strand, +1)
         for sub_f in f._flip(100).sub_features :
             self.assertEqual(sub_f.strand,-1)
@@ -395,6 +405,8 @@ class FeatureWriting(unittest.TestCase) :
         f = self.make_join_feature([f1,f2], "gene")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(join(<211..220,226..(240.244)))")
+        self.assertEqual(_insdc_feature_location_string(f._flip(300)),
+                         "join((57.61)..75,81..>90)")
         self.assertEqual(f.strand, -1)
         for sub_f in f._flip(100).sub_features :
             self.assertEqual(sub_f.strand, +1)
@@ -409,6 +421,8 @@ class FeatureWriting(unittest.TestCase) :
         f = self.make_join_feature([f1,f2,f3], "CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(join(>311..320,326..one-of(340,337),346..(350.355)))")
+        self.assertEqual(_insdc_feature_location_string(f._flip(400)),
+                         "join((46.51)..55,one-of(64,61)..75,81..<90)")
         self.assertEqual(f.strand, -1)
         for sub_f in f._flip(100).sub_features :
             self.assertEqual(sub_f.strand, +1)
@@ -419,11 +433,13 @@ class FeatureWriting(unittest.TestCase) :
 
 
     def test_before(self) :
-        """Features: write/read simple before locations."""
+        """Features: write/read and flip simple before locations."""
         f = SeqFeature(FeatureLocation(BeforePosition(5),10), \
                        strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "<6..10")
+        self.assertEqual(_insdc_feature_location_string(f._flip(20)),
+                         "complement(11..>15)")
         self.assertEqual(f.strand, +1)
         self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
@@ -432,6 +448,8 @@ class FeatureWriting(unittest.TestCase) :
                        strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "<16..<20")
+        self.assertEqual(_insdc_feature_location_string(f._flip(20)),
+                         "complement(>1..>5)")
         self.assertEqual(f.strand, +1)
         self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
@@ -440,6 +458,8 @@ class FeatureWriting(unittest.TestCase) :
                        strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "26..<30")
+        self.assertEqual(_insdc_feature_location_string(f._flip(40)),
+                         "complement(>11..15)")
         self.assertEqual(f.strand, +1)
         self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
@@ -448,6 +468,8 @@ class FeatureWriting(unittest.TestCase) :
                        strand=-1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(<36..40)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(40)),
+                         "1..>5")
         self.assertEqual(f.strand, -1)
         self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
@@ -456,6 +478,8 @@ class FeatureWriting(unittest.TestCase) :
                        strand=-1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(<46..<50)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(100)),
+                         ">51..>55")
         self.assertEqual(f.strand, -1)
         self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
@@ -464,6 +488,8 @@ class FeatureWriting(unittest.TestCase) :
                        strand=-1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(56..<60)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(100)),
+                         ">41..45")
         self.assertEqual(f.strand, -1)
         self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
@@ -471,37 +497,67 @@ class FeatureWriting(unittest.TestCase) :
         self.write_read_check()
         
     def test_after(self) :
-        """Features: write/read simple after locations."""
+        """Features: write/read and flip simple after locations."""
         f = SeqFeature(FeatureLocation(AfterPosition(5),10), \
                        strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          ">6..10")
+        self.assertEqual(_insdc_feature_location_string(f._flip(100)),
+                         "complement(91..<95)")
+        self.assertEqual(f.strand, +1)
+        self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
+
         f = SeqFeature(FeatureLocation(AfterPosition(15),AfterPosition(20)), \
                        strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          ">16..>20")
+        self.assertEqual(_insdc_feature_location_string(f._flip(20)),
+                         "complement(<1..<5)")
+        self.assertEqual(f.strand, +1)
+        self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
+
         f = SeqFeature(FeatureLocation(25,AfterPosition(30)), \
                        strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "26..>30")
+        self.assertEqual(_insdc_feature_location_string(f._flip(30)),
+                         "complement(<1..5)")
+        self.assertEqual(f.strand, +1)
+        self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
+
         f = SeqFeature(FeatureLocation(AfterPosition(35),40), \
                        strand=-1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(>36..40)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(100)),
+                         "61..<65")
+        self.assertEqual(f.strand, -1)
+        self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
+
         f = SeqFeature(FeatureLocation(AfterPosition(45),AfterPosition(50)), \
                        strand=-1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(>46..>50)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(100)),
+                         "<51..<55")
+        self.assertEqual(f.strand, -1)
+        self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
+
         f = SeqFeature(FeatureLocation(55,AfterPosition(60)), \
                        strand=-1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f),
                          "complement(56..>60)")
+        self.assertEqual(_insdc_feature_location_string(f._flip(100)),
+                         "<41..45")
+        self.assertEqual(f.strand, -1)
+        self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
+
         self.write_read_check()
 
     def test_oneof(self) :
