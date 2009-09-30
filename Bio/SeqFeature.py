@@ -145,18 +145,16 @@ class SeqFeature(object):
         answer.qualifiers = dict(self.qualifiers.iteritems())
         return answer
 
-    def _flip(self, length, strandless=["source"]) :
+    def _flip(self, length) :
         """Returns a copy of the feature with its location flipped (PRIVATE).
 
         The argument length gives the length of the parent sequence. For
-        example a location 0..20 with parent length 30 becomes after flipping
-        complement(10..30) - unless the feature type is strandless, in which
-        case is would just become 10..30 after flipping.
+        example a location 0..20 (+1 strand) with parent length 30 becomes
+        after flipping 10..30 (-1 strand). Dual strand or strandless features
+        remain dual strand or strandless - just their end points are changed.
         
         The annotation qaulifiers are copied."""
-        if self.type in strandless :
-            new_strand = self.strand
-        elif self.strand == +1 :
+        if self.strand == +1 :
             new_strand = -1
         elif self.strand == -1 :
             new_strand = +1
