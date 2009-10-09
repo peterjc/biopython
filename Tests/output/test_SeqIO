@@ -411,11 +411,11 @@ Testing reading fasta format file Fasta/f002
  Seq='GATCAAATCTGCACTGTGTCTACATATAGGAAAGGTCCTG...NTTTTTT', length=471
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 471
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 471
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 471
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|1592936|gb|G29385|G29385).
  Checking can write/read as 'fastq-illumina' format
@@ -430,7 +430,7 @@ Testing reading fasta format file Fasta/f002
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|1592936|gb|G29385|G29385).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 471
 Testing reading fasta format file Fasta/fa01
  ID and Name='AK1H_ECOLI/1-378',
  Seq='CPDSINAALICRGEKMSIAIMAGVLEARGH-N--VTVIDP...INIVAIA', length=378
@@ -438,11 +438,11 @@ Testing reading fasta format file Fasta/fa01
  Seq='-----------------VEDAVKATIDCRGEKLSIAMMKA...SALAQAN', length=382
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 382
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 382
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 382
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AKH_HAEIN/1-382).
  Checking can write/read as 'fastq-illumina' format
@@ -457,7 +457,7 @@ Testing reading fasta format file Fasta/fa01
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AKH_HAEIN/1-382).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 382
 Testing reading fasta format file GenBank/NC_005816.fna
  ID and Name='gi|45478711|ref|NC_005816.1|',
  Seq='TGTAACGAACGGTGCAATAGTGATCCACACCCAACGCCTG...ACCCCTG', length=9609
@@ -492,11 +492,11 @@ Testing reading fasta format file GenBank/NC_005816.ffn
  Seq='TTGGCTGATTTGAAAAAGCTACAGGTTTACGGACCTGAGT...CAAGTAA', length=273
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 273
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 273
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 273
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=ref|NC_005816.1|:c8360-8088).
  Checking can write/read as 'fastq-illumina' format
@@ -511,7 +511,7 @@ Testing reading fasta format file GenBank/NC_005816.ffn
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=ref|NC_005816.1|:c8360-8088).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 273
 Testing reading fasta format file GenBank/NC_005816.faa
  ID and Name='gi|45478712|ref|NP_995567.1|',
  Seq='MVTFETVMEIKILHKQGMSSRAIARELGISRNTVKRYLQA...SFCRGVA', length=340
@@ -524,11 +524,11 @@ Testing reading fasta format file GenBank/NC_005816.faa
  Seq='MADLKKLQVYGPELPRPYADTVKGSRYKNMKELRVQFSGR...LNTLESK', length=90
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 90
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 90
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 90
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|45478721|ref|NP_995576.1|).
  Checking can write/read as 'fastq-illumina' format
@@ -543,7 +543,7 @@ Testing reading fasta format file GenBank/NC_005816.faa
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|45478721|ref|NP_995576.1|).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 90
 Testing reading fasta format file GenBank/NC_000932.faa
  ID and Name='gi|7525080|ref|NP_051037.1|',
  Seq='MPTIKQLIRNTRQPIRNVTKSPALRGCPQRRGTCTRVYTI...YGVKKPK', length=123
@@ -556,11 +556,11 @@ Testing reading fasta format file GenBank/NC_000932.faa
  Seq='MAIHLYKTSTPSTRNGAVDSQVKSNPRNNLICGQHHCGKG...ILRRRSK', length=274
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 274
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 274
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 274
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|7525099|ref|NP_051123.1|).
  Checking can write/read as 'fastq-illumina' format
@@ -575,7 +575,7 @@ Testing reading fasta format file GenBank/NC_000932.faa
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|7525099|ref|NP_051123.1|).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 274
 Testing reading fasta format file GFF/NC_001802.fna
  ID and Name='gi|9629357|ref|NC_001802.1|',
  Seq='GGTCTCTCTGGTTAGACCAGATCTGAGCCTGGGAGCTCTC...GTGCTTC', length=9181
@@ -661,11 +661,11 @@ Testing reading fasta format file Registry/seqs.fasta
  Seq='MPVVVVASSKGGAGKSTTAVVLGTELAHKGVPVTMLDCDP...KLTEALR', length=222
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 222
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 222
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 222
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|129628|sp|P07175|PARA_AGRTU).
  Checking can write/read as 'fastq-illumina' format
@@ -680,7 +680,7 @@ Testing reading fasta format file Registry/seqs.fasta
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|129628|sp|P07175|PARA_AGRTU).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 222
 Testing reading nexus format file Nexus/test_Nexus_input.nex
  ID and Name='t1',
  Seq='A-C-G-Tc-gtgtgtgctct-t-t------ac-gtgtgtgctct-t-t', length=48
@@ -1089,11 +1089,11 @@ Testing reading genbank format file GenBank/cor6_6.gb
  Seq='ATGGCAGACAACAAGCAGAGCTTCCAAGCCGGTCAAGCCG...CAAGTAG', length=497
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 497
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 497
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 497
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AF297471.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1107,7 +1107,7 @@ Testing reading genbank format file GenBank/cor6_6.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AF297471.1).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 497
 Testing reading genbank format file GenBank/iro.gb
  ID = 'AL109817.1', Name='IRO125195',
  Seq='CACAGGCCCAGAGCCACTCCTGCCTACAGGTTCTGAGGGC...AAAAAAA', length=1326
@@ -1383,11 +1383,11 @@ Testing reading genbank format file GenBank/gbvrl1_start.seq
  Seq='ATGAGTGATGGAGCAGTTCAACCAGACGGTGGTCAACCTG...ATATTAA', length=1755
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 1755
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 1755
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 1755
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AB000050.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1401,7 +1401,7 @@ Testing reading genbank format file GenBank/gbvrl1_start.seq
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AB000050.1).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 1755
 Testing reading genbank format file GFF/NC_001422.gbk
  ID = 'NC_001422.1', Name='NC_001422',
  Seq='GAGTTTTATCGCTTCCATGACGCAGAAGTTAACACTTTCG...ACCTGCA', length=5386
@@ -1914,11 +1914,11 @@ Testing reading emboss format file Emboss/needle.txt
  Seq='TVLLVEDEEGVRKLVRGILSRQGYHVLEATSGEEALEIVR...AVLQKRQ', length=125
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 125
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 125
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 125
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|94970041|receiver).
  Checking can write/read as 'fastq-illumina' format
@@ -1933,7 +1933,7 @@ Testing reading emboss format file Emboss/needle.txt
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|94970041|receiver).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 125
 Testing reading emboss format file Emboss/water.txt
  ID = 'IXI_234', Name='<unknown name>',
  Seq='TSPASIRPPAGPSSRPAMVSSRRTRPSPPGPRRPTGRPCC...AGDRSHE', length=131
@@ -1975,11 +1975,11 @@ Testing reading phd format file Phd/phd1
  Seq='acataaatcaaattactnaccaacacacaaaccngtctcg...tgctttn', length=1280
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 1280
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 1280
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 1280
  Checking can write/read as 'fastq' format
  Checking can write/read as 'fastq-illumina' format
 UserWarning - Data loss - max PHRED quality 62 in Illumina FASTQ
@@ -1991,7 +1991,7 @@ UserWarning - Data loss - max Solexa quality 62 in Solexa FASTQ
  Checking can write/read as 'qual' format
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 1280
 Testing reading phd format file Phd/phd2
  ID and Name='ML4924R',
  Seq='actttggtcgcctgcaggtaccggtccgngattcccgggt...ggtgaga', length=180
@@ -2049,11 +2049,11 @@ Testing reading ace format file Ace/contig1.ace
  Seq='cacggatgatagcttcgcgacactagcttttcagctaacc...cttgtag', length=3296
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: Sequence has a gapped alphabet, alignment does not
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: Sequence has a gapped alphabet, alignment does not
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: Sequence has a gapped alphabet, alignment does not
  Checking can write/read as 'fastq' format
  Failed: A quality value of None was found
  Checking can write/read as 'fastq-illumina' format
@@ -2067,14 +2067,17 @@ Testing reading ace format file Ace/contig1.ace
  Failed: A quality value of None was found
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: Sequence has a gapped alphabet, alignment does not
 Testing reading ace format file Ace/consed_sample.ace
  ID and Name='Contig1',
  Seq='agccccgggccgtggggttccttgagcactcccaaagttc...gggtttg', length=1475
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
+ Failed: Sequence has a gapped alphabet, alignment does not
  Checking can write/read as 'phylip' format
+ Failed: Sequence has a gapped alphabet, alignment does not
  Checking can write/read as 'stockholm' format
+ Failed: Sequence has a gapped alphabet, alignment does not
  Checking can write/read as 'fastq' format
  Failed: A quality value of None was found
  Checking can write/read as 'fastq-illumina' format
@@ -2088,13 +2091,17 @@ Testing reading ace format file Ace/consed_sample.ace
  Failed: A quality value of None was found
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
+ Failed: Sequence has a gapped alphabet, alignment does not
 Testing reading ace format file Ace/seq.cap.ace
  ID and Name='Contig1',
  Seq='AGTTTTAGTTTTCCTCTGAAGCAAGCACACCTTCCCTTTC...TCACATT', length=1222
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
+ Failed: Sequence has a gapped alphabet, alignment does not
  Checking can write/read as 'phylip' format
+ Failed: Sequence has a gapped alphabet, alignment does not
  Checking can write/read as 'stockholm' format
+ Failed: Sequence has a gapped alphabet, alignment does not
  Checking can write/read as 'fastq' format
  Failed: A quality value of None was found
  Checking can write/read as 'fastq-illumina' format
@@ -2108,6 +2115,7 @@ Testing reading ace format file Ace/seq.cap.ace
  Failed: A quality value of None was found
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
+ Failed: Sequence has a gapped alphabet, alignment does not
 Testing reading ig format file IntelliGenetics/TAT_mase_nuc.txt
  ID and Name='A_U455',
  Seq='ATGGAGCCAGTAGATCCTAACCTAGAGCCCTGGAAACACC...ATTCGCT', length=303
@@ -2120,11 +2128,11 @@ Testing reading ig format file IntelliGenetics/TAT_mase_nuc.txt
  Seq='ATGTCCTCAACGGACCAGATATGCCAGACACAGAGGGTAC...GAATCTT', length=330
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 330
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 330
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 330
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=SYK_SYK).
  Checking can write/read as 'fastq-illumina' format
@@ -2139,7 +2147,7 @@ Testing reading ig format file IntelliGenetics/TAT_mase_nuc.txt
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=SYK_SYK).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 330
 Testing reading ig format file IntelliGenetics/VIF_mase-pro.txt
  ID and Name='most-likely',
  Seq='MEN--RW-QVMIVWQVDRMRIRTWKSLVKHHMYRSKKA-K...-----GH', length=298
@@ -2189,11 +2197,11 @@ Testing reading ig format file IntelliGenetics/vpu_nucaligned.txt
  Seq='ATGACTAATATATTTGAGTATGCTTTT-------------...-GACGAA', length=294
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 294
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 294
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 294
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=CPZANT).
  Checking can write/read as 'fastq-illumina' format
@@ -2208,7 +2216,7 @@ Testing reading ig format file IntelliGenetics/vpu_nucaligned.txt
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=CPZANT).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 294
 Testing reading pir format file NBRF/B_nuc.pir
  ID and Name='HLA:HLA00132',
  Seq='ATGCTGGTCATGGCGCCCCGAACCGTCCTCCTGCTGCTCT...AGCTTGA', length=1089
@@ -2221,11 +2229,11 @@ Testing reading pir format file NBRF/B_nuc.pir
  Seq='ATGCGGGTCACGGCGCCCCGAACCCTCCTCCTGCTGCTCT...CGCGCGG', length=619
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 619
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 619
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 619
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA01135).
  Checking can write/read as 'fastq-illumina' format
@@ -2239,7 +2247,7 @@ Testing reading pir format file NBRF/B_nuc.pir
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA01135).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 619
 Testing reading pir format file NBRF/Cw_prot.pir
  ID and Name='HLA:HLA00401',
  Seq='MRVMAPRTLILLLSGALALTETWACSHSMKYFFTSVSRPG...SLIACKA', length=366
@@ -2252,11 +2260,11 @@ Testing reading pir format file NBRF/Cw_prot.pir
  Seq='MRVMAPRALLLLLSGGLALTETWACSHSMRYFDTAVSRPG...SLIACKA', length=366
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 366
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 366
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 366
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA00484).
  Checking can write/read as 'fastq-illumina' format
@@ -2270,7 +2278,7 @@ Testing reading pir format file NBRF/Cw_prot.pir
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA00484).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 366
 Testing reading pir format file NBRF/DMA_nuc.pir
  ID and Name='HLA:HLA00485',
  Seq='ATGGGTCATGAACAGAACCAAGGAGCTGCGCTGCTACAGA...TGACTGA', length=786
@@ -2282,11 +2290,11 @@ Testing reading pir format file NBRF/DMA_nuc.pir
  Seq='GGGTTTCCTATCGCTGAAGTGTTCACGCTGAAGCCCCTGG...CTATTGG', length=279
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 279
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 279
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 279
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA00488).
  Checking can write/read as 'fastq-illumina' format
@@ -2300,7 +2308,7 @@ Testing reading pir format file NBRF/DMA_nuc.pir
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA00488).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 279
 Testing reading pir format file NBRF/DMB_prot.pir
  ID and Name='HLA:HLA00489',
  Seq='MITFLPLLLGLSLGCTGAGGFVAHVESTCLLDDAGTPKDF...SEGWHIS', length=263
@@ -2313,11 +2321,11 @@ Testing reading pir format file NBRF/DMB_prot.pir
  Seq='GFVAHVESTCLLDDAGTPKDFTYCIFFNKDLLTCWDPEEN...EPILRDW', length=188
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 188
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 188
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 188
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA01083).
  Checking can write/read as 'fastq-illumina' format
@@ -2331,7 +2339,7 @@ Testing reading pir format file NBRF/DMB_prot.pir
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA01083).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 188
 Testing reading pir format file NBRF/clustalw.pir
  ID and Name='804Angiostrongylus_cantonensis',
  Seq='----------------------------------------...-------', length=2527
@@ -2608,11 +2616,11 @@ Testing can write/read zero records
 Testing can write/read three peptides of different lengths
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 22
  Checking can write/read as 'phylip' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 22
  Checking can write/read as 'stockholm' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 22
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Alpha).
  Checking can write/read as 'fastq-illumina' format
@@ -2626,7 +2634,7 @@ Testing can write/read three peptides of different lengths
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Alpha).
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
- Failed: Sequences must all be the same length
+ Failed: SeqRecord must be length 22
 Testing can write/read three proteins alignment
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format

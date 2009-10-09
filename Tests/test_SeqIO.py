@@ -7,6 +7,7 @@ import os
 
 from Bio import SeqIO
 from Bio import AlignIO
+from Bio.Align import MultiSeqAlignment
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq, UnknownSeq
 from StringIO import StringIO
@@ -164,8 +165,8 @@ test_files = [ \
     ("ig",  False, 'IntelliGenetics/TAT_mase_nuc.txt', 17),
     ("ig",  True,  'IntelliGenetics/VIF_mase-pro.txt', 16),
     #This next file is a MASE alignment but sequence O_ANT70 is shorter than
-    #the others (so the to_alignment() call will fail).  Perhaps MASE doesn't
-    #write trailing gaps?
+    #the others (so the MultiSeqAlignment() call will fail).  Perhaps MASE
+    #doesn't write trailing gaps?
     ("ig",  False,  'IntelliGenetics/vpu_nucaligned.txt', 9),
 #Following NBRD-PIR files are used in test_nbrf.py
     ("pir", False, 'NBRF/B_nuc.pir', 444),
@@ -539,8 +540,8 @@ for (t_format, t_alignment, t_filename, t_count) in test_files :
         print "Testing reading %s format file %s as an alignment" \
               % (t_format, t_filename)
 
-        #Using SeqIO.to_alignment(SeqIO.parse(...))
-        alignment = SeqIO.to_alignment(SeqIO.parse( \
+        #Using MultiSeqAlignment(SeqIO.parse(...))
+        alignment = MultiSeqAlignment(SeqIO.parse( \
                     handle=open(t_filename,"r"), format=t_format))
         assert len(alignment.get_all_seqs()) == t_count
 

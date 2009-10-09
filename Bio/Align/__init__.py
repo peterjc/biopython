@@ -18,7 +18,7 @@ class MultiSeqAlignment(_BaseAlignment) :
     This class is not really suitable for second generation sequencing contig
     output, which can be regarded as a consensus sequence and many short reads.
     """
-    def __init__(self, records, alphabet=Alphabet.single_letter_alphabet) :
+    def __init__(self, records, alphabet=None) :
         #Temporary, going to allow a list of records to be given...
         if isinstance(records, Alphabet.Alphabet) \
         or isinstance(records, Alphabet.AlphabetEncoder):
@@ -27,16 +27,24 @@ class MultiSeqAlignment(_BaseAlignment) :
             warnings.warn("Bio.Align.MultiSeqAlignment takes different "
                           "arguments to the older Bio.Align.Generic.Alphabet.",
                           DeprecationWarning)
-        if not (isinstance(alphabet, Alphabet.Alphabet) \
+        if alphabet is not None and \
+        not (isinstance(alphabet, Alphabet.Alphabet) \
         or isinstance(alphabet, Alphabet.AlphabetEncoder)):
             raise ValueError("Invalid alphabet argument")
-        self._alphabet = alphabet
-        # hold everything at a list of SeqRecord objects
+        if alphabet is None :
+            self._alphabet = Alphabet.single_letter_alphabet
+        else :
+            self._alphabet = alphabet
+        # hold everything as a list of SeqRecord objects
         self._records = []
         self._length = 0
-        self.extend(records)
-        #TODO - If the provided alphabet was the default, should
-        #we pick a consensus based on the records (if any)?
+        if records :
+            self.extend(records)
+        #If no alphabet is given, pick a consensus based on the records (if any)
+        if alphabet is None :
+            alphabets = [rec.seq.alphabet for rec in self._records \
+                         if rec.seq is not None]
+            self._alphabet = Alphabet._consensus_alphabet(alphabets)
 
     def _check_len(self) :
         """Debugging method (PRIVATE)."""
@@ -54,12 +62,49 @@ class MultiSeqAlignment(_BaseAlignment) :
         return self._length
 
     def append(self, record) :
-        """Add another SeqRecord object as the last row of the alignment."""
+        """Add another SeqRecord object as the last row of the alignment.
+
+        This will check the length and the alphabet are consistent with
+        that of the whole alignment.
+        """
         if not isinstance(record, SeqRecord) :
             raise TypeError
+        if record.seq is None :
+            raise TypeError("SeqRecord (id=%s) has None for its sequence." % record.id)
         if self._length and len(record) != self._length :
             raise ValueError("SeqRecord must be length %i" % self._length)
-        #TODO - Reuse Bio.SeqIO.to_alignment() code to check the alphabet
+
+        if not (isinstance(record.seq.alphabet, Alphabet.Alphabet) \
+        or isinstance(record.seq.alphabet, Alphabet.AlphabetEncoder)) :
+            raise ValueError("Sequence does not have a valid alphabet")
+
+        alphabet = self._alphabet
+        if isinstance(record.seq.alphabet, Alphabet.Alphabet) \
+        and isinstance(alphabet, Alphabet.Alphabet) :
+            #Comparing two non-gapped alphabets            
+            if not isinstance(record.seq.alphabet, alphabet.__class__) :
+                raise ValueError("Incompatible sequence alphabet " \
+                                 + "%s for %s alignment" \
+                                 % (record.seq.alphabet, alphabet))
+        elif isinstance(record.seq.alphabet, Alphabet.AlphabetEncoder) \
+        and isinstance(alphabet, Alphabet.Alphabet) :
+            raise ValueError("Sequence has a gapped alphabet, alignment does not")
+        elif isinstance(record.seq.alphabet, Alphabet.Alphabet) \
+        and isinstance(alphabet, Alphabet.Gapped) :
+            #Sequence isn't gapped, alignment is.
+            if not isinstance(record.seq.alphabet, alphabet.alphabet.__class__) :
+                raise ValueError("Incompatible sequence alphabet " \
+                                 + "%s for %s alignment" \
+                                 % (record.seq.alphabet, alphabet))
+        else :
+            #Comparing two gapped alphabets
+            if not isinstance(record.seq.alphabet, alphabet.__class__) :
+                raise ValueError("Incompatible sequence alphabet " \
+                                 + "%s for %s alignment" \
+                                 % (record.seq.alphabet, alphabet))
+            if record.seq.alphabet.gap_char != alphabet.gap_char :
+                raise ValueError("Sequence gap characters != alignment gap char")
+
         self._records.append(record)
         if not self._length :
             self._length = len(record)
