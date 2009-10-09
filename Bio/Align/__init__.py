@@ -32,7 +32,7 @@ class MultiSeqAlignment(_BaseAlignment) :
         or isinstance(alphabet, Alphabet.AlphabetEncoder)):
             raise ValueError("Invalid alphabet argument")
         if alphabet is None :
-            self._alphabet = Alphabet.Gapped(Alphabet.single_letter_alphabet)
+            self._alphabet = Alphabet.single_letter_alphabet
         else :
             self._alphabet = alphabet
         # hold everything as a list of SeqRecord objects
