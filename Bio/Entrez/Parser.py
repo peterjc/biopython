@@ -187,7 +187,7 @@ class DataHandler:
             self.object = self.stack.pop()
             if self.object.itemtype in ("List", "Structure"):
                 return
-            elif self.object.itemtype=="Integer":
+            elif self.object.itemtype=="Integer" and value:
                 value = IntegerElement(value)
             else:
                 # Convert Unicode strings to plain strings if possible
