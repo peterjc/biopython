@@ -738,8 +738,11 @@ def to_alignment(sequences, alphabet=None, strict=True) :
     if not (isinstance(alphabet, Alphabet) or isinstance(alphabet, AlphabetEncoder)) :
         raise ValueError("Invalid alphabet")
 
+    #TODO - replace all this with just:
+    #return MultiSeqAlignment(sequences, alphabet)
+
     alignment_length = None
-    alignment = MultiSeqAlignment(alphabet)
+    alignment = MultiSeqAlignment([], alphabet)
     for record in sequences :
         if strict :
             if alignment_length is None :
@@ -783,10 +786,6 @@ def to_alignment(sequences, alphabet=None, strict=True) :
             #Should we look at the alphabet.contains() method?
         if record.seq is None :
             raise TypeError("SeqRecord (id=%s) has None for its sequence." % record.id)
-            
-        #This is abusing the "private" records list,
-        #we should really have a method like add_sequence
-        #but which takes SeqRecord objects.  See also Bug 1944
         alignment.append(record)
     return alignment
 

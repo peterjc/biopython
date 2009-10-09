@@ -194,12 +194,13 @@ class PhylipIterator(AlignmentIterator) :
                     raise ValueError("End of file mid-block")
             if not line : break #end of file
 
-        alignment = MultiSeqAlignment(self.alphabet)
+        alignment = MultiSeqAlignment([], self.alphabet)
         for i in range(0,number_of_seqs) :
             seq = "".join(seqs[i])
             if len(seq)!=length_of_seqs :
                 raise ValueError("Sequence %i length %i, expected length %i" \
                                   % (i+1, len(seq), length_of_seqs))
+            #TODO - Construct a SeqRecord and use alignment.append(record)
             alignment.add_sequence(ids[i], seq)
             
             record = alignment.get_all_seqs()[-1]

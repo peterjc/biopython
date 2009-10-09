@@ -1,4 +1,4 @@
-# Copyright 2008 by Peter Cock.  All rights reserved.
+# Copyright 2008-2009 by Peter Cock.  All rights reserved.
 #
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
@@ -231,7 +231,7 @@ class FastaM10Iterator(AlignmentIterator) :
 
         #TODO - Look at the "sq_type" to assign a sensible alphabet?
         alphabet = self.alphabet
-        alignment = MultiSeqAlignment(alphabet)
+        alignment = MultiSeqAlignment([], alphabet)
 
         #TODO - Introduce an annotated alignment class?
         #For now, store the annotation a new private property:

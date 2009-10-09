@@ -205,7 +205,7 @@ class EmbossIterator(AlignmentIterator) :
             raise ValueError("Found %i records in this alignment, told to expect %i" \
                              % (len(ids), self.records_per_alignment))
 
-        alignment = MultiSeqAlignment(self.alphabet)
+        alignment = MultiSeqAlignment([], self.alphabet)
         for id, seq in zip(ids, seqs) :
             if len(seq) != length_of_seqs :
                 #EMBOSS 2.9.0 is known to use spaces instead of minus signs

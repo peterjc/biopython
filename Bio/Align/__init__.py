@@ -18,8 +18,15 @@ class MultiSeqAlignment(_BaseAlignment) :
     This class is not really suitable for second generation sequencing contig
     output, which can be regarded as a consensus sequence and many short reads.
     """
-    def __init__(self, alphabet) :
+    def __init__(self, records, alphabet=Alphabet.single_letter_alphabet) :
         #Temporary, going to allow a list of records to be given...
+        if isinstance(records, Alphabet.Alphabet) \
+        or isinstance(records, Alphabet.AlphabetEncoder):
+            records, alphabet = [], records
+            import warnings
+            warnings.warn("Bio.Align.MultiSeqAlignment takes different "
+                          "arguments to the older Bio.Align.Generic.Alphabet.",
+                          DeprecationWarning)
         if not (isinstance(alphabet, Alphabet.Alphabet) \
         or isinstance(alphabet, Alphabet.AlphabetEncoder)):
             raise ValueError("Invalid alphabet argument")
@@ -27,6 +34,9 @@ class MultiSeqAlignment(_BaseAlignment) :
         # hold everything at a list of SeqRecord objects
         self._records = []
         self._length = 0
+        self.extend(records)
+        #TODO - If the provided alphabet was the default, should
+        #we pick a consensus based on the records (if any)?
 
     def _check_len(self) :
         """Debugging method (PRIVATE)."""
@@ -49,6 +59,7 @@ class MultiSeqAlignment(_BaseAlignment) :
             raise TypeError
         if self._length and len(record) != self._length :
             raise ValueError("SeqRecord must be length %i" % self._length)
+        #TODO - Reuse Bio.SeqIO.to_alignment() code to check the alphabet
         self._records.append(record)
         if not self._length :
             self._length = len(record)
