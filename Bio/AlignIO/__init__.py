@@ -21,8 +21,8 @@ Input
 For the typical special case when your file or handle contains one and only
 one alignment, use the function Bio.AlignIO.read().  This takes an input file
 handle, format string and optional number of sequences per alignment.  It will
-return a single Alignment object (or raise an exception if there isn't just
-one alignment):
+return a single MultiSeqAlignment object (or raise an exception if there isn't
+just one alignment):
 
     >>> from Bio import AlignIO
     >>> handle = open("Phylip/interlaced.phy", "rU")
@@ -36,8 +36,9 @@ one alignment):
 
 For the general case, when the handle could contain any number of alignments,
 use the function Bio.AlignIO.parse(...) which takes the same arguments, but
-returns an iterator giving Alignment objects (typically used in a for loop).
-If you want random access to the alignments by number, turn this into a list:
+returns an iterator giving MultiSeqAlignment objects (typically used in a for
+loop). If you want random access to the alignments by number, turn this into a
+list:
 
     >>> from Bio import AlignIO
     >>> handle = open("Emboss/needle.txt", "rU")
@@ -55,8 +56,8 @@ can be a file header and footer, as seen in the EMBOSS alignment output.
 Output
 ======
 Use the function Bio.AlignIO.write(...), which takes a complete set of
-Alignment objects (either as a list, or an iterator), an output file handle
-and of course the file format::
+MultiSeqAlignment (or the older Alignment) objects (either as a list, or an
+iterator), an output file handle and of course the file format::
 
     from Bio import AlignIO
     alignments = ...
@@ -131,6 +132,7 @@ from StringIO import StringIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align.Generic import Alignment
+from Bio.Align import MultiSeqAlignment
 from Bio.Alphabet import Alphabet, AlphabetEncoder, _get_base_alphabet
 
 import StockholmIO
@@ -184,7 +186,7 @@ def write(alignments, handle, format) :
     if format != format.lower() :
         raise ValueError("Format string '%s' should be lower case" % format)
     if isinstance(alignments, Alignment) :
-        raise TypeError("Need an Alignment list/iterator, not just a single Alignment")
+        raise TypeError("Need an alignment list/iterator, not just a single alignment")
 
     #Map the file format to a writer class
     if format in _FormatToIterator :

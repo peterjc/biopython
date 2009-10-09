@@ -20,7 +20,7 @@ Bio.SeqIO both use the Bio.SeqIO.FastaIO module to deal with these files,
 which can also be used to store a multiple sequence alignments.
 """
 
-from Bio.Align.Generic import Alignment
+from Bio.Align import MultiSeqAlignment
 from Interfaces import AlignmentIterator
 from Bio.Alphabet import single_letter_alphabet, generic_dna, generic_protein
 from Bio.Alphabet import Gapped
@@ -55,14 +55,14 @@ class FastaM10Iterator(AlignmentIterator) :
     Also note that there can be up to about 30 letters of flanking region
     included in the raw FASTA output as contextual information.  This is NOT
     part of the alignment itself, and is not included in the resulting
-    Alignment objects returned.
+    MultiSeqAlignment objects returned.
     """
     
     def next(self) :
         """Reads from the handle to construct and return the next alignment.
 
         This returns the pairwise alignment of query and match/library
-        sequences as an Alignment object containing two rows."""
+        sequences as an MultiSeqAlignment object containing two rows."""
         handle = self.handle
 
         try :
@@ -231,7 +231,7 @@ class FastaM10Iterator(AlignmentIterator) :
 
         #TODO - Look at the "sq_type" to assign a sensible alphabet?
         alphabet = self.alphabet
-        alignment = Alignment(alphabet)
+        alignment = MultiSeqAlignment(alphabet)
 
         #TODO - Introduce an annotated alignment class?
         #For now, store the annotation a new private property:

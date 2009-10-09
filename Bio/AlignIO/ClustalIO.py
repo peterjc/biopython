@@ -10,7 +10,7 @@ You are expected to use this module via the Bio.AlignIO functions (or the
 Bio.SeqIO functions if you want to work directly with the gapped sequences).
 """
 
-from Bio.Align.Generic import Alignment
+from Bio.Align import MultiSeqAlignment
 from Interfaces import AlignmentIterator, SequentialAlignmentWriter
 
 class ClustalWriter(SequentialAlignmentWriter) :
@@ -247,7 +247,7 @@ class ClustalIterator(AlignmentIterator) :
             raise ValueError("Found %i records in this alignment, told to expect %i" \
                              % (len(ids), self.records_per_alignment))
 
-        alignment = Alignment(self.alphabet)
+        alignment = MultiSeqAlignment(self.alphabet)
         alignment_length = len(seqs[0])
         for i in range(len(ids)) :
             if len(seqs[i]) != alignment_length:

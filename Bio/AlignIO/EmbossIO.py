@@ -13,7 +13,7 @@ This module contains a parser for the EMBOSS pairs/simple file format, for
 example from the alignret, water and needle tools.
 """
 
-from Bio.Align.Generic import Alignment
+from Bio.Align import MultiSeqAlignment
 from Interfaces import AlignmentIterator, SequentialAlignmentWriter
 
 class EmbossWriter(SequentialAlignmentWriter) :
@@ -205,7 +205,7 @@ class EmbossIterator(AlignmentIterator) :
             raise ValueError("Found %i records in this alignment, told to expect %i" \
                              % (len(ids), self.records_per_alignment))
 
-        alignment = Alignment(self.alphabet)
+        alignment = MultiSeqAlignment(self.alphabet)
         for id, seq in zip(ids, seqs) :
             if len(seq) != length_of_seqs :
                 #EMBOSS 2.9.0 is known to use spaces instead of minus signs

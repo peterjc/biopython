@@ -263,6 +263,7 @@ import os
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align.Generic import Alignment
+from Bio.Align import MultiSeqAlignment
 from Bio.Alphabet import Alphabet, AlphabetEncoder, _get_base_alphabet
 
 import AceIO
@@ -738,7 +739,10 @@ def to_alignment(sequences, alphabet=None, strict=True) :
         raise ValueError("Invalid alphabet")
 
     alignment_length = None
-    alignment = Alignment(alphabet)
+    if strict :
+        alignment = MultiSeqAlignment(alphabet)
+    else :
+        alignment = Alignment(alphabet)
     for record in sequences :
         if strict :
             if alignment_length is None :

@@ -21,7 +21,7 @@ At the time of writing, we do nothing special with a dot/period.
 """
    
 from Bio.Alphabet import single_letter_alphabet
-from Bio.Align.Generic import Alignment
+from Bio.Align import MultiSeqAlignment
 from Interfaces import AlignmentIterator, SequentialAlignmentWriter
 
 class PhylipWriter(SequentialAlignmentWriter) :
@@ -194,7 +194,7 @@ class PhylipIterator(AlignmentIterator) :
                     raise ValueError("End of file mid-block")
             if not line : break #end of file
 
-        alignment = Alignment(self.alphabet)
+        alignment = MultiSeqAlignment(self.alphabet)
         for i in range(0,number_of_seqs) :
             seq = "".join(seqs[i])
             if len(seq)!=length_of_seqs :
