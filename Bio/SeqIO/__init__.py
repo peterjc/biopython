@@ -739,10 +739,7 @@ def to_alignment(sequences, alphabet=None, strict=True) :
         raise ValueError("Invalid alphabet")
 
     alignment_length = None
-    if strict :
-        alignment = MultiSeqAlignment(alphabet)
-    else :
-        alignment = Alignment(alphabet)
+    alignment = MultiSeqAlignment(alphabet)
     for record in sequences :
         if strict :
             if alignment_length is None :
@@ -790,7 +787,7 @@ def to_alignment(sequences, alphabet=None, strict=True) :
         #This is abusing the "private" records list,
         #we should really have a method like add_sequence
         #but which takes SeqRecord objects.  See also Bug 1944
-        alignment._records.append(record)
+        alignment.append(record)
     return alignment
 
 def convert(in_file, in_format, out_file, out_format, alphabet=None) :
