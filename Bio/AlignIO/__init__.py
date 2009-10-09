@@ -116,9 +116,6 @@ __docformat__ = "epytext en" #not just plaintext
 # - define policy on reading aligned sequences with gaps in
 #   (e.g. - and . characters) including how the alphabet interacts
 #
-# - Can we build the to_alignment(...) functionality
-#   into the generic Alignment class instead?
-#
 # - How best to handle unique/non unique record.id when writing.
 #   For most file formats reading such files is fine; The stockholm
 #   parser would fail.
@@ -239,7 +236,7 @@ def _SeqIO_to_alignment_iterator(handle, format, alphabet=None, seq_count=None) 
         for record in seq_record_iterator :
             records.append(record)
             if len(records) == seq_count :
-                yield SeqIO.to_alignment(records)
+                yield MultiSeqAlignment(records, alphabet)
                 records = []
         if len(records) > 0 :
             raise ValueError("Check seq_count argument, not enough sequences?")
@@ -248,7 +245,7 @@ def _SeqIO_to_alignment_iterator(handle, format, alphabet=None, seq_count=None) 
         #the SeqRecord objects:
         records = list(SeqIO.parse(handle, format, alphabet))
         if records :
-            yield SeqIO.to_alignment(records)
+            yield MultiSeqAlignment(records, alphabet)
         else :
             #No alignment found!
             pass
