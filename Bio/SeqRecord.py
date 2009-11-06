@@ -436,7 +436,7 @@ class SeqRecord(object):
         For example, using Bio.SeqIO to read in a protein FASTA file:
 
         >>> from Bio import SeqIO
-        >>> record = SeqIO.read(open("Amino/loveliesbleeding.pro"),"fasta")
+        >>> record = SeqIO.read(open("Fasta/loveliesbleeding.pro"),"fasta")
         >>> for amino in record :
         ...     print amino
         ...     if amino == "L" : break
@@ -491,7 +491,7 @@ class SeqRecord(object):
         e.g.
 
         >>> from Bio import SeqIO
-        >>> record = SeqIO.read(open("Nucleic/sweetpea.nu"), "fasta")
+        >>> record = SeqIO.read(open("Fasta/sweetpea.nu"), "fasta")
         >>> "GAATTC" in record
         False
         >>> "AAA" in record
@@ -659,7 +659,7 @@ class SeqRecord(object):
         For example, using Bio.SeqIO to read in a FASTA nucleotide file:
 
         >>> from Bio import SeqIO
-        >>> record = SeqIO.read(open("Nucleic/sweetpea.nu"),"fasta")
+        >>> record = SeqIO.read(open("Fasta/sweetpea.nu"),"fasta")
         >>> len(record)
         309
         >>> len(record.seq)

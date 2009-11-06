@@ -12,13 +12,14 @@ Classes:
 BlastParser         Parses XML output from BLAST (direct use discouraged).
                     This (now) returns a list of Blast records.
                     Historically it returned a single Blast record.
-                    You are expected to use this via the parse function.
+                    You are expected to use this via the parse or read functions.
 
 _XMLParser          Generic SAX parser (private).
 
 Functions:
 parse               Incremental parser, this is an iterator that returns
                     Blast records.  It uses the BlastParser internally.
+read                Returns a single Blast record. Uses the BlastParser internally.
 """
 from Bio.Blast import Record
 import xml.sax
@@ -189,6 +190,9 @@ class BlastParser(_XMLparser):
         # (as well as in num_letters_in_database, see Bug 2176 comment 13):
         self._blast.database_length = self._blast.num_letters_in_database
         # TODO? Deprecate database_letters next?
+
+        # Hack to record the claimed database sequence count as database_sequences
+        self._blast.database_sequences = self._blast.num_sequences_in_database
 
         # Apply the "top level" parameter information
         self._blast.matrix = self._parameters.matrix
@@ -646,9 +650,7 @@ def parse(handle, debug=0):
                 # Good - still dealing with the same XML file
                 expat_parser.Parse(text, False)        
                 while blast_parser._records:
-                    record = blast_parser._records[0]
-                    blast_parser._records = blast_parser._records[1:]
-                    yield record
+                    yield blast_parser._records.pop(0)
             else :
                 # This is output from pre 2.2.14 BLAST,
                 # one XML file for each query!
@@ -659,15 +661,18 @@ def parse(handle, debug=0):
 
                 expat_parser.Parse(text, True) # End of XML record
                 while blast_parser._records:
-                    record = blast_parser._records[0]
-                    blast_parser._records = blast_parser._records[1:]
-                    yield record
+                    yield blast_parser._records.pop(0)
                
                 #Now we are going to re-loop, reset the
                 #parsers and start reading the next XML file
                 text, pending = pending, ""
                 break
 
+        #this was added because it seems that the Jython expat parser
+        #was adding records later then the Python one
+        while blast_parser._records:
+            yield blast_parser._records.pop(0)
+            
         #At this point we have finished the first XML record.
         #If the file is from an old version of blast, it may
         #contain more XML records (check if text=="").

@@ -12,8 +12,10 @@ Command line options:
 
 --help        -- show usage info
 -g;--generate -- write the output file for a test instead of comparing it.
-                 The name of the  test to write the output for must be
+                 The name of the test to write the output for must be
                  specified.
+-v;--verbose  -- run tests with higher verbosity (does not affect our
+                 print-and-compare style unit tests).
 <test_name>   -- supply the name of one (or more) tests to be run.
                  The .py file extension is optional.
 doctest       -- run the docstring tests.
@@ -33,6 +35,7 @@ DOCTEST_MODULES = ["Bio.Seq",
                    "Bio.Align.Generic",
                    "Bio.AlignIO",
                    "Bio.AlignIO.StockholmIO",
+                   "Bio.Blast.Applications",
                    "Bio.Application",
                    "Bio.Clustalw",
                    "Bio.KEGG.Compound",
@@ -47,6 +50,10 @@ try:
     DOCTEST_MODULES.extend(["Bio.Statistics.lowess"])
 except ImportError:
     pass
+
+
+# The default verbosity (not verbose)
+VERBOSITY = 0
 
 # standard modules
 import sys
@@ -77,14 +84,17 @@ def main(argv):
         test_path, distutils.util.get_platform(), sys.version[:3]))
     if os.access(build_path, os.F_OK):
         sys.path.insert(1, build_path)
-    
+
     # get the command line options
     try:
-        opts, args = getopt.getopt(argv, 'g', ["generate", "doctest", "help"])
+        opts, args = getopt.getopt(argv, 'gv', ["generate", "verbose",
+            "doctest", "help"])
     except getopt.error, msg:
         print msg
         print __doc__
         return 2
+
+    verbosity = VERBOSITY
 
     # deal with the options
     for o, a in opts:
@@ -108,6 +118,9 @@ def main(argv):
             test.generate_output()
             return 0
 
+        if o == "-v" or o == "--verbose":
+            verbosity = 2
+
     # deal with the arguments, which should be names of tests to run
     for arg_num in range(len(args)):
         # strip off the .py if it was included
@@ -115,7 +128,7 @@ def main(argv):
             args[arg_num] = args[arg_num][:-3]
 
     # run the tests
-    runner = TestRunner(args)
+    runner = TestRunner(args, verbosity)
     runner.run()
 
 
@@ -214,7 +227,7 @@ class TestRunner(unittest.TextTestRunner):
         file = __file__
     testdir = os.path.dirname(file) or os.curdir
 
-    def __init__(self, tests=[]):
+    def __init__(self, tests=[], verbosity=0):
         # if no tests were specified to run, we run them all
         # including the doctests
         self.tests = tests
@@ -230,7 +243,8 @@ class TestRunner(unittest.TextTestRunner):
             self.tests.remove("doctest")
             self.tests.extend(DOCTEST_MODULES)
         stream = cStringIO.StringIO()
-        unittest.TextTestRunner.__init__(self, stream, verbosity=0)
+        unittest.TextTestRunner.__init__(self, stream,
+                verbosity=verbosity)
 
     def runTest(self, name):
         from Bio import MissingExternalDependencyError

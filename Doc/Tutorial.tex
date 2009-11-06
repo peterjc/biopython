@@ -80,7 +80,7 @@ Biopython Tutorial and Cookbook}
 
 \author{Jeff Chang, Brad Chapman, Iddo Friedberg, Thomas Hamelryck, \\
 Michiel de Hoon, Peter Cock, Tiago Ant\~ao}
-\date{Last Update -- 7 October 2009 (Biopython 1.52+)}
+\date{Last Update -- 30 October 2009 (Biopython 1.52+)}
 
 %Hack to get the logo at the start of the HTML front page:
 %(hopefully this isn't going to be too wide for most people)
@@ -250,7 +250,9 @@ and HTML formats
   You need Biopython 1.45 or later.  Alternatively, rather than \verb|str(my_seq)|, use \verb|my_seq.tostring()| (which will also work on recent versions of Biopython).
   
   \item \emph{Why doesn't} \verb|Bio.Blast| \emph{work with the latest plain text NCBI blast output?} \\
-  The NCBI keep tweaking the plain text output from the BLAST tools, and keeping our parser up to date was an ongoing struggle.  We recommend you use the XML output instead, which is designed to be read by a computer program.
+  The NCBI keep tweaking the plain text output from the BLAST tools, and keeping our parser up to date is/was an ongoing struggle.
+  If you aren't using the latest version of Biopython, you could try upgrading.
+  However, we (and the NCBI) recommend you use the XML output instead, which is designed to be read by a computer program.
 
   \item \emph{Why doesn't} \verb|Bio.Entrez.read()| \emph{work? The module imports fine but there is no read function!} \\
   You need Biopython 1.46 or later.
@@ -275,7 +277,7 @@ and HTML formats
 
   \item \emph{Why doesn't} \verb|Bio.SeqIO.convert()| \emph{or} \verb|Bio.AlignIO.convert()| \emph{work? The modules import fine but there is no convert function!} \\
   You need Biopython 1.52 or later. Alternatively, combine the \verb|parse| and \verb|write|
-  functions as described in this tutorial.
+  functions as described in this tutorial (see Sections~\ref{sec:SeqIO-conversion} and~\ref{sec:converting-alignments}).
 
  \item \emph{Why doesn't} \verb|Bio.SeqIO.index()| \emph{work? The module imports fine but there is no index function!} \\
   You need Biopython 1.52 or later.
@@ -3876,9 +3878,14 @@ Section~\ref{sec:running-www-blast}) has two advantages:
 \end{itemize}
 Dealing with proprietary or unpublished sequence data can be another reason to run BLAST locally.  You may not be allowed to redistribute the sequences, so submitting them to the NCBI as a BLAST query would not be an option.
 
-Biopython provides lots of nice code to enable you to call local BLAST executables from your scripts, and have full access to the many command line options that these executables provide. You can obtain local BLAST precompiled for a number of platforms at \url{ftp://ftp.ncbi.nlm.nih.gov/blast/executables/}, or can compile it yourself in the NCBI toolbox (\url{ftp://ftp.ncbi.nlm.nih.gov/toolbox/}).
+Biopython provides some nice code to enable you to call local BLAST executables from your scripts, and have full access to the many command line options that these executables provide. You can obtain local BLAST precompiled for a number of platforms at \url{ftp://ftp.ncbi.nlm.nih.gov/blast/executables/}, or can compile it yourself in the NCBI toolbox (\url{ftp://ftp.ncbi.nlm.nih.gov/toolbox/}).
 
-The code for calling local ``standalone'' BLAST is found in \verb|Bio.Blast.NCBIStandalone|, specifically the functions \verb|blastall|, \verb|blastpgp| and \verb|rpsblast|, which correspond with the BLAST executables that their names imply.
+At the time of writing (October 2009), the NCBI have just released BLAST+ which is written in C++ and will be replacing the old BLAST tools written in C.
+This means that the old tools \verb|blastall|, \verb|blastpgp| and \verb|rpsblast| are now obsolete, being replaced by new command line tools \verb|blastn|, \verb|blastp|, \verb|blastx|, \verb|tblastn|, \verb|tblastx| (which all used to be handled by \verb|blastall|), \verb|psiblast| (replacing \verb|blastpgp|) and finally \verb|rpsblast| and \verb|rpstblastn| (which replace the old \verb|rpsblast|). These new command line tools have different more friendly command line switches, but provide the same functionality.
+
+The upshot of this is all that Biopython will have two sets of wrappers for calling ``classic'' BLAST tools, or the new BLAST ``plus'' tools.
+
+This document is being updated, and still describes the obsolete \verb|Bio.Blast.NCBIStandalone| functions for calling the ``classic'' BLAST tools.
 
 Let's use these functions to run \verb|blastall| against a local database and return the results. First, we want to set up the paths to everything that we'll need to do the BLAST. What we need to know is the path to the database (which should have been prepared using \verb|formatdb|, see \url{ftp://ftp.ncbi.nlm.nih.gov/blast/documents/formatdb.html}) to search against, the path to the file we want to search, and the path to the \verb|blastall| executable.
 
@@ -4751,11 +4758,11 @@ ESummary retrieves document summaries from a list of primary IDs (see the  \href
 \label{sec:efetch}
 
 EFetch is what you use when you want to retrieve a full record from Entrez.
-This covers several possible databases, as described on the main \href{http://eutils.ncbi.nlm.nih.gov/entrez/query/static/efetch\_help.html}{EFetch Help page}.
+This covers several possible databases, as described on the main \href{http://eutils.ncbi.nlm.nih.gov/entrez/query/static/efetch_help.html}{EFetch Help page}.
 
-From the \emph{Cypripedioideae} example above, we can download GenBank record 186972394 using \verb+Bio.Entrez.efetch+ (see the documentation on
-\href{http://www.ncbi.nlm.nih.gov/entrez/query/static/efetchseq_help.html}
-{EFetch for Sequence and other Molecular Biology Databases}):
+For most of their databases, the NCBI support several different file formats. Requesting a specific file format from Entrez using \verb|Bio.Entrez.efetch()| requires specifying the \verb|rettype| and/or \verb|retmode| optional arguments.  The different combinations are described for each database type on the pages linked to on \href{http://www.ncbi.nlm.nih.gov/entrez/query/static/efetch_help.html}{NCBI efetch webpage} (e.g. \href{http://eutils.ncbi.nlm.nih.gov/corehtml/query/static/efetchlit_help.html}{literature}, \href{http://eutils.ncbi.nlm.nih.gov/corehtml/query/static/efetchseq_help.html}{sequences} and \href{http://eutils.ncbi.nlm.nih.gov/corehtml/query/static/efetchtax_help.html}{taxonomy}).
+
+One common usage is downloading sequences in the FASTA or GenBank/GenPept plain text formats (which can then be parsed with \verb|Bio.SeqIO|, see Sections~\ref{sec:SeqIO_GenBank_Online} and~\ref{sec:efetch}). From the \emph{Cypripedioideae} example above, we can download GenBank record 186972394 using \verb+Bio.Entrez.efetch+:
 
 \begin{verbatim}
 >>> from Bio import Entrez
@@ -4839,7 +4846,7 @@ Note that until Easter 2009, the Entrez EFetch API let you use ``genbank'' as th
 return type, however the NCBI now insist on using the official return types of
 ``gb'' or ``gbwithparts'' (or ``gp'' for proteins) as described on online.
 
-Alternatively, you could for example use \verb+rettype="fasta"+ to get the Fasta-format; see the \href{http://www.ncbi.nlm.nih.gov/entrez/query/static/efetchseq\_help.html}{EFetch Sequences Help page} for other options. The available formats depend on which database you are downloading from - see the main \href{http://eutils.ncbi.nlm.nih.gov/entrez/query/static/efetch\_help.html}{EFetch Help page}.
+Alternatively, you could for example use \verb+rettype="fasta"+ to get the Fasta-format; see the \href{http://www.ncbi.nlm.nih.gov/entrez/query/static/efetchseq\_help.html}{EFetch Sequences Help page} for other options. Remember -- the available formats depend on which database you are downloading from - see the main \href{http://eutils.ncbi.nlm.nih.gov/entrez/query/static/efetch\_help.html}{EFetch Help page}.
 
 If you fetch the record in one of the formats accepted by \verb+Bio.SeqIO+ (see Chapter~\ref{chapter:Bio.SeqIO}), you could directly parse it into a \verb+SeqRecord+:
 
@@ -4856,7 +4863,7 @@ Number of features: 3
 ...
 Seq('ATTTTTTACGAACCTGTGGAAATTTTTGGTTATGACAATAAATCTAGTTTAGTA...GAA', IUPACAmbiguousDNA())\end{verbatim}
 
-Note that a more typical use would be to save the sequence data to a local file, and \emph{then} parse it with \verb|Bio.SeqIO|.  This can save you having to re-download the same file repeatedly while working on your script, and in particular places less load on the NCBI's servers.  For example:
+Note that a more typical use would be to save the sequence data to a local file, and \emph{then} parse it with \verb|Bio.SeqIO|.  This can save you having to re-download the same file repeatedly while working on your script, and places less load on the NCBI's servers.  For example:
 
 \begin{verbatim}
 import os
@@ -4890,6 +4897,8 @@ To get the output in XML format, which you can parse using the \verb+Bio.Entrez.
 >>> record[0]["GBSeq_source"] 
 'chloroplast Selenipedium aequinoctiale'
 \end{verbatim}
+
+So, that dealt with sequences. For examples of parsing file formats specific to the other databases (e.g. the \verb+MEDLINE+ format used in PubMed), see Section~\ref{sec:entrez-specialized-parsers}.
 
 If you want to perform a search with \verb|Bio.Entrez.esearch()|, and then download the records with \verb|Bio.Entrez.efetch()|, you should use the WebEnv history feature -- see Section~\ref{sec:entrez-webenv}.
 
