@@ -100,17 +100,17 @@ class SeqFeature(object):
     def __repr__(self):
         """A string representation of the record for debugging."""
         answer = "%s(%s" % (self.__class__.__name__, repr(self.location))
-        if self.type :
+        if self.type:
             answer += ", type=%s" % repr(self.type)
-        if self.location_operator :
+        if self.location_operator:
             answer += ", location_operator=%s" % repr(self.location_operator)
-        if self.strand :
+        if self.strand:
             answer += ", strand=%s" % repr(self.strand)
-        if self.id and self.id != "<unknown id>" :
+        if self.id and self.id != "<unknown id>":
             answer += ", id=%s" % repr(self.id)
-        if self.ref :
+        if self.ref:
             answer += ", ref=%s" % repr(self.ref)
-        if self.ref_db :
+        if self.ref_db:
             answer += ", ref_db=%s" % repr(self.ref_db)
         answer += ")"
         return answer
@@ -135,7 +135,7 @@ class SeqFeature(object):
 
         return out
 
-    def _shift(self, offset) :
+    def _shift(self, offset):
         """Returns a copy of the feature with its location shifted (PRIVATE).
 
         The annotation qaulifiers are copied."""
@@ -153,7 +153,7 @@ class SeqFeature(object):
         answer.qualifiers = dict(self.qualifiers.iteritems())
         return answer
 
-    def _flip(self, length) :
+    def _flip(self, length):
         """Returns a copy of the feature with its location flipped (PRIVATE).
 
         The argument length gives the length of the parent sequence. For
@@ -182,7 +182,7 @@ class SeqFeature(object):
         answer.qualifiers = dict(self.qualifiers.iteritems())
         return answer
 
-    def extract(self, parent_sequence) :
+    def extract(self, parent_sequence):
         """Extract feature sequence from the supplied parent sequence.
 
         The parent_sequence can be a Seq like object or a string, and will
@@ -196,14 +196,14 @@ class SeqFeature(object):
 
         Note - currently only sub-features of type "join" are supported.
         """
-        if isinstance(parent_sequence, MutableSeq) :
+        if isinstance(parent_sequence, MutableSeq):
             #This avoids complications with reverse complements
             #(the MutableSeq reverse complement acts in situ)
             parent_sequence = parent_sequence.toseq()
-        if self.sub_features :
+        if self.sub_features:
             if self.location_operator!="join":
                 raise ValueError(f.location_operator)
-            if self.strand == -1 :
+            if self.strand == -1:
                 #This is a special case given how the GenBank parser works.
                 #Must avoid doing the reverse complement twice.
                 parts = []
@@ -211,21 +211,21 @@ class SeqFeature(object):
                     assert f_sub.strand==-1
                     parts.append(parent_sequence[f_sub.location.nofuzzy_start:\
                                                  f_sub.location.nofuzzy_end])
-            else :
+            else:
                 #This copes with mixed strand features:
                 parts = [f_sub.extract(parent_sequence) \
                          for f_sub in self.sub_features]
             #We use addition rather than a join to avoid alphabet issues:
             f_seq = parts[0]
             for part in parts[1:] : f_seq += part
-        else :
+        else:
             f_seq = parent_sequence[self.location.nofuzzy_start:\
                                     self.location.nofuzzy_end]
-        if self.strand == -1 :
+        if self.strand == -1:
             #TODO - MutableSeq?
-            try :
+            try:
                 f_seq = f_seq.reverse_complement()
-            except AttributeError :
+            except AttributeError:
                 assert isinstance(f_seq, str)
                 f_seq = reverse_complement(f_seq)
         return f_seq
@@ -332,12 +332,12 @@ class FeatureLocation(object):
         return "%s(%s,%s)" \
                % (self.__class__.__name__, repr(self.start), repr(self.end))
 
-    def _shift(self, offset) :
+    def _shift(self, offset):
         """Returns a copy of the location shifted by the offset (PRIVATE)."""
         return FeatureLocation(start = self._start._shift(offset),
                                end = self._end._shift(offset))
 
-    def _flip(self, length) :
+    def _flip(self, length):
         """Returns a copy of the location after the parent is reversed (PRIVATE)."""
         #Note this will flip the start and end too!
         return FeatureLocation(start = self._end._flip(length),
@@ -349,7 +349,7 @@ class FeatureLocation(object):
     end = property(fget= lambda self : self._end,
                    doc="End location (possibly a fuzzy position, read only).")
 
-    def _get_nofuzzy_start(self) :
+    def _get_nofuzzy_start(self):
         #TODO - Do we still use the BetweenPosition class?
         if ((self._start == self._end) and isinstance(self._start,
              BetweenPosition)):
@@ -366,7 +366,7 @@ class FeatureLocation(object):
         (10.20)..(30.40) should return 10 for start, and 40 for end.
         """)
 
-    def _get_nofuzzy_end(self) :
+    def _get_nofuzzy_end(self):
         #TODO - Do we still use the BetweenPosition class?
         if ((self._start == self._end) and isinstance(self._start,
              BetweenPosition)):
@@ -390,7 +390,7 @@ class AbstractPosition(object):
         self.position = position
         self.extension = extension
 
-    def __repr__(self) :
+    def __repr__(self):
         """String representation of the location for debugging."""
         return "%s(%s,%s)" % (self.__class__.__name__, \
                               repr(self.position), repr(self.extension))
@@ -407,11 +407,11 @@ class AbstractPosition(object):
 
         return cmp(self.position, other.position)
 
-    def _shift(self, offset) :
+    def _shift(self, offset):
         #We want this to maintain the subclass when called from a subclass
         return self.__class__(self.position + offset, self.extension)
             
-    def _flip(self, length) :
+    def _flip(self, length):
         #We want this to maintain the subclass when called from a subclass
         return self.__class__(length - self.position - self.extension,
                               self.extension)
@@ -432,7 +432,7 @@ class ExactPosition(AbstractPosition):
                                  % extension)
         AbstractPosition.__init__(self, position, 0)
 
-    def __repr__(self) :
+    def __repr__(self):
         """String representation of the ExactPosition location for debugging."""
         assert self.extension == 0
         return "%s(%s)" % (self.__class__.__name__, repr(self.position))
@@ -494,7 +494,7 @@ class BeforePosition(AbstractPosition):
                                  % extension)
         AbstractPosition.__init__(self, position, 0)
 
-    def __repr__(self) :
+    def __repr__(self):
         """A string representation of the location for debugging."""
         assert self.extension == 0
         return "%s(%s)" % (self.__class__.__name__, repr(self.position))
@@ -502,7 +502,7 @@ class BeforePosition(AbstractPosition):
     def __str__(self):
         return "<%s" % self.position
 
-    def _flip(self, length) :
+    def _flip(self, length):
         return AfterPosition(length - self.position)
 
 class AfterPosition(AbstractPosition):
@@ -523,7 +523,7 @@ class AfterPosition(AbstractPosition):
                                  % extension)
         AbstractPosition.__init__(self, position, 0)
 
-    def __repr__(self) :
+    def __repr__(self):
         """A string representation of the location for debugging."""
         assert self.extension == 0
         return "%s(%s)" % (self.__class__.__name__, repr(self.position))
@@ -531,7 +531,7 @@ class AfterPosition(AbstractPosition):
     def __str__(self):
         return ">%s" % self.position
 
-    def _flip(self, length) :
+    def _flip(self, length):
         return BeforePosition(length - self.position)
 
 class OneOfPosition(AbstractPosition):
@@ -566,7 +566,7 @@ class OneOfPosition(AbstractPosition):
         # initialize with our definition of position and extension
         AbstractPosition.__init__(self, smallest, largest - smallest)
 
-    def __repr__(self) :
+    def __repr__(self):
         """String representation of the OneOfPosition location for debugging."""
         return "%s(%s)" % (self.__class__.__name__, \
                            repr(self.position_choices))
@@ -579,7 +579,7 @@ class OneOfPosition(AbstractPosition):
         out = out[:-1] + ")"
         return out
 
-    def _flip(self, length) :
+    def _flip(self, length):
         return OneOfPosition([p._flip(length) for p in self.position_choices[::-1]])
 
 class PositionGap(object):
@@ -590,7 +590,7 @@ class PositionGap(object):
         """
         self.gap_size = gap_size
 
-    def __repr__(self) :
+    def __repr__(self):
         """A string representation of the position gap for debugging."""
         return "%s(%s)" % (self.__class__.__name__, repr(self.gap_size))
     
