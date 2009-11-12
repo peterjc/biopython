@@ -272,10 +272,15 @@ class SeqRecord(object):
         which fall fully within the subsequence are included (with
         their locations adjusted accordingly).
 
-        However, the annotations dictionary and the dbxrefs list are
-        not used for the new SeqRecord, as in general they may not
-        apply to the subsequence.  If you want to preserve them, you
-        must explictly copy them to the new SeqRecord yourself.
+        The annotations dictionary and the dbxrefs list are now also
+        preserved in the new SeqRecord. Note that this is a change from
+        Biopython 1.50 to 1.52 where they were ommitted. In general is
+        is impossible to know which annotations still apply to the
+        daughter sequence, and it may be in-appropriate to do this.
+        However, blinding copying the annotations and cross references
+        simplifies several common uses such as excising part of a record
+        (e.g. edited = record[:10] + record[15:]) or shifting the origin
+        of a circular genome (e.g. shifted = record[10:] + record[:10]).
 
         Using an integer index, e.g. my_record[5] is shorthand for
         extracting that letter from the sequence, my_record.seq[5].
@@ -293,7 +298,8 @@ class SeqRecord(object):
         ...                     "EMMSEQDGYLAESINKDIEECNAIIEQFIDYLR",
         ...                     IUPAC.protein),
         ...                 id="1JOY", name="EnvZ",
-        ...                 description="Homodimeric domain of EnvZ from E. coli")
+        ...                 description="Homodimeric domain of EnvZ from E. coli",
+        ...                 annotations={"source":"Escherichia coli"})
         >>> rec.letter_annotations["secondary_structure"] = \
             "  S  SSSSSSHHHHHTTTHHHHHHHHHHHHHHHHHHHHHHTHHHHHHHHHHHHHHHHHHHHHTT  "
         >>> rec.features.append(SeqFeature(FeatureLocation(20,21),
@@ -306,6 +312,7 @@ class SeqRecord(object):
         Name: EnvZ
         Description: Homodimeric domain of EnvZ from E. coli
         Number of features: 1
+        /source=Escherichia coli
         Per letter annotation for: secondary_structure
         Seq('MAAGVKQLADDRTLLMAGVSHDLRTPLTRIRLATEMMSEQDGYLAESINKDIEE...YLR', IUPACProtein())
         >>> print rec.letter_annotations["secondary_structure"]
@@ -322,6 +329,7 @@ class SeqRecord(object):
         Name: EnvZ
         Description: Homodimeric domain of EnvZ from E. coli
         Number of features: 1
+        /source=Escherichia coli
         Per letter annotation for: secondary_structure
         Seq('RTLLMAGVSHDLRTPLTRIRLATEMMSEQD', IUPACProtein())
         >>> print sub.letter_annotations["secondary_structure"]
@@ -337,6 +345,7 @@ class SeqRecord(object):
         Name: EnvZ
         Description: Homodimeric domain of EnvZ from E. coli
         Number of features: 0
+        /source=Escherichia coli
         Per letter annotation for: secondary_structure
         Seq('MAAGVKQLAD', IUPACProtein())
 
@@ -347,17 +356,18 @@ class SeqRecord(object):
         Name: EnvZ
         Description: Homodimeric domain of EnvZ from E. coli
         Number of features: 0
+        /source=Escherichia coli
         Per letter annotation for: secondary_structure
         Seq('IIEQFIDYLR', IUPACProtein())
 
-        If you omit both, then you get a copy of the original record (although
-        lacking the annotations and dbxrefs):
+        If you omit both, then you get a copy of the original record:
 
         >>> print rec[:]
         ID: 1JOY
         Name: EnvZ
         Description: Homodimeric domain of EnvZ from E. coli
         Number of features: 1
+        /source=Escherichia coli
         Per letter annotation for: secondary_structure
         Seq('MAAGVKQLADDRTLLMAGVSHDLRTPLTRIRLATEMMSEQDGYLAESINKDIEE...YLR', IUPACProtein())
 
@@ -381,17 +391,12 @@ class SeqRecord(object):
             answer = self.__class__(self.seq[index],
                                     id=self.id,
                                     name=self.name,
-                                    description=self.description)
-            #TODO - The desription may no longer apply.
-            #It would be safer to change it to something
-            #generic like "edited" or the default value.
-            
-            #Don't copy the annotation dict and dbxefs list,
-            #they may not apply to a subsequence.
-            #answer.annotations = dict(self.annotations.iteritems())
-            #answer.dbxrefs = self.dbxrefs[:]
-            #TODO - Review this in light of adding SeqRecord objects?
-            
+                                    description=self.description,
+                                    annotations = self.annotations.copy(),
+                                    dbxrefs = self.dbxrefs[:])
+            #NOTE - The desription, annotaion and dbxrefs may no longer apply.
+            #Even for the id and name this can be questionable.
+
             #TODO - Cope with strides by generating ambiguous locations?
             if index.step is None or index.step == 1:
                 #Select relevant features, add them with shifted locations

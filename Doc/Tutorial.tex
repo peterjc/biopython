@@ -279,6 +279,9 @@ and HTML formats
  \item \emph{Why can't I slice my} \verb|SeqRecord| \emph{to get a sub-record?} \\
   You need Biopython 1.50 or later.
 
+ \item \emph{When I slice a} \verb|SeqRecord| \emph{why are the database cross-references and annotations dictionary lost?} \\
+  You need Biopython 1.53 or later.
+  
  \item \emph{Why can't I add} \verb|SeqRecord| \emph{objects together?} \\
   You need Biopython 1.53 or later.
 
@@ -1843,8 +1846,12 @@ qualifiers:
 While Biopython has done something sensible and hopefully intuitive with the features
 (and any per-letter annotation), for the other annotation it is impossible to know if
 this still applies to the sub-sequence or not. To avoid guessing, the \texttt{annotations}
-and \texttt{dbxrefs} are omitted from the sub-record, and it is up to you to transfer
-any relevant information as appropriate.
+and \texttt{dbxrefs} were omitted from the sub-record in Biopython 1.50 to 1.52, and it
+was up to you to transfer any relevant information as appropriate. However, this was
+changed in Biopython 1.53 to the more practical solution of just copying everything
+(which is very useful when combined with support for adding \verb|SeqRecord| objects
+as described in the next section). If some of the annotation is invalid for the
+daughter record, it is now up to you to remove it.
 
 \begin{verbatim}
 >>> sub_record.annotations
@@ -1913,16 +1920,12 @@ You can shift the origin like this:
 SeqRecord(seq=Seq('GATACGCAGTCATATTTTTTACACAATTCTCTAATCCCGACAAGGTCGTAGGTC...GGA',
 IUPACAmbiguousDNA()), id='NC_005816.1', name='NC_005816',
 description='Yersinia pestis biovar Microtus str. 91001 plasmid pPCP1, complete sequence.',
-dbxrefs=[])
+dbxrefs=['Project:10638'])
 >>> len(shifted)
 9609
 >>> len(shifted.features)
 28
 \end{verbatim}
-
-Note that this isn't perfect in that some annotation like the database cross references
-and one of the features (the source feature) have been lost. This is because the
-\verb|SeqRecord| slicing step is perhaps too cautious in the annotation it preserves.
 
 Also note that in an example like this, you should probably change the record
 identifiers since the NCBI references refer to the \emph{original} unmodified
