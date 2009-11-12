@@ -99,8 +99,8 @@ class SeqRecordMethods(unittest.TestCase):
             self.assertEqual(sub.name, "TestName")
             self.assertEqual(sub.description, "TestDescr")
             self.assertEqual(sub.letter_annotations, {"fake":"X"*10})
-            self.assertEqual(sub.dbxrefs, ["TestXRef"])
-            self.assertEqual(sub.annotations, {"k": "v"})
+            self.assertEqual(sub.dbxrefs, []) # May change this...
+            self.assertEqual(sub.annotations, {}) # May change this...
             self.assertEqual(len(sub.features), 1)
             #By construction, each feature matches the full sliced region:
             self.assertEqual(str(sub.features[0].extract(sub.seq)), str(sub.seq))
@@ -155,8 +155,8 @@ class SeqRecordMethods(unittest.TestCase):
             self.assertEqual(rec.id, "TestID")
             self.assertEqual(rec.name, "TestName")
             self.assertEqual(rec.description, "TestDescr")
-            self.assertEqual(rec.dbxrefs, ["TestXRef"])
-            self.assertEqual(rec.annotations, {"k":"v"})
+            self.assertEqual(rec.dbxrefs, []) # May change this...
+            self.assertEqual(rec.annotations, {}) # May change this...
             self.assertEqual(rec.letter_annotations, {"fake":"X"*26})
             self.assert_(len(rec.features) <= 3)
 
@@ -169,8 +169,8 @@ class SeqRecordMethods(unittest.TestCase):
             self.assertEqual(rec.id, "TestID")
             self.assertEqual(rec.name, "TestName")
             self.assertEqual(rec.description, "TestDescr")
-            self.assertEqual(rec.dbxrefs, ["TestXRef"])
-            self.assertEqual(rec.annotations, {"k":"v"})
+            self.assertEqual(rec.dbxrefs, []) # May change this...
+            self.assertEqual(rec.annotations, {}) # May change this...
             self.assertEqual(rec.letter_annotations, {"fake":"X"*26})
             self.assert_(len(rec.features) <= 3)
             
