@@ -419,8 +419,8 @@ class SeqRecord(object):
                               "SeqFeature referencing other sequences (e.g. "
                               "from segmented GenBank records) is ignored.")
                         continue
-                    if start <= f.location.start.position \
-                    and f.location.end.position <= stop:
+                    if start <= f.location.nofuzzy_start \
+                    and f.location.nofuzzy_end <= stop:
                         answer.features.append(f._shift(-start))
 
             #Slice all the values to match the sliced sequence
@@ -961,6 +961,10 @@ class SeqRecord(object):
 
         However, we should point out that when we sliced the SeqRecord,
         any annotations dictionary or dbxrefs list entries were lost.
+        You can explicitly copy them like this:
+
+        >>> new.annotations = plasmid.annotations.copy()
+        >>> new.dbxrefs = plasmid.dbxrefs[:]
         """
         if not isinstance(other, SeqRecord):
             #Assume it is a string or a Seq.
