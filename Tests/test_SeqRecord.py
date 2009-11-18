@@ -105,10 +105,14 @@ class SeqRecordMethods(unittest.TestCase):
             self.assertEqual(sub.letter_annotations, {"fake":"X"*10})
             self.assertEqual(sub.dbxrefs, []) # May change this...
             self.assertEqual(sub.annotations, {}) # May change this...
-            self.assertEqual(len(sub.features), 1)
+            self.assertEqual(len(sub.features), 2) #source plus one
+            self.assertEqual(sub.features[0].type, "source")
+            self.assertEqual(sub.features[0].location.nofuzzy_start, 0)
+            self.assertEqual(sub.features[0].location.nofuzzy_end, 10)
             #By construction, each feature matches the full sliced region:
-            self.assertEqual(str(sub.features[0].extract(sub.seq)), str(sub.seq))
-            self.assertEqual(sub.features[0].extract(str(sub.seq)), str(sub.seq))
+            for f in sub.features :
+                self.assertEqual(str(f.extract(sub.seq)), str(sub.seq))
+                self.assertEqual(f.extract(str(sub.seq)), str(sub.seq))
 
     def test_add_simple(self):
         """Simple addition"""
@@ -120,12 +124,15 @@ class SeqRecordMethods(unittest.TestCase):
         self.assertEqual(rec.dbxrefs, ["TestXRef"])
         self.assertEqual(rec.annotations, {"k":"v"})
         self.assertEqual(rec.letter_annotations, {"fake":"X"*52})
-        self.assertEqual(len(rec.features), 2*len(self.record.features))
+        self.assertEqual(len(rec.features), 2*len(self.record.features)-1)
+        self.assertEqual(rec.features[0].type, "source")
+        self.assertEqual(rec.features[0].location.nofuzzy_start, 0)
+        self.assertEqual(rec.features[0].location.nofuzzy_end, 52)
 
     def test_add_seq(self):
         """Simple addition of Seq or string"""
         for other in [Seq("BIO"), "BIO"] :
-            rec = self.record + other # will use SeqRecord's __add__ method
+            rec = self.record + other
             self.assertEqual(len(rec), 26+3)
             self.assertEqual(str(rec.seq), str(self.record.seq)+"BIO")
             self.assertEqual(rec.id, "TestID")
@@ -142,7 +149,7 @@ class SeqRecordMethods(unittest.TestCase):
     def test_add_seq_left(self):
         """Simple left addition of Seq or string"""
         for other in [Seq("BIO"), "BIO"] :
-            rec = other + self.record # will use SeqRecord's __radd__ method
+            rec = other + self.record
             self.assertEqual(len(rec), 26+3)
             self.assertEqual(str(rec.seq), "BIO"+str(self.record.seq))
             self.assertEqual(rec.id, "TestID")
@@ -155,7 +162,7 @@ class SeqRecordMethods(unittest.TestCase):
             self.assertEqual(rec.features[0].type, "source")
             self.assertEqual(rec.features[0].location.nofuzzy_start, 3)
             self.assertEqual(rec.features[0].location.nofuzzy_end, 26+3)
-            
+
     def test_slice_add_simple(self):
         """Simple slice and add"""
         for cut in range(27) :
@@ -169,6 +176,9 @@ class SeqRecordMethods(unittest.TestCase):
             self.assertEqual(rec.annotations, {}) # May change this...
             self.assertEqual(rec.letter_annotations, {"fake":"X"*26})
             self.assert_(len(rec.features) <= len(self.record.features))
+            self.assertEqual(rec.features[0].type, "source")
+            self.assertEqual(rec.features[0].location.nofuzzy_start, 0)
+            self.assertEqual(rec.features[0].location.nofuzzy_end, 26)
 
     def test_slice_add_shift(self):
         """Simple slice and add to shift"""
@@ -183,6 +193,9 @@ class SeqRecordMethods(unittest.TestCase):
             self.assertEqual(rec.annotations, {}) # May change this...
             self.assertEqual(rec.letter_annotations, {"fake":"X"*26})
             self.assert_(len(rec.features) <= len(self.record.features))
+            self.assertEqual(rec.features[0].type, "source")
+            self.assertEqual(rec.features[0].location.nofuzzy_start, 0)
+            self.assertEqual(rec.features[0].location.nofuzzy_end, 26)
             
 if __name__ == "__main__":
     runner = unittest.TextTestRunner(verbosity = 2)

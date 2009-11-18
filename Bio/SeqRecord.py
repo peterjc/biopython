@@ -422,6 +422,17 @@ class SeqRecord(object):
                     if start <= f.location.nofuzzy_start \
                     and f.location.nofuzzy_end <= stop:
                         answer.features.append(f._shift(-start))
+                    elif f.type=="source" \
+                    and f.location.nofuzzy_start == 0 \
+                    and f.location.nofuzzy_end == parent_length :
+                        assert f.strand != -1
+                        #Special case, slice the source feature
+                        from Bio.SeqFeature import SeqFeature, FeatureLocation
+                        answer.features.append(SeqFeature(FeatureLocation(0, len(answer)),
+                                                          strand = f.strand,
+                                                          id=f.id,
+                                                          type=f.type,
+                                                          qualifiers=f.qualifiers.copy()))
 
             #Slice all the values to match the sliced sequence
             #(this should also work with strides, even negative strides):
@@ -976,17 +987,43 @@ class SeqRecord(object):
                              annotations = self.annotations.copy(),
                              dbxrefs = self.dbxrefs[:])
         #Adding two SeqRecord objects... must merge annotation.
+        #Take all the database cross references:
         answer = SeqRecord(self.seq + other.seq,
-                           features = self.features[:],
                            dbxrefs = self.dbxrefs[:])
-        #Will take all the features and all the db cross refs,
-        l = len(self)
-        for f in other.features:
-            answer.features.append(f._shift(l))
-        del l
         for ref in other.dbxrefs:
             if ref not in answer.dbxrefs:
                 answer.append(ref)
+        #Will take all the features, but source features are
+        #handled as a special case:
+        l = len(self)
+        left_source = None
+        for f in self.features:
+            if f.type=="source" :
+                #Does it span the whole record?
+                if left_source is None \
+                and f.location.nofuzzy_start == 0 \
+                and f.location.nofuzzy_end == l :
+                    left_source = f
+            else :
+                answer.features.append(f._shift(0))
+        right_source = None
+        for f in other.features:
+            if f.type=="source" :
+                #Does it span the whole record?
+                if right_source is None \
+                and f.location.nofuzzy_start == 0 \
+                and f.location.nofuzzy_end == len(other) :
+                    right_source = f
+            else :
+                answer.features.append(f._shift(l))
+        del l
+        if left_source and right_source :
+            from Bio.SeqFeature import SeqFeature, FeatureLocation
+            f = SeqFeature(FeatureLocation(0, len(answer)), type="source")
+            #TODO - keep any common qualifiers and dxbrefs for sources
+            if left_source.id == right_source.id :
+                f.id = left_source.id
+            answer.features.insert(0,f) #at start like a GenBank/EMBL file
         #Take common id/name/description/annotation
         if self.id == other.id:
             answer.id = self.id
