@@ -221,6 +221,7 @@ for a in dna + rna + nuc + protein:
     assert a.rstrip().tostring() == a.tostring().rstrip()
     assert a.lower().tostring() == a.tostring().lower()
     assert a.upper().tostring() == a.tostring().upper()
+    assert a.join(["A","AC","G"]).tostring() == a.tostring().join(["A","AC","G"])
     test_chars = ["-", Seq.Seq("-"), Seq.Seq("*"), "-X@"]
     alpha = Alphabet._get_base_alphabet(a.alphabet)
     if isinstance(alpha, Alphabet.DNAAlphabet):

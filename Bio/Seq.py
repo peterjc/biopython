@@ -637,6 +637,98 @@ class Seq(object):
         """
         return Seq(str(self).lower(), self.alphabet._lower())
 
+    def join(self, sequences):
+        """Join multiple other sequences using this sequences as the separator.
+
+        This Seq object method acts like the Python string method of the same
+        name, but in an alphabet aware manner. Recall:
+        
+        >>> "".join(["a","b","c"])
+        'abc'
+        >>> " ".join(["a","b","c"])
+        'a b c'
+
+        The Seq join method arguments can be plain strings:
+
+        >>> Seq("NNN").join(["A","C","G","T"])
+        Seq('ANNNCNNNGNNNT', Alphabet())
+
+        Or more Seq (like) objects, or a mixture of the two:
+
+        >>> Seq("NNN").join(["A","C",Seq("ACT"),"T"])
+        Seq('ANNNCNNNACTNNNT', Alphabet())
+
+        In general, when different alphabets are used, the same rules apply as
+        for addition. However, there is a special case. Consider this example:
+
+        >>> from Bio.Seq import Seq
+        >>> from Bio.Alphabet.IUPAC import unambiguous_dna, ambiguous_dna
+        >>> unamb_dna_seq = Seq("ACGT", unambiguous_dna)
+        >>> ambig_dna_seq = Seq("ACRGT", ambiguous_dna)
+        >>> unamb_dna_seq
+        Seq('ACGT', IUPACUnambiguousDNA())
+        >>> ambig_dna_seq
+        Seq('ACRGT', IUPACAmbiguousDNA())
+
+        If we add the ambiguous and unambiguous IUPAC DNA alphabets, we get
+        the ambiguous IUPAC DNA alphabet:
+        
+        >>> unamb_dna_seq + ambig_dna_seq
+        Seq('ACGTACRGT', IUPACAmbiguousDNA())
+
+        However, if the default generic alphabet is included, the result is
+        a generic alphabet:
+
+        >>> unamb_dna_seq + Seq("") + ambig_dna_seq
+        Seq('ACGTACRGT', Alphabet())
+
+        The special case if is the separator sequence is zero length and
+        has the default alphabet, i.e. Seq("").join(...), then its alphabet
+        is ignored. This is intended to make using the Seq join method easier:
+
+        >>> Seq("").join([unamb_dna_seq, ambig_dna_seq])
+        Seq('ACGTACRGT', IUPACAmbiguousDNA())
+
+        Note that if another alphabet is specified, this does have an effect,
+        even if the separator is zero length:
+
+        >>> from Bio.Alphabet import generic_dna
+        >>> unamb_dna_seq + ambig_dna_seq
+        Seq('ACGTACRGT', IUPACAmbiguousDNA())
+        >>> unamb_dna_seq + Seq("", generic_dna) + ambig_dna_seq
+        Seq('ACGTACRGT', DNAAlphabet())
+        >>> Seq("", generic_dna).join([unamb_dna_seq, ambig_dna_seq])
+        Seq('ACGTACRGT', DNAAlphabet())
+
+        And as you might expect for the behaviour of Seq addition, you can't
+        join DNA sequences with an RNA separator etc:
+
+        >>> from Bio.Alphabet import generic_protein
+        >>> Seq("", generic_protein).join([unamb_dna_seq, ambig_dna_seq])
+        Traceback (most recent call last):
+           ...
+        TypeError: Incompatable alphabets
+
+        """
+        #Naive implementation which ignores alphabets
+        #return Seq(str(self).join(str(s) for s in sequences), self.alphabet)
+        if len(self)==0 and self.alphabet == Alphabet.generic_alphabet :
+            #Speicla case
+            alphas = []
+        else :
+            alphas = [self.alphabet]
+        seqs = []
+        for seq in sequences :
+            seqs.append(str(seq))
+            try :
+                alphas.append(seq.alphabet)
+            except AttributeError:
+                #e.g. a string
+                pass
+        if not Alphabet._check_type_compatible(alphas):
+            raise TypeError("Incompatable alphabets")
+        return Seq(str(self).join(seqs), Alphabet._consensus_alphabet(alphas))
+
     def complement(self):
         """Returns the complement sequence. New Seq object.
 
