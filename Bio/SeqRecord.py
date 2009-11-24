@@ -694,66 +694,6 @@ class SeqRecord(object):
         """
         return True
 
-    def complement(self, id=False, name=False, description=False):
-        """Returns new SeqRecord with reverse complement sequence.
-
-        TODO - Remove this? Why would it ever be useful?
-
-        You can specify the returned record's id, name and description as
-        strings, True to keep that of the parent, or False for a default.
-
-        Other annotation is not preserved, as it is difficult to define
-        how it might be mapped, as the complement has no direct meaning
-        biologically (unlike the reverse_complement method).
-
-        For example, using Bio.SeqIO to read in an example Solexa variant FASTQ
-        file with a single entry as a SeqRecord:
-
-        >>> from Bio import SeqIO
-        >>> handle = open("Quality/solexa_faked.fastq", "rU")
-        >>> record = SeqIO.read(handle, "fastq-solexa")
-        >>> handle.close()
-        >>> print record.id, record.seq
-        slxa_0001_1_0001_01 ACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTNNNNNN
-        >>> print record.letter_annotations.keys()
-        ['solexa_quality']
-        >>> print record.letter_annotations["solexa_quality"]
-        [40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5]
-
-        Now take the reverse complement,
-
-        >>> comp_record = record.complement(id=record.id+"_comp")
-        >>> print comp_record.id, comp_record.seq
-        slxa_0001_1_0001_01_comp TGCATGCATGCATGCATGCATGCATGCATGCATGCATGCANNNNNN
-        >>> print comp_record.letter_annotations.keys()
-        []
-        
-        Trying to complement a protein SeqRecord raises an exception:
-
-        >>> from Bio.SeqRecord import SeqRecord
-        >>> from Bio.Seq import Seq
-        >>> from Bio.Alphabet import IUPAC
-        >>> protein_rec = SeqRecord(Seq("MAIVMGR", IUPAC.protein), id="Test")
-        >>> protein_rec.complement()
-        Traceback (most recent call last):
-           ...
-        ValueError: Proteins do not have complements!
-        """
-        answer = SeqRecord(self.seq.complement())
-        if isinstance(id, basestring) :
-            answer.id = id
-        elif id :
-            answer.id = self.id
-        if isinstance(name, basestring) :
-            answer.name = name
-        elif name :
-            answer.name = self.name
-        if isinstance(description, basestring) :
-            answer.description = description
-        elif description :
-            answer.description = self.description
-        return answer
-
     def reverse_complement(self, id=False, name=False, description=False,
                            features=True, annotations=False,
                            letter_annotations=True, dbxrefs=False):
@@ -765,7 +705,7 @@ class SeqRecord(object):
         You can specify the returned record's features as a list of SeqFeature
         objects, True to keep that of the parent, or False to omit them.
         The default is to keep the original features (with the strand and
-        locations adjusted). [TODO - not implemented yet.]
+        locations adjusted).
 
         You can specify the returned record's annotations and letter_annotations
         as dictionaries, True to keep that of the parent, or False to omit them.
