@@ -10,12 +10,115 @@
 See also U{http://biopython.org/wiki/Seq} and the chapter in our tutorial:
  - U{http://biopython.org/DIST/docs/tutorial/Tutorial.html}
  - U{http://biopython.org/DIST/docs/tutorial/Tutorial.pdf}
+
+The Seq object generally acts like a Python string, but it has an alphabet to declare
+what kind of sequence it is (e.g. DNA, RNA or protein).
+
+    >>> from Bio.Seq import Seq
+    >>> from Bio.Alphabet import generic_dna, generic_rna, generic_protein
+    >>> my_seq = Seq("ACG")
+    >>> my_dna = Seq("ACG", generic_dna)
+    >>> my_rna = Seq("ACG", generic_rna)
+    >>> my_protein = Seq("ACG", generic_protein)
+
+Alphabets are important for the Seq object's biological methods like complement,
+reverse_complement, transcribe, back_transcribe and translate:
+
+    >>> my_seq.translate()
+    Seq('T', ExtendedIUPACProtein())
+    >>> my_dna.translate()
+    Seq('T', ExtendedIUPACProtein())
+    >>> my_rna.translate()
+    Seq('T', ExtendedIUPACProtein())
+    >>> my_protein.translate()
+    Traceback (most recent call last):
+       ...
+    ValueError: Proteins cannot be translated!
+
+You can't add DNA to RNA:
+
+    >>> my_dna + my_rna
+    Traceback (most recent call last):
+       ...
+    TypeError: Incompatable alphabets DNAAlphabet() and RNAAlphabet()
+
+or add DNA to Protein sequences etc:
+
+    >>> my_dna + my_protein
+    Traceback (most recent call last):
+       ...
+    TypeError: Incompatable alphabets DNAAlphabet() and ProteinAlphabet()
+
+You can however (with Biopython 1.53 onwards) compare such sequences,
+
+    >>> my_dna == my_rna
+    True
+
+However, this will trigger a warning about the alphabet mis-match (not shown).
+
+You can also compare Seq objects with strings,
+
+    >>> "ACG" == my_seq
+    True
+
+Older versions of Biopython required you to make this explicit:
+
+    >>> str(my_dna) == str(my_rna)
+    True
+
+Seq equality used to use object comparison, which you can still do with the Python id
+function which returns an object's location in memory:
+
+    >>> id(my_dna) == id(my_rna)
+    False
+
+This change is designed to make the Seq objects easier to use. However, some care is
+needed, especially if using dictionaries or sets.  First consider this example:
+
+   >>> d = {1:"one", 2:"two"}
+   >>> d
+   {1: 'one', 2: 'two'}
+   >>> d[1]
+   'one'
+   >>> d[1.0]
+   'one'
+   >>> d[1.0] = "one-point-zero"
+   >>> d
+   {1: 'one-point-zero', 2: 'two'}
+   >>> 1 == 1.0
+   True
+   >>> set([1, 1.0])
+   set([1])
+
+Now the Seq behaviour shown below should make sense:
+
+   >>> d = {my_dna:"DNA"}
+   >>> d
+   {Seq('ACG', DNAAlphabet()): 'DNA'}
+   >>> d["ACG"]
+   'DNA'
+   >>> d[my_protein]
+   'DNA'
+
+Since Seq equality ignores the alphabet (bar warnings), any Seq object with sequence
+"ACG" or a Python string "ACG" will match the dictionary key. The same applies to
+Python sets:
+
+   >>> s = set(["ACG", my_seq, my_dna, my_rna, my_protein])
+   >>> len(s)
+   1
+   >>> s
+   set(['ACG'])
+
+Odd? Yes, but typically you won't want to mix alphabets like this.
+
 """
 __docformat__ ="epytext en" #Don't just use plain text in epydoc API pages!
 
 import string #for maketrans only
 import array
 import sys
+import warnings
 
 import Alphabet
 from Alphabet import IUPAC
@@ -126,6 +229,49 @@ class Seq(object):
     # TODO - Alphabet aware __eq__ etc would be nice, but has implications for
     # __hash__ and therefore use as dictionary keys. See also:
     # http://mail.python.org/pipermail/python-dev/2002-December/031455.html
+    def __hash__(self) : return hash(str(self)) # Act like a string
+
+    def __eq__(self, other) :
+        if hasattr(other, "alphabet") \
+        and not Alphabet._check_type_compatible([self.alphabet, other.alphabet]):
+            warnings.warn("Incompatable alphabets %s and %s" \
+                          % (repr(self.alphabet), repr(other.alphabet)))
+        return str(self)==str(other)
+
+    def __ne__(self, other) :
+        if hasattr(other, "alphabet") \
+        and not Alphabet._check_type_compatible([self.alphabet, other.alphabet]):
+            warnings.warn("Incompatable alphabets %s and %s" \
+                          % (repr(self.alphabet), repr(other.alphabet)))
+        return str(self)!=str(other)
+
+    def __lt__(self, other) :
+        if hasattr(other, "alphabet") \
+        and not Alphabet._check_type_compatible([self.alphabet, other.alphabet]):
+            warnings.warn("Incompatable alphabets %s and %s" \
+                          % (repr(self.alphabet), repr(other.alphabet)))
+        return str(self) < str(other)
+
+    def __le__(self, other) :
+        if hasattr(other, "alphabet") \
+        and not Alphabet._check_type_compatible([self.alphabet, other.alphabet]):
+            warnings.warn("Incompatable alphabets %s and %s" \
+                          % (repr(self.alphabet), repr(other.alphabet)))
+        return str(self) <= str(other)
+
+    def __gt__(self, other) :
+        if hasattr(other, "alphabet") \
+        and not Alphabet._check_type_compatible([self.alphabet, other.alphabet]):
+            warnings.warn("Incompatable alphabets %s and %s" \
+                          % (repr(self.alphabet), repr(other.alphabet)))
+        return str(self) > str(other)
+
+    def __ge__(self, other) :
+        if hasattr(other, "alphabet") \
+        and not Alphabet._check_type_compatible([self.alphabet, other.alphabet]):
+            warnings.warn("Incompatable alphabets %s and %s" \
+                          % (repr(self.alphabet), repr(other.alphabet)))
+        return str(self) >= str(other)
 
     def __len__(self): return len(self._data)       # Seq API requirement
 
@@ -1016,6 +1162,10 @@ class UnknownSeq(Seq):
     5
     >>> print my_seq
     NNNNN
+    >>> my_seq == "NNNNN"
+    True
+    >>> my_seq == Seq("NNNNN")
+    True
 
     However, this is rather wasteful of memory (especially for large
     sequences), which is where this class is most usefull:
@@ -1438,34 +1588,77 @@ class MutableSeq(object):
         #See test_GAQueens.py for an historic usage of a non-string alphabet!
         return "".join(self.data)
 
-    def __cmp__(self, other):
-        """Compare the sequence for to another sequence or a string.
+    def __eq__(self, other) :
+        if hasattr(other, "alphabet") \
+        and not Alphabet._check_type_compatible([self.alphabet, other.alphabet]):
+            warnings.warn("Incompatable alphabets %s and %s" \
+                          % (repr(self.alphabet), repr(other.alphabet)))
+        if isinstance(other, MutableSeq):
+            #See test_GAQueens.py for an historic usage of a non-string
+            #alphabet!  Comparing the arrays supports this.
+            return self.data == other.data
+        else :
+            return str(self) == str(other)
 
-        If compared to another sequence the alphabets must be compatible.
-        Comparing DNA to RNA, or Nucleotide to Protein will raise an
-        exception.
+    def __ne__(self, other) :
+        if hasattr(other, "alphabet") \
+        and not Alphabet._check_type_compatible([self.alphabet, other.alphabet]):
+            warnings.warn("Incompatable alphabets %s and %s" \
+                          % (repr(self.alphabet), repr(other.alphabet)))
+        if isinstance(other, MutableSeq):
+            #See test_GAQueens.py for an historic usage of a non-string
+            #alphabet!  Comparing the arrays supports this.
+            return self.data != other.data
+        else :
+            return str(self) != str(other)
 
-        Otherwise only the sequence itself is compared, not the precise
-        alphabet.
+    def __lt__(self, other) :
+        if hasattr(other, "alphabet") \
+        and not Alphabet._check_type_compatible([self.alphabet, other.alphabet]):
+            warnings.warn("Incompatable alphabets %s and %s" \
+                          % (repr(self.alphabet), repr(other.alphabet)))
+        if isinstance(other, MutableSeq):
+            #See test_GAQueens.py for an historic usage of a non-string
+            #alphabet!  Comparing the arrays supports this.
+            return self.data < other.data
+        else :
+            return str(self) < str(other)
 
-        This method indirectly supports ==, < , etc."""
-        if hasattr(other, "alphabet"):
-            #other should be a Seq or a MutableSeq
-            if not Alphabet._check_type_compatible([self.alphabet,
-                                                    other.alphabet]):
-                raise TypeError("Incompatable alphabets %s and %s" \
-                                % (repr(self.alphabet), repr(other.alphabet)))
-            #They should be the same sequence type (or one of them is generic)
-            if isinstance(other, MutableSeq):
-                #See test_GAQueens.py for an historic usage of a non-string
-                #alphabet!  Comparing the arrays supports this.
-                return cmp(self.data, other.data)
-            else:
-                return cmp(str(self), str(other))
-        elif isinstance(other, basestring):
-            return cmp(str(self), other)
-        else:
-            raise TypeError
+    def __le__(self, other) :
+        if hasattr(other, "alphabet") \
+        and not Alphabet._check_type_compatible([self.alphabet, other.alphabet]):
+            warnings.warn("Incompatable alphabets %s and %s" \
+                          % (repr(self.alphabet), repr(other.alphabet)))
+        if isinstance(other, MutableSeq):
+            #See test_GAQueens.py for an historic usage of a non-string
+            #alphabet!  Comparing the arrays supports this.
+            return self.data <= other.data
+        else :
+            return str(self) <= str(other)
+
+    def __gt__(self, other) :
+        if hasattr(other, "alphabet") \
+        and not Alphabet._check_type_compatible([self.alphabet, other.alphabet]):
+            warnings.warn("Incompatable alphabets %s and %s" \
+                          % (repr(self.alphabet), repr(other.alphabet)))
+        if isinstance(other, MutableSeq):
+            #See test_GAQueens.py for an historic usage of a non-string
+            #alphabet!  Comparing the arrays supports this.
+            return self.data > other.data
+        else :
+            return str(self) > str(other)
+
+    def __ge__(self, other) :
+        if hasattr(other, "alphabet") \
+        and not Alphabet._check_type_compatible([self.alphabet, other.alphabet]):
+            warnings.warn("Incompatable alphabets %s and %s" \
+                          % (repr(self.alphabet), repr(other.alphabet)))
+        if isinstance(other, MutableSeq):
+            #See test_GAQueens.py for an historic usage of a non-string
+            #alphabet!  Comparing the arrays supports this.
+            return self.data >= other.data
+        else :
+            return str(self) >= str(other)
 
     def __len__(self): return len(self.data)
 
