@@ -6,6 +6,7 @@
 """Additional unit tests for Bio.SeqIO.convert(...) function."""
 import os
 import unittest
+import gzip
 from Bio.SeqRecord import SeqRecord
 from Bio import SeqIO
 from Bio.SeqIO._index import _FormatToIndexedDict
@@ -13,10 +14,14 @@ from Bio.Alphabet import generic_protein, generic_nucleotide, generic_dna
 
 class IndexDictTests(unittest.TestCase):
     """Cunning unit test where methods are added at run time."""
-    def simple_check(self, filename, format, alphabet):
+    def simple_check(self, filename, format, alphabet, gzipped=False):
         id_list = [rec.id for rec in \
                    SeqIO.parse(open(filename), format, alphabet)]
-        rec_dict = SeqIO.index(filename, format, alphabet)
+        if gzipped:
+            rec_dict = SeqIO.index(filename+".gz", format, alphabet,
+                                   open_function=gzip.open)
+        else :
+            rec_dict = SeqIO.index(filename, format, alphabet)
         self.assertEqual(set(id_list), set(rec_dict.keys()))
         #This is redundant, I just want to make sure len works:
         self.assertEqual(len(id_list), len(rec_dict))
@@ -49,6 +54,7 @@ class IndexDictTests(unittest.TestCase):
         self.assertRaises(NotImplementedError, rec_dict.copy)
         self.assertRaises(NotImplementedError, rec_dict.fromkeys, [])
         #Done
+
             
 tests = [
     ("Ace/contig1.ace", "ace", generic_dna),
@@ -82,9 +88,11 @@ tests = [
     ("SwissProt/sp001", "swiss", None),
     ("SwissProt/sp010", "swiss", None),
     ("SwissProt/sp016", "swiss", None),
+    ("Quality/example.qual", "qual", None),
     ]
 for filename, format, alphabet in tests:
     assert format in _FormatToIndexedDict
+    assert os.path.isfile(filename)
     def funct(fn,fmt,alpha):
         f = lambda x : x.simple_check(fn, fmt, alpha)
         f.__doc__ = "Index %s file %s" % (fmt, fn)
@@ -93,6 +101,15 @@ for filename, format, alphabet in tests:
             % (filename.replace("/","_").replace(".","_"), format),
             funct(filename, format, alphabet))
     del funct
+    if os.path.isfile(filename+".gz"):
+        def funct(fn,fmt,alpha):
+            f = lambda x : x.simple_check(fn, fmt, alpha, gzipped=True)
+            f.__doc__ = "Index %s file %s (gzipped)" % (fmt, fn)
+            return f
+        setattr(IndexDictTests, "test_%s_%s_gzipped" \
+                % (filename.replace("/","_").replace(".","_"), format),
+                funct(filename, format, alphabet))
+        del funct
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner(verbosity = 2)

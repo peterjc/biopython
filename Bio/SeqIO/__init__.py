@@ -588,7 +588,8 @@ def to_dict(sequences, key_function=None):
         d[key] = record
     return d
 
-def index(filename, format, alphabet=None, key_function=None):
+def index(filename, format, alphabet=None, key_function=None,
+          open_function=open):
     """Indexes a sequence file and returns a dictionary like object.
 
      - filename - string giving name of file to be indexed
@@ -599,6 +600,9 @@ def index(filename, format, alphabet=None, key_function=None):
      - key_function - Optional callback function which when given a
                   SeqRecord identifier string should return a unique
                   key for the dictionary.
+     - open_function - Optional callback function which will be given the
+                  filename to open (defaults to builtin open function).
+                  This is intended to support compressed archives (see below).
     
     This indexing function will return a dictionary like object, giving the
     SeqRecord objects as values:
@@ -680,6 +684,22 @@ def index(filename, format, alphabet=None, key_function=None):
     would impose a severe performance penalty as it would require the file
     to be completely parsed while building the index. Right now this is
     usually avoided.
+
+    The optional open_function argument is intended for use where the file
+    you wish to index is compressed, most typically with gzip (*.gz files).
+    It should be any function which takes a filename and returns an input
+    handle supporting the seek and tell methods. For example, using a gzipped
+    version of the previous FASTQ example file:
+
+    >>> import gzip
+    >>> from Bio import SeqIO
+    >>> records = SeqIO.index("Quality/example.fastq.gz", "fastq",
+    ...                       open_function=gzip.open)
+    >>> len(records)
+    3
+    >>> sorted(records.keys())
+    ['EAS54_6_R1_2_1_413_324', 'EAS54_6_R1_2_1_443_348', 'EAS54_6_R1_2_1_540_792']
+    
     """
     #Try and give helpful error messages:
     if not isinstance(filename, basestring):
@@ -700,7 +720,7 @@ def index(filename, format, alphabet=None, key_function=None):
         indexer = _index._FormatToIndexedDict[format]
     except KeyError:
         raise ValueError("Unsupported format '%s'" % format)
-    return indexer(filename, alphabet, key_function)
+    return indexer(filename, alphabet, key_function, open_function)
 
 def to_alignment(sequences, alphabet=None, strict=True):
     """Returns a multiple sequence alignment (OBSOLETE).
