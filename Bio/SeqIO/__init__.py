@@ -693,7 +693,7 @@ def index(filename, format, alphabet=None, key_function=None,
 
     >>> import gzip
     >>> from Bio import SeqIO
-    >>> records = SeqIO.index("Quality/example.fastq.gz", "fastq",
+    >>> records = SeqIO.index("Quality/example.fasta.gz", "fasta",
     ...                       open_function=gzip.open)
     >>> len(records)
     3

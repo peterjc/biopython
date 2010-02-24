@@ -52,8 +52,8 @@ class _IndexedSeqFileDict(dict):
         dict.__init__(self) #init as empty dict!
         self._open_function = open_function
         if open_function:
-            #mode="rU" doesn't work with gzip.open :(
-            self._handle = open_function(filename)
+            #TODO - mode="rU" doesn't work with gzip.open on (some) FASTQ files
+            self._handle = open_function(filename, "rU")
         else:
             self._handle = open(filename, "rU")
         self._alphabet = alphabet
