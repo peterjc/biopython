@@ -619,7 +619,7 @@ def to_dict(sequences, key_function=None):
     return d
 
 def index(filename, format, alphabet=None, key_function=None,
-          open_function=open):
+          open_function=None):
     """Indexes a sequence file and returns a dictionary like object.
 
      - filename - string giving name of file to be indexed
@@ -723,7 +723,7 @@ def index(filename, format, alphabet=None, key_function=None,
 
     >>> import gzip
     >>> from Bio import SeqIO
-    >>> records = SeqIO.index("Quality/example.fasta.gz", "fasta",
+    >>> records = SeqIO.index("Quality/example.fastq.gz", "fastq",
     ...                       open_function=gzip.open)
     >>> len(records)
     3

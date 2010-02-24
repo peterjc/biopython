@@ -121,9 +121,7 @@ for filename, format, alphabet in tests:
             % (filename.replace("/","_").replace(".","_"), format),
             funct(filename, format, alphabet))
     del funct
-    #Seem to have a CRC failure in gzip with FASTQ files when
-    #opened in universal read lines mode (possible Python bug?)
-    if os.path.isfile(filename+".gz") and "fastq" not in format:
+    if os.path.isfile(filename+".gz"):
         def funct(fn,fmt,alpha):
             f = lambda x : x.simple_check(fn, fmt, alpha, gzipped=True)
             f.__doc__ = "Index %s file %s (gzipped)" % (fmt, fn)

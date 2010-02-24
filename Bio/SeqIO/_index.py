@@ -52,8 +52,10 @@ class _IndexedSeqFileDict(dict):
         dict.__init__(self) #init as empty dict!
         self._open_function = open_function
         if open_function:
-            #TODO - mode="rU" doesn't work with gzip.open on (some) FASTQ files
-            self._handle = open_function(filename, mode)
+            #mode="rU" doesn't work with gzip.open on (some) FASTQ files
+            #and gives a CRC error (fixed in Python 3). Instead use the
+            #default and hope for the best?
+            self._handle = open_function(filename)
         else:
             self._handle = open(filename, mode)
         self._alphabet = alphabet
