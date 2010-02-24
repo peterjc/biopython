@@ -21,7 +21,8 @@ from Bio.SeqRecord import SeqRecord
 
 #################################################################
 
-exes_wanted = ["water", "needle", "seqret", "transeq", "seqmatchall"]
+exes_wanted = ["water", "needle", "seqret", "transeq", "seqmatchall",
+               "embossversion"]
 exes = dict() #Dictionary mapping from names to exe locations
 if sys.platform=="win32":
     #The default installation path is C:\mEMBOSS which contains the exes.
@@ -48,6 +49,23 @@ else:
 if len(exes) < len(exes_wanted):
     raise MissingExternalDependencyError(\
         "Install EMBOSS if you want to use Bio.Emboss.")
+
+def get_emboss_version():
+    """Returns a tuple of three ints, e.g. (6,1,0)"""
+    child = subprocess.Popen(exes["embossversion"],
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             shell=(sys.platform!="win32"))
+    stdout, stderr = child.communicate()
+    assert stderr.strip()=="Reports the current EMBOSS version number", stderr
+    assert stdout.count(".")==2, stdout
+    return tuple(int(v) for v in stdout.strip().split("."))
+
+#To avoid confusing known errors from old versions of EMBOSS ...
+if get_emboss_version() < (6,1,0):
+    raise MissingExternalDependencyError(\
+        "Test requires EMBOSS 6.1.0 patch 3 or later.")
+    
 
 #################################################################
 
@@ -168,7 +186,7 @@ class SeqRetSeqIOTests(unittest.TestCase):
             records = list(SeqIO.parse(open(in_filename), in_format, alphabet))
         else:
             records = list(SeqIO.parse(open(in_filename), in_format))
-        for temp_format in ["genbank","fasta"]:
+        for temp_format in ["genbank","embl","fasta"]:
             if temp_format in skip_formats:
                 continue
             new_records = list(emboss_piped_SeqIO_convert(records, temp_format, "fasta"))
@@ -221,7 +239,7 @@ class SeqRetSeqIOTests(unittest.TestCase):
         #and will turn "X" into "N" for GenBank output.
         self.check_SeqIO_to_EMBOSS("IntelliGenetics/VIF_mase-pro.txt", "ig",
                                    alphabet=generic_protein,
-                                   skip_formats=["genbank"])
+                                   skip_formats=["genbank","embl"])
         #TODO - What does a % in an ig sequence mean?
         #e.g. "IntelliGenetics/vpu_nucaligned.txt"
         #and  "IntelliGenetics/TAT_mase_nuc.txt"
