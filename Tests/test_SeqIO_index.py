@@ -15,13 +15,19 @@ from Bio.Alphabet import generic_protein, generic_nucleotide, generic_dna
 class IndexDictTests(unittest.TestCase):
     """Cunning unit test where methods are added at run time."""
     def simple_check(self, filename, format, alphabet, gzipped=False):
+        if format in SeqIO._BinaryFormats:
+            mode = "rb"
+        else :
+            mode = "r"
         id_list = [rec.id for rec in \
-                   SeqIO.parse(open(filename,"rU"), format, alphabet)]
+                   SeqIO.parse(open(filename, mode), format, alphabet)]
+
         if gzipped:
             rec_dict = SeqIO.index(filename+".gz", format, alphabet,
                                    open_function=gzip.open)
         else :
             rec_dict = SeqIO.index(filename, format, alphabet)
+
         self.assertEqual(set(id_list), set(rec_dict.keys()))
         #This is redundant, I just want to make sure len works:
         self.assertEqual(len(id_list), len(rec_dict))
@@ -61,6 +67,8 @@ tests = [
     ("Ace/consed_sample.ace", "ace", None),
     ("Ace/seq.cap.ace", "ace", generic_dna),
     ("Quality/wrapping_original_sanger.fastq", "fastq", None),
+    ("Quality/example.fasta", "fasta", generic_dna),
+    ("Quality/example.qual", "qual", None),
     ("Quality/example.fastq", "fastq", None),
     ("Quality/example.fastq", "fastq-sanger", generic_dna),
     ("Quality/tricky.fastq", "fastq", generic_nucleotide),
@@ -89,9 +97,21 @@ tests = [
     ("SwissProt/sp010", "swiss", None),
     ("SwissProt/sp016", "swiss", None),
     ("Quality/example.qual", "qual", None),
+    ("Roche/E3MFGYR02_random_10_reads.sff", "sff", generic_dna),
+    ("Roche/E3MFGYR02_random_10_reads.sff", "sff-trim", generic_dna),
+    ("Roche/E3MFGYR02_index_at_start.sff", "sff", generic_dna),
+    ("Roche/E3MFGYR02_index_in_middle.sff", "sff", generic_dna),
+    ("Roche/E3MFGYR02_alt_index_at_start.sff", "sff", generic_dna),
+    ("Roche/E3MFGYR02_alt_index_in_middle.sff", "sff", generic_dna),
+    ("Roche/E3MFGYR02_alt_index_at_end.sff", "sff", generic_dna),
+    ("Roche/E3MFGYR02_no_manifest.sff", "sff", generic_dna),
+    ("Roche/greek.sff", "sff", generic_nucleotide),
+    ("Roche/greek.sff", "sff-trim", generic_nucleotide),
+    ("Roche/paired.sff", "sff", None),
+    ("Roche/paired.sff", "sff-trim", None),
     ]
 for filename, format, alphabet in tests:
-    assert format in _FormatToIndexedDict
+    assert format in _FormatToIndexedDict, format
     assert os.path.isfile(filename)
     def funct(fn,fmt,alpha):
         f = lambda x : x.simple_check(fn, fmt, alpha)

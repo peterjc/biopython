@@ -51,6 +51,7 @@ test_write_read_alignment_formats.remove("fastq-sanger") #an alias for fastq
 # - integer: number of sequences
 
 test_files = [ \
+    ("sff",    False, 'Roche/E3MFGYR02_random_10_reads.sff', 10),
 #Following examples are also used in test_Clustalw.py
     ("clustal",True,  'Clustalw/cw02.aln', 2),
     ("clustal",True,  'Clustalw/opuntia.aln', 7),
@@ -370,28 +371,36 @@ def check_simple_write_read(records, indent=" "):
 
 #Check parsers can cope with an empty file
 for t_format in SeqIO._FormatToIterator:
+    if t_format in SeqIO._BinaryFormats:
+        #Not allowed empty SFF files.
+        continue
     handle = StringIO()
     records = list(SeqIO.parse(handle, t_format))
     assert len(records) == 0
 
 for (t_format, t_alignment, t_filename, t_count) in test_files:
+    if t_format in SeqIO._BinaryFormats:
+        mode = "rb"
+    else:
+        mode = "r"
+    
     print "Testing reading %s format file %s" % (t_format, t_filename)
     assert os.path.isfile(t_filename), t_filename
 
     #Try as an iterator using handle
-    records  = list(SeqIO.parse(handle=open(t_filename,"r"), format=t_format))
+    records  = list(SeqIO.parse(handle=open(t_filename,mode), format=t_format))
     assert len(records)  == t_count, \
          "Found %i records but expected %i" % (len(records), t_count)
 
-    #Try using the iterator with a for loop
+    #Try using the iterator with a for loop, and a filename not handle
     records2 = []
-    for record in SeqIO.parse(handle=open(t_filename,"r"), format=t_format):
+    for record in SeqIO.parse(t_filename, format=t_format):
         records2.append(record)
     assert len(records2) == t_count
 
     #Try using the iterator with the next() method
     records3 = []
-    seq_iterator = SeqIO.parse(handle=open(t_filename,"r"), format=t_format)
+    seq_iterator = SeqIO.parse(handle=open(t_filename,mode), format=t_format)
     while True:
         try:
             record = seq_iterator.next()
@@ -406,7 +415,7 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
             break
 
     #Try a mixture of next() and list (a torture test!)
-    seq_iterator = SeqIO.parse(handle=open(t_filename,"r"), format=t_format)
+    seq_iterator = SeqIO.parse(handle=open(t_filename,mode), format=t_format)
     try:
         record = seq_iterator.next()
     except StopIteration:
@@ -419,7 +428,7 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
     assert len(records4) == t_count
 
     #Try a mixture of next() and for loop (a torture test!)
-    seq_iterator = SeqIO.parse(handle=open(t_filename,"r"), format=t_format)
+    seq_iterator = SeqIO.parse(handle=open(t_filename,mode), format=t_format)
     try:
         record = seq_iterator.next()
     except StopIteration:
@@ -518,18 +527,18 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
     for given_alpha in good:
         #These should all work...
         given_base = Alphabet._get_base_alphabet(given_alpha)
-        for record in SeqIO.parse(open(t_filename),t_format,given_alpha):
+        for record in SeqIO.parse(open(t_filename,mode),t_format,given_alpha):
             base_alpha = Alphabet._get_base_alphabet(record.seq.alphabet)
             assert isinstance(base_alpha, given_base.__class__)
             assert base_alpha == given_base
         if t_count == 1:
-            record = SeqIO.read(open(t_filename),t_format,given_alpha)
+            record = SeqIO.read(open(t_filename,mode),t_format,given_alpha)
             assert isinstance(base_alpha, given_base.__class__)
             assert base_alpha == given_base
     for given_alpha in bad:
         #These should all fail...
         try:
-            print SeqIO.parse(open(t_filename),t_format,given_alpha).next()
+            print SeqIO.parse(open(t_filename,mode),t_format,given_alpha).next()
             assert False, "Forcing wrong alphabet, %s, should fail (%s)" \
                    % (repr(given_alpha), t_filename)
         except ValueError:
@@ -542,7 +551,7 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
 
         #Using SeqIO.to_alignment(SeqIO.parse(...))
         alignment = SeqIO.to_alignment(SeqIO.parse( \
-                    handle=open(t_filename,"r"), format=t_format))
+                    handle=open(t_filename,mode), format=t_format))
         assert len(alignment.get_all_seqs()) == t_count
 
         alignment_len = alignment.get_alignment_length()
@@ -615,8 +624,12 @@ for (records, descr) in test_records:
 
 #Check writers can cope with no alignments
 for format in SeqIO._FormatToWriter:
-     handle = StringIO()
-     assert 0 == SeqIO.write([], handle, format), \
-            "Writing no records to %s format should work!" \
-            % t_format        
+    handle = StringIO()
+    try :
+        assert 0 == SeqIO.write([], handle, format), \
+               "Writing no records to %s format should work!" \
+               % t_format
+    except ValueError, err:
+        print "Writing no records to %s format failed: %s" % (format, err)
+
 print "Finished tested writing files"
