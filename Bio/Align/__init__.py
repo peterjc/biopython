@@ -7,7 +7,7 @@
 """
 
 from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
+from Bio.SeqRecord import SeqRecord, _RestrictedDict
 from Bio import Alphabet
 
 #We only import this and subclass it for some limited backward compatibilty.
@@ -19,6 +19,16 @@ class MultipleSeqAlignment(_Alignment):
     are all the same length (usually with gap characters for insertions of
     padding). The data can then be regarded as a matrix of letters, with well
     defined columns.
+
+    Attributes:
+     - annotations - Free format information about the whole alignment
+                     (dictionary). Most entries are strings.
+     - column_annotations - Per column/symbol annotation (restricted
+                     dictionary). This holds Python sequences (lists, strings
+                     or tuples) whose length matches that of the sequence.
+                     A typical use would be to hold a string representing the
+                     secondary structure. See also the letter_annotations
+                     property of the SeqRecord object.
 
     You would typically create an MSA by loading an alignment file with the
     AlignIO module:
@@ -94,7 +104,8 @@ class MultipleSeqAlignment(_Alignment):
     reference sequence with special status.
     """
 
-    def __init__(self, records, alphabet=None):
+    def __init__(self, records, alphabet = None, annotations = None,
+                 column_annotations = None):
         """Initialize a new MultipleSeqAlignment object.
 
         Arguments:
@@ -150,6 +161,80 @@ class MultipleSeqAlignment(_Alignment):
                 self._alphabet = Alphabet._consensus_alphabet(rec.seq.alphabet for \
                                                               rec in self._records \
                                                               if rec.seq is not None)
+        # annotations about the whole sequence
+        if annotations is None:
+            annotations = {}
+        elif not isinstance(annotations, dict):
+            raise TypeError("annotations argument should be a dict")
+        self.annotations = annotations
+
+        #This will be handled via the property set function, which will
+        #turn this into a _RestrictedDict and thus ensure all the values
+        #in the dict are the right length
+        self._per_column_annotations = {}
+        if column_annotations is None:
+            self.column_annotations = {}
+        else:
+            self.column_annotations = column_annotations
+
+    #TODO - Deprecate this legacy property?
+    _annotations = property( \
+        fget = lambda self : self.annotations,
+        doc = "For backward compatibility, use annotations instead (PRIVATE)")
+
+    #TODO - Just make this a read only property?
+    def _set_per_column_annotations(self, value):
+        if not isinstance(value, dict):
+            raise TypeError("The per-column-annotations should be a "
+                            "(restricted) dictionary.")
+        #Turn this into a restricted-dictionary (and check the entries)
+        try:
+            self._per_column_annotations = _RestrictedDict(length=len(self[0]))
+        except IndexError: #no rows yet, take length as zero?
+            if value:
+                #Take length given in the dictionary
+                self._per_column_annotations \
+                         = _RestrictedDict(length=len(value.values()[0]))
+            else:
+                #Take length as zero
+                self._per_column_annotations = _RestrictedDict(length=0)
+        self._per_column_annotations.update(value)
+    column_annotations = property( \
+        fget=lambda self : self._per_column_annotations,
+        fset=_set_per_column_annotations,
+        doc="""Dictionary of per-column-annotation for the sequence.
+
+        A simple consensus string might be stored in this dictionary. Another
+        example would be to hold structure predictions based on a reference
+        structure in an alignment. PFAM/Stockholm format alignment files can
+        hold this kind of data. e.g.
+
+        >>> from Bio import AlignIO
+        >>> align = AlignIO.read("Stockholm/simple.sth", "stockholm")
+        >>> print align
+        SingleLetterAlphabet() alignment with 2 rows and 104 columns
+        UUAAUCGAGCUCAACACUCUUCGUAUAUCCUC-UCAAUAUGG-G...UGU AP001509.1
+        AAAAUUGAAUAUCGUUUUACUUGUUUAU-GUCGUGAAU-UGG-C...GAU AE007476.1
+        >>> print align.column_annotations.keys()
+        ['SS_cons']
+        >>> print "Consensus", align.column_annotations["SS_cons"][:50], "etc"
+        Consensus .................<<<<<<<<...<<<<<<<........>>>>>>> etc
+
+        The column_annotations get sliced automatically if you slice the
+        parent alignment, for example taking the last ten bases:
+
+        >>> sub_align = align[:,-10:]
+        >>> print sub_align
+        SingleLetterAlphabet() alignment with 2 rows and 10 columns
+        CAGUUAAUGU AP001509.1
+        GCAGUGAGAU AE007476.1
+        >>> print sub_align.column_annotations.keys()
+        ['SS_cons']
+        >>> print "Consensus", sub_align.column_annotations["SS_cons"]
+        Consensus ..........
+
+        See also the related letter_annotations property of the SeqRecord.
+        """)
 
     def extend(self, records):
         """Add more SeqRecord objects to the alignment as rows.
@@ -312,6 +397,7 @@ class MultipleSeqAlignment(_Alignment):
                              " (i.e. same number or rows)")
         alpha = Alphabet._consensus_alphabet([self._alphabet, other._alphabet])
         merged = (left+right for left,right in zip(self, other))
+        #TODO - Adding per-column-annotation
         return MultipleSeqAlignment(merged, alpha)
 
     def __getitem__(self, index):
@@ -345,7 +431,8 @@ class MultipleSeqAlignment(_Alignment):
         >>> c = SeqRecord(Seq("AAAAGGT", generic_dna), id="Gamma")
         >>> d = SeqRecord(Seq("AAAACGT", generic_dna), id="Delta")
         >>> e = SeqRecord(Seq("AAA-GGT", generic_dna), id="Epsilon")
-        >>> align = MultipleSeqAlignment([a, b, c, d, e], generic_dna)
+        >>> align = MultipleSeqAlignment([a, b, c, d, e], generic_dna,
+        ...                              column_annotations = {"X":"1234567"})
         
         You can access a row of the alignment as a SeqRecord using an integer
         index (think of the alignment as a list of SeqRecord objects here):
@@ -366,6 +453,8 @@ class MultipleSeqAlignment(_Alignment):
         AAAAGGT Gamma
         AAAACGT Delta
         AAA-GGT Epsilon
+        >>> sub_alignment.column_annotations
+        {'X': '1234567'}
 
         This includes support for a step, i.e. align[start:end:step], which
         can be used to select every second sequence:
@@ -417,12 +506,15 @@ class MultipleSeqAlignment(_Alignment):
 
         However, in general you get a sub-alignment,
 
-        >>> print align[1:5,3:6]
+        >>> sub_align = align[1:5,3:6]
+        >>> print sub_align
         DNAAlphabet() alignment with 4 rows and 3 columns
         -CG Beta
         AGG Gamma
         ACG Delta
         -GG Epsilon
+        >>> sub_align.column_annotations
+        {'X': '456'}
 
         This should all seem familiar to anyone who has used the NumPy
         array or matrix objects.
@@ -433,7 +525,8 @@ class MultipleSeqAlignment(_Alignment):
             return self._records[index]
         elif isinstance(index, slice):
             #e.g. sub_align = align[i:j:k]
-            return MultipleSeqAlignment(self._records[index], self._alphabet)
+            return MultipleSeqAlignment(self._records[index], self._alphabet,
+                                  column_annotations = self.column_annotations)
         elif len(index)!=2:
             raise TypeError("Invalid index type.")
 
@@ -448,8 +541,12 @@ class MultipleSeqAlignment(_Alignment):
                        self._alphabet)
         else:
             #e.g. sub_align = align[1:4, 5:7], gives another alignment
-            return MultipleSeqAlignment((rec[col_index] for rec in self._records[row_index]),
-                                        self._alphabet)
+            align = MultipleSeqAlignment((rec[col_index] for rec in self._records[row_index]),
+                                         self._alphabet)
+            #Slice the per-column-annotations too:
+            for key, value in self.column_annotations.iteritems():
+                align.column_annotations[key] = value[col_index]
+            return align
 
     def sort(self):
         """Sort the rows (SeqRecord objects) of the alignment in place.

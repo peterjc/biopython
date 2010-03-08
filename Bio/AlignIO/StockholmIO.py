@@ -165,9 +165,8 @@ class StockholmWriter(SequentialAlignmentWriter):
         
         self._length_of_sequences = alignment.get_alignment_length()
         self._ids_written = []
-        
-        #NOTE - For now, the alignment object does not hold any per column
-        #or per alignment annotation - only per sequence.
+
+        #TODO - Record the GR and GC annotation
         
         if count == 0:
             raise ValueError("Must have at least one sequence")
@@ -331,6 +330,7 @@ class StockholmIterator(AlignmentIterator):
 
         seqs = {}
         ids = []
+        gc = {}
         gs = {}
         gr = {}
         gf = {}
@@ -378,7 +378,13 @@ class StockholmIterator(AlignmentIterator):
                 elif line[:5] == '#=GC ':
                     #Generic per-Column annotation, exactly 1 char per column
                     #Format: "#=GC <feature> <exactly 1 char per column>"
-                    pass
+                    feature, text = line[5:].strip().split(None,1)
+                    #Each feature key could be used more than once,
+                    #so store the entries as a list of strings.
+                    if feature not in gc:
+                        gc[feature] = text
+                    else:
+                        gc[feature] += text #Is this needed?
                 elif line[:5] == '#=GS ':
                     #Generic per-Sequence annotation, free text
                     #Format: "#=GS <seqname> <feature> <free text>"
@@ -424,11 +430,9 @@ class StockholmIterator(AlignmentIterator):
                 raise ValueError("Found %i records in this alignment, told to expect %i" \
                                  % (len(ids), self.records_per_alignment))
 
-            alignment = MultipleSeqAlignment(self.alphabet)
-
-            #TODO - Introduce an annotated alignment class?
-            #For now, store the annotation a new private property:
-            alignment._annotations = gr
+            alignment = MultipleSeqAlignment(self.alphabet,
+                                             annotations = gf,
+                                             column_annotations = gc)
 
             alignment_length = len(seqs.values()[0])
             for id in ids:
