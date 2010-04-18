@@ -7,8 +7,8 @@
 import sys
 import os
 import unittest
+import subprocess
 from cStringIO import StringIO
-from Bio import Application
 from Bio import AlignIO, SeqIO, MissingExternalDependencyError
 from Bio.Align.Applications import TCoffeeCommandline
 
@@ -16,7 +16,7 @@ t_coffee_exe = None
 if sys.platform=="win32":
     raise MissingExternalDependencyError(\
         "Testing TCOFFEE on Windows not supported yet")
-else :
+else:
     import commands
     output = commands.getoutput("t_coffee -version")
     if "not found" not in output \
@@ -51,16 +51,20 @@ class ProbconsApplication(unittest.TestCase):
         """
         cmdline = TCoffeeCommandline(t_coffee_exe, infile=self.infile1)
         self.assertEqual(str(cmdline), t_coffee_exe + " -infile Fasta/fa01")
-        result, stdout, stderr = Application.generic_run(cmdline)
-        self.assertEquals(result.return_code, 0)
-        self.assertEquals(str(result._cl), t_coffee_exe + " -infile Fasta/fa01")
-        self.assert_(stderr.read().strip().startswith("PROGRAM: T-COFFEE"))
+        child = subprocess.Popen(str(cmdline),
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 shell=(sys.platform!="win32"))
+        return_code = child.wait()
+        self.assertEqual(return_code, 0)
+        self.assert_(child.stderr.read().strip().startswith("PROGRAM: T-COFFEE"))
         align = AlignIO.read(open(self.outfile1), "clustal")
         records = list(SeqIO.parse(open(self.infile1),"fasta"))
         self.assertEqual(len(records),len(align))
-        for old, new in zip(records, align) :
+        for old, new in zip(records, align):
             self.assertEqual(old.id, new.id)
             self.assertEqual(str(new.seq).replace("-",""), str(old.seq).replace("-",""))
+        del child
 
     def test_TCoffee_2(self):
         """Round-trip through app and read pir alignment from file
@@ -71,15 +75,20 @@ class ProbconsApplication(unittest.TestCase):
         cmdline.output = "pir_aln"
         self.assertEqual(str(cmdline), t_coffee_exe + " -output pir_aln "
                     "-infile Fasta/fa01 -outfile Fasta/tc_out.pir -quiet")
-        result, stdout, stderr = Application.generic_run(cmdline)
-        self.assertEquals(result.return_code, 0)
-        self.assertEquals(stderr.read(), "")
+        child = subprocess.Popen(str(cmdline),
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 shell=(sys.platform!="win32"))
+        return_code = child.wait()
+        self.assertEqual(return_code, 0)
+        self.assertEquals(child.stderr.read(), "")
         align = AlignIO.read(open(self.outfile3), "pir")
         records = list(SeqIO.parse(open(self.infile1),"fasta"))
         self.assertEqual(len(records),len(align))
-        for old, new in zip(records, align) :
+        for old, new in zip(records, align):
             self.assertEqual(old.id, new.id)
             self.assertEqual(str(new.seq).replace("-",""), str(old.seq).replace("-",""))
+        del child
 
     def test_TCoffee_3(self):
         """Round-trip through app and read clustalw alignment from file
@@ -93,16 +102,21 @@ class ProbconsApplication(unittest.TestCase):
         cmdline.type = "protein"
         self.assertEqual(str(cmdline), t_coffee_exe + " -output clustalw_aln "
                          "-infile Fasta/fa01 -outfile Fasta/tc_out.phy "
-                         "-outorder input -gapopen -2 -gapext -5")
-        result, stdout, stderr = Application.generic_run(cmdline)
-        self.assertEquals(result.return_code, 0)
-        self.assert_(stderr.read().strip().startswith("PROGRAM: T-COFFEE"))
+                         "-type protein -outorder input -gapopen -2 -gapext -5")
+        child = subprocess.Popen(str(cmdline),
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 shell=(sys.platform!="win32"))
+        return_code = child.wait()
+        self.assertEqual(return_code, 0)
+        self.assert_(child.stderr.read().strip().startswith("PROGRAM: T-COFFEE"))
         align = AlignIO.read(open(self.outfile4), "clustal")
         records = list(SeqIO.parse(open(self.infile1),"fasta"))
         self.assertEqual(len(records),len(align))
-        for old, new in zip(records, align) :
+        for old, new in zip(records, align):
             self.assertEqual(old.id, new.id)
             self.assertEqual(str(new.seq).replace("-",""), str(old.seq).replace("-",""))
+        del child
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner(verbosity = 2)

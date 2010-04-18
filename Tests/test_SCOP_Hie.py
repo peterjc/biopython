@@ -9,44 +9,41 @@
 import unittest
 
 from Bio.SCOP import Hie
-from Bio.SCOP.Residues import Residues
 
 
 
 
 class HieTests(unittest.TestCase):
 
-    def setUp(self) :
+    def setUp(self):
         self.filename = './SCOP/dir.hie.scop.txt_test'
 
     def testParse(self):
-       f = open(self.filename)
-       try: 
-           count = 0
-           for record in Hie.parse(f):
-               count +=1
-           assert count == 21, "Wrong number of records?! "+str(count)
-       finally:
-           f.close()
-    
+        """Test if all records in a HIE file are being read"""
+        f = open(self.filename)
+        try: 
+            count = 0
+            for record in Hie.parse(f):
+                count +=1
+            self.assertEqual(count, 21)
+        finally:
+            f.close()
+
     def testStr(self):
-       f = open(self.filename)
-       try: 
-           for line in f:
-               record = Hie.Record(line)
-               #End of line is platform dependent. Strip it off
-               assert str(record).rstrip() == line.rstrip()
-       finally:
-           f.close()        
+        """Test if we can convert each record to a string correctly"""
+        f = open(self.filename)
+        try: 
+            for line in f:
+                record = Hie.Record(line)
+                #End of line is platform dependent. Strip it off
+                self.assertEqual(str(record).rstrip(), line.rstrip())
+        finally:
+            f.close()        
 
-    def testError(self) :
+    def testError(self):
+        """Test if a corrupt record raises the appropriate exception"""
         corruptRec = "4926sdfhjhfgyjdfyg"
-
-        try:
-            rec = Hie.Record(corruptRec)
-            assert False, "Should never get here"
-        except ValueError, e :
-            pass
+        self.assertRaises(ValueError, Hie.Record, corruptRec)
 
 
 if __name__ == '__main__':

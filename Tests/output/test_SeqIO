@@ -1,4 +1,32 @@
 test_SeqIO
+Testing reading sff format file Roche/E3MFGYR02_random_10_reads.sff
+ ID and Name='E3MFGYR02JWQ7T',
+ Seq='tcagGGTCTACATGTTGGTTAACCCGTACTGATTTGAATT...GGGCTTa', length=265
+ ID and Name='E3MFGYR02JA6IL',
+ Seq='tcagTTTTTTTTGGAAAGGAAAACGGACGTACTCATAGAT...AAATGcc', length=271
+ ID and Name='E3MFGYR02JHD4H',
+ Seq='tcagAAAGACAAGTGGTATCAACGCAGAGTGGCCATTACG...gagaacg', length=310
+ ...
+ ID and Name='E3MFGYR02F7Z7G',
+ Seq='tcagAATCATCCACTTTTTAACGTTTTGTTTTGTTCATCT...nnnnnnn', length=219
+ Checking can write/read as 'fasta' format
+ Checking can write/read as 'clustal' format
+ Failed: Sequences must all be the same length
+ Checking can write/read as 'phylip' format
+ Failed: Sequences must all be the same length
+ Checking can write/read as 'stockholm' format
+ Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
+ Checking can write/read as 'fastq' format
+ Checking can write/read as 'fastq-illumina' format
+ Checking can write/read as 'fastq-solexa' format
+ Checking can write/read as 'genbank' format
+ Checking can write/read as 'phd' format
+ Checking can write/read as 'qual' format
+ Checking can write/read as 'sff' format
+ Checking can write/read as 'tab' format
+ Checking can write/read as 'nexus' format
+ Failed: Sequences must all be the same length
 Testing reading clustal format file Clustalw/cw02.aln
  ID = 'gi|4959044|gb|AAD34209.1|AF069', Name='<unknown name>',
  Seq='MENSDSNDKGSDQSAAQRRSQMDRLDREEAFYQFVNNLSE...GNRESVV', length=601
@@ -16,6 +44,8 @@ Testing reading clustal format file Clustalw/cw02.aln as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|671626|emb|CAA85685.1|).
  Checking can write/read as 'fastq-illumina' format
@@ -28,6 +58,8 @@ Testing reading clustal format file Clustalw/cw02.aln as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|671626|emb|CAA85685.1|).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|671626|emb|CAA85685.1|).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -53,6 +85,8 @@ Testing reading clustal format file Clustalw/opuntia.aln as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|6273291|gb|AF191665.1|AF191).
  Checking can write/read as 'fastq-illumina' format
@@ -65,6 +99,8 @@ Testing reading clustal format file Clustalw/opuntia.aln as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|6273291|gb|AF191665.1|AF191).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|6273291|gb|AF191665.1|AF191).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -90,6 +126,8 @@ Testing reading clustal format file Clustalw/hedgehog.aln as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|56122354|gb|AAV74328.1|).
  Checking can write/read as 'fastq-illumina' format
@@ -102,6 +140,8 @@ Testing reading clustal format file Clustalw/hedgehog.aln as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|56122354|gb|AAV74328.1|).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|56122354|gb|AAV74328.1|).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -123,6 +163,8 @@ Testing reading clustal format file Clustalw/odd_consensus.aln as an alignment
  Checking can write/read as 'phylip' format
  Failed: Repeated identifier, possibly due to truncation
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AT3G20900.1-SEQ).
  Checking can write/read as 'fastq-illumina' format
@@ -135,16 +177,20 @@ Testing reading clustal format file Clustalw/odd_consensus.aln as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AT3G20900.1-SEQ).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AT3G20900.1-SEQ).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
-Testing reading fasta format file Nucleic/lupine.nu
+Testing reading fasta format file Fasta/lupine.nu
  ID and Name='gi|5049839|gb|AI730987.1|AI730987',
  Seq='GAAAATTCATTTTCTTTGGACTTTCTCTGAAATCCGAGTC...GGTTTTT', length=655
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|5049839|gb|AI730987.1|AI730987).
  Checking can write/read as 'fastq-illumina' format
@@ -157,16 +203,20 @@ Testing reading fasta format file Nucleic/lupine.nu
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|5049839|gb|AI730987.1|AI730987).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|5049839|gb|AI730987.1|AI730987).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
-Testing reading fasta format file Nucleic/elderberry.nu
+Testing reading fasta format file Fasta/elderberry.nu
  ID and Name='gi|4218935|gb|AF074388.1|AF074388',
  Seq='ATGAAGTTAAGCACTCTTCTCATCTTATCTTTTCCTTTCC...GTCGTTT', length=2050
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|4218935|gb|AF074388.1|AF074388).
  Checking can write/read as 'fastq-illumina' format
@@ -179,16 +229,20 @@ Testing reading fasta format file Nucleic/elderberry.nu
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|4218935|gb|AF074388.1|AF074388).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|4218935|gb|AF074388.1|AF074388).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
-Testing reading fasta format file Nucleic/phlox.nu
+Testing reading fasta format file Fasta/phlox.nu
  ID and Name='gi|5052071|gb|AF067555.1|AF067555',
  Seq='TCGAAACCTGCCTAGCAGAACGACCCGCGAACTTGTATTC...CACGACC', length=623
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|5052071|gb|AF067555.1|AF067555).
  Checking can write/read as 'fastq-illumina' format
@@ -201,16 +255,20 @@ Testing reading fasta format file Nucleic/phlox.nu
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|5052071|gb|AF067555.1|AF067555).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|5052071|gb|AF067555.1|AF067555).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
-Testing reading fasta format file Nucleic/centaurea.nu
+Testing reading fasta format file Fasta/centaurea.nu
  ID and Name='gi|4104054|gb|AH007193.1|SEG_CVIGS',
  Seq='CCTGTCACTTAACTTTTTGTTCATAAGGTATATATGGGGG...GTTAGAG', length=1002
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|4104054|gb|AH007193.1|SEG_CVIGS).
  Checking can write/read as 'fastq-illumina' format
@@ -223,16 +281,20 @@ Testing reading fasta format file Nucleic/centaurea.nu
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|4104054|gb|AH007193.1|SEG_CVIGS).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|4104054|gb|AH007193.1|SEG_CVIGS).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
-Testing reading fasta format file Nucleic/wisteria.nu
+Testing reading fasta format file Fasta/wisteria.nu
  ID and Name='gi|5817701|gb|AF142731.1|AF142731',
  Seq='GCTCCATTTTTTACACATTTCTATGAACTAATTGGTTCAT...ATGATGA', length=2551
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|5817701|gb|AF142731.1|AF142731).
  Checking can write/read as 'fastq-illumina' format
@@ -245,16 +307,20 @@ Testing reading fasta format file Nucleic/wisteria.nu
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|5817701|gb|AF142731.1|AF142731).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|5817701|gb|AF142731.1|AF142731).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
-Testing reading fasta format file Nucleic/sweetpea.nu
+Testing reading fasta format file Fasta/sweetpea.nu
  ID and Name='gi|3176602|gb|U78617.1|LOU78617',
  Seq='CAGGCTGCGCGGTTTCTATTTATGAAGAACAAGGTCCGTA...GTTTGTT', length=309
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|3176602|gb|U78617.1|LOU78617).
  Checking can write/read as 'fastq-illumina' format
@@ -267,16 +333,20 @@ Testing reading fasta format file Nucleic/sweetpea.nu
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|3176602|gb|U78617.1|LOU78617).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|3176602|gb|U78617.1|LOU78617).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
-Testing reading fasta format file Nucleic/lavender.nu
+Testing reading fasta format file Fasta/lavender.nu
  ID and Name='gi|5690369|gb|AF158246.1|AF158246',
  Seq='GGCTCTTAAGTCATGTCTAGGCAGGTGTGCACAAGTTTAG...GTAGGTG', length=550
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|5690369|gb|AF158246.1|AF158246).
  Checking can write/read as 'fastq-illumina' format
@@ -289,16 +359,20 @@ Testing reading fasta format file Nucleic/lavender.nu
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|5690369|gb|AF158246.1|AF158246).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|5690369|gb|AF158246.1|AF158246).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
-Testing reading fasta format file Amino/aster.pro
+Testing reading fasta format file Fasta/aster.pro
  ID and Name='gi|3298468|dbj|BAA31520.1|',
  Seq='GGHVNPAVTFGAFVGGNITLLRGIVYIIAQLLGSTVACLL...FIVGANI', length=107
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|3298468|dbj|BAA31520.1|).
  Checking can write/read as 'fastq-illumina' format
@@ -311,16 +385,20 @@ Testing reading fasta format file Amino/aster.pro
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|3298468|dbj|BAA31520.1|).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|3298468|dbj|BAA31520.1|).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
-Testing reading fasta format file Amino/loveliesbleeding.pro
+Testing reading fasta format file Fasta/loveliesbleeding.pro
  ID and Name='gi|2781234|pdb|1JLY|B',
  Seq='XAGLPVIMCLKSNNHQKYLRYQSDNIQQYGLLQFSADKIL...IELGQNN', length=304
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|2781234|pdb|1JLY|B).
  Checking can write/read as 'fastq-illumina' format
@@ -333,16 +411,20 @@ Testing reading fasta format file Amino/loveliesbleeding.pro
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|2781234|pdb|1JLY|B).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|2781234|pdb|1JLY|B).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
-Testing reading fasta format file Amino/rose.pro
+Testing reading fasta format file Fasta/rose.pro
  ID and Name='gi|4959044|gb|AAD34209.1|AF069992_1',
  Seq='MENSDSNDKGSDQSAAQRRSQMDRLDREEAFYQFVNNLSE...GNRESVV', length=600
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|4959044|gb|AAD34209.1|AF069992_1).
  Checking can write/read as 'fastq-illumina' format
@@ -355,16 +437,20 @@ Testing reading fasta format file Amino/rose.pro
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|4959044|gb|AAD34209.1|AF069992_1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|4959044|gb|AAD34209.1|AF069992_1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
-Testing reading fasta format file Amino/rosemary.pro
+Testing reading fasta format file Fasta/rosemary.pro
  ID and Name='gi|671626|emb|CAA85685.1|',
  Seq='MSPQTETKASVGFKAGVKEYKLTYYTPEYETKDTDILAAF...FEFPAMD', length=473
  Checking can write/read as 'fasta' format
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|671626|emb|CAA85685.1|).
  Checking can write/read as 'fastq-illumina' format
@@ -377,6 +463,8 @@ Testing reading fasta format file Amino/rosemary.pro
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|671626|emb|CAA85685.1|).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|671626|emb|CAA85685.1|).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -387,6 +475,8 @@ Testing reading fasta format file Fasta/f001
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|3318709|pdb|1A91|).
  Checking can write/read as 'fastq-illumina' format
@@ -399,6 +489,8 @@ Testing reading fasta format file Fasta/f001
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|3318709|pdb|1A91|).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|3318709|pdb|1A91|).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -416,6 +508,8 @@ Testing reading fasta format file Fasta/f002
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|1592936|gb|G29385|G29385).
  Checking can write/read as 'fastq-illumina' format
@@ -428,6 +522,8 @@ Testing reading fasta format file Fasta/f002
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|1592936|gb|G29385|G29385).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|1592936|gb|G29385|G29385).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -443,6 +539,8 @@ Testing reading fasta format file Fasta/fa01
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AKH_HAEIN/1-382).
  Checking can write/read as 'fastq-illumina' format
@@ -455,6 +553,8 @@ Testing reading fasta format file Fasta/fa01
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AKH_HAEIN/1-382).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AKH_HAEIN/1-382).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -465,6 +565,8 @@ Testing reading fasta format file GenBank/NC_005816.fna
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|45478711|ref|NC_005816.1|).
  Checking can write/read as 'fastq-illumina' format
@@ -477,6 +579,8 @@ Testing reading fasta format file GenBank/NC_005816.fna
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|45478711|ref|NC_005816.1|).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|45478711|ref|NC_005816.1|).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -497,6 +601,8 @@ Testing reading fasta format file GenBank/NC_005816.ffn
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=ref|NC_005816.1|:c8360-8088).
  Checking can write/read as 'fastq-illumina' format
@@ -509,6 +615,8 @@ Testing reading fasta format file GenBank/NC_005816.ffn
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=ref|NC_005816.1|:c8360-8088).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=ref|NC_005816.1|:c8360-8088).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -529,6 +637,8 @@ Testing reading fasta format file GenBank/NC_005816.faa
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|45478721|ref|NP_995576.1|).
  Checking can write/read as 'fastq-illumina' format
@@ -541,6 +651,8 @@ Testing reading fasta format file GenBank/NC_005816.faa
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|45478721|ref|NP_995576.1|).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|45478721|ref|NP_995576.1|).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -561,6 +673,8 @@ Testing reading fasta format file GenBank/NC_000932.faa
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|7525099|ref|NP_051123.1|).
  Checking can write/read as 'fastq-illumina' format
@@ -573,6 +687,8 @@ Testing reading fasta format file GenBank/NC_000932.faa
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|7525099|ref|NP_051123.1|).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|7525099|ref|NP_051123.1|).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -583,6 +699,8 @@ Testing reading fasta format file GFF/NC_001802.fna
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|9629357|ref|NC_001802.1|).
  Checking can write/read as 'fastq-illumina' format
@@ -595,6 +713,8 @@ Testing reading fasta format file GFF/NC_001802.fna
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|9629357|ref|NC_001802.1|).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|9629357|ref|NC_001802.1|).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -605,6 +725,8 @@ Testing reading fasta format file GFF/NC_001802lc.fna
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|9629357|ref|nc_001802.1|).
  Checking can write/read as 'fastq-illumina' format
@@ -617,6 +739,8 @@ Testing reading fasta format file GFF/NC_001802lc.fna
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|9629357|ref|nc_001802.1|).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|9629357|ref|nc_001802.1|).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -639,6 +763,8 @@ Testing reading fasta format file GFF/multi.fna as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=test3).
  Checking can write/read as 'fastq-illumina' format
@@ -651,6 +777,8 @@ Testing reading fasta format file GFF/multi.fna as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=test3).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=test3).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -666,6 +794,8 @@ Testing reading fasta format file Registry/seqs.fasta
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|129628|sp|P07175|PARA_AGRTU).
  Checking can write/read as 'fastq-illumina' format
@@ -678,6 +808,8 @@ Testing reading fasta format file Registry/seqs.fasta
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|129628|sp|P07175|PARA_AGRTU).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|129628|sp|P07175|PARA_AGRTU).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -703,6 +835,8 @@ Testing reading nexus format file Nexus/test_Nexus_input.nex as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Cannot have spaces in EMBL accession, 'one should be punished, for (that)!'
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=t9).
  Checking can write/read as 'fastq-illumina' format
@@ -715,6 +849,8 @@ Testing reading nexus format file Nexus/test_Nexus_input.nex as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=t9).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=t9).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp001
@@ -724,6 +860,8 @@ Testing reading swiss format file SwissProt/sp001
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Q13454).
  Checking can write/read as 'fastq-illumina' format
@@ -735,6 +873,8 @@ Testing reading swiss format file SwissProt/sp001
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Q13454).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Q13454).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp002
@@ -744,6 +884,8 @@ Testing reading swiss format file SwissProt/sp002
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P54101).
  Checking can write/read as 'fastq-illumina' format
@@ -755,6 +897,8 @@ Testing reading swiss format file SwissProt/sp002
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P54101).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P54101).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp003
@@ -764,6 +908,8 @@ Testing reading swiss format file SwissProt/sp003
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P42655).
  Checking can write/read as 'fastq-illumina' format
@@ -775,6 +921,8 @@ Testing reading swiss format file SwissProt/sp003
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P42655).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P42655).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp004
@@ -784,6 +932,8 @@ Testing reading swiss format file SwissProt/sp004
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P23082).
  Checking can write/read as 'fastq-illumina' format
@@ -795,6 +945,8 @@ Testing reading swiss format file SwissProt/sp004
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P23082).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P23082).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp005
@@ -804,6 +956,8 @@ Testing reading swiss format file SwissProt/sp005
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P24973).
  Checking can write/read as 'fastq-illumina' format
@@ -815,6 +969,8 @@ Testing reading swiss format file SwissProt/sp005
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P24973).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P24973).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp006
@@ -824,6 +980,8 @@ Testing reading swiss format file SwissProt/sp006
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P39896).
  Checking can write/read as 'fastq-illumina' format
@@ -835,6 +993,8 @@ Testing reading swiss format file SwissProt/sp006
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P39896).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P39896).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp007
@@ -844,6 +1004,8 @@ Testing reading swiss format file SwissProt/sp007
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=O95832).
  Checking can write/read as 'fastq-illumina' format
@@ -855,6 +1017,8 @@ Testing reading swiss format file SwissProt/sp007
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=O95832).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=O95832).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp008
@@ -864,6 +1028,8 @@ Testing reading swiss format file SwissProt/sp008
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P01892).
  Checking can write/read as 'fastq-illumina' format
@@ -875,6 +1041,8 @@ Testing reading swiss format file SwissProt/sp008
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P01892).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P01892).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp009
@@ -884,6 +1052,8 @@ Testing reading swiss format file SwissProt/sp009
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=O23729).
  Checking can write/read as 'fastq-illumina' format
@@ -895,6 +1065,8 @@ Testing reading swiss format file SwissProt/sp009
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=O23729).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=O23729).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp010
@@ -904,6 +1076,8 @@ Testing reading swiss format file SwissProt/sp010
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Q13639).
  Checking can write/read as 'fastq-illumina' format
@@ -915,6 +1089,8 @@ Testing reading swiss format file SwissProt/sp010
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Q13639).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Q13639).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp011
@@ -924,6 +1100,8 @@ Testing reading swiss format file SwissProt/sp011
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P16235).
  Checking can write/read as 'fastq-illumina' format
@@ -935,6 +1113,8 @@ Testing reading swiss format file SwissProt/sp011
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P16235).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P16235).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp012
@@ -944,6 +1124,8 @@ Testing reading swiss format file SwissProt/sp012
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Q9Y736).
  Checking can write/read as 'fastq-illumina' format
@@ -955,6 +1137,8 @@ Testing reading swiss format file SwissProt/sp012
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Q9Y736).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Q9Y736).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp013
@@ -964,6 +1148,8 @@ Testing reading swiss format file SwissProt/sp013
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P82909).
  Checking can write/read as 'fastq-illumina' format
@@ -975,6 +1161,8 @@ Testing reading swiss format file SwissProt/sp013
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P82909).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P82909).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp014
@@ -984,6 +1172,8 @@ Testing reading swiss format file SwissProt/sp014
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P12166).
  Checking can write/read as 'fastq-illumina' format
@@ -995,6 +1185,8 @@ Testing reading swiss format file SwissProt/sp014
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P12166).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P12166).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp015
@@ -1004,6 +1196,8 @@ Testing reading swiss format file SwissProt/sp015
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=IPI00383150).
  Checking can write/read as 'fastq-illumina' format
@@ -1015,6 +1209,8 @@ Testing reading swiss format file SwissProt/sp015
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=IPI00383150).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=IPI00383150).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file SwissProt/sp016
@@ -1024,6 +1220,8 @@ Testing reading swiss format file SwissProt/sp016
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P01100).
  Checking can write/read as 'fastq-illumina' format
@@ -1035,6 +1233,8 @@ Testing reading swiss format file SwissProt/sp016
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P01100).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P01100).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading swiss format file Registry/EDD_RAT.dat
@@ -1044,6 +1244,8 @@ Testing reading swiss format file Registry/EDD_RAT.dat
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Q62671).
  Checking can write/read as 'fastq-illumina' format
@@ -1055,6 +1257,8 @@ Testing reading swiss format file Registry/EDD_RAT.dat
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Q62671).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Q62671).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading genbank format file GenBank/noref.gb
@@ -1064,6 +1268,7 @@ Testing reading genbank format file GenBank/noref.gb
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NM_006141.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1075,6 +1280,8 @@ Testing reading genbank format file GenBank/noref.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NM_006141.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NM_006141.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading genbank format file GenBank/cor6_6.gb
@@ -1094,6 +1301,7 @@ Testing reading genbank format file GenBank/cor6_6.gb
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AF297471.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1105,6 +1313,8 @@ Testing reading genbank format file GenBank/cor6_6.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AF297471.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AF297471.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -1115,6 +1325,7 @@ Testing reading genbank format file GenBank/iro.gb
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AL109817.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1126,6 +1337,8 @@ Testing reading genbank format file GenBank/iro.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AL109817.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AL109817.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading genbank format file GenBank/pri1.gb
@@ -1135,6 +1348,7 @@ Testing reading genbank format file GenBank/pri1.gb
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=U05344.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1146,6 +1360,8 @@ Testing reading genbank format file GenBank/pri1.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=U05344.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=U05344.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading genbank format file GenBank/arab1.gb
@@ -1155,6 +1371,7 @@ Testing reading genbank format file GenBank/arab1.gb
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AC007323.5).
  Checking can write/read as 'fastq-illumina' format
@@ -1166,6 +1383,8 @@ Testing reading genbank format file GenBank/arab1.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AC007323.5).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AC007323.5).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading genbank format file GenBank/protein_refseq.gb
@@ -1175,6 +1394,8 @@ Testing reading genbank format file GenBank/protein_refseq.gb
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NP_034640.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1186,6 +1407,8 @@ Testing reading genbank format file GenBank/protein_refseq.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NP_034640.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NP_034640.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading genbank format file GenBank/protein_refseq2.gb
@@ -1195,6 +1418,8 @@ Testing reading genbank format file GenBank/protein_refseq2.gb
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NP_034640.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1206,6 +1431,8 @@ Testing reading genbank format file GenBank/protein_refseq2.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NP_034640.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NP_034640.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading genbank format file GenBank/extra_keywords.gb
@@ -1215,6 +1442,7 @@ Testing reading genbank format file GenBank/extra_keywords.gb
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AL138972.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1226,6 +1454,8 @@ Testing reading genbank format file GenBank/extra_keywords.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AL138972.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AL138972.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading genbank format file GenBank/one_of.gb
@@ -1235,6 +1465,7 @@ Testing reading genbank format file GenBank/one_of.gb
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=U18266.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1246,11 +1477,14 @@ Testing reading genbank format file GenBank/one_of.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=U18266.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=U18266.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading genbank format file GenBank/NT_019265.gb
  ID = 'NT_019265.6', Name='NT_019265',
  Seq='NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN...NNNNNNN', length=1250660
+ Checking can write/read as 'embl' format
  Checking can write/read as 'genbank' format
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NT_019265.6).
@@ -1261,6 +1495,7 @@ Testing reading genbank format file GenBank/origin_line.gb
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NC_002678.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1272,6 +1507,8 @@ Testing reading genbank format file GenBank/origin_line.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NC_002678.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NC_002678.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading genbank format file GenBank/blank_seq.gb
@@ -1281,6 +1518,8 @@ Testing reading genbank format file GenBank/blank_seq.gb
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NP_001832.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1292,6 +1531,8 @@ Testing reading genbank format file GenBank/blank_seq.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NP_001832.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NP_001832.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading genbank format file GenBank/dbsource_wrap.gb
@@ -1301,6 +1542,8 @@ Testing reading genbank format file GenBank/dbsource_wrap.gb
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P01485).
  Checking can write/read as 'fastq-illumina' format
@@ -1312,6 +1555,8 @@ Testing reading genbank format file GenBank/dbsource_wrap.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P01485).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=P01485).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading genbank format file GenBank/NC_005816.gb
@@ -1321,6 +1566,7 @@ Testing reading genbank format file GenBank/NC_005816.gb
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NC_005816.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1332,6 +1578,8 @@ Testing reading genbank format file GenBank/NC_005816.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NC_005816.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NC_005816.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading genbank format file GenBank/NC_000932.gb
@@ -1341,6 +1589,7 @@ Testing reading genbank format file GenBank/NC_000932.gb
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NC_000932.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1352,6 +1601,8 @@ Testing reading genbank format file GenBank/NC_000932.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NC_000932.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NC_000932.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading genbank format file GenBank/pBAD30.gb
@@ -1361,6 +1612,7 @@ Testing reading genbank format file GenBank/pBAD30.gb
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=pBAD30).
  Checking can write/read as 'fastq-illumina' format
@@ -1372,6 +1624,8 @@ Testing reading genbank format file GenBank/pBAD30.gb
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=pBAD30).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=pBAD30).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading genbank format file GenBank/gbvrl1_start.seq
@@ -1388,6 +1642,7 @@ Testing reading genbank format file GenBank/gbvrl1_start.seq
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AB000050.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1399,6 +1654,8 @@ Testing reading genbank format file GenBank/gbvrl1_start.seq
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AB000050.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AB000050.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -1409,6 +1666,7 @@ Testing reading genbank format file GFF/NC_001422.gbk
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NC_001422.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1420,6 +1678,8 @@ Testing reading genbank format file GFF/NC_001422.gbk
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NC_001422.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=NC_001422.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading embl format file EMBL/TRBG361.embl
@@ -1429,6 +1689,7 @@ Testing reading embl format file EMBL/TRBG361.embl
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=X56734.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1440,6 +1701,8 @@ Testing reading embl format file EMBL/TRBG361.embl
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=X56734.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=X56734.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading embl format file EMBL/DD231055_edited.embl
@@ -1449,6 +1712,7 @@ Testing reading embl format file EMBL/DD231055_edited.embl
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=DD231055.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1460,6 +1724,8 @@ Testing reading embl format file EMBL/DD231055_edited.embl
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=DD231055.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=DD231055.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading embl format file EMBL/SC10H5.embl
@@ -1469,6 +1735,7 @@ Testing reading embl format file EMBL/SC10H5.embl
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AL031232).
  Checking can write/read as 'fastq-illumina' format
@@ -1480,6 +1747,8 @@ Testing reading embl format file EMBL/SC10H5.embl
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AL031232).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AL031232).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading embl format file EMBL/U87107.embl
@@ -1489,6 +1758,7 @@ Testing reading embl format file EMBL/U87107.embl
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=U87107.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1500,6 +1770,8 @@ Testing reading embl format file EMBL/U87107.embl
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=U87107.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=U87107.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading embl format file EMBL/AAA03323.embl
@@ -1509,6 +1781,7 @@ Testing reading embl format file EMBL/AAA03323.embl
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AAA03323.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1520,6 +1793,8 @@ Testing reading embl format file EMBL/AAA03323.embl
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AAA03323.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AAA03323.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading embl format file EMBL/AE017046.embl
@@ -1529,6 +1804,7 @@ Testing reading embl format file EMBL/AE017046.embl
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AE017046.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1540,8 +1816,19 @@ Testing reading embl format file EMBL/AE017046.embl
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AE017046.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AE017046.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
+Testing reading embl format file EMBL/Human_contigs.embl
+ ID = 'AJ229040.1', Name='AJ229040',
+ Seq='NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN...NNNNNNN', length=958952
+ ID = 'AL954800.2', Name='AL954800',
+ Seq='NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN...NNNNNNN', length=87191216
+ Checking can write/read as 'embl' format
+ Checking can write/read as 'genbank' format
+ Checking can write/read as 'qual' format
+ Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AL954800.2).
 Testing reading stockholm format file Stockholm/simple.sth
  ID and Name='AP001509.1',
  Seq='UUAAUCGAGCUCAACACUCUUCGUAUAUCCUC-UCAAUAU...UUAAUGU', length=104
@@ -1559,6 +1846,8 @@ Testing reading stockholm format file Stockholm/simple.sth as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AE007476.1).
  Checking can write/read as 'fastq-illumina' format
@@ -1571,6 +1860,8 @@ Testing reading stockholm format file Stockholm/simple.sth as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AE007476.1).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=AE007476.1).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -1596,6 +1887,8 @@ Testing reading stockholm format file Stockholm/funny.sth as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=O31699/88-139).
  Checking can write/read as 'fastq-illumina' format
@@ -1608,6 +1901,8 @@ Testing reading stockholm format file Stockholm/funny.sth as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=O31699/88-139).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=O31699/88-139).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -1633,6 +1928,8 @@ Testing reading phylip format file Phylip/reference_dna.phy as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=B.subtilis).
  Checking can write/read as 'fastq-illumina' format
@@ -1645,6 +1942,8 @@ Testing reading phylip format file Phylip/reference_dna.phy as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=B.subtilis).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=B.subtilis).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -1670,6 +1969,8 @@ Testing reading phylip format file Phylip/reference_dna2.phy as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=B.subtilis).
  Checking can write/read as 'fastq-illumina' format
@@ -1682,6 +1983,8 @@ Testing reading phylip format file Phylip/reference_dna2.phy as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=B.subtilis).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=B.subtilis).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -1707,6 +2010,8 @@ Testing reading phylip format file Phylip/hennigian.phy as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=J).
  Checking can write/read as 'fastq-illumina' format
@@ -1719,6 +2024,8 @@ Testing reading phylip format file Phylip/hennigian.phy as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=J).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=J).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -1744,6 +2051,8 @@ Testing reading phylip format file Phylip/horses.phy as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Pliohippus).
  Checking can write/read as 'fastq-illumina' format
@@ -1756,6 +2065,8 @@ Testing reading phylip format file Phylip/horses.phy as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Pliohippus).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Pliohippus).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -1781,6 +2092,8 @@ Testing reading phylip format file Phylip/random.phy as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=J).
  Checking can write/read as 'fastq-illumina' format
@@ -1793,6 +2106,8 @@ Testing reading phylip format file Phylip/random.phy as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=J).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=J).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -1815,6 +2130,8 @@ Testing reading phylip format file Phylip/interlaced.phy as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=CATH_HUMAN).
  Checking can write/read as 'fastq-illumina' format
@@ -1827,6 +2144,8 @@ Testing reading phylip format file Phylip/interlaced.phy as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=CATH_HUMAN).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=CATH_HUMAN).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -1851,6 +2170,8 @@ Testing reading phylip format file Phylip/interlaced2.phy as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=IXI_237).
  Checking can write/read as 'fastq-illumina' format
@@ -1863,6 +2184,8 @@ Testing reading phylip format file Phylip/interlaced2.phy as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=IXI_237).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=IXI_237).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -1887,6 +2210,8 @@ Testing reading emboss format file Emboss/alignret.txt as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=IXI_237).
  Checking can write/read as 'fastq-illumina' format
@@ -1899,6 +2224,8 @@ Testing reading emboss format file Emboss/alignret.txt as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=IXI_237).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=IXI_237).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -1919,6 +2246,8 @@ Testing reading emboss format file Emboss/needle.txt
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|94970041|receiver).
  Checking can write/read as 'fastq-illumina' format
@@ -1931,6 +2260,8 @@ Testing reading emboss format file Emboss/needle.txt
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|94970041|receiver).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=gi|94970041|receiver).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -1951,6 +2282,8 @@ Testing reading emboss format file Emboss/water.txt as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=IXI_235).
  Checking can write/read as 'fastq-illumina' format
@@ -1963,6 +2296,8 @@ Testing reading emboss format file Emboss/water.txt as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=IXI_235).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=IXI_235).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -1980,6 +2315,7 @@ Testing reading phd format file Phd/phd1
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Checking can write/read as 'fastq-illumina' format
 UserWarning - Data loss - max PHRED quality 62 in Illumina FASTQ
@@ -1989,6 +2325,8 @@ UserWarning - Data loss - max Solexa quality 62 in Solexa FASTQ
  Failed: Locus identifier '425_7_(71-A03-19).b.ab1' is too long
  Checking can write/read as 'phd' format
  Checking can write/read as 'qual' format
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -1999,12 +2337,15 @@ Testing reading phd format file Phd/phd2
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Checking can write/read as 'fastq-illumina' format
  Checking can write/read as 'fastq-solexa' format
  Checking can write/read as 'genbank' format
  Checking can write/read as 'phd' format
  Checking can write/read as 'qual' format
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading phd format file Phd/phd_solexa
@@ -2017,6 +2358,7 @@ Testing reading phd format file Phd/phd_solexa
  Checking can write/read as 'phylip' format
  Failed: Repeated identifier, possibly due to truncation
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Checking can write/read as 'fastq-illumina' format
  Checking can write/read as 'fastq-solexa' format
@@ -2024,6 +2366,8 @@ Testing reading phd format file Phd/phd_solexa
  Failed: Locus identifier 'HWI-EAS94_4_1_1_602_99' is too long
  Checking can write/read as 'phd' format
  Checking can write/read as 'qual' format
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading phd format file Phd/phd_454
@@ -2033,6 +2377,7 @@ Testing reading phd format file Phd/phd_454
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Checking can write/read as 'fastq-illumina' format
  Checking can write/read as 'fastq-solexa' format
@@ -2040,6 +2385,8 @@ Testing reading phd format file Phd/phd_454
  Failed: Locus identifier 'EBE03TV04IHLTF.77-243' is too long
  Checking can write/read as 'phd' format
  Checking can write/read as 'qual' format
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading ace format file Ace/contig1.ace
@@ -2054,6 +2401,7 @@ Testing reading ace format file Ace/contig1.ace
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: A quality value of None was found
  Checking can write/read as 'fastq-illumina' format
@@ -2065,6 +2413,8 @@ Testing reading ace format file Ace/contig1.ace
  Failed: A quality value of None was found
  Checking can write/read as 'qual' format
  Failed: A quality value of None was found
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -2075,6 +2425,7 @@ Testing reading ace format file Ace/consed_sample.ace
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: A quality value of None was found
  Checking can write/read as 'fastq-illumina' format
@@ -2086,6 +2437,8 @@ Testing reading ace format file Ace/consed_sample.ace
  Failed: A quality value of None was found
  Checking can write/read as 'qual' format
  Failed: A quality value of None was found
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading ace format file Ace/seq.cap.ace
@@ -2095,6 +2448,7 @@ Testing reading ace format file Ace/seq.cap.ace
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: A quality value of None was found
  Checking can write/read as 'fastq-illumina' format
@@ -2106,6 +2460,8 @@ Testing reading ace format file Ace/seq.cap.ace
  Failed: A quality value of None was found
  Checking can write/read as 'qual' format
  Failed: A quality value of None was found
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading ig format file IntelliGenetics/TAT_mase_nuc.txt
@@ -2125,6 +2481,8 @@ Testing reading ig format file IntelliGenetics/TAT_mase_nuc.txt
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=SYK_SYK).
  Checking can write/read as 'fastq-illumina' format
@@ -2137,6 +2495,8 @@ Testing reading ig format file IntelliGenetics/TAT_mase_nuc.txt
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=SYK_SYK).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=SYK_SYK).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -2162,6 +2522,8 @@ Testing reading ig format file IntelliGenetics/VIF_mase-pro.txt as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=SYK).
  Checking can write/read as 'fastq-illumina' format
@@ -2174,6 +2536,8 @@ Testing reading ig format file IntelliGenetics/VIF_mase-pro.txt as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=SYK).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=SYK).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -2194,6 +2558,8 @@ Testing reading ig format file IntelliGenetics/vpu_nucaligned.txt
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=CPZANT).
  Checking can write/read as 'fastq-illumina' format
@@ -2206,6 +2572,8 @@ Testing reading ig format file IntelliGenetics/vpu_nucaligned.txt
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=CPZANT).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=CPZANT).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -2226,6 +2594,7 @@ Testing reading pir format file NBRF/B_nuc.pir
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA01135).
  Checking can write/read as 'fastq-illumina' format
@@ -2237,6 +2606,8 @@ Testing reading pir format file NBRF/B_nuc.pir
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA01135).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA01135).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -2257,6 +2628,8 @@ Testing reading pir format file NBRF/Cw_prot.pir
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA00484).
  Checking can write/read as 'fastq-illumina' format
@@ -2268,6 +2641,8 @@ Testing reading pir format file NBRF/Cw_prot.pir
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA00484).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA00484).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -2287,6 +2662,7 @@ Testing reading pir format file NBRF/DMA_nuc.pir
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA00488).
  Checking can write/read as 'fastq-illumina' format
@@ -2298,6 +2674,8 @@ Testing reading pir format file NBRF/DMA_nuc.pir
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA00488).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA00488).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -2318,6 +2696,8 @@ Testing reading pir format file NBRF/DMB_prot.pir
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA01083).
  Checking can write/read as 'fastq-illumina' format
@@ -2329,6 +2709,8 @@ Testing reading pir format file NBRF/DMB_prot.pir
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA01083).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=HLA:HLA01083).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -2349,6 +2731,7 @@ Testing reading pir format file NBRF/clustalw.pir as an alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=815Parelaphostrongylus_odocoil).
  Checking can write/read as 'fastq-illumina' format
@@ -2361,6 +2744,8 @@ Testing reading pir format file NBRF/clustalw.pir as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=815Parelaphostrongylus_odocoil).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=815Parelaphostrongylus_odocoil).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing reading fasta format file Quality/example.fasta
@@ -2383,6 +2768,8 @@ Testing reading fasta format file Quality/example.fasta as an alignment
  Checking can write/read as 'phylip' format
  Failed: Repeated identifier, possibly due to truncation
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=EAS54_6_R1_2_1_443_348).
  Checking can write/read as 'fastq-illumina' format
@@ -2395,6 +2782,8 @@ Testing reading fasta format file Quality/example.fasta as an alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=EAS54_6_R1_2_1_443_348).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=EAS54_6_R1_2_1_443_348).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -2410,6 +2799,8 @@ Testing reading qual format file Quality/example.qual
  Checking can write/read as 'phylip' format
  Failed: Repeated identifier, possibly due to truncation
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Checking can write/read as 'fastq-illumina' format
  Checking can write/read as 'fastq-solexa' format
@@ -2417,6 +2808,8 @@ Testing reading qual format file Quality/example.qual
  Failed: Locus identifier 'EAS54_6_R1_2_1_443_348' is too long
  Checking can write/read as 'phd' format
  Checking can write/read as 'qual' format
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -2440,6 +2833,8 @@ Testing reading fastq format file Quality/example.fastq as an alignment
  Checking can write/read as 'phylip' format
  Failed: Repeated identifier, possibly due to truncation
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Checking can write/read as 'fastq-illumina' format
  Checking can write/read as 'fastq-solexa' format
@@ -2447,6 +2842,8 @@ Testing reading fastq format file Quality/example.fastq as an alignment
  Failed: Locus identifier 'EAS54_6_R1_2_1_443_348' is too long
  Checking can write/read as 'phd' format
  Checking can write/read as 'qual' format
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -2472,6 +2869,8 @@ Testing reading fastq format file Quality/tricky.fastq as an alignment
  Checking can write/read as 'phylip' format
  Failed: Repeated identifier, possibly due to truncation
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Checking can write/read as 'fastq-illumina' format
  Checking can write/read as 'fastq-solexa' format
@@ -2479,6 +2878,8 @@ Testing reading fastq format file Quality/tricky.fastq as an alignment
  Failed: Locus identifier '071113_EAS56_0053:1:3:990:501' is too long
  Checking can write/read as 'phd' format
  Checking can write/read as 'qual' format
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -2489,6 +2890,8 @@ Testing reading fastq format file Quality/sanger_faked.fastq
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Checking can write/read as 'fastq-illumina' format
  Checking can write/read as 'fastq-solexa' format
@@ -2496,6 +2899,8 @@ Testing reading fastq format file Quality/sanger_faked.fastq
  Failed: Need a Nucleotide or Protein alphabet
  Checking can write/read as 'phd' format
  Checking can write/read as 'qual' format
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -2506,6 +2911,8 @@ Testing reading fastq format file Quality/sanger_93.fastq
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Checking can write/read as 'fastq-illumina' format
  Checking can write/read as 'fastq-solexa' format
@@ -2513,6 +2920,8 @@ Testing reading fastq format file Quality/sanger_93.fastq
  Failed: Need a Nucleotide or Protein alphabet
  Checking can write/read as 'phd' format
  Checking can write/read as 'qual' format
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -2523,6 +2932,8 @@ Testing reading fastq-illumina format file Quality/illumina_faked.fastq
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Checking can write/read as 'fastq-illumina' format
  Checking can write/read as 'fastq-solexa' format
@@ -2530,6 +2941,8 @@ Testing reading fastq-illumina format file Quality/illumina_faked.fastq
  Failed: Need a Nucleotide or Protein alphabet
  Checking can write/read as 'phd' format
  Checking can write/read as 'qual' format
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -2540,6 +2953,8 @@ Testing reading fastq-solexa format file Quality/solexa_faked.fastq
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Checking can write/read as 'fastq-illumina' format
  Checking can write/read as 'fastq-solexa' format
@@ -2547,6 +2962,8 @@ Testing reading fastq-solexa format file Quality/solexa_faked.fastq
  Failed: Locus identifier 'slxa_0001_1_0001_01' is too long
  Checking can write/read as 'phd' format
  Checking can write/read as 'qual' format
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -2573,6 +2990,8 @@ Testing reading fastq-solexa format file Quality/solexa_example.fastq as an alig
  Checking can write/read as 'phylip' format
  Failed: Repeated identifier, possibly due to truncation
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Checking can write/read as 'fastq-illumina' format
  Checking can write/read as 'fastq-solexa' format
@@ -2580,6 +2999,8 @@ Testing reading fastq-solexa format file Quality/solexa_example.fastq as an alig
  Failed: Locus identifier 'SLXA-B3_649_FC8437_R1_1_1_183_714' is too long
  Checking can write/read as 'phd' format
  Checking can write/read as 'qual' format
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Need a DNA, RNA or Protein alphabet
@@ -2596,12 +3017,15 @@ Testing can write/read zero records
  Failed: Must have at least one sequence
  Checking can write/read as 'stockholm' format
  Failed: Must have at least one sequence
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Checking can write/read as 'fastq-illumina' format
  Checking can write/read as 'fastq-solexa' format
  Checking can write/read as 'genbank' format
  Checking can write/read as 'phd' format
  Checking can write/read as 'qual' format
+ Checking can write/read as 'sff' format
+ Failed: Need at least one record for SFF output
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Must have at least one sequence
@@ -2613,6 +3037,8 @@ Testing can write/read three peptides of different lengths
  Failed: Sequences must all be the same length
  Checking can write/read as 'stockholm' format
  Failed: Sequences must all be the same length
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Alpha).
  Checking can write/read as 'fastq-illumina' format
@@ -2624,6 +3050,8 @@ Testing can write/read three peptides of different lengths
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Alpha).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Alpha).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
  Failed: Sequences must all be the same length
@@ -2632,6 +3060,8 @@ Testing can write/read three proteins alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Alpha).
  Checking can write/read as 'fastq-illumina' format
@@ -2643,6 +3073,8 @@ Testing can write/read three proteins alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Alpha).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Alpha).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing can write/read three DNA sequence alignment
@@ -2650,6 +3082,7 @@ Testing can write/read three DNA sequence alignment
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=X).
  Checking can write/read as 'fastq-illumina' format
@@ -2661,6 +3094,8 @@ Testing can write/read three DNA sequence alignment
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=X).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=X).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing can write/read 3 DNA seq alignment with CR/LF in name/descr
@@ -2668,6 +3103,7 @@ Testing can write/read 3 DNA seq alignment with CR/LF in name/descr
  Checking can write/read as 'clustal' format
  Checking can write/read as 'phylip' format
  Checking can write/read as 'stockholm' format
+ Checking can write/read as 'embl' format
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=X).
  Checking can write/read as 'fastq-illumina' format
@@ -2680,6 +3116,8 @@ Testing can write/read 3 DNA seq alignment with CR/LF in name/descr
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=X).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=X).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
 Testing can write/read alignment with repeated record
@@ -2689,6 +3127,8 @@ Testing can write/read alignment with repeated record
  Failed: Repeated identifier, possibly due to truncation
  Checking can write/read as 'stockholm' format
  Failed: Duplicate record identifier: Beta
+ Checking can write/read as 'embl' format
+ Failed: Need a Nucleotide alphabet
  Checking can write/read as 'fastq' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Alpha).
  Checking can write/read as 'fastq-illumina' format
@@ -2700,6 +3140,9 @@ Testing can write/read alignment with repeated record
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Alpha).
  Checking can write/read as 'qual' format
  Failed: No suitable quality scores found in letter_annotations of SeqRecord (id=Alpha).
+ Checking can write/read as 'sff' format
+ Failed: Missing SFF flow information
  Checking can write/read as 'tab' format
  Checking can write/read as 'nexus' format
+Writing no records to sff format failed: Need at least one record for SFF output
 Finished tested writing files

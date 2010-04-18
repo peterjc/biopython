@@ -55,7 +55,7 @@ class Record:
         self.residues.pdbid = pdbid
         self.sunid = int(self.sunid)
         
-        for ht in hierarchy.split(",") :
+        for ht in hierarchy.split(","):
             key, value = ht.split('=')
             value = int(value)
             self.hierarchy.append([key, value])
@@ -69,9 +69,9 @@ class Record:
 
         h=[]
         for ht in self.hierarchy:
-             h.append("=".join(map(str,ht))) 
+            h.append("=".join(map(str,ht))) 
         s.append(",".join(h))
-       
+
         return "\t".join(map(str,s)) + "\n"
 
 
@@ -100,25 +100,27 @@ class Index(dict):
         """
         dict.__init__(self)
         self.filename = filename
-        f = open(self.filename)
+        f = open(self.filename, "rU")
         try:
             position = 0
             while True:
                 line = f.readline()
                 if not line: break
+                if line.startswith('#'):
+                    continue
                 record = Record(line)
                 key = record.sid
-                if key != None :
+                if key != None:
                     self[key] = position
                 position = f.tell()
         finally:
             f.close()
 
-    def __getitem__(self, key) :
+    def __getitem__(self, key):
         """ Return an item from the indexed file. """
         position = dict.__getitem__(self,key)
 
-        f = open(self.filename)
+        f = open(self.filename, "rU")
         try:
             f.seek(position)
             line = f.readline()

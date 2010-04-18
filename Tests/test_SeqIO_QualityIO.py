@@ -15,18 +15,24 @@ from Bio.SeqRecord import SeqRecord
 from StringIO import StringIO
 from Bio.Data.IUPACData import ambiguous_dna_letters, ambiguous_rna_letters
 
-def truncation_expected(format) :
+BINARY_FORMATS = ["sff", "sff-trim"]
+
+def truncation_expected(format):
     if format in ["fastq-solexa", "fastq-illumina"] :
         return 62
-    elif format in ["fastq", "fastq-sanger"] :
+    elif format in ["fastq", "fastq-sanger"]:
         return 93
-    else :
-        assert format in ["fasta", "qual", "phd"]
+    else:
+        assert format in ["fasta", "qual", "phd", "sff"]
         return None
 
 #Top level function as this makes it easier to use for debugging:
-def write_read(filename, in_format, out_format) :
-    records = list(SeqIO.parse(open(filename),in_format))
+def write_read(filename, in_format, out_format):
+    if in_format in BINARY_FORMATS:
+        mode = "rb"
+    else :
+        mode = "r"
+    records = list(SeqIO.parse(open(filename, mode),in_format))
     #Write it out...
     handle = StringIO()
     SeqIO.write(records, handle, out_format)
@@ -35,227 +41,266 @@ def write_read(filename, in_format, out_format) :
     records2 = list(SeqIO.parse(handle,out_format))
     compare_records(records, records2, truncation_expected(out_format))
 
-def compare_record(old, new, truncate=None) :
+def compare_record(old, new, truncate=None):
     """Quality aware SeqRecord comparision.
 
     This will check the mapping between Solexa and PHRED scores.
     It knows to ignore UnknownSeq objects for string matching (i.e. QUAL files).
     """
-    if old.id != new.id :
+    if old.id != new.id:
         raise ValueError("'%s' vs '%s' " % (old.id, new.id))
     if old.description != new.description \
-    and (old.id+" "+old.description).strip() != new.description :
+    and (old.id+" "+old.description).strip() != new.description:
         raise ValueError("'%s' vs '%s' " % (old.description, new.description))
-    if len(old.seq) != len(new.seq) :
+    if len(old.seq) != len(new.seq):
         raise ValueError("%i vs %i" % (len(old.seq), len(new.seq)))
-    if isinstance(old.seq, UnknownSeq) or isinstance(new.seq, UnknownSeq) :
+    if isinstance(old.seq, UnknownSeq) or isinstance(new.seq, UnknownSeq):
         pass
-    elif str(old.seq) != str(new.seq) :
-        if len(old.seq) < 200 :
+    elif str(old.seq) != str(new.seq):
+        if len(old.seq) < 200:
             raise ValueError("'%s' vs '%s'" % (old.seq, new.seq))
-        else :
+        else:
             raise ValueError("'%s...' vs '%s...'" % (old.seq[:100], new.seq[:100]))
     if "phred_quality" in old.letter_annotations \
     and "phred_quality" in new.letter_annotations \
-    and old.letter_annotations["phred_quality"] != new.letter_annotations["phred_quality"] :
+    and old.letter_annotations["phred_quality"] != new.letter_annotations["phred_quality"]:
         if truncate and [min(q,truncate) for q in old.letter_annotations["phred_quality"]] == \
-                        [min(q,truncate) for q in new.letter_annotations["phred_quality"]] :
+                        [min(q,truncate) for q in new.letter_annotations["phred_quality"]]:
             pass
-        else :
+        else:
             raise ValuerError("Mismatch in phred_quality")
     if "solexa_quality" in old.letter_annotations \
     and "solexa_quality" in new.letter_annotations \
-    and old.letter_annotations["solexa_quality"] != new.letter_annotations["solexa_quality"] :
+    and old.letter_annotations["solexa_quality"] != new.letter_annotations["solexa_quality"]:
         if truncate and [min(q,truncate) for q in old.letter_annotations["solexa_quality"]] == \
-                        [min(q,truncate) for q in new.letter_annotations["solexa_quality"]] :
+                        [min(q,truncate) for q in new.letter_annotations["solexa_quality"]]:
             pass
-        else :
+        else:
             raise ValueError("Mismatch in phred_quality")
     if "phred_quality" in old.letter_annotations \
-    and "solexa_quality" in new.letter_annotations :
+    and "solexa_quality" in new.letter_annotations:
         #Mapping from Solexa to PHRED is lossy, but so is PHRED to Solexa.
         #Assume "old" is the original, and "new" has been converted.
         converted = [round(QualityIO.solexa_quality_from_phred(q)) \
                      for q in old.letter_annotations["phred_quality"]]
-        if truncate :
+        if truncate:
             converted = [min(q,truncate) for q in converted]
-        if converted != new.letter_annotations["solexa_quality"] :
+        if converted != new.letter_annotations["solexa_quality"]:
             print
             print old.letter_annotations["phred_quality"]
             print converted
             print new.letter_annotations["solexa_quality"]
             raise ValueError("Mismatch in phred_quality vs solexa_quality")
     if "solexa_quality" in old.letter_annotations \
-    and "phred_quality" in new.letter_annotations :
+    and "phred_quality" in new.letter_annotations:
         #Mapping from Solexa to PHRED is lossy, but so is PHRED to Solexa.
         #Assume "old" is the original, and "new" has been converted.
         converted = [round(QualityIO.phred_quality_from_solexa(q)) \
                      for q in old.letter_annotations["solexa_quality"]]
-        if truncate :
+        if truncate:
             converted = [min(q,truncate) for q in converted]
-        if converted != new.letter_annotations["phred_quality"] :
+        if converted != new.letter_annotations["phred_quality"]:
             print old.letter_annotations["solexa_quality"]
             print converted
             print new.letter_annotations["phred_quality"]
             raise ValueError("Mismatch in solexa_quality vs phred_quality")
     return True
 
-def compare_records(old_list, new_list, truncate_qual=None) :
+def compare_records(old_list, new_list, truncate_qual=None):
     """Check two lists of SeqRecords agree, raises a ValueError if mismatch."""
-    if len(old_list) != len(new_list) :
+    if len(old_list) != len(new_list):
         raise ValueError("%i vs %i records" % (len(old_list), len(new_list)))
-    for old, new in zip(old_list, new_list) :
-        if not compare_record(old,new,truncate_qual) :
+    for old, new in zip(old_list, new_list):
+        if not compare_record(old,new,truncate_qual):
             return False
     return True
 
 
-class TestFastqErrors(unittest.TestCase) :
+class TestFastqErrors(unittest.TestCase):
     """Test reject invalid FASTQ files."""
     def setUp(self):
         warnings.resetwarnings()
 
     def check_fails(self, filename, good_count, formats=None, raw=True):
-        if not formats :
+        if not formats:
             formats = ["fastq-sanger", "fastq-solexa", "fastq-illumina"]
-        for format in formats :
+        for format in formats:
             handle = open(filename, "rU")
             records = SeqIO.parse(handle, format)
-            for i in range(good_count) :
+            for i in range(good_count):
                 record = records.next() #Make sure no errors!
                 self.assert_(isinstance(record, SeqRecord))
             self.assertRaises(ValueError, records.next)
             handle.close()
 
-    def check_general_fails(self, filename, good_count) :
+    def check_general_fails(self, filename, good_count):
         handle = open(filename, "rU")
         tuples = QualityIO.FastqGeneralIterator(handle)
-        for i in range(good_count) :
+        for i in range(good_count):
             title, seq, qual = tuples.next() #Make sure no errors!
         self.assertRaises(ValueError, tuples.next)
         handle.close()
 
-    def check_general_passes(self, filename, record_count) :
+    def check_general_passes(self, filename, record_count):
         handle = open(filename, "rU")
         tuples = QualityIO.FastqGeneralIterator(handle)
         #This "raw" parser doesn't check the ASCII characters which means
         #certain invalid FASTQ files will get parsed without errors.
         count = 0
-        for title, seq, qual in tuples :
+        for title, seq, qual in tuples:
             self.assertEqual(len(seq), len(qual))
             count += 1
         self.assertEqual(count, record_count)
         handle.close()
 
-    def test_space(self):
-        """Reject FASTQ with spaces in seq/qual"""
-        self.check_fails("Quality/error_spaces.fastq", 0)
-        self.check_general_fails("Quality/error_spaces.fastq", 0)
+    def check_all_fail(self, filename, count):
+        self.check_fails(filename, count)
+        self.check_general_fails(filename, count)
 
-    def test_tabs(self):
-        """Reject FASTQ with tabs in seq/qual"""
-        self.check_fails("Quality/error_tabs.fastq", 0)
-        self.check_general_fails("Quality/error_tabs.fastq", 0)
+    def check_qual_char(self, filename, good_count, count):
+        self.check_fails(filename, good_count)
+        self.check_general_passes(filename, count)
 
-    def test_no_qual(self):
-        """Reject FASTQ with missing qualities"""
-        self.check_fails("Quality/error_no_qual.fastq", 0)
-        self.check_general_fails("Quality/error_no_qual.fastq", 0)
+#Now add methods at run time... these FASTQ files will be rejected
+#by both the low level parser AND the high level SeqRecord parser:
+tests = [("diff_ids", 2),
+         ("no_qual", 0),
+         ("long_qual", 3),
+         ("short_qual", 2),
+         ("double_seq", 3),
+         ("double_qual", 2),
+         ("tabs", 0),
+         ("spaces", 0),
+         ("trunc_in_title", 4),
+         ("trunc_in_seq", 4),
+         ("trunc_in_plus", 4),
+         ("trunc_in_qual", 4),
+         ("trunc_at_seq", 4),
+         ("trunc_at_plus", 4),
+         ("trunc_at_qual", 4)]
+for base_name, good_count in tests:
+    def funct(name,c):
+        f = lambda x : x.check_all_fail("Quality/error_%s.fastq" % name,c)
+        f.__doc__ = "Reject FASTQ with %s" % name.replace("_"," ")
+        return f
+    setattr(TestFastqErrors, "test_%s" % (base_name),
+            funct(base_name, good_count))
+    del funct        
 
-    def test_long_qual(self):
-        """Reject FASTQ with longer qual than seq"""
-        self.check_fails("Quality/error_long_qual.fastq", 3)
-        self.check_general_fails("Quality/error_long_qual.fastq", 3)
+#Now add methods for FASTQ files which will be rejected by the high
+#level SeqRecord parser, but will be accepted by the low level parser:
+tests = [("del", 3, 5),
+         ("space", 3, 5),
+         ("vtab", 0, 5),
+         ("escape", 4, 5),
+         ("unit_sep", 2, 5),
+         ("tab", 4, 5),
+         ("null", 0, 5)]
+for base_name, good_count, full_count in tests:
+    def funct(name,c1,c2):
+        f = lambda x : x.check_qual_char("Quality/error_qual_%s.fastq"%name,c1,c2)
+        f.__doc__ = "Reject FASTQ with %s in quality" % name.replace("_"," ")
+        return f
+    setattr(TestFastqErrors, "test_qual_%s" % (base_name),
+            funct(base_name, good_count, full_count))
+    del funct        
 
-    def test_short_qual(self):
-        """Reject FASTQ with shorted qual than seq"""
-        self.check_fails("Quality/error_short_qual.fastq", 2)
-        self.check_general_fails("Quality/error_short_qual.fastq", 2)
 
-    def test_diff_ids(self):
-        """Reject FASTQ where + and @ identifers disagree"""
-        self.check_fails("Quality/error_diff_ids.fastq", 2)
-        self.check_general_fails("Quality/error_diff_ids.fastq", 2)
+class TestReferenceSffConversions(unittest.TestCase):
+    def check(self, sff_name, sff_format, out_name, format) :
+        wanted = list(SeqIO.parse(open(out_name), format))
+        data = StringIO()
+        count = SeqIO.convert(sff_name, sff_format, data, format)
+        self.assertEqual(count, len(wanted))
+        data.seek(0)
+        converted = list(SeqIO.parse(data, format))
+        self.assertEqual(len(wanted), len(converted))
+        for old, new in zip(wanted, converted) :
+            self.assertEqual(old.id, new.id)
+            self.assertEqual(old.name, new.name)
+            if format!="qual" :
+                self.assertEqual(str(old.seq), str(new.seq))
+            elif format!="fasta" :
+                self.assertEqual(old.letter_annotations["phred_quality"],
+                                 new.letter_annotations["phred_quality"])
 
-    def test_trunc_at_seq(self):
-        """Reject FASTQ truncated at the sequence"""
-        self.check_fails("Quality/error_trunc_at_seq.fastq", 4)
-        self.check_general_fails("Quality/error_trunc_at_seq.fastq", 4)
+    def check_sff(self, sff_name):
+        self.check(sff_name, "sff", "Roche/E3MFGYR02_random_10_reads_no_trim.fasta", "fasta")
+        self.check(sff_name, "sff", "Roche/E3MFGYR02_random_10_reads_no_trim.qual", "qual")
+        self.check(sff_name, "sff-trim", "Roche/E3MFGYR02_random_10_reads.fasta", "fasta")
+        self.check(sff_name, "sff-trim", "Roche/E3MFGYR02_random_10_reads.qual", "qual")
 
-    def test_trunc_at_plus(self):
-        """Reject FASTQ truncated at the plus line"""
-        self.check_fails("Quality/error_trunc_at_plus.fastq", 4)
-        self.check_general_fails("Quality/error_trunc_at_plus.fastq", 4)
+    def test_original(self) :
+        """Test converting E3MFGYR02_random_10_reads.sff into FASTA+QUAL"""
+        self.check_sff("Roche/E3MFGYR02_random_10_reads.sff")
+        
+    def test_no_manifest(self) :
+        """Test converting E3MFGYR02_no_manifest.sff into FASTA+QUAL"""
+        self.check_sff("Roche/E3MFGYR02_no_manifest.sff")
+        
+    def test_alt_index_at_start(self) :
+        """Test converting E3MFGYR02_alt_index_at_start into FASTA+QUAL"""
+        self.check_sff("Roche/E3MFGYR02_alt_index_at_start.sff")
 
-    def test_trunc_at_qual(self):
-        """Reject FASTQ truncated at the quality"""
-        self.check_fails("Quality/error_trunc_at_qual.fastq", 4)
-        self.check_general_fails("Quality/error_trunc_at_qual.fastq", 4)
+    def test_alt_index_in_middle(self) :
+        """Test converting E3MFGYR02_alt_index_in_middle into FASTA+QUAL"""
+        self.check_sff("Roche/E3MFGYR02_alt_index_in_middle.sff")
 
-    def test_trunc_in_title(self):
-        """Reject FASTQ truncated during the title line"""
-        self.check_fails("Quality/error_trunc_in_title.fastq", 4)
-        self.check_general_fails("Quality/error_trunc_in_title.fastq", 4)
+    def test_alt_index_at_end(self) :
+        """Test converting E3MFGYR02_alt_index_at_end into FASTA+QUAL"""
+        self.check_sff("Roche/E3MFGYR02_alt_index_at_end.sff")
 
-    def test_trunc_in_seq(self):
-        """Reject FASTQ truncated during the sequence"""
-        self.check_fails("Quality/error_trunc_in_seq.fastq", 4)
-        self.check_general_fails("Quality/error_trunc_in_seq.fastq", 4)
+    def test_index_at_start(self) :
+        """Test converting E3MFGYR02_index_at_start into FASTA+QUAL"""
+        self.check_sff("Roche/E3MFGYR02_index_at_start.sff")
 
-    def test_trunc_in_plus(self):
-        """Reject FASTQ truncated during the plus line"""
-        self.check_fails("Quality/error_trunc_in_seq.fastq", 4)
-        self.check_general_fails("Quality/error_trunc_in_seq.fastq", 4)
+    def test_index_at_end(self) :
+        """Test converting E3MFGYR02_index_in_middle into FASTA+QUAL"""
+        self.check_sff("Roche/E3MFGYR02_index_in_middle.sff")
 
-    def test_trunc_in_qual(self):
-        """Reject FASTQ truncated during the quality"""
-        self.check_fails("Quality/error_trunc_in_qual.fastq", 4)
-        self.check_general_fails("Quality/error_trunc_in_qual.fastq", 4)
-
-    def test_qual_null(self):
-        """Reject FASTQ with null (ASCII 0) in the quality"""
-        self.check_fails("Quality/error_qual_null.fastq", 0)
-        self.check_general_passes("Quality/error_qual_null.fastq", 5)
-
-    def test_qual_tab(self):
-        """Reject FASTQ with tab (ASCII 9) in the quality"""
-        self.check_fails("Quality/error_qual_tab.fastq", 4)
-        self.check_general_passes("Quality/error_qual_tab.fastq", 5)
-
-    def test_qual_vtab(self):
-        """Reject FASTQ with vertical tab (ASCII 11) in quality"""
-        self.check_fails("Quality/error_qual_vtab.fastq", 0)
-        self.check_general_passes("Quality/error_qual_vtab.fastq", 5)
-
-    def test_qual_escape(self):
-        """Reject FASTQ with escape (ASCII 27) in quality"""
-        self.check_fails("Quality/error_qual_escape.fastq", 4)
-        self.check_general_passes("Quality/error_qual_escape.fastq", 5)
-
-    def test_qual_unit_sep(self):
-        """Reject FASTQ with unit sep (ASCII 31) in quality"""
-        self.check_fails("Quality/error_qual_unit_sep.fastq", 2)
-        self.check_general_passes("Quality/error_qual_unit_sep.fastq", 5)
-
-    def test_qual_space(self):
-        """Reject FASTQ with space (ASCII 32) in the quality"""
-        self.check_fails("Quality/error_qual_space.fastq", 3)
-        self.check_general_passes("Quality/error_qual_space.fastq", 5)
-
-    def test_qual_del(self):
-        """Reject FASTQ with delete (ASCI 127) in quality"""
-        self.check_fails("Quality/error_qual_del.fastq", 3)
-        self.check_general_passes("Quality/error_qual_del.fastq", 5)
-
-    def test_double_qual(self):
-        """Reject FASTQ with double quality block"""
-        self.check_fails("Quality/error_double_qual.fastq", 2)
-        self.check_general_fails("Quality/error_double_qual.fastq", 2)
-
-    def test_double_seq(self):
-        """Reject FASTQ with double sequence block"""
-        self.check_fails("Quality/error_double_seq.fastq", 3)
-        self.check_general_fails("Quality/error_double_seq.fastq", 3)
+class TestReferenceFastqConversions(unittest.TestCase):
+    """Tests where we have reference output."""
+    def simple_check(self, base_name, in_variant):
+        for out_variant in ["sanger", "solexa", "illumina"]:
+            if out_variant == "sanger":
+                warnings.resetwarnings()
+            else:
+                #Ignore data loss warnings from max qualities
+                warnings.simplefilter('ignore', UserWarning)
+            in_filename = "Quality/%s_original_%s.fastq" \
+                          % (base_name, in_variant)
+            self.assert_(os.path.isfile(in_filename))
+            #Load the reference output...  
+            expected = open("Quality/%s_as_%s.fastq" \
+                            % (base_name, out_variant),
+                            "rU").read()
+            #Check matches using convert...
+            handle = StringIO()
+            SeqIO.convert(in_filename, "fastq-"+in_variant,
+                          handle, "fastq-"+out_variant)
+            self.assertEqual(expected, handle.getvalue())
+            #Check matches using parse/write
+            handle = StringIO()
+            SeqIO.write(SeqIO.parse(open(in_filename), "fastq-"+in_variant),
+                        handle, "fastq-"+out_variant)
+            self.assertEqual(expected, handle.getvalue())
+#Now add methods at run time...
+tests = [("illumina_full_range", "illumina"),
+         ("sanger_full_range", "sanger"),
+         ("longreads", "sanger"),
+         ("solexa_full_range", "solexa"),
+         ("misc_dna", "sanger"),
+         ("wrapping", "sanger"),
+         ("misc_rna", "sanger")]
+for base_name, variant in tests:
+    assert variant in ["sanger", "solexa", "illumina"]
+    def funct(bn,var):
+        f = lambda x : x.simple_check(bn,var)
+        f.__doc__ = "Reference conversions of %s file %s" % (var, bn)
+        return f
+    setattr(TestReferenceFastqConversions, "test_%s_%s" % (base_name, variant),
+            funct(base_name, variant))
+    del funct        
 
 class TestQual(unittest.TestCase):
     """Tests with QUAL files."""
@@ -298,12 +343,12 @@ class TestQual(unittest.TestCase):
         self.assertEqual(h.getvalue(),open("Quality/example.fasta").read())
 
 
-class TestReadWrite(unittest.TestCase) :
+class TestReadWrite(unittest.TestCase):
     """Test can read and write back files."""
     def setUp(self):
         warnings.resetwarnings()
 
-    def test_fastq_2000(self) :
+    def test_fastq_2000(self):
         """Read and write back simple example with upper case 2000bp read"""
         data = "@%s\n%s\n+\n%s\n" \
                % ("id descr goes here", "ACGT"*500, "!@a~"*500)
@@ -311,7 +356,7 @@ class TestReadWrite(unittest.TestCase) :
         self.assertEqual(1, SeqIO.write(SeqIO.parse(StringIO(data), "fastq"), handle, "fastq"))
         self.assertEqual(data, handle.getvalue())
 
-    def test_fastq_1000(self) :
+    def test_fastq_1000(self):
         """Read and write back simple example with mixed case 1000bp read"""
         data = "@%s\n%s\n+\n%s\n" \
                % ("id descr goes here", "ACGTNncgta"*100, "abcd!!efgh"*100)
@@ -319,7 +364,7 @@ class TestReadWrite(unittest.TestCase) :
         self.assertEqual(1, SeqIO.write(SeqIO.parse(StringIO(data), "fastq"), handle, "fastq"))
         self.assertEqual(data, handle.getvalue())
 
-    def test_fastq_dna(self) :
+    def test_fastq_dna(self):
         """Read and write back simple example with ambiguous DNA"""
         #First in upper case...        
         data = "@%s\n%s\n+\n%s\n" \
@@ -338,7 +383,7 @@ class TestReadWrite(unittest.TestCase) :
         self.assertEqual(1, SeqIO.write(SeqIO.parse(StringIO(data), "fastq"), handle, "fastq"))
         self.assertEqual(data, handle.getvalue())
 
-    def test_fastq_rna(self) :
+    def test_fastq_rna(self):
         """Read and write back simple example with ambiguous RNA"""
         #First in upper case...        
         data = "@%s\n%s\n+\n%s\n" \
@@ -358,12 +403,12 @@ class TestReadWrite(unittest.TestCase) :
         self.assertEqual(data, handle.getvalue())
 
 
-class TestWriteRead(unittest.TestCase) :
+class TestWriteRead(unittest.TestCase):
     """Test can write and read back files."""
     def setUp(self):
         warnings.resetwarnings()
 
-    def test_generated(self) :
+    def test_generated(self):
         """Write and read back odd SeqRecord objects"""
         record1 = SeqRecord(Seq("ACGT"*500, generic_dna),  id="Test", description="Long "*500,
                            letter_annotations={"phred_quality":[40,30,20,10]*500})
@@ -386,7 +431,7 @@ class TestWriteRead(unittest.TestCase) :
         #TODO - Have a Biopython defined "DataLossWarning?"
         warnings.simplefilter('ignore', UserWarning)
         #TODO - Include phd output?
-        for format in ["fasta", "fastq", "fastq-solexa", "fastq-illumina", "qual"] :
+        for format in ["fasta", "fastq", "fastq-solexa", "fastq-illumina", "qual"]:
             handle = StringIO()
             SeqIO.write(records, handle, format)
             handle.seek(0)
@@ -394,100 +439,129 @@ class TestWriteRead(unittest.TestCase) :
                             list(SeqIO.parse(handle, format)),
                             truncation_expected(format))
             
-    def test_tricky(self) :
-        """Write and read back tricky.fastq"""
-        filename = os.path.join("Quality", "tricky.fastq")
-        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
-                  "fasta", "qual", "phd"] :
-            write_read(filename, "fastq", f)
+    def check(self, filename, format, out_formats):
+        for f in out_formats:
+            write_read(filename, format, f)
 
-    def test_sanger_93(self) :
+    def test_tricky(self):
+        """Write and read back tricky.fastq"""
+        self.check(os.path.join("Quality", "tricky.fastq"), "fastq",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd"])
+
+    def test_sanger_93(self):
         """Write and read back sanger_93.fastq"""
-        filename = os.path.join("Quality", "sanger_93.fastq")
-        for f in ["fastq", "fastq-sanger", "fasta", "qual", "phd"] :
-            write_read(filename, "fastq", f)
+        self.check(os.path.join("Quality", "sanger_93.fastq"), "fastq",
+                   ["fastq", "fastq-sanger", "fasta", "qual", "phd"])
         #TODO - Have a Biopython defined "DataLossWarning?"
         #TODO - On Python 2.6+ we can check this warning is really triggered
         warnings.simplefilter('ignore', UserWarning)
-        write_read(filename, "fastq-sanger", "fastq-solexa")
-        write_read(filename, "fastq-sanger", "fastq-illumina")
+        self.check(os.path.join("Quality", "sanger_93.fastq"), "fastq",
+                   ["fastq-solexa","fastq-illumina"])
 
-    def test_sanger_faked(self) :
+    def test_sanger_faked(self):
         """Write and read back sanger_faked.fastq"""
-        filename = os.path.join("Quality", "sanger_faked.fastq")
-        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
-                  "fasta", "qual", "phd"] :
-            write_read(filename, "fastq", f)
+        self.check(os.path.join("Quality", "sanger_faked.fastq"), "fastq",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd"])
 
-    def test_example_fasta(self) :
+    def test_example_fasta(self):
         """Write and read back example.fasta"""
         write_read(os.path.join("Quality", "example.fasta"), "fasta", "fasta")
         #TODO - tests to check can't write FASTQ or QUAL...
 
-    def test_example_fastq(self) :
+    def test_example_fastq(self):
         """Write and read back example.fastq"""
-        filename = os.path.join("Quality", "example.fastq")
-        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
-                  "fasta", "qual", "phd"] :
-            write_read(filename, "fastq", f)
+        self.check(os.path.join("Quality", "example.fastq"), "fastq",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd"])
 
-    def test_example_qual(self) :
+    def test_example_qual(self):
         """Write and read back example.qual"""
-        filename = os.path.join("Quality", "example.qual")
-        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
-                  "fasta", "qual", "phd"] :
-            write_read(filename, "qual", f)
+        self.check(os.path.join("Quality", "example.qual"), "qual",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd"])
 
-    def test_solexa_faked(self) :
+    def test_solexa_faked(self):
         """Write and read back solexa_faked.fastq"""
-        filename = os.path.join("Quality", "solexa_faked.fastq")
-        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
-                  "fasta", "qual", "phd"] :
-            write_read(filename, "fastq-solexa", f)
+        self.check(os.path.join("Quality", "solexa_faked.fastq"), "fastq-solexa",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd"])
 
-    def test_solexa_example(self) :
+    def test_solexa_example(self):
         """Write and read back solexa_example.fastq"""
-        filename = os.path.join("Quality", "solexa_example.fastq")
-        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
-                  "fasta", "qual", "phd"] :
-            write_read(filename, "fastq-solexa", f)
+        self.check(os.path.join("Quality", "solexa_example.fastq"), "fastq-solexa",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd"])
 
-    def test_illumina_faked(self) :
+    def test_illumina_faked(self):
         """Write and read back illumina_faked.fastq"""
-        filename = os.path.join("Quality", "illumina_faked.fastq")
-        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
-                  "fasta", "qual", "phd"] :
-            write_read(filename, "fastq-illumina", f)
+        self.check(os.path.join("Quality", "illumina_faked.fastq"), "fastq-illumina",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd"])
 
-    def test_evil_wrapped(self) :
-        """Write and read back evil_wrapped.fastq"""
-        filename = os.path.join("Quality", "evil_wrapping.fastq")
-        self.assertEqual(3, len(list(SeqIO.parse(open(filename),"fastq"))))
-        for f in ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
-                  "fasta", "qual", "phd"] :
-            write_read(filename, "fastq-sanger", f)
+    def test_greek_sff(self) :
+        """Write and read back greek.sff"""
+        self.check(os.path.join("Roche", "greek.sff"), "sff",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd", "sff"])
+
+    def test_paired_sff(self) :
+        """Write and read back paired.sff"""
+        self.check(os.path.join("Roche", "paired.sff"), "sff",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd", "sff"])
 
     def test_E3MFGYR02(self) :
         """Write and read back E3MFGYR02_random_10_reads.sff"""
-        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff", "fasta")
-        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff", "fastq")
-        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff", "fastq-sanger")
-        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff", "fastq-solexa")
-        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff", "fastq-illumina")
-        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff", "qual")
-        #write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff", "phd")
+        self.check(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd", "sff"])
+
+    def test_E3MFGYR02_no_manifest(self) :
+        """Write and read back E3MFGYR02_no_manifest.sff"""
+        self.check(os.path.join("Roche", "E3MFGYR02_no_manifest.sff"), "sff",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd", "sff"])
+
+    def test_E3MFGYR02_index_at_start(self) :
+        """Write and read back E3MFGYR02_index_at_start.sff"""
+        self.check(os.path.join("Roche", "E3MFGYR02_index_at_start.sff"), "sff",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd", "sff"])
+
+    def test_E3MFGYR02_index_in_middle(self) :
+        """Write and read back E3MFGYR02_index_in_middle.sff"""
+        self.check(os.path.join("Roche", "E3MFGYR02_index_in_middle.sff"), "sff",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd", "sff"])
+
+    def test_E3MFGYR02_alt_index_at_start(self) :
+        """Write and read back E3MFGYR02_alt_index_at_start.sff"""
+        self.check(os.path.join("Roche", "E3MFGYR02_alt_index_at_start.sff"), "sff",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd", "sff"])
+
+    def test_E3MFGYR02_alt_index_in_middle(self) :
+        """Write and read back E3MFGYR02_alt_index_in_middle.sff"""
+        self.check(os.path.join("Roche", "E3MFGYR02_alt_index_in_middle.sff"), "sff",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd", "sff"])
+
+    def test_E3MFGYR02_alt_index_at_end(self) :
+        """Write and read back E3MFGYR02_alt_index_at_end.sff"""
+        self.check(os.path.join("Roche", "E3MFGYR02_alt_index_at_end.sff"), "sff",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd", "sff"])
 
     def test_E3MFGYR02_trimmed(self) :
         """Write and read back E3MFGYR02_random_10_reads.sff (trimmed)"""
-        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff-trim", "fasta")
-        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff-trim", "fastq")
-        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff-trim", "fastq-sanger")
-        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff-trim", "fastq-solexa")
-        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff-trim", "fastq-illumina")
-        write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff-trim", "qual")
-        #write_read(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff-trim", "phd")
+        self.check(os.path.join("Roche", "E3MFGYR02_random_10_reads.sff"), "sff-trim",
+                   ["fastq", "fastq-sanger", "fastq-illumina", "fastq-solexa",
+                    "fasta", "qual", "phd"]) #not sff as output
 
-class MappingTests(unittest.TestCase) :
+
+class MappingTests(unittest.TestCase):
     def setUp(self):
         warnings.resetwarnings()
 
@@ -503,7 +577,7 @@ class MappingTests(unittest.TestCase) :
         self.assertEqual(6, round(QualityIO.solexa_quality_from_phred(7)))
         self.assertEqual(7, round(QualityIO.solexa_quality_from_phred(8)))
         self.assertEqual(8, round(QualityIO.solexa_quality_from_phred(9)))
-        for i in range(10,100) :
+        for i in range(10,100):
             self.assertEqual(i, round(QualityIO.solexa_quality_from_phred(i)))
         
     def test_phred_quality_from_solexa(self):
@@ -523,7 +597,7 @@ class MappingTests(unittest.TestCase) :
         self.assertEqual(8, round(QualityIO.phred_quality_from_solexa(7)))
         self.assertEqual(9, round(QualityIO.phred_quality_from_solexa(8)))
         self.assertEqual(10, round(QualityIO.phred_quality_from_solexa(9)))
-        for i in range(10,100) :
+        for i in range(10,100):
             self.assertEqual(i, round(QualityIO.phred_quality_from_solexa(i)))
 
     def test_sanger_to_solexa(self):
@@ -610,3 +684,4 @@ class MappingTests(unittest.TestCase) :
 if __name__ == "__main__":
     runner = unittest.TextTestRunner(verbosity = 2)
     unittest.main(testRunner=runner)
+

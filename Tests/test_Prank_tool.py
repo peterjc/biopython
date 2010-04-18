@@ -9,7 +9,7 @@ as part of this package.
 import sys
 import os
 import unittest
-from Bio import Application
+import subprocess
 from Bio import AlignIO
 from Bio import SeqIO
 from Bio import MissingExternalDependencyError
@@ -17,10 +17,10 @@ from Bio.Align.Applications import PrankCommandline
 
 prank_exe = None
 if sys.platform=="win32":
-    try :
+    try:
         #This can vary depending on the Windows language.
         prog_files = os.environ["PROGRAMFILES"]
-    except KeyError :
+    except KeyError:
         prog_files = r"C:\Program Files"
     #For Windows, PRANK just comes as a zip file which contains the
     #prank.exe file which the user could put anywhere.  We'll try a few
@@ -28,13 +28,13 @@ if sys.platform=="win32":
     likely_dirs = ["", #Current dir
                    prog_files,
                    os.path.join(prog_files,"Prank")] + sys.path
-    for folder in likely_dirs :
-        if os.path.isdir(folder) :
-            if os.path.isfile(os.path.join(folder, "prank.exe")) :
+    for folder in likely_dirs:
+        if os.path.isdir(folder):
+            if os.path.isfile(os.path.join(folder, "prank.exe")):
                 prank_exe = os.path.join(folder, "prank.exe")
                 break
         if prank_exe : break
-else :
+else:
     import commands
     output = commands.getoutput("prank")
     if "not found" not in output and "prank" in output.lower():
@@ -77,11 +77,15 @@ class PrankApplication(unittest.TestCase):
         cmdline.set_parameter("d", self.infile1)
         self.assertEqual(str(cmdline), prank_exe + " -d=Fasta/fa01")
         self.assertEqual(str(eval(repr(cmdline))), str(cmdline))
-        result, stdout, stderr = Application.generic_run(cmdline)
-        self.assertEqual(result.return_code, 0)
-        self.assert_("Total time" in stdout.read())
-        self.assertEqual(stderr.read(), "")
-        self.assertEqual(str(result._cl), str(cmdline))
+        child = subprocess.Popen(str(cmdline),
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 shell=(sys.platform!="win32"))
+        return_code = child.wait()
+        self.assertEqual(return_code, 0)
+        self.assert_("Total time" in child.stdout.read())
+        self.assertEqual(child.stderr.read(), "")
+        del child
 
     def test_Prank_simple_with_NEXUS_output(self):
         """Simple round-trip through app with infile, output in NEXUS
@@ -97,20 +101,22 @@ class PrankApplication(unittest.TestCase):
         self.assertEqual(str(cmdline), prank_exe + \
                          " -d=Fasta/fa01 -f=17 -noxml -notree")
         self.assertEqual(str(eval(repr(cmdline))), str(cmdline))
-        result, stdout, stderr = Application.generic_run(cmdline)
-        self.assertEqual(result.return_code, 0)
-        self.assert_("Total time" in stdout.read())
-        self.assertEqual(stderr.read(), "")
-        self.assertEqual(str(result._cl), str(cmdline))
-        out_handle = open("output.2.nex", "r")
-        align = AlignIO.read(out_handle, "nexus")
-        out_handle.close()
-        for old, new in zip(records, align) :
+        child = subprocess.Popen(str(cmdline),
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 shell=(sys.platform!="win32"))
+        return_code = child.wait()
+        self.assertEqual(return_code, 0)
+        self.assert_("Total time" in child.stdout.read())
+        self.assertEqual(child.stderr.read(), "")
+        align = AlignIO.read(open("output.2.nex"), "nexus")
+        for old, new in zip(records, align):
             #Prank automatically reduces name to 9 chars
             self.assertEqual(old.id[:9], new.id)
             #infile1 has alignment gaps in it
             self.assertEqual(str(new.seq).replace("-",""),
                              str(old.seq).replace("-",""))
+        del child
 
     def test_Prank_complex_command_line(self):
         """Round-trip with complex command line."""
@@ -130,12 +136,15 @@ class PrankApplication(unittest.TestCase):
                          " -notree -dots -gaprate=0.321 -gapext=0.6 -kappa=3" + \
                          " -once -skipins -realbranches")
         self.assertEqual(str(eval(repr(cmdline))), str(cmdline))
-        result, stdout, stderr = Application.generic_run(cmdline)
-        self.assertEqual(result.return_code, 0)
-        self.assert_("Total time" in stdout.read())
-        self.assertEqual(stderr.read(), "")
-        self.assertEqual(str(result._cl), str(cmdline))
-
+        child = subprocess.Popen(str(cmdline),
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 shell=(sys.platform!="win32"))
+        return_code = child.wait()
+        self.assertEqual(return_code, 0)
+        self.assert_("Total time" in child.stdout.read())
+        self.assertEqual(child.stderr.read(), "")
+        del child
 
 class PrankConversion(unittest.TestCase):
     def setUp(self):
@@ -143,10 +152,10 @@ class PrankConversion(unittest.TestCase):
         self.input = "Quality/example.fasta"
         self.output = 'temp with space' #prefix, PRANK will pick extensions
 
-    def conversion(self, prank_number, prank_ext, format) :
+    def conversion(self, prank_number, prank_ext, format):
         """Get PRANK to do a conversion, and check it with SeqIO."""
         filename = "%s.%s" % (self.output, prank_ext)
-        if os.path.isfile(filename) :
+        if os.path.isfile(filename):
             os.remove(filename)
         cmdline = PrankCommandline(prank_exe, d=self.input,
                                    convert=True, f=prank_number,
@@ -157,25 +166,29 @@ class PrankConversion(unittest.TestCase):
                          + ' -f=%i' % prank_number \
                          + ' -convert')
         self.assertEqual(str(eval(repr(cmdline))), str(cmdline))
-        result, stdout, stderr = Application.generic_run(cmdline)
-        self.assertEqual(result.return_code, 0)
-        message = stdout.read().strip()
+        child = subprocess.Popen(str(cmdline),
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 shell=(sys.platform!="win32"))
+        return_code = child.wait()
+        self.assertEqual(return_code, 0)
+        message = child.stdout.read().strip()
         self.assert_(("PRANK: converting '%s' to '%s'" % (self.input, filename)) \
                      in message, message)
-        self.assertEqual(stderr.read(), "")
-        self.assertEqual(str(result._cl), str(cmdline))
+        self.assertEqual(child.stderr.read(), "")
         self.assert_(os.path.isfile(filename))
         old = AlignIO.read(open(self.input), "fasta")
         #Hack...
-        if format=="phylip" :
-            for record in old :
+        if format=="phylip":
+            for record in old:
                 record.id = record.id[:10]
         new = AlignIO.read(open(filename), format)
         assert len(old) == len(new)
-        for old_r, new_r in zip(old, new) :
+        for old_r, new_r in zip(old, new):
             self.assertEqual(old_r.id, new_r.id)
             self.assertEqual(str(old_r.seq), str(new_r.seq))
         os.remove(filename)
+        del child
         
     def test_convert_to_ig(self):
         """Convert FASTA to Inteligenetics format."""

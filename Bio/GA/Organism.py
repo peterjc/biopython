@@ -59,7 +59,8 @@ def random_population(genome_alphabet, genome_size, num_organisms,
     elif type(genome_alphabet.letters[0]) == type(1.0):
         alphabet_type = "d"
     else:
-        raise ValueError("Alphabet type is unsupported: %s" % alphabet.letters)
+        raise ValueError(\
+            "Alphabet type is unsupported: %s" % genome_alphabet.letters)
 
     for org_num in range(num_organisms):
         new_genome = MutableSeq(array.array(alphabet_type), genome_alphabet)
@@ -123,9 +124,13 @@ class Organism:
     def __cmp__(self, other):
         """Define comparisons for organisms.
 
-        Compare organisms by their genomes.
+        Compare organisms by their genomes (as strings of letters).
         """
-        return cmp(self.genome, other.genome)
+        # See Bio/Seq.py and the comments there about shifting to
+        # using simple string equality. Previously Seq objects used
+        # object equality, while MutableSeq objects used alphabet
+        # aware string equality.
+        return cmp(str(self.genome), str(other.genome))
 
     def copy(self):
         """Return a copy of the organism.

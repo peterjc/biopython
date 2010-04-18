@@ -80,7 +80,7 @@ class Record:
                 s.append('-')
                 
 
-        if self.children :
+        if self.children:
             child_str = map(str, self.children)
             s.append(",".join(child_str))
         else:
@@ -98,4 +98,6 @@ def parse(handle):
         handle -- file-like object.
     """
     for line in handle:
+        if line.startswith('#'):
+            continue
         yield Record(line)

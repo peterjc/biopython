@@ -3,7 +3,10 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 
-"""Code for more fancy file handles (OBSOLETE).
+"""Code for more fancy file handles (DEPRECATED).
+
+This module is now deprecated, and will be removed in a future release of
+Biopython.
 
 Classes:
 Filtered is a decorator for File that allows the user to filter the output
@@ -20,11 +23,14 @@ filtered_reasder.read()
 
 All filters in the chain must provide the same interface with a line of text as the single
 input parameter and altered text as the return value.
-
-This module is now considered to be obsolete, and is likely to be deprecated
-in a future release of Biopython, and later removed.
 """
 
+import warnings
+warnings.warn("Bio.FilteredReader is deprecated, and will be removed in a"\
+              " future release of Biopython.  If you want to continue to use"\
+              " this code, please get in contact with the developers"\
+              " via the mailing lists to avoid its permanent removal from"\
+              " Biopython.", DeprecationWarning)
 
 def dump_saved( name, text, j ):
     """Used for debugging."""
@@ -96,7 +102,7 @@ class FilteredReader:
     def read_block( self, len_expected ):
 
         len_filtered = 0
-        len_adjusted -= len( self._start_line )
+        len_adjusted = len(self._start_line)
         filtered_text = ''
         while( len_filtered < len_expected ):
 
@@ -111,7 +117,7 @@ class FilteredReader:
                 self._start_line = lines[ -1 ]
                 filtered_text = filtered_text + self.filter( all_but_last_line )
             len_filtered_text = len( filtered_text )
-            len_adjusted = len_adjusted - len_filtered_text
+            len_adjusted -= len_filtered_text
         return filtered_text[ : ]
 
     def read_to_end( self ):

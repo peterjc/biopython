@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+# This code is part of the Biopython distribution and governed by its
+# license.  Please see the LICENSE file that should have been included
+# as part of this package.
+
 """Tests for Genetic Algorithm classes that provide selection capabilities.
 """
 # standard library
@@ -86,7 +90,8 @@ class DiversitySelectionTest(unittest.TestCase):
         new_pop = []
 
         new_org = self.selector._get_new_organism(new_pop, old_pop)
-        assert new_org == org, "Got an unexpected organism %s" % new_org
+        self.assertEqual(new_org, org,
+                         "Got an unexpected organism %s" % new_org)
 
     def test_no_retrieve_organism(self):
         """Test not getting an organism already in the new population.
@@ -97,6 +102,7 @@ class DiversitySelectionTest(unittest.TestCase):
 
         new_org = self.selector._get_new_organism(new_pop, old_pop)
         #assert new_org != org, "Got organism already in the new population."
+        #TODO - Why was the above commented out?
 
     def test_selection(self):
         """Test basic selection on a small population.
@@ -105,7 +111,8 @@ class DiversitySelectionTest(unittest.TestCase):
 
         new_pop = self.selector.select(pop)
 
-        assert len(new_pop) == len(pop), "Did not maintain population size."
+        self.assertEqual(len(new_pop), len(pop),
+                         "Did not maintain population size.")
 
 class TournamentSelectionTest(unittest.TestCase):
     """Test selection based on a tournament style scheme.
@@ -124,21 +131,23 @@ class TournamentSelectionTest(unittest.TestCase):
             if org_2.fitness != org_1.fitness:
                 break
         #Sort them so org_1 is most fit
-        if org_2.fitness > org_1.fitness :
+        if org_2.fitness > org_1.fitness:
             org_1, org_2 = org_2, org_1
-        assert org_1.fitness > org_2.fitness
+        self.assert_(org_1.fitness > org_2.fitness)
         
         pop = [org_1, org_2]
         new_pop = self.selector.select(pop)
         for org in new_pop:
-            assert org == org_1, "Got a worse organism selected."
+            self.assertEqual(org, org_1,
+                             "Got a worse organism selected.")
 
         #Just to make sure the selector isn't doing something
         #silly with the order, try this with the input reserved:
         pop = [org_2, org_1]
         new_pop = self.selector.select(pop)
-        for org in new_pop :
-            assert org == org_1, "Got a worse organism selected."
+        for org in new_pop:
+            self.assertEqual(org, org_1,
+                             "Got a worse organism selected.")
 
     def test_selection(self):
         """Test basic selection on a small population.
@@ -146,7 +155,8 @@ class TournamentSelectionTest(unittest.TestCase):
         pop = [random_organism() for org_num in range(50)]
         new_pop = self.selector.select(pop)
 
-        assert len(new_pop) == len(pop), "Did not maintain population size."
+        self.assertEqual(len(new_pop), len(pop),
+                         "Did not maintain population size.")
 
 
 class RouletteWheelSelectionTest(unittest.TestCase):
@@ -167,7 +177,8 @@ class RouletteWheelSelectionTest(unittest.TestCase):
 
         new_pop = self.selector.select([worst_org, better_org])
         for org in new_pop:
-            assert org == better_org, "Worse organism unexpectly selected."
+            self.assertEqual(org, better_org,
+                             "Worse organism unexpectly selected.")
 
     def test_selection(self):
         """Test basic selection on a small population.
@@ -175,7 +186,8 @@ class RouletteWheelSelectionTest(unittest.TestCase):
         pop = [random_organism() for org_num in range(50)]
         new_pop = self.selector.select(pop)
 
-        assert len(new_pop) == len(pop), "Did not maintain population size."
+        self.assertEqual(len(new_pop), len(pop),
+                         "Did not maintain population size.")
 
         
 if __name__ == "__main__":

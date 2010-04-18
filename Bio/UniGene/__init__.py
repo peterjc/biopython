@@ -10,8 +10,7 @@
 # Bethesda, MD, USA
 #
 
-"""
-Parse Unigene flat file format files such as the Hs.data file.
+"""Parse Unigene flat file format files such as the Hs.data file.
 
 Here is an overview of the flat file format that this parser deals with:
    Line types/qualifiers:
@@ -25,16 +24,16 @@ Here is an overview of the flat file format that this parser deals with:
                     more than half the total EST frequency for this gene.
        GNM_TERMINUS genomic confirmation of presence of a 3' terminus; 
                     T if a non-templated polyA tail is found among 
-	              a cluster's sequences; else
+                    a cluster's sequences; else
                     I if templated As are found in genomic sequence or
                     S if a canonical polyA signal is found on 
                       the genomic sequence
        GENE_ID      Entrez gene identifier associated with at least one
                     sequence in this cluster; 
-	            to be used instead of LocusLink.  
+                    to be used instead of LocusLink.  
        LOCUSLINK    LocusLink identifier associated with at least one
                     sequence in this cluster;  
-		    deprecated in favor of GENE_ID
+                    deprecated in favor of GENE_ID
        HOMOL        Homology;
        CHROMOSOME   Chromosome.  For plants, CHROMOSOME refers to mapping
                     on the arabidopsis genome.
@@ -63,18 +62,18 @@ Here is an overview of the flat file format that this parser deals with:
             END=         End (5'/3') of clone insert read (used for
                          ESTs only) 
             LID=         Library ID; see Hs.lib.info for library name
-                         and tissue  	
-            MGC=	 5' CDS-completeness indicator; if present, the
+                         and tissue
+            MGC=         5' CDS-completeness indicator; if present, the
                          clone associated with this sequence is believed
                          CDS-complete. A value greater than 511 is the gi
                          of the CDS-complete mRNA matched by the EST,
- 	 		 otherwise the value is an indicator of the
+                         otherwise the value is an indicator of the
                          reliability of the test indicating CDS
                          completeness; higher values indicate more
                          reliable CDS-completeness predictions. 
-           SEQTYPE=	 Description of the nucleotide sequence.
+           SEQTYPE=      Description of the nucleotide sequence.
                          Possible values are mRNA, EST and HTC.
-           TRACE=	 The Trace ID of the EST sequence, as provided by
+           TRACE=        The Trace ID of the EST sequence, as provided by
                          NCBI Trace Archive
 """
 
@@ -90,8 +89,8 @@ class SequenceLine:
     PID=         Unique protein sequence identifier (used for non-ESTs)
     CLONE=       Clone identifier (used for ESTs only)
     END=         End (5'/3') of clone insert read (used for ESTs only) 
-    LID=         Library ID; see Hs.lib.info for library name and tissue  	
-    MGC=	 5' CDS-completeness indicator; if present, 
+    LID=         Library ID; see Hs.lib.info for library name and tissue
+    MGC=         5' CDS-completeness indicator; if present, 
                  the clone associated with this sequence  
                  is believed CDS-complete. A value greater than 511
                  is the gi of the CDS-complete mRNA matched by the EST,
@@ -99,9 +98,9 @@ class SequenceLine:
                  of the test indicating CDS completeness;
                  higher values indicate more reliable CDS-completeness
                  predictions. 
-    SEQTYPE=	 Description of the nucleotide sequence. Possible values
+    SEQTYPE=     Description of the nucleotide sequence. Possible values
                  are mRNA, EST and HTC.
-    TRACE=	 The Trace ID of the EST sequence, as provided by NCBI
+    TRACE=       The Trace ID of the EST sequence, as provided by NCBI
                  Trace Archive
     """
     
@@ -247,7 +246,6 @@ class Record:
         return "<%s> %s %s\n%s" % (self.__class__.__name__,
                           self.ID, self.symbol, self.title)
 
-
 def parse(handle):
     while True:
         record = _read(handle)
@@ -337,6 +335,7 @@ UG_INDENT=12
 
 class UnigeneSequenceRecord:
     """Store the information for one SEQUENCE line from a Unigene file
+    (OBSOLETE).
 
     Initialize with the text part of the SEQUENCE line, or nothing.
 
@@ -346,24 +345,27 @@ class UnigeneSequenceRecord:
     PID=         Unique protein sequence identifier (used for non-ESTs)
     CLONE=       Clone identifier (used for ESTs only)
     END=         End (5'/3') of clone insert read (used for ESTs only) 
-    LID=         Library ID; see Hs.lib.info for library name and tissue  	
-    MGC=	 5' CDS-completeness indicator; if present, 
+    LID=         Library ID; see Hs.lib.info for library name and tissue
+    MGC=         5' CDS-completeness indicator; if present, 
                  the clone associated with this sequence  
                  is believed CDS-complete. A value greater than 511
                  is the gi of the CDS-complete mRNA matched by the EST,
                  otherwise the value is an indicator of the reliability
                  of the test indicating CDS comleteness;
                  higher values indicate more reliable CDS-completeness predictions. 
-    SEQTYPE=	 Description of the nucleotide sequence. Possible values are
+    SEQTYPE=     Description of the nucleotide sequence. Possible values are
                  mRNA, EST and HTC.
-    TRACE=	 The Trace ID of the EST sequence, as provided by NCBI Trace Archive
-    PERIPHERAL=   Indicator that the sequence is a suboptimal 
-                  representative of the gene represented by this cluster.
-                  Peripheral sequences are those that are in a cluster
-                  which represents a spliced gene without sharing a
-                  splice junction with any other sequence.  In many
-                  cases, they are unspliced transcripts originating
-                  from the gene.
+    TRACE=       The Trace ID of the EST sequence, as provided by NCBI Trace Archive
+    PERIPHERAL=  Indicator that the sequence is a suboptimal 
+                 representative of the gene represented by this cluster.
+                 Peripheral sequences are those that are in a cluster
+                 which represents a spliced gene without sharing a
+                 splice junction with any other sequence.  In many
+                 cases, they are unspliced transcripts originating
+                 from the gene.
+
+    This class is OBSOLETE; please use the read() function in this module
+    instead.
     """
     
     def __init__(self,text=None):
@@ -399,6 +401,7 @@ class UnigeneSequenceRecord:
 
 class UnigeneProtsimRecord:
     """Store the information for one PROTSIM line from a Unigene file
+    (OBSOLETE).
 
     Initialize with the text part of the PROTSIM line, or nothing.
 
@@ -408,6 +411,9 @@ class UnigeneProtsimRecord:
     PROTID=      Sequence ID of protein
     PCT=         Percent alignment
     ALN=         length of aligned region (aa)
+
+    This class is OBSOLETE; please use the read() function in this module
+    instead.
     """
 
     def __init__(self,text=None):
@@ -433,6 +439,7 @@ class UnigeneProtsimRecord:
 
 class UnigeneSTSRecord:
     """Store the information for one STS line from a Unigene file
+    (OBSOLETE).
 
     Initialize with the text part of the STS line, or nothing.
 
@@ -442,6 +449,9 @@ class UnigeneSTSRecord:
     ACC=         GenBank/EMBL/DDBJ accession number of STS [optional field]
     DSEG=        GDB Dsegment number [optional field]
     UNISTS=      identifier in NCBI's UNISTS database
+
+    This class is OBSOLETE; please use the read() function in this module
+    instead.
     """
 
     def __init__(self,text=None):
@@ -465,7 +475,7 @@ class UnigeneSTSRecord:
         
 
 class UnigeneRecord:
-    """Store a Unigene record
+    """Store a Unigene record (OBSOLETE).
 
     Here is what is stored:
     
@@ -487,6 +497,9 @@ class UnigeneRecord:
         self.sts          = []  # STS entries, array of STS entries
                                 # Type UnigeneSTSRecord
         self.txmap        = []  # TXMAP entries, array of TXMap entries
+
+    This class is OBSOLETE; please use the read() function in this module
+    instead.
     """
 
     def __init__(self):
@@ -511,6 +524,8 @@ class UnigeneRecord:
 
 
 class _RecordConsumer(AbstractConsumer):
+    """This class is OBSOLETE; please use the read() function in this module
+    instead."""
 
     def __init__(self):
         self.unigene_record = UnigeneRecord()
@@ -554,7 +569,10 @@ class _RecordConsumer(AbstractConsumer):
     
 
 class _Scanner:
-    """Scans a Unigene Flat File Format file
+    """Scans a Unigene Flat File Format file (OBSOLETE).
+
+    This class is OBSOLETE; please use the read() function in this module
+    instead.
     """
 
     def feed(self, handle, consumer):
@@ -582,38 +600,44 @@ class _Scanner:
 
         
 class RecordParser(AbstractParser):
-	def __init__(self):
-		self._scanner = _Scanner()
-		self._consumer = _RecordConsumer()
+    """This class is OBSOLETE; please use the read() function in this module
+    instead."""
 
-	def parse(self, handle):
-		if isinstance(handle, File.UndoHandle):
-			uhandle = handle
-		else:
-			uhandle = File.UndoHandle(handle)
-			self._scanner.feed(uhandle, self._consumer)
-		return self._consumer.unigene_record
+    def __init__(self):
+        self._scanner = _Scanner()
+        self._consumer = _RecordConsumer()
+
+    def parse(self, handle):
+        if isinstance(handle, File.UndoHandle):
+            uhandle = handle
+        else:
+            uhandle = File.UndoHandle(handle)
+            self._scanner.feed(uhandle, self._consumer)
+        return self._consumer.unigene_record
 
 class Iterator:
-	def __init__(self, handle, parser=None):
-		self._uhandle = File.UndoHandle(handle)
+    """This class is OBSOLETE; please use the parse() function in this module
+    instead."""
 
-	def next(self):
-		self._parser = RecordParser()
-		lines = []
-		while 1:
-			line = self._uhandle.readline()
-			if not line: break
-			if line[:2] == '//':
-				break
-			lines.append(line)
-		if not lines:
-			return None
-		lines.append('//')
-		data = ''.join(lines)
-		if self._parser is not None:
-			return self._parser.parse(File.StringHandle(data))
-		return data
+    def __init__(self, handle, parser=None):
+        self._uhandle = File.UndoHandle(handle)
 
-        def __iter__(self):
-                return iter(self.next, None)
+    def next(self):
+        self._parser = RecordParser()
+        lines = []
+        while True:
+            line = self._uhandle.readline()
+            if not line: break
+            if line[:2] == '//':
+                break
+            lines.append(line)
+        if not lines:
+            return None
+        lines.append('//')
+        data = ''.join(lines)
+        if self._parser is not None:
+            return self._parser.parse(File.StringHandle(data))
+        return data
+
+    def __iter__(self):
+        return iter(self.next, None)

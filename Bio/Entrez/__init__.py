@@ -12,6 +12,9 @@ http://www.ncbi.nlm.nih.gov/Entrez/
 A list of the Entrez utilities is available at:
 http://www.ncbi.nlm.nih.gov/entrez/utils/utils_index.html
 
+Variables:
+email        Set the Entrez email parameter (default is not set).
+tool         Set the Entrez tool parameter (default is  biopython).
 
 Functions:
 efetch       Retrieves records in the requested format from a list of one or
@@ -50,20 +53,8 @@ from Bio import File
 
 
 email = None
+tool = "biopython"
 
-def query(cmd, db, cgi='http://www.ncbi.nlm.nih.gov/sites/entrez',
-          **keywds):
-    """Query Entrez and return a handle to the HTML results (DEPRECATED).
-
-    See the online documentation for an explanation of the parameters:
-    http://www.ncbi.nlm.nih.gov/books/bv.fcgi?rid=helplinks.chapter.linkshelp
-
-    Return a handle to the results.
-
-    Raises an IOError exception if there's a network error.
-    """
-    import warnings
-    warnings.warn("Bio.Entrez.query is deprecated, since it breaks NCBI's rule to only use the E-Utilities URL.", DeprecationWarning)
 
 # XXX retmode?
 def epost(db, **keywds):
@@ -103,15 +94,14 @@ def efetch(db, **keywds):
     handle = Entrez.efetch(db="nucleotide", id="57240072", rettype="gb")
     print handle.read()
     """
-    for key in keywds :
-        if key.lower()=="rettype" and keywds[key].lower()=="genbank" :
-            import warnings
-            warnings.warn('As of Easter 2009, Entrez EFtech no longer '
+    for key in keywds:
+        if key.lower()=="rettype" and keywds[key].lower()=="genbank":
+            warnings.warn('As of Easter 2009, Entrez EFetch no longer '
                           'supports the unofficial return type "genbank", '
                           'use "gb" or "gp" instead.', DeprecationWarning)
-            if db.lower()=="protein" :
+            if db.lower()=="protein":
                 keywds[key] = "gp" #GenPept
-            else :
+            else:
                 keywds[key] = "gb" #GenBank
     cgi='http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi'
     variables = {'db' : db}
@@ -269,8 +259,15 @@ def read(handle):
     from Parser import DataHandler
     DTDs = os.path.join(__path__[0], "DTDs")
     handler = DataHandler(DTDs)
-    record = handler.run(handle)
+    record = handler.read(handle)
     return record
+
+def parse(handle):
+    from Parser import DataHandler
+    DTDs = os.path.join(__path__[0], "DTDs")
+    handler = DataHandler(DTDs)
+    records = handler.parse(handle)
+    return records
 
 def _open(cgi, params={}, post=False):
     """Helper function to build the URL and open a handle to it (PRIVATE).
@@ -296,19 +293,33 @@ def _open(cgi, params={}, post=False):
     for key, value in params.items():
         if value is None:
             del params[key]
-    # Tell Entrez that we are using Biopython
+    # Tell Entrez that we are using Biopython (or whatever the user has
+    # specified explicitly in the parameters or by changing the default)
     if not "tool" in params:
-        params["tool"] = "biopython"
+        params["tool"] = tool
     # Tell Entrez who we are
     if not "email" in params:
         if email!=None:
             params["email"] = email
+        else:
+            warnings.warn("""
+Email address is not specified.
+
+To make use of NCBI's E-utilities, NCBI strongly recommends you to specify
+your email address with each request. From June 1, 2010, this will be
+mandatory. As an example, if your email address is A.N.Other@example.com, you
+can specify it as follows:
+   from Bio import Entrez
+   Entrez.email = 'A.N.Other@example.com'
+In case of excessive usage of the E-utilities, NCBI will attempt to contact
+a user at the email address provided before blocking access to the
+E-utilities.""", UserWarning)
     # Open a handle to Entrez.
     options = urllib.urlencode(params, doseq=True)
-    if post :
+    if post:
         #HTTP POST
         handle = urllib.urlopen(cgi, data=options)
-    else :
+    else:
         #HTTP GET
         cgi += "?" + options
         handle = urllib.urlopen(cgi)
@@ -332,25 +343,25 @@ def _open(cgi, params={}, post=False):
         raise IOError("502 Proxy Error (NCBI busy?)")
     elif "WWW Error 500 Diagnostic" in data:
         raise IOError("WWW Error 500 Diagnostic (NCBI busy?)")
-    elif "<title>Service unavailable!</title>" in data :
+    elif "<title>Service unavailable!</title>" in data:
         #Probably later in the file it will say "Error 503"
         raise IOError("Service unavailable!")
-    elif "<title>Bad Gateway!</title>" in data :
+    elif "<title>Bad Gateway!</title>" in data:
         #Probably later in the file it will say:
         #  "The proxy server received an invalid
         #   response from an upstream server."
         raise IOError("Bad Gateway!")
     elif "<title>414 Request-URI Too Large</title>" in data \
-    or "<h1>Request-URI Too Large</h1>" in data :
+    or "<h1>Request-URI Too Large</h1>" in data:
         raise IOError("Requested URL too long (try using EPost?)")
-    elif data.startswith("Error:") :
+    elif data.startswith("Error:"):
         #e.g. 'Error: Your session has expired. Please repeat your search.\n'
         raise IOError(data.strip())
-    elif data.startswith("The resource is temporarily unavailable") :
+    elif data.startswith("The resource is temporarily unavailable"):
         #This can occur with an invalid query_key
         #Perhaps this should be a ValueError?
         raise IOError("The resource is temporarily unavailable")
-    elif data.startswith("download dataset is empty") :
+    elif data.startswith("download dataset is empty"):
         #This can occur when omit the identifier, or the WebEnv and query_key
         #Perhaps this should be a ValueError?
         raise IOError("download dataset is empty")

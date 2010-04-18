@@ -2,22 +2,70 @@
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
+
 """Parsing AlignACE and CompareACE files: AlignAceParser,CompareAceParser
 """
-#changed string.atof to float, for compatibility with python 2.6 and 3k, BW
 
-from Bio import File
-from Bio.ParserSupport import *
 from Bio.Motif import Motif
 from Bio.Alphabet import IUPAC
 from Bio.Seq import Seq
 
 
+class Record:
+    def __init__(self):
+        self.motifs=[]
+        self.current_motif=None
+        self.param_dict = None
+
+
+def read(handle):
+    """read(handle)"""
+    record = Record()
+    record.ver = handle.next()
+    record.cmd_line = handle.next()
+    for line in handle:
+        if line.strip() == "":
+            pass
+        elif line[:4]=="Para":
+            record.param_dict={}
+        elif line[0]=="#":
+            seq_name = line.split("\t")[1]
+            record.seq_dict.append(seq_name)
+        elif "=" in line:
+            par_name = line.split("=")[0].strip()
+            par_value = line.split("=")[1].strip()
+            record.param_dict[par_name]=par_value
+        elif line[:5]=="Input":
+            record.seq_dict=[]
+        elif line[:5]=="Motif":
+            record.current_motif = Motif()
+            record.motifs.append(record.current_motif)
+            record.current_motif.alphabet=IUPAC.unambiguous_dna
+        elif line[:3]=="MAP":
+            record.current_motif.score = float(line.split()[-1])
+        elif len(line.split("\t"))==4:
+            seq = Seq(line.split("\t")[0],IUPAC.unambiguous_dna)
+            record.current_motif.add_instance(seq)
+        elif "*" in line:
+            record.current_motif.set_mask(line.strip("\n\c"))
+        else:
+            raise ValueError(line)
+    return record
+
+
+# Everything below is obsolete.
+
+from Bio.ParserSupport import *
+
+
 class AlignAceConsumer:
     """
-    The general purpose consumer for the AlignAceScanner.
+    The general purpose consumer for the AlignAceScanner (OBSOLETE).
 
     Should be passed as the consumer to the feed method of the AlignAceScanner. After 'consuming' the file, it has the list of motifs in the motifs property.
+
+    This class is OBSOLETE; please use the read() function in this module
+    instead.
     """
     def __init__(self):
         self.motifs=[]
@@ -64,7 +112,10 @@ class AlignAceConsumer:
         self.cmd_line = line
     
 class AlignAceParser(AbstractParser):
-    """Parses AlignAce data into a sequence of Motifs.
+    """Parses AlignAce data into a sequence of Motifs (OBSOLETE)
+
+    This class is OBSOLETE; please use the read() function in this module
+    instead.
     """
     def __init__(self):
         """__init__(self)"""
@@ -77,7 +128,7 @@ class AlignAceParser(AbstractParser):
         return self._consumer
 
 class AlignAceScanner:
-    """Scannner for AlignACE output
+    """Scannner for AlignACE output (OBSOLETE).
 
     Methods:
     feed     Feed data into the scanner.
@@ -97,6 +148,8 @@ class AlignAceScanner:
     motif_mask - mask of the motif (space - gap, asterisk - significant position)
     motif_score - MAP score of the motif - approx. N * log R, where R == (num. of actual occur.) / (num. of occur. expected by random.)
     
+    This class is OBSOLETE; please use the read() function in this module
+    instead.
     """
     def feed(self, handle, consumer):
         """S.feed(handle, consumer)
@@ -130,7 +183,7 @@ class AlignAceScanner:
                 raise ValueError(line)
 
 class CompareAceScanner:
-    """Scannner for CompareACE output
+    """Scannner for CompareACE output (OBSOLETE).
 
     Methods:
     feed     Feed data into the scanner.
@@ -154,7 +207,7 @@ class CompareAceScanner:
 
 class CompareAceConsumer:
     """
-    The general purpose consumer for the CompareAceScanner.
+    The general purpose consumer for the CompareAceScanner (OBSOLETE).
 
     Should be passed as the consumer to the feed method of the CompareAceScanner. After 'consuming' the file, it has the list of motifs in the motifs property.
     """
@@ -170,6 +223,14 @@ class CompareAceParser(AbstractParser):
     """
     def __init__(self):
         """__init__(self)"""
+        import warnings
+        warnings.warn("CompareAceParser and ComparAceConsumer are" \
+              +" deprecated, and will be removed in a future release of"\
+              +" Biopython. If you want to continue to use this code,"\
+              +" please get in contact with the Biopython developers via"\
+              +" the mailing lists to avoid its permanent removal from"\
+              +" Biopython. See also the Python built in set datatype.", \
+              DeprecationWarning)
         self._scanner = CompareAceScanner()
         self._consumer = CompareAceConsumer()
 

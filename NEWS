@@ -9,20 +9,174 @@ The latest news is at the top.
 
 ===================================================================
 
+April 2, 2010: Biopython 1.54 beta released.
+
+We are phasing out support for Python 2.4. We will continue to support it
+for at least two further releases, and at least one year (whichever takes
+longer), before dropping support for Python 2.4. This could be delayed
+given feedback from our users (e.g. if this proves to be a problem in
+combination with other libraries or a popular Linux distribution).
+
+New module Bio.Phylo includes support for reading, writing and working with
+phylogenetic trees from Newick, Nexus and phyloXML files. This was work by
+Eric Talevich on a Google Summer of Code 2009 project, under The National
+Evolutionary Synthesis Center (NESCent), mentored by Brad Chapman and
+Christian Zmasek.
+
+Bio.Entrez includes some more DTD files, in particular eLink_090910.dtd,
+needed for our NCBI Entrez Utilities XML parser.
+
+The parse, read and write functions in Bio.SeqIO and Bio.AlignIO will now
+accept filenames as well as handles. This follows a general shift from
+from other Python libraries, and does make usage a little simpler. Also
+the write functions will now accept a single SeqRecord or alignment.
+
+Bio.SeqIO now supports writing EMBL files (DNA and RNA sequences only).
+
+The dictionary-like objects from Bio.SeqIO.index() now support a get_raw
+method for most file formats, giving you the original unparsed data from the
+file as a string. This is useful for selecting a subset of records from a
+file where Bio.SeqIO.write() does not support the file format (e.g. the
+"swiss" format) or where you need to exactly preserve the original layout.
+
+Based on code from Jose Blanca (author of sff_extract), Bio.SeqIO now
+supports reading, indexing and writing Standard Flowgram Format (SFF)
+files which are used by 454 Life Sciences (Roche) sequencers. This means
+you can use SeqIO to convert from SFF to FASTQ, FASTA and QUAL (as
+trimmed or untrimmed reads).
+
+An improved multiple sequence alignment object has been introduced,
+and is used by Bio.AlignIO for input. This is a little stricter than the
+old class but should otherwise be backwards compatible.
+
+(At least) 11 people contributed to this release, including 5 new people:
+
+Anne Pajon (first contribution)
+Brad Chapman
+Christian Zmasek
+Diana Jaunzeikare (first contribution)
+Eric Talevich
+Jose Blanca (first contribution)
+Kevin Jacobs (first contribution)
+Leighton Pritchard
+Michiel de Hoon
+Peter Cock
+Thomas Holder (first contribution)
+
+===================================================================
+
+December 15, 2009: Biopython 1.53 released.
+
+Biopython is now using git for source code control, currently on github. Our
+old CVS repository will remain on the OBF servers in the short/medium term
+as a backup, but will not be updated in future.
+
+The Bio.Blast.Applications wrappers now covers the new NCBI BLAST C++ tools
+(where blastall is replaced by blastp, blastn, etc, and the command line
+switches have all been renamed). These will be replacing the old wrappers in
+Bio.Blast.NCBIStandalone which are now obsolete, and will be deprecated in
+our next release.
+
+The plain text BLAST parser has been updated, and should cope with recent
+versions of NCBI BLAST, including the new C++ based version. Nevertheless,
+we (and the NCBI) still recommend using the XML output for parsing.
+
+The Seq (and related UnknownSeq) objects gained upper and lower methods,
+like the string methods of the same name but alphabet aware. The Seq object
+also gained a new ungap method for removing gap characters in an alphabet
+aware manner.
+
+The SeqFeature object now has an extract method, used with the parent
+sequence (as a string or Seq object) to get the region of that sequence
+described by the feature's location information (including the strand and
+any sub-features for a join). As an example, this is useful to get the
+nucleotide sequence for features in GenBank or EMBL files.
+
+SeqRecord objects now support addition, giving a new SeqRecord with the
+combined sequence, all the SeqFeatures, and any common annotation.
+
+Bio.Entrez includes the new (Jan 2010) DTD files from the NCBI for parsing
+MedLine/PubMed data.
+
+The NCBI codon tables have been updated from version 3.4 to 3.9, which adds
+a few extra start codons, and a few new tables (Tables 16, 21, 22 and 23).
+Note that Table 14 which used to be called "Flatworm Mitochondrial" is now
+called "Alternative Flatworm Mitochondrial", and "Flatworm Mitochondrial" is
+now an alias for Table 9 ("Echinoderm Mitochondrial").
+
+The restriction enzyme list in Bio.Restriction has been updated to the
+Nov 2009 release of REBASE.
+
+The Bio.PDB parser and output code has been updated to understand the
+element column in ATOM and HETATM lines (based on patches contributed by
+Hongbo Zhu and Frederik Gwinner). Bio.PDB.PDBList has also been updated
+for recent changes to the PDB FTP site (Paul T. Bathen).
+
+SQLite support was added for BioSQL databases (Brad Chapman), allowing access
+to BioSQL through a lightweight embedded SQL engine. Python 2.5+ includes
+support for SQLite built in, but on Python 2.4 the optional sqlite3 library
+must be installed to use this. We currently use a draft BioSQL on SQLite
+schema, which will be merged with the main BioSQL release for use in other
+projects.
+
+Support for running Biopython under Jython (using the Java Virtual Machine)
+has been much improved thanks to input from Kyle Ellrott. Note that Jython
+does not support C code - this means NumPy isn't available, and nor are a
+selection of Biopython modules (including Bio.Cluster, Bio.PDB and BioSQL).
+Also, currently Jython does not parse DTD files, which means the XML parser
+in Bio.Entrez won't work. However, most of the Biopython modules seem fine
+from testing Jython 2.5.0 and 2.5.1.
+
+(At least) 12 people contributed to this release, including 3 first timers:
+
+Bartek Wilczynski
+Brad Chapman
+Chris Lasher
+Cymon Cox
+Frank Kauff
+Frederik Gwinner (first contribution)
+Hongbo Zhu (first contribution)
+Kyle Ellrott
+Leighton Pritchard
+Michiel de Hoon
+Paul Bathen (first contribution)
+Peter Cock
+
+===================================================================
+
+September 22, 2009: Biopython 1.52 released.
+
+The Population Genetics module now allows the calculation of several tests,
+and statistical estimators via a wrapper to GenePop. Supported are tests for
+Hardy-Weinberg equilibrium, linkage disequilibrium and estimates for various
+F statistics (Cockerham and Wier Fst and Fis, Robertson and Hill Fis, etc),
+null allele frequencies and number of migrants among many others. Isolation
+By Distance (IBD) functionality is also supported.
+
 New helper functions Bio.SeqIO.convert() and Bio.AlignIO.convert() allow an
 easier way to use Biopython for simple file format conversions. Additionally,
 these new functions allow Biopython to offer important file format specific
 optimisations (e.g. FASTQ to FASTA, and interconverting FASTQ variants).
 
-New function Bio.SeqIO.indexed_dict() allows indexing of most sequence file
-formats (but not alignment file formats), allowing dictionary like random
-access to all the entries in the file as SeqRecord objects, keyed on the
-record id. This is epecially useful for very large sequencing files, where
-all the records cannot be held in memory at once. This supplements the more
-flexible but memory demaning Bio.SeqIO.to_dict() function.
+New function Bio.SeqIO.index() allows indexing of most sequence file formats
+(but not alignment file formats), allowing dictionary like random access to
+all the entries in the file as SeqRecord objects, keyed on the record id.
+This is epecially useful for very large sequencing files, where all the
+records cannot be held in memory at once. This supplements the more flexible
+but memory demanding Bio.SeqIO.to_dict() function.
 
 Bio.SeqIO can now write "phd" format files (used by PHRED, PHRAD and CONSED),
-allowing interconverion with FASTQ files, or FASTA+QUAL files.
+allowing interconversion with FASTQ files, or FASTA+QUAL files.
+
+Bio.Emboss.Applications now includes wrappers for the "new" PHYLIP EMBASSY
+package (e.g. fneighbor) which replace the "old" PHYLIP EMBASSY package (e.g.
+eneighbor) whose Biopython wrappers are now obsolete.
+
+See also the DEPRECATED file, as several old deprecated modules have finally
+been removed (e.g. Bio.EUtils which had been replaced by Bio.Entrez).
+
+On a technical note, this will be the last release using CVS for source code
+control. Biopython is moving from CVS to git.
 
 ===================================================================
 
@@ -31,12 +185,12 @@ August 17, 2009: Biopython 1.51 released.
 FASTQ support in Bio.SeqIO has been improved, extended and sped up since
 Biopython 1.50. Support for Illumina 1.3+ style FASTQ files was added in the
 1.51 beta release. Furthermore, we now follow the interpretation agreed on
-the OBF mailing lists with EMBOSS and BioPerl for inter-conversion and the
-valid score range for each FASTQ variant. This means Solexa FASTQ scores can
-be from -5 to 62 (format name "fastq-solexa" in Bio.SeqIO), Illumina 1.3+
-FASTQ files have PHRED scores from 0 to 62 (format name "fastq-illumina"),
-and Sanger FASTQ files have PHRED scores from 0 to 93 (format name "fastq"
-or "fastq-sanger").
+the OBF mailing lists with EMBOSS, BioPerl, BioJava and BioRuby for inter-
+conversion and the valid score range for each FASTQ variant. This means
+Solexa FASTQ scores can be from -5 to 62 (format name "fastq-solexa" in
+Bio.SeqIO), Illumina 1.3+ FASTQ files have PHRED scores from 0 to 62 (format
+name "fastq-illumina"), and Sanger FASTQ files have PHRED scores from 0 to
+93 (format name "fastq" or "fastq-sanger").
 
 Bio.Sequencing.Phd has been updated, for example to cope with missing peak
 positions. The "phd" support in Bio.SeqIO has also been updated to record
@@ -317,7 +471,7 @@ tostring() method is preserved for backwards compatibility.
 
 BioSQL has had some bugs fixed, and has an additional unit test which loads
 records into a database using Bio.SeqIO and then checks the records can be
-retieved correctly.  The DBSeq and DBSeqRecord classes now subclass the
+retrieved correctly.  The DBSeq and DBSeqRecord classes now subclass the
 Seq and SeqRecord classes, which provides more functionality.
 
 The modules under Bio.WWW are being deprecated.

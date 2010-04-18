@@ -70,9 +70,9 @@ class Record:
         s.append(self.sunid)
         s.append(self.nodetype)        
         s.append(self.sccs)        
-        if self.name :
+        if self.name:
             s.append(self.name)
-        else :
+        else:
             s.append("-")
         s.append(self.description)        
         return "\t".join(map(str,s)) + "\n"
@@ -86,4 +86,6 @@ def parse(handle):
         handle -- file-like object
     """
     for line in handle:
+        if line.startswith('#'):
+            continue
         yield Record(line)

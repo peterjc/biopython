@@ -86,6 +86,27 @@ With all this said, hopefully these directions will make it
 straightforward to get Biopython installed on your machine so you can
 begin using it as quick as possible.
 
+\section{C Compiler}
+
+Although mostly written in Python, Biopython (and some of its dependencies)
+include C code, which must be compiled to run. If you are going to be
+installing from source you will therefore need a C compiler. However,
+in many cases this can be avoided by using pre-compiled packages (which
+is what we recommend on Windows).
+
+\subsection{Unix}
+We recommend GCC as the C compiler, this is usually available as part
+of the standard set of packages on any Unix or Linux system.
+
+\subsection{Mac OS X}
+Please install Apple's XCode suite - \emph{including} the optional
+Mac OS 10.4 SDK which includes important header files. 
+
+\subsection{Windows}
+We recommend you install Biopython and its dependencies using the
+provided pre-compiled Windows Installers. i.e. You don't \emph{need}
+a C compiler. See Section~\ref{sec:windows_install} for more details.
+
 \section{Installing Python}
 
 Python is a interpreting, interactive object-oriented programming
@@ -106,7 +127,7 @@ need to re-install all libraries you have added to python.
 
 Let's get started with installation on various platforms.
 
-\subsection{Installation on UNIX systems}
+\subsection{Python installation on UNIX systems}
 
 First, you should go the main python web site and head over to the information
 page for the latest python release. At the time of this writing the
@@ -184,7 +205,7 @@ Biopython and it's dependencies). You'll need to install these libraries
 and header files, which are often found in a separate package called
 \verb|python-devel| or something similar. 
 
-\subsection{Installation on Windows} 
+\subsection{Python installation on Windows} 
 
 Installation on Windows is most easily done using handy windows
 installers. As described above in the UNIX section, you should go to the
@@ -198,10 +219,10 @@ it to run it. Then just follow the friendly instructions. On all newer Windows
 machines you'll need to have Administrator privileges to do this
 installation.
 
-\subsection{Installation on Mac OS X}
+\subsection{Python installation on Mac OS X}
 
 Apple includes python on Mac OS X, and while you can use this many people have
-preferred to install the latest version of python as well in parallel.  We refer
+preferred to install the latest version of python as well in parallel. We refer
 you to the \ahrefurl{\url{http://www.python.org}} for more details, although
 otherwise the UNIX instructions apply.
 
@@ -230,7 +251,7 @@ The main web site for NumPy is:
 \subsubsection{UNIX and Mac OS X systems}
 
 You should download the \verb|tar.gz| file, and follow the standard python
-build process:
+build process. Note you will need a C compiler installed (see above):
 
 \begin{verbatim}
 > tar -xzvpf numpy-1.1.1.tar.gz
@@ -397,13 +418,12 @@ The releases are also available both as source and as installers
 (windows installers right now), so you have some choices to pick from 
 on releases if you prefer not to deal with source code directly.
 
-\item CVS -- The current working copy of the Biopython sources is always
-available via CVS (Concurrent Versions Systems --
-\ahrefurl{\url{http://www.cvshome.org/}}). Concise instructions for
-accessing this copy are available at
-\ahrefurl{\url{http://cvs.biopython.org}}. CVS is normally quite stable
-but there is always the caveat that the code there is under
-development.
+\item git -- The current working copy of the Biopython sources is available
+via git hosted on github  -- \ahrefurl{\url{http://github.com/biopython/biopython}}).
+Concise instructions for accessing this copy are available at
+\ahrefurl{\url{http://biopython.org/wiki/SourceCode}}. Our code in git
+is normally quite stable but there is always the caveat that the code
+there is under development.
 
 \end{enumerate}
 
@@ -423,9 +443,9 @@ Now that we've got what we need, let's get into the installation:
 
 \begin{enumerate}
 
-\item First you need to unpack the distribution. If you got the CVS version, you are all set to go and can skip on ahead. Otherwise, you'll need to unpack it. On UN*X machines, a tar.gz package is provided, which you can unpack with \verb|tar -xzvpf biopython-X.X.tar.gz|. A zip file is also provided for other platforms.
+\item First you need to unpack the distribution. If you got the git version, you are all set to go and can skip on ahead. Otherwise, you'll need to unpack it. On UN*X machines, a tar.gz package is provided, which you can unpack with \verb|tar -xzvpf biopython-X.X.tar.gz|. A zip file is also provided for other platforms.
 
-\item Now that everything is unpacked, move into the \verb| biopython*| directory (this will just be \verb|biopython| for CVS users, and will be \verb|biopython-X.X| for those using a packaged download). 
+\item Now that everything is unpacked, move into the \verb| biopython*| directory (this will just be \verb|biopython| for git users, and will be \verb|biopython-X.X| for those using a packaged download). 
 
 \item Now you are ready for your one step install -- \verb|python setup.py install|. This performs the default install, and will put Biopython into the \verb|site-packages| directory of your python library tree (on my machine this is \verb|/usr/local/lib/python2.4/site-packages|). You will have to have permissions to write to this directory, so you'll need to have root access on the machine.
 
@@ -477,13 +497,13 @@ sudo easy_install -f http://biopython.org/DIST/ biopython
 
 \subsubsection{Installation on Mac OS X using the fink package manager}
 
-Instead of installing from source, on Mac OS X you can also use the fink package manager, see \ahrefurl{\url{http://fink.sf.net}}. Fink will take care of downloading the source code and installing all needed packages for biopython, including python itself. Once you have installed fink, you can install biopython using:
+Instead of installing from source, on Mac OS X you can also use the fink package manager, see \ahrefurl{\url{http://fink.sf.net}}. Fink should take care of downloading the source code and installing all needed packages for Biopython, including Python itself. Once you have installed fink, you can install biopython using:
 
 \begin{verbatim}
 fink install biopython-pyXX
 \end{verbatim}
 
-\noindent where XX is the python version you would like to use. Currently, python 2.3, 2.4, and 2.5 are available through fink on Mac OS X 10.4, so you would have to replace XX with 23, 24, or 25, respectively. Most likely, you will have to enable the unstable tree of fink in order to install the most recent versions of the package, see also this item in the Fink FAQ: \ahrefurl{\url{http://fink.sourceforge.net/faq/usage-fink.php\#unstable}}. Note that 'unstable' doesn't mean that a package won't work, but only that there has not been feedback to the fink team from users.
+\noindent where XX is the python version you would like to use. Currently, python 2.4, 2.5, and 2.6 are available through fink on Mac OS X 10.4, so you would have to replace XX with 24, 25, or 26, respectively. Most likely, you will have to enable the unstable tree of fink in order to install the most recent versions of the package, see also this item in the Fink FAQ: \url{http://fink.sourceforge.net/faq/usage-fink.php#unstable}. Note that 'unstable' doesn't mean that a package won't work, but only that there has not been feedback to the fink team from users.
 
 \subsubsection{Installation on UNIX systems using RPMs}
 
@@ -517,7 +537,7 @@ This does not install the documentation, tests, example code or source code, so 
 \subsection{Installing from source on Windows}
 \label{sec:windows_install}
 
-This section deals with installing the source (i.~e.~from CVS or from a source zip file) on a Windows machine. Much of the information from the UNIX install applies here, so it would be good to read section~\ref{sec:unix_install} before starting.  You will need a suitable C compiler.
+This section deals with installing the source (i.~e.~from git or from a source zip file) on a Windows machine. Much of the information from the UNIX install applies here, so it would be good to read section~\ref{sec:unix_install} before starting.  You will need a suitable C compiler.
 What you choose may depend on your version of Python.
 
 For Python 2.6 we currently use Microsoft's free VC++ 2008 Express Edition from \ahrefurl{\url{http://www.microsoft.com/express/download/}}, installation of this is pretty simple.  Then go to the Biopython source directory and run:
@@ -581,7 +601,7 @@ Note that Biopython includes support for interfacing with or parsing the output 
 
 \begin{itemize}
 \item NCBI Standalone BLAST, which can used with the \verb|Bio.Blast| module.
-\item EMBOSS tools, which can be invoked using the \verb|Bio.EMBOSS| module.  The \verb|Bio.AlignIO| module can also parse some alignment formats output by the EMBOSS suite.
+\item EMBOSS tools, which can be invoked using the \verb|Bio.Emboss| module.  The \verb|Bio.AlignIO| module can also parse some alignment formats output by the EMBOSS suite.
 \item ClustalW, which can be invoked using the \verb|Bio.Clustalw| module.
 \item SIMCOAL2 and FDist tools for population genetics can be used via the \verb|Bio.PopGen| module.
 \item Bill Pearson's FASTA tools output can be parsed using the \verb|Bio.AlignIO| module.
