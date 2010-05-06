@@ -138,6 +138,8 @@ tests = [
     ("Roche/paired.sff", "sff-trim", None),
     ("SamBam/ex1.sam", "sam", None),
     ("SamBam/ex1.sam", "sam", generic_dna),
+    ("SamBam/ex1.bam", "bam", None),
+    ("SamBam/ex1.bam", "bam", generic_dna),
     ]
 for filename, format, alphabet in tests:
     assert format in _FormatToIndexedDict

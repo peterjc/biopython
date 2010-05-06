@@ -232,13 +232,12 @@ class SffDict(_IndexedSeqFileDict) :
     def __getitem__(self, key) :
         handle = self._handle
         handle.seek(dict.__getitem__(self, key))
-        record = SeqIO.SffIO._sff_read_seq_record(handle,
-                                                  self._flows_per_read,
-                                                  self._flow_chars,
-                                                  self._key_sequence,
-                                                  self._alphabet)
-        assert record.id == key
-        return record
+        return SeqIO.SffIO._sff_read_seq_record(handle,
+                                                self._flows_per_read,
+                                                self._flow_chars,
+                                                self._key_sequence,
+                                                self._alphabet)
+
 
 class SffTrimmedDict(SffDict) :
     def __getitem__(self, key) :
@@ -452,9 +451,8 @@ class IntelliGeneticsDict(_SequentialSeqFileDict):
                         break
 
 class SamDict(_IndexedSeqFileDict):
-    """Indexed dictionary like access to a simple tabbed file."""
+    """Indexed dictionary like access to a SAM (Sequence Alignment/Map) file."""
     def __init__(self, filename, alphabet, key_function):
-        import SamBamIO
         _IndexedSeqFileDict.__init__(self, filename, alphabet, key_function)
         self._format = "sam"
         handle = self._handle
@@ -467,7 +465,7 @@ class SamDict(_IndexedSeqFileDict):
                 continue
             parts = line.split("\t")
             key = parts[0]
-            pair1, pair2 = SamBamIO._decode_flag(int(parts[1]))
+            pair1, pair2 = SeqIO.SamBamIO._decode_flag(int(parts[1]))
             if pair1:
                 key += "/1"
             elif pair2:
@@ -479,6 +477,40 @@ class SamDict(_IndexedSeqFileDict):
         handle = self._handle
         handle.seek(dict.__getitem__(self, key))
         return handle.readline()
+
+class BamDict(_IndexedSeqFileDict):
+    """Indexed dictionary like access to a BAM (Binary sequence Alignment/Map) file."""
+    def __init__(self, filename, alphabet, key_function):
+        import gzip
+        _IndexedSeqFileDict.__init__(self, filename, alphabet, key_function)
+        self._format = "bam"
+        h = gzip.open(filename)
+        self.handle = h
+        header, ref_count = SeqIO.SamBamIO._bam_file_header(h)
+        #Skip any reference information
+        for i in range(ref_count):
+            ref_name, ref_len = SeqIO.SamBamIO._bam_file_reference(h)
+        #Loop over the reads
+        while True:
+            offset = h.tell()
+            try:
+                name, seq_string, qualities, flag = SeqIO.SamBamIO._bam_file_read(h)
+            except StopIteration:
+                break
+            key = name
+            pair1, pair2 = SeqIO.SamBamIO._decode_flag(flag)
+            if pair1:
+                key += "/1"
+            elif pair2:
+                key += "/2"
+            self._record_key(key, offset)
+
+    def __getitem__(self, key) :
+        h = self._handle
+        h.seek(dict.__getitem__(self, key))
+        name, seq_string, qualities, flag = SeqIO.SamBamIO._bam_file_read(h)
+        return _make_seq_record(name, seq_string, alphabet, qualities, flag)
+
 
 class TabDict(_IndexedSeqFileDict):
     """Indexed dictionary like access to a simple tabbed file."""
@@ -638,5 +670,6 @@ _FormatToIndexedDict = {"ace" : AceDict,
                         "tab" : TabDict,
                         "qual" : QualDict,
                         "sam" : SamDict,
+                        "bam" : BamDict,
                         }
 

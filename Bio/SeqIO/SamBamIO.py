@@ -101,19 +101,21 @@ def SamIterator(handle, alphabet=generic_dna):
         seq_string, quality_string, tags = line.rstrip("\r\n").split("\t",11)
         tags = tags.split("\t")
         
-        identifier = name
-        pair1, pair2 = _decode_flag(int(flag))
-        if pair1:
-            identifier += "/1"
-        elif pair2:
-            identifier += "/2"
-
         #If sequence has "." in it, means matches the reference...
         qualities = [q_mapping[letter] for letter in quality_string]
-        yield SeqRecord(Seq(seq_string, alphabet),
-                        id=identifier, name=name, description="",
-                        letter_annotations={"phred_quality":qualities})
 
+        yield _make_seq_record(name, seq_string, alphabet, qualities, flag)
+
+def _make_seq_record(name, sequence, alphabet, qualities, flag):
+    identifier = name
+    pair1, pair2 = _decode_flag(int(flag))
+    if pair1:
+        identifier += "/1"
+    elif pair2:
+        identifier += "/2"
+    return SeqRecord(Seq(sequence, alphabet),
+                    id=identifier, name=name, description="",
+                    letter_annotations={"phred_quality":qualities})
 
 def _bam_file_header(handle):
     """Read in a BAM file header (PRIVATE).
@@ -219,11 +221,16 @@ def _bam_file_read(handle):
     cigar_len, flag, read_len, mate_ref_id, mate_ref_pos, \
     inferred_insert_size = struct.unpack(fmt, data)
 
-    if read_name_len > 50:
+    if read_name_len > 50 or read_name_len <= 0:
         raise ValueError("A read name length of %i probably means the "
-                         "parser is out of sync somehow. Read starts:\n%s "
+                         "parser is out of sync somehow. Read starts:\n%s"
                          "\nand the read name would be %s etc." \
                          % (read_name_len, repr(data), repr(handle.read(25))))
+    if read_len > 5000 or read_len <= 0:
+        raise ValueError("A read length of %i probably means the parser is out "
+                         "of sync somehow. Read starts:\n%s\nand the read name "
+                         "would be %s." \
+                         % (read_len, repr(data), repr(handle.read(read_name_len))))
 
     # bin_mq_nl = bin<<16|mapQual<<8|read_name_len (including NULL)
 
@@ -262,15 +269,7 @@ def BamIterator(handle, alphabet=generic_dna):
     #Loop over the reads
     while True:
         name, seq_string, qualities, flag = _bam_file_read(h)
-        identifier = name
-        pair1, pair2 = _decode_flag(int(flag))
-        if pair1:
-            identifier += "/1"
-        elif pair2:
-            identifier += "/2"
-        yield SeqRecord(Seq(seq_string, alphabet),
-                        id=identifier, name=name, description="",
-                        letter_annotations={"phred_quality":qualities})
+        yield _make_seq_record(name, seq_string, alphabet, qualities, flag)
     raise StopIteration
 
 def _test():
