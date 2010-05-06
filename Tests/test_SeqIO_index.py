@@ -72,10 +72,12 @@ class IndexDictTests(unittest.TestCase):
                                key_function = lambda x : x.lower())
         self.assertEqual(set(id_list), set(rec_dict.keys()))
         self.assertEqual(len(id_list), len(rec_dict))
-        for key in id_list:
+        for i, key in enumerate(id_list):
             self.assert_(key in rec_dict)
             self.assertEqual(key, rec_dict[key].id.lower())
             self.assertEqual(key, rec_dict.get(key).id.lower())
+	    if i > 50:
+		continue
             raw = rec_dict.get_raw(key)
             self.assert_(raw.strip())
             self.assert_(raw in raw_file)
@@ -134,9 +136,8 @@ tests = [
     ("Roche/greek.sff", "sff-trim", generic_nucleotide),
     ("Roche/paired.sff", "sff", None),
     ("Roche/paired.sff", "sff-trim", None),
-    #TODO - should we handle duplicate names in SAM/BAM?
-    #("SamBam/ex1.sam", "sam", None),
-    #("SamBam/ex1.sam", "sam", generic_dna),
+    ("SamBam/ex1.sam", "sam", None),
+    ("SamBam/ex1.sam", "sam", generic_dna),
     ]
 for filename, format, alphabet in tests:
     assert format in _FormatToIndexedDict

@@ -33,14 +33,14 @@ Or, from the BAM file instead:
 Looking at the first read directly:
 
     >>> print SeqIO.parse("SamBam/ex1.sam", "sam").next().format("fastq")
-    @EAS56_57:6:190:289:82
+    @EAS56_57:6:190:289:82/1
     CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
     +
     <<<7<<<;<<<<<<<<8;;<7;4<;<;;;;;94<;
     <BLANKLINE>
 
     >>> print SeqIO.parse("SamBam/ex1.bam", "bam").next().format("fastq")
-    @EAS56_57:6:190:289:82
+    @EAS56_57:6:190:289:82/1
     CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
     +
     <<<7<<<;<<<<<<<<8;;<7;4<;<;;;;;94<;
@@ -60,6 +60,33 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqIO.QualityIO import SANGER_SCORE_OFFSET
 
+def _decode_flag(flag):
+    paired = flag & 0x1
+    if paired:
+        well_mapped_pair = bool(flag & 0x2)
+        mate_unmapped = bool(flag & 0x8)
+        mate_strand = bool(flag & 0x20)
+        pair1 = bool(flag & 0x40)
+        pair2 = bool(flag & 0x80)
+    else:
+        well_mapped_pair = False
+        assert not (flag & 0x2)
+        mate_unmapped = False
+        assert not flag & 0x8
+        mate_rev_strand = False
+        assert not flag & 0x20
+        pair1 = False
+        assert not flag & 0x40
+        pair2 = False
+        assert not flag & 0x80
+        assert not (pair1 and pair2)
+    unmapped = bool(flag & 0x4)
+    rev_strand = bool(flag & 0x10)
+    not_primary = bool(flag & 0x100)
+    fails_qc = bool(flag & 0x200)
+    duplicate = bool(flag & 0x400)
+    return pair1, pair2
+
 def SamIterator(handle, alphabet=generic_dna):
     #Precomputing FASTQ style encoding. Can we share this code with QualityIO?
     q_mapping = dict()
@@ -73,10 +100,18 @@ def SamIterator(handle, alphabet=generic_dna):
         mate_reference_seq_name, mate_ref_pos, inferred_insert_size, \
         seq_string, quality_string, tags = line.rstrip("\r\n").split("\t",11)
         tags = tags.split("\t")
+        
+        identifier = name
+        pair1, pair2 = _decode_flag(int(flag))
+        if pair1:
+            identifier += "/1"
+        elif pair2:
+            identifier += "/2"
+
         #If sequence has "." in it, means matches the reference...
         qualities = [q_mapping[letter] for letter in quality_string]
         yield SeqRecord(Seq(seq_string, alphabet),
-                        id=name, name=name, description="",
+                        id=identifier, name=name, description="",
                         letter_annotations={"phred_quality":qualities})
 
 
@@ -216,7 +251,7 @@ def _bam_file_read(handle):
         tags = handle.read(start_offset+block_size+4 - handle.tell())
         #raise ValueError("Tags: %s" % repr(tags))
 
-    return read_name, seq_string, quals
+    return read_name, seq_string, quals, flag
 
 def BamIterator(handle, alphabet=generic_dna):
     h = gzip.GzipFile(fileobj=handle)
@@ -226,9 +261,15 @@ def BamIterator(handle, alphabet=generic_dna):
         ref_name, ref_len = _bam_file_reference(h)
     #Loop over the reads
     while True:
-        name, seq_string, qualities = _bam_file_read(h)
+        name, seq_string, qualities, flag = _bam_file_read(h)
+        identifier = name
+        pair1, pair2 = _decode_flag(int(flag))
+        if pair1:
+            identifier += "/1"
+        elif pair2:
+            identifier += "/2"
         yield SeqRecord(Seq(seq_string, alphabet),
-                        id=name, name=name, description="",
+                        id=identifier, name=name, description="",
                         letter_annotations={"phred_quality":qualities})
     raise StopIteration
 

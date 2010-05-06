@@ -454,6 +454,7 @@ class IntelliGeneticsDict(_SequentialSeqFileDict):
 class SamDict(_IndexedSeqFileDict):
     """Indexed dictionary like access to a simple tabbed file."""
     def __init__(self, filename, alphabet, key_function):
+        import SamBamIO
         _IndexedSeqFileDict.__init__(self, filename, alphabet, key_function)
         self._format = "sam"
         handle = self._handle
@@ -464,7 +465,13 @@ class SamDict(_IndexedSeqFileDict):
             if line[0] == "@":
                 #Ignore any optional header
                 continue
-            key = line.split("\t")[0]
+            parts = line.split("\t")
+            key = parts[0]
+            pair1, pair2 = SamBamIO._decode_flag(int(parts[1]))
+            if pair1:
+                key += "/1"
+            elif pair2:
+                key += "/2"
             self._record_key(key, offset)
 
     def get_raw(self, key):
