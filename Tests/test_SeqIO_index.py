@@ -132,6 +132,9 @@ tests = [
     ("Roche/greek.sff", "sff-trim", generic_nucleotide),
     ("Roche/paired.sff", "sff", None),
     ("Roche/paired.sff", "sff-trim", None),
+    #TODO - should we handle duplicate names in SAM/BAM?
+    #("SamBam/ex1.sam", "sam", None),
+    #("SamBam/ex1.sam", "sam", generic_dna),
     ]
 for filename, format, alphabet in tests:
     assert format in _FormatToIndexedDict

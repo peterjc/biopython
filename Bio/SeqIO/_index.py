@@ -447,6 +447,28 @@ class IntelliGeneticsDict(_SequentialSeqFileDict):
                         self._record_key(key, offset)
                         break
 
+class SamDict(_IndexedSeqFileDict):
+    """Indexed dictionary like access to a simple tabbed file."""
+    def __init__(self, filename, alphabet, key_function):
+        _IndexedSeqFileDict.__init__(self, filename, alphabet, key_function)
+        self._format = "sam"
+        handle = self._handle
+        while True:
+            offset = handle.tell()
+            line = handle.readline()
+            if not line : break #End of file
+            if line[0] == "@":
+                #Ignore any optional header
+                continue
+            key = line.split("\t")[0]
+            self._record_key(key, offset)
+
+    def get_raw(self, key):
+        """Like the get method, but returns the record as a raw string."""
+        handle = self._handle
+        handle.seek(dict.__getitem__(self, key))
+        return handle.readline()
+
 class TabDict(_IndexedSeqFileDict):
     """Indexed dictionary like access to a simple tabbed file."""
     def __init__(self, filename, alphabet, key_function):
@@ -603,6 +625,7 @@ _FormatToIndexedDict = {"ace" : AceDict,
                         "sff-trim" : SffTrimmedDict,
                         "swiss" : SwissDict,
                         "tab" : TabDict,
-                        "qual" : QualDict
+                        "qual" : QualDict,
+                        "sam" : SamDict,
                         }
 
