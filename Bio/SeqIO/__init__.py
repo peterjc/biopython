@@ -207,6 +207,7 @@ When specifying the file format, use lowercase strings.  The same format
 names are also used in Bio.AlignIO and include the following:
 
  - ace     - Reads the contig sequences from an ACE assembly file.
+ - bam     - BAM, the binary version of SAM (Sequence Alignment/Map) format.
  - embl    - The EMBL flat file format. Uses Bio.GenBank internally.
  - fasta   - The generic sequence file format where each record starts with
              an identifer line starting with a ">" character, followed by
@@ -227,6 +228,7 @@ names are also used in Bio.AlignIO and include the following:
  - pir     - A "FASTA like" format introduced by the National Biomedical
              Research Foundation (NBRF) for the Protein Information Resource
              (PIR) database, now part of UniProt.
+ - sam     - SAM (Sequence Alignment/Map) format, see also BAM.
  - sff     - Standard Flowgram Format (SFF), typical output from Roche 454.
  - sff-trim - Standard Flowgram Format (SFF) with given trimming applied.
  - swiss   - Plain text Swiss-Prot aka UniProt format.
@@ -307,6 +309,7 @@ import SffIO
 import SwissIO
 import TabIO
 import QualityIO #FastQ and qual files
+import SamBamIO # SAM and BAM alignment/map formats
 
 
 #Convention for format names is "mainname-subtype" in lower case.
@@ -338,6 +341,8 @@ _FormatToIterator = {"fasta" : FastaIO.FastaIterator,
                      "sff": SffIO.SffIterator,
                      #Not sure about this in the long run:
                      "sff-trim": SffIO._SffTrimIterator,
+                     "sam" : SamBamIO.SamIterator,
+                     "bam" : SamBamIO.BamIterator,
                      }
 
 _FormatToWriter = {"fasta" : FastaIO.FastaWriter,
@@ -354,7 +359,7 @@ _FormatToWriter = {"fasta" : FastaIO.FastaWriter,
                    "sff" : SffIO.SffWriter,
                    }
 
-_BinaryFormats = ["sff", "sff-trim"]
+_BinaryFormats = ["sff", "sff-trim", "bam"]
 
 def write(sequences, handle, format):
     """Write complete set of sequences to a file.
