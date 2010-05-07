@@ -492,17 +492,20 @@ class BamDict(_IndexedSeqFileDict):
             ref_name, ref_len = SeqIO.SamBamIO._bam_file_reference(h)
         #Loop over the reads
         while True:
-            offset = h.tell()
-            try:
-                name, seq_string, qualities, flag = SeqIO.SamBamIO._bam_file_read(h)
+            try :
+                name, start_offset, end_offset, ref_id, ref_pos, bin, \
+                    map_qual, cigar_len, flag, read_len, mate_ref_id, \
+                    mate_ref_pos = SeqIO.SamBamIO._bam_file_read_header(h)
             except StopIteration:
+                #End of the reads
                 break
             key = name
             if flag & 0x40:
                 key += "/1"
             elif flag & 0x80:
                 key += "/2"
-            self._record_key(key, offset)
+            self._record_key(key, start_offset)
+            h.seek(end_offset)
 
     def __getitem__(self, key) :
         h = self._handle

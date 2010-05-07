@@ -207,8 +207,9 @@ def _build_decoder():
     return answer
 _decode_dibase_byte = _build_decoder()
 
-def _bam_file_read(handle):
-    """Parse the next read in a BAM file (PRIVATE).
+
+def _bam_file_read_header(handle):
+    """Parse the header of the next read in a BAM file (PRIVATE).
 
     >>> handle = gzip.open("SamBam/ex1.bam")
     >>> header, num_refs = _bam_file_header(handle)
@@ -216,17 +217,19 @@ def _bam_file_read(handle):
     ...     print _bam_file_reference(handle)
     ('chr1', 1575)
     ('chr2', 1584)
-    >>> print _bam_file_read(handle)[:2]
-    ('EAS56_57:6:190:289:82', 'CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA')
-    >>> print _bam_file_read(handle)[:2]
-    ('EAS56_57:6:190:289:82', 'AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC')
-    >>> print _bam_file_read(handle)[:2]
-    ('EAS51_64:3:190:727:308', 'GGTGCAGAGCCGAGTCACGGGGTTGCCAGCACAGG')
+    >>> print _bam_file_read_header(handle)[:3]
+    ('EAS56_57:6:190:289:82', 38, 153)
+    >>> handle.seek(153)
+    >>> print _bam_file_read_header(handle)[:3]
+    ('EAS56_57:6:190:289:82', 153, 292)
+    >>> handle.seek(153)
+    >>> print _bam_file_read_header(handle)[:3]
+    ('EAS56_57:6:190:289:82', 153, 292)
 
+    Returns a tuple of the read name, start offset, end offset, etc
     """
     #TODO - Check BBH really works for the bin_mq_ml field, defined by
     # bin_mq_nl = bin<<16|mapQual<<8|read_name_len (including NULL)
-
     start_offset = handle.tell()
     
     fmt = "<iiiBBHHHiiii"
@@ -253,9 +256,32 @@ def _bam_file_read(handle):
                          "would be %s." \
                          % (read_len, repr(data), repr(handle.read(read_name_len))))
 
-    # bin_mq_nl = bin<<16|mapQual<<8|read_name_len (including NULL)
-
     read_name = handle.read(read_name_len).rstrip("\0")
+    end_offset = start_offset + block_size + 4
+    return read_name, start_offset, end_offset, ref_id, ref_pos, bin, \
+           map_qual, cigar_len, flag, read_len, mate_ref_id, mate_ref_pos
+
+
+def _bam_file_read(handle):
+    """Parse the next read in a BAM file (PRIVATE).
+
+    >>> handle = gzip.open("SamBam/ex1.bam")
+    >>> header, num_refs = _bam_file_header(handle)
+    >>> for i in range(num_refs):
+    ...     print _bam_file_reference(handle)
+    ('chr1', 1575)
+    ('chr2', 1584)
+    >>> print _bam_file_read(handle)[:2]
+    ('EAS56_57:6:190:289:82', 'CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA')
+    >>> print _bam_file_read(handle)[:2]
+    ('EAS56_57:6:190:289:82', 'AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC')
+    >>> print _bam_file_read(handle)[:2]
+    ('EAS51_64:3:190:727:308', 'GGTGCAGAGCCGAGTCACGGGGTTGCCAGCACAGG')
+
+    """
+    read_name, start_offset, end_offset, ref_id, ref_pos, \
+        bin, map_qual, cigar_len, flag, read_len, mate_ref_id, \
+        mate_ref_pos = _bam_file_read_header(handle)
     
     fmt = "<%iI" % cigar_len
     cigar = struct.unpack(fmt, handle.read(struct.calcsize(fmt)))
@@ -275,9 +301,7 @@ def _bam_file_read(handle):
 
     #TODO - Parse the tags
     #For now, just skip the tags
-    if handle.tell() != start_offset+block_size+4:
-        tags = handle.read(start_offset+block_size+4 - handle.tell())
-        #raise ValueError("Tags: %s" % repr(tags))
+    handle.seek(end_offset)
 
     return read_name, seq_string, quals, flag
 
