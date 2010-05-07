@@ -463,7 +463,7 @@ class SamDict(_IndexedSeqFileDict):
             if line[0] == "@":
                 #Ignore any optional header
                 continue
-            parts = line.split("\t")
+            parts = line.split("\t",2)
             key = parts[0]
             flag = int(parts[1])
             if flag & 0x40:
