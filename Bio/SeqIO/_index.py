@@ -498,10 +498,9 @@ class BamDict(_IndexedSeqFileDict):
             except StopIteration:
                 break
             key = name
-            pair1, pair2 = SeqIO.SamBamIO._decode_flag(flag)
-            if pair1:
+            if flag & 0x40:
                 key += "/1"
-            elif pair2:
+            elif flag & 0x80:
                 key += "/2"
             self._record_key(key, offset)
 
