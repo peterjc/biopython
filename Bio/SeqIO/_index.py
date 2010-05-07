@@ -465,10 +465,10 @@ class SamDict(_IndexedSeqFileDict):
                 continue
             parts = line.split("\t")
             key = parts[0]
-            pair1, pair2 = SeqIO.SamBamIO._decode_flag(int(parts[1]))
-            if pair1:
+            flag = int(parts[1])
+            if flag & 0x40:
                 key += "/1"
-            elif pair2:
+            elif flag & 0x80:
                 key += "/2"
             self._record_key(key, offset)
 
