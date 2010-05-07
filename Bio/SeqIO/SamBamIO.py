@@ -46,6 +46,27 @@ Looking at the first read directly:
     <<<7<<<;<<<<<<<<8;;<7;4<;<;;;;;94<;
     <BLANKLINE>
 
+You can also get random access to the reads in a SAM or BAM file by their ID
+(but there is no support for indexing by the mapping position):
+
+    >>> from Bio import SeqIO
+    >>> sam_reads = SeqIO.index("SamBam/ex1.sam", "sam")
+    >>> print sam_reads["EAS56_57:6:190:289:82/2"].format("fastq")
+    @EAS56_57:6:190:289:82/2
+    AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC
+    +
+    <<<<<<;<<<<<<<<<<;<<;<<<<;8<6;9;;2;
+    <BLANKLINE>
+
+    >>> from Bio import SeqIO
+    >>> bam_reads = SeqIO.index("SamBam/ex1.bam", "bam")
+    >>> print bam_reads["EAS56_57:6:190:289:82/2"].format("fastq")
+    @EAS56_57:6:190:289:82/2
+    AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC
+    +
+    <<<<<<;<<<<<<<<<<;<<;<<<<;8<6;9;;2;
+    <BLANKLINE>
+
 For more indepth handling of SAM/BAM files, see the SAM tools project. Their
 C API has a Python wrapper called pysam which is very helpful for more
 complex task such as accessing columns of the alignment etc:

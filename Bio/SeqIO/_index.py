@@ -485,7 +485,7 @@ class BamDict(_IndexedSeqFileDict):
         _IndexedSeqFileDict.__init__(self, filename, alphabet, key_function)
         self._format = "bam"
         h = gzip.open(filename)
-        self.handle = h
+        self._handle = h
         header, ref_count = SeqIO.SamBamIO._bam_file_header(h)
         #Skip any reference information
         for i in range(ref_count):
@@ -509,7 +509,8 @@ class BamDict(_IndexedSeqFileDict):
         h = self._handle
         h.seek(dict.__getitem__(self, key))
         name, seq_string, qualities, flag = SeqIO.SamBamIO._bam_file_read(h)
-        return _make_seq_record(name, seq_string, alphabet, qualities, flag)
+        return SeqIO.SamBamIO._make_seq_record(name, seq_string, self._alphabet,
+                                               qualities, flag)
 
 
 class TabDict(_IndexedSeqFileDict):
