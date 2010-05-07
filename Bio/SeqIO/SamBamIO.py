@@ -226,7 +226,13 @@ def _bam_file_read_header(handle):
     >>> print _bam_file_read_header(handle)[:3]
     ('EAS56_57:6:190:289:82', 153, 292)
 
-    Returns a tuple of the read name, start offset, end offset, etc
+    Returns a tuple of the read name, start offset, end offset, etc.
+
+    The offset information is used for indexing - the start offset is to find
+    the record on demand, the end offset is used when building the index to
+    skip over the rest of the read.
+    
+    The end offset is also used to determine the end of the tags section.
     """
     #TODO - Check BBH really works for the bin_mq_ml field, defined by
     # bin_mq_nl = bin<<16|mapQual<<8|read_name_len (including NULL)
