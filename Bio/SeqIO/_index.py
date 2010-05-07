@@ -493,13 +493,12 @@ class BamDict(_IndexedSeqFileDict):
         #Loop over the reads
         while True:
             try :
-                name, start_offset, end_offset, ref_id, ref_pos, bin, \
+                key, start_offset, end_offset, ref_id, ref_pos, bin, \
                     map_qual, cigar_len, flag, read_len, mate_ref_id, \
                     mate_ref_pos = SeqIO.SamBamIO._bam_file_read_header(h)
             except StopIteration:
                 #End of the reads
                 break
-            key = name
             if flag & 0x40:
                 key += "/1"
             elif flag & 0x80:
