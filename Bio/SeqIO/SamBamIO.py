@@ -159,7 +159,6 @@ def _bam_file_header(handle):
     data = handle.read(4)
     #raise ValueError("Got %s" % repr(data))
     header_length = struct.unpack("<i", data)[0]
-    assert header_length == 0
     header = handle.read(header_length).rstrip("\0")
     data = handle.read(4)
     #raise ValueError("Got %s" % repr(data))
