@@ -266,8 +266,6 @@ def _sam_convert_fasta(in_handle, out_handle, alphabet=None):
     NOTE - This does NOT check the characters used in the FASTQ quality string
     are valid!
     """
-    from Bio.SeqIO.QualityIO import FastqGeneralIterator
-    #For real speed, don't even make SeqRecord and Seq objects!
     count = 0
     for line in in_handle:
         if line[0] == "@":
@@ -298,23 +296,20 @@ def _sam_convert_fastq(in_handle, out_handle, alphabet=None):
     NOTE - This does NOT check the characters used in the FASTQ quality string
     are valid!
     """
-    from Bio.SeqIO.QualityIO import FastqGeneralIterator
-    #For real speed, don't even make SeqRecord and Seq objects!
     count = 0
     for line in in_handle:
         if line[0] == "@":
             #Ignore any optional header
             continue
-        name, flag, ref_name, ref_pos, mapping_quality, cigar, \
-        mate_reference_seq_name, mate_ref_pos, inferred_insert_size, \
-        seq_string, quality_string, tags = line.rstrip("\r\n").split("\t",11)
-        flag = int(flag)
+        parts = line.rstrip("\r\n").split("\t",11)
+        name = parts[0]
+        flag = int(parts[1])
         if flag & 0x040:
             name += "/1"
         elif flag & 0x080:
             name += "/2"
         #If sequence has "." in it, means matches the reference...
-        out_handle.write("@%s\n%s\n+\n%s\n" % (name, seq_string, quality_string))
+        out_handle.write("@%s\n%s\n+\n%s\n" % (name, parts[9], parts[10]))
         count += 1
     return count
 

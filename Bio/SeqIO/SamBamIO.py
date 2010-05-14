@@ -117,9 +117,10 @@ def SamIterator(handle, alphabet=generic_dna):
         if line[0] == "@":
             #Ignore any optional header
             continue
+        #Note that the tags field (and its tab character) are optional
         name, flag, ref_name, ref_pos, mapping_quality, cigar, \
         mate_reference_seq_name, mate_ref_pos, inferred_insert_size, \
-        seq_string, quality_string, tags = line.rstrip("\r\n").split("\t",11)
+        seq_string, quality_string, tags = (line.rstrip("\r\n")+"\t").split("\t",11)
         tags = tags.split("\t")
         
         #If sequence has "." in it, means matches the reference...
