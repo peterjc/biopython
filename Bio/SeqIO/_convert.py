@@ -313,6 +313,42 @@ def _sam_convert_fastq(in_handle, out_handle, alphabet=None):
         count += 1
     return count
 
+def _bam_convert_fasta(in_handle, out_handle, alphabet=None):
+    """Fast SAM to FASTA conversion (PRIVATE).
+
+    Avoids dealing with the FASTQ quality encoding, and creating SeqRecord and
+    Seq objects in order to speed up this conversion.
+
+    NOTE - This does NOT check the characters used in the FASTQ quality string
+    are valid!
+    """
+    count = 0
+    import gzip
+    h = gzip.GzipFile(fileobj=in_handle)
+    header, ref_count = SeqIO.SamBamIO._bam_file_header(h)
+    #Skip any reference information
+    _bam_file_reference = SeqIO.SamBamIO._bam_file_reference
+    for i in range(ref_count):
+        ref_name, ref_len = _bam_file_reference(h)
+    #Loop over the reads
+    _bam_file_read = SeqIO.SamBamIO._bam_file_read
+    while True:
+        try:
+            name, seq_string, qualities, flag = _bam_file_read(h)
+        except StopIteration:
+            break
+        if flag & 0x040:
+            name += "/1"
+        elif flag & 0x080:
+            name += "/2"
+        #If sequence has "." in it, means matches the reference...
+        out_handle.write(">%s\n" % name)
+        #Do line wrapping
+        for i in range(0, len(seq_string), 60):
+            out_handle.write(seq_string[i:i+60] + "\n")
+        count += 1
+    return count
+
 
 #TODO? - Handling aliases explicitly would let us shorten this list:
 _converter = {
@@ -346,6 +382,7 @@ _converter = {
     ("sam", "fasta") : _sam_convert_fasta,
     ("sam", "fastq") : _sam_convert_fastq,
     ("sam", "fastq-sanger") : _sam_convert_fastq,
+    ("bam", "fasta") : _bam_convert_fasta,
     }
 
 def _handle_convert(in_handle, in_format, out_handle, out_format, alphabet=None):

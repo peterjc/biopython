@@ -171,6 +171,7 @@ tests = [
     ("GenBank/NC_005816.gb", "gb", None),
     ("GenBank/cor6_6.gb", "genbank", None),
     ("SamBam/ex1.sam", "sam", None),
+    ("SamBam/ex1.bam", "bam", None),
     ]
 for filename, format, alphabet in tests:
     for (in_format, out_format) in converter_dict:
