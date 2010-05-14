@@ -257,6 +257,68 @@ def _fastq_convert_tab(in_handle, out_handle, alphabet=None):
         out_handle.write("%s\t%s\n" % (title.split(None, 1)[0], seq))
     return count
 
+def _sam_convert_fasta(in_handle, out_handle, alphabet=None):
+    """Fast SAM to FASTA conversion (PRIVATE).
+
+    Avoids dealing with the FASTQ quality encoding, and creating SeqRecord and
+    Seq objects in order to speed up this conversion.
+
+    NOTE - This does NOT check the characters used in the FASTQ quality string
+    are valid!
+    """
+    from Bio.SeqIO.QualityIO import FastqGeneralIterator
+    #For real speed, don't even make SeqRecord and Seq objects!
+    count = 0
+    for line in in_handle:
+        if line[0] == "@":
+            #Ignore any optional header
+            continue
+        name, flag, ref_name, ref_pos, mapping_quality, cigar, \
+        mate_reference_seq_name, mate_ref_pos, inferred_insert_size, \
+        seq_string, quality_string, tags = line.rstrip("\r\n").split("\t",11)
+        flag = int(flag)
+        if flag & 0x040:
+            name += "/1"
+        elif flag & 0x080:
+            name += "/2"
+        #If sequence has "." in it, means matches the reference...
+        out_handle.write(">%s\n" % name)
+        #Do line wrapping
+        for i in range(0, len(seq_string), 60):
+            out_handle.write(seq_string[i:i+60] + "\n")
+        count += 1
+    return count
+
+def _sam_convert_fastq(in_handle, out_handle, alphabet=None):
+    """Fast SAM to FASTQ conversion (PRIVATE).
+
+    Avoids dealing with the FASTQ quality encoding, and creating SeqRecord and
+    Seq objects in order to speed up this conversion.
+
+    NOTE - This does NOT check the characters used in the FASTQ quality string
+    are valid!
+    """
+    from Bio.SeqIO.QualityIO import FastqGeneralIterator
+    #For real speed, don't even make SeqRecord and Seq objects!
+    count = 0
+    for line in in_handle:
+        if line[0] == "@":
+            #Ignore any optional header
+            continue
+        name, flag, ref_name, ref_pos, mapping_quality, cigar, \
+        mate_reference_seq_name, mate_ref_pos, inferred_insert_size, \
+        seq_string, quality_string, tags = line.rstrip("\r\n").split("\t",11)
+        flag = int(flag)
+        if flag & 0x040:
+            name += "/1"
+        elif flag & 0x080:
+            name += "/2"
+        #If sequence has "." in it, means matches the reference...
+        out_handle.write("@%s\n%s\n+\n%s\n" % (name, seq_string, quality_string))
+        count += 1
+    return count
+
+
 #TODO? - Handling aliases explicitly would let us shorten this list:
 _converter = {
     ("genbank", "fasta") : _genbank_convert_fasta,
@@ -286,6 +348,9 @@ _converter = {
     ("fastq-sanger", "fastq-illumina") : _fastq_sanger_convert_fastq_illumina,
     ("fastq-solexa", "fastq-illumina") : _fastq_solexa_convert_fastq_illumina,
     ("fastq-illumina", "fastq-illumina") : _fastq_illumina_convert_fastq_illumina,
+    ("sam", "fasta") : _sam_convert_fasta,
+    ("sam", "fastq") : _sam_convert_fastq,
+    ("sam", "fastq-sanger") : _sam_convert_fastq,
     }
 
 def _handle_convert(in_handle, in_format, out_handle, out_format, alphabet=None):
