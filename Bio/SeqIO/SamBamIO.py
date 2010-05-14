@@ -125,11 +125,11 @@ def SamIterator(handle, alphabet=generic_dna):
         #If sequence has "." in it, means matches the reference...
         qualities = [q_mapping[letter] for letter in quality_string]
 
-        yield _make_seq_record(name, seq_string, alphabet, qualities, flag)
+        yield _make_seq_record(name, seq_string, alphabet, qualities, int(flag))
 
 def _make_seq_record(name, sequence, alphabet, qualities, flag):
     identifier = name
-    pair1, pair2 = _decode_flag(int(flag))
+    pair1, pair2 = _decode_flag(flag)
     if pair1:
         identifier += "/1"
     elif pair2:
