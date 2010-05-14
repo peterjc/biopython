@@ -314,14 +314,7 @@ def _sam_convert_fastq(in_handle, out_handle, alphabet=None):
     return count
 
 def _bam_convert_fasta(in_handle, out_handle, alphabet=None):
-    """Fast SAM to FASTA conversion (PRIVATE).
-
-    Avoids dealing with the FASTQ quality encoding, and creating SeqRecord and
-    Seq objects in order to speed up this conversion.
-
-    NOTE - This does NOT check the characters used in the FASTQ quality string
-    are valid!
-    """
+    """Fast BAM to FASTA conversion (PRIVATE)."""
     count = 0
     import gzip
     h = gzip.GzipFile(fileobj=in_handle)
@@ -346,6 +339,34 @@ def _bam_convert_fasta(in_handle, out_handle, alphabet=None):
         #Do line wrapping
         for i in range(0, len(seq_string), 60):
             out_handle.write(seq_string[i:i+60] + "\n")
+        count += 1
+    return count
+
+def _bam_convert_fastq(in_handle, out_handle, alphabet=None):
+    """Fast BAM to FASTQ conversion (PRIVATE)."""
+    count = 0
+    import gzip
+    h = gzip.GzipFile(fileobj=in_handle)
+    header, ref_count = SeqIO.SamBamIO._bam_file_header(h)
+    #Skip any reference information
+    _bam_file_reference = SeqIO.SamBamIO._bam_file_reference
+    for i in range(ref_count):
+        ref_name, ref_len = _bam_file_reference(h)
+    #Loop over the reads
+    _bam_file_read = SeqIO.SamBamIO._bam_file_read
+    mapping = SeqIO.QualityIO._phred_to_sanger_quality_str
+    while True:
+        try:
+            name, seq_string, qualities, flag = _bam_file_read(h)
+        except StopIteration:
+            break
+        if flag & 0x040:
+            name += "/1"
+        elif flag & 0x080:
+            name += "/2"
+        #If sequence has "." in it, means matches the reference...
+        qual_string = "".join(mapping[q] for q in qualities)
+        out_handle.write("@%s\n%s\n+\n%s\n" % (name, seq_string, qual_string))
         count += 1
     return count
 
@@ -383,6 +404,8 @@ _converter = {
     ("sam", "fastq") : _sam_convert_fastq,
     ("sam", "fastq-sanger") : _sam_convert_fastq,
     ("bam", "fasta") : _bam_convert_fasta,
+    ("bam", "fastq") : _bam_convert_fastq,
+    ("bam", "fastq-sanger") : _bam_convert_fastq,
     }
 
 def _handle_convert(in_handle, in_format, out_handle, out_format, alphabet=None):
