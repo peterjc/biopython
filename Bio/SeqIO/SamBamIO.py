@@ -129,10 +129,11 @@ def SamIterator(handle, alphabet=generic_dna):
 
 def _make_seq_record(name, sequence, alphabet, qualities, flag):
     identifier = name
-    pair1, pair2 = _decode_flag(flag)
-    if pair1:
+    #Right now we don't need to decode everything, just basic pair information
+    #pair1, pair2 = _decode_flag(flag)
+    if flag & 0x040:
         identifier += "/1"
-    elif pair2:
+    elif flag & 0x080:
         identifier += "/2"
     return SeqRecord(Seq(sequence, alphabet),
                     id=identifier, name=name, description="",
