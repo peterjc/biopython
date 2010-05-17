@@ -77,7 +77,7 @@ import gzip
 import struct
 
 from Bio.Alphabet import generic_dna
-from Bio.Seq import Seq
+from Bio.Seq import Seq, _dna_complement_table
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqIO.QualityIO import SANGER_SCORE_OFFSET
 
@@ -136,9 +136,18 @@ def _make_seq_record(name, sequence, alphabet, qualities, flag):
         identifier += "/1"
     elif flag & 0x080:
         identifier += "/2"
-    return SeqRecord(Seq(sequence, alphabet),
-                    id=identifier, name=name, description="",
-                    letter_annotations={"phred_quality":qualities})
+    if flag & 0x010:
+        #Read was mapped onto the reverse strand, so stored in the SAM/BAM
+        #file reverse complemented. I want the original read orientation...
+        #Note for speed I assume the sequence is DNA
+        return SeqRecord(Seq(sequence.translate(_dna_complement_table)[::-1],
+                             alphabet),
+                        id=identifier, name=name, description="",
+                        letter_annotations={"phred_quality":qualities[::-1]})
+    else:
+        return SeqRecord(Seq(sequence, alphabet),
+                        id=identifier, name=name, description="",
+                        letter_annotations={"phred_quality":qualities})
 
 def _bam_file_header(handle):
     """Read in a BAM file header (PRIVATE).
