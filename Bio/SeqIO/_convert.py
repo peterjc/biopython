@@ -267,6 +267,7 @@ def _sam_convert_fasta(in_handle, out_handle, alphabet=None):
     are valid!
     """
     count = 0
+    from Bio.Seq import _dna_complement_table
     for line in in_handle:
         if line[0] == "@":
             #Ignore any optional header
@@ -279,6 +280,8 @@ def _sam_convert_fasta(in_handle, out_handle, alphabet=None):
             name += "/1"
         elif flag & 0x080:
             name += "/2"
+        if flag & 0x010:
+            seq_string = seq_string.translate(_dna_complement_table)[::-1]
         #If sequence has "." in it, means matches the reference...
         out_handle.write(">%s\n" % name)
         #Do line wrapping
@@ -296,6 +299,7 @@ def _sam_convert_fastq(in_handle, out_handle, alphabet=None):
     NOTE - This does NOT check the characters used in the FASTQ quality string
     are valid!
     """
+    from Bio.Seq import _dna_complement_table
     count = 0
     for line in in_handle:
         if line[0] == "@":
@@ -309,13 +313,20 @@ def _sam_convert_fastq(in_handle, out_handle, alphabet=None):
         elif flag & 0x080:
             name += "/2"
         #If sequence has "." in it, means matches the reference...
-        out_handle.write("@%s\n%s\n+\n%s\n" % (name, parts[9], parts[10]))
+        if flag & 0x010:
+            out_handle.write("@%s\n%s\n+\n%s\n" \
+                             % (name,
+                                parts[9].translate(_dna_complement_table)[::-1],
+                                parts[10][::-1]))
+        else:
+            out_handle.write("@%s\n%s\n+\n%s\n" % (name, parts[9], parts[10]))
         count += 1
     return count
 
 def _bam_convert_fasta(in_handle, out_handle, alphabet=None):
     """Fast BAM to FASTA conversion (PRIVATE)."""
     count = 0
+    from Bio.Seq import _dna_complement_table
     import gzip
     h = gzip.GzipFile(fileobj=in_handle)
     header, ref_count = SeqIO.SamBamIO._bam_file_header(h)
@@ -335,6 +346,8 @@ def _bam_convert_fasta(in_handle, out_handle, alphabet=None):
         elif flag & 0x080:
             name += "/2"
         #If sequence has "." in it, means matches the reference...
+        if flag & 0x010:
+            seq_string = seq_string.translate(_dna_complement_table)[::-1]
         out_handle.write(">%s\n" % name)
         #Do line wrapping
         for i in range(0, len(seq_string), 60):
@@ -345,6 +358,7 @@ def _bam_convert_fasta(in_handle, out_handle, alphabet=None):
 def _bam_convert_fastq(in_handle, out_handle, alphabet=None):
     """Fast BAM to FASTQ conversion (PRIVATE)."""
     count = 0
+    from Bio.Seq import _dna_complement_table
     import gzip
     h = gzip.GzipFile(fileobj=in_handle)
     header, ref_count = SeqIO.SamBamIO._bam_file_header(h)
@@ -365,7 +379,11 @@ def _bam_convert_fastq(in_handle, out_handle, alphabet=None):
         elif flag & 0x080:
             name += "/2"
         #If sequence has "." in it, means matches the reference...
-        qual_string = "".join(mapping[q] for q in qualities)
+        if flag & 0x010:
+            seq_string = seq_string.translate(_dna_complement_table)[::-1]
+            qual_string = "".join(mapping[q] for q in qualities)[::-1]
+        else:
+            qual_string = "".join(mapping[q] for q in qualities)
         out_handle.write("@%s\n%s\n+\n%s\n" % (name, seq_string, qual_string))
         count += 1
     return count
