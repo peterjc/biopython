@@ -338,7 +338,7 @@ def _bam_convert_fasta(in_handle, out_handle, alphabet=None):
     _bam_file_read = SeqIO.SamBamIO._bam_file_read
     while True:
         try:
-            name, seq_string, qualities, flag = _bam_file_read(h)
+            name, seq_string, qualities, flag, map_qual = _bam_file_read(h)
         except StopIteration:
             break
         if flag & 0x040:
@@ -371,7 +371,7 @@ def _bam_convert_fastq(in_handle, out_handle, alphabet=None):
     mapping = SeqIO.QualityIO._phred_to_sanger_quality_str
     while True:
         try:
-            name, seq_string, qualities, flag = _bam_file_read(h)
+            name, seq_string, qualities, flag, map_qual = _bam_file_read(h)
         except StopIteration:
             break
         if flag & 0x040:

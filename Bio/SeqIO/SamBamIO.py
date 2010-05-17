@@ -118,7 +118,7 @@ def SamIterator(handle, alphabet=generic_dna):
             #Ignore any optional header
             continue
         #Note that the tags field (and its tab character) are optional
-        name, flag, ref_name, ref_pos, mapping_quality, cigar, \
+        name, flag, ref_name, ref_pos, map_qual, cigar, \
         mate_reference_seq_name, mate_ref_pos, inferred_insert_size, \
         seq_string, quality_string, tags = (line.rstrip("\r\n")+"\t").split("\t",11)
         tags = tags.split("\t")
@@ -126,9 +126,10 @@ def SamIterator(handle, alphabet=generic_dna):
         #If sequence has "." in it, means matches the reference...
         qualities = [q_mapping[letter] for letter in quality_string]
 
-        yield _make_seq_record(name, seq_string, alphabet, qualities, int(flag))
+        yield _make_seq_record(name, seq_string, alphabet, qualities,
+                               int(flag), int(map_qual))
 
-def _make_seq_record(name, sequence, alphabet, qualities, flag):
+def _make_seq_record(name, sequence, alphabet, qualities, flag, map_qual):
     identifier = name
     #Right now we don't need to decode everything, just basic pair information
     #pair1, pair2 = _decode_flag(flag)
@@ -142,12 +143,14 @@ def _make_seq_record(name, sequence, alphabet, qualities, flag):
         #Note for speed I assume the sequence is DNA
         return SeqRecord(Seq(sequence.translate(_dna_complement_table)[::-1],
                              alphabet),
-                        id=identifier, name=name, description="",
-                        letter_annotations={"phred_quality":qualities[::-1]})
+                         id=identifier, name=name, description="",
+                         annotations={"mapping_quality":map_qual},
+                         letter_annotations={"phred_quality":qualities[::-1]})
     else:
         return SeqRecord(Seq(sequence, alphabet),
-                        id=identifier, name=name, description="",
-                        letter_annotations={"phred_quality":qualities})
+                         id=identifier, name=name, description="",
+                         annotations={"mapping_quality":map_qual},
+                         letter_annotations={"phred_quality":qualities})
 
 def _bam_file_header(handle):
     """Read in a BAM file header (PRIVATE).
@@ -257,7 +260,7 @@ def _bam_file_read_header(handle):
         raise ValueError("Premature end of file")
     #raise ValueError("Data %s = %s" % (repr(data), repr(struct.unpack(fmt, data))))
 
-    block_size, ref_id, ref_pos, read_name_len, bin, map_qual, \
+    block_size, ref_id, ref_pos, read_name_len, map_qual, bin, \
     cigar_len, flag, read_len, mate_ref_id, mate_ref_pos, \
     inferred_insert_size = struct.unpack(fmt, data)
 
@@ -319,7 +322,7 @@ def _bam_file_read(handle):
     #For now, just skip the tags
     handle.seek(end_offset)
 
-    return read_name, seq_string, quals, flag
+    return read_name, seq_string, quals, flag, map_qual
 
 def BamIterator(handle, alphabet=generic_dna):
     h = gzip.GzipFile(fileobj=handle)
@@ -329,8 +332,9 @@ def BamIterator(handle, alphabet=generic_dna):
         ref_name, ref_len = _bam_file_reference(h)
     #Loop over the reads
     while True:
-        name, seq_string, qualities, flag = _bam_file_read(h)
-        yield _make_seq_record(name, seq_string, alphabet, qualities, flag)
+        name, seq_string, qualities, flag, map_qual = _bam_file_read(h)
+        yield _make_seq_record(name, seq_string, alphabet, qualities, flag,
+                               map_qual)
     raise StopIteration
 
 def _test():

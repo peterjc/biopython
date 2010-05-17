@@ -509,9 +509,9 @@ class BamDict(_IndexedSeqFileDict):
     def __getitem__(self, key) :
         h = self._handle
         h.seek(dict.__getitem__(self, key))
-        name, seq_string, qualities, flag = SeqIO.SamBamIO._bam_file_read(h)
-        return SeqIO.SamBamIO._make_seq_record(name, seq_string, self._alphabet,
-                                               qualities, flag)
+        name, seq_str, quals, flag, map_qual = SeqIO.SamBamIO._bam_file_read(h)
+        return SeqIO.SamBamIO._make_seq_record(name, seq_str, self._alphabet,
+                                               quals, flag, map_qual)
 
 
 class TabDict(_IndexedSeqFileDict):
