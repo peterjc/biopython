@@ -150,9 +150,8 @@ class QueensAlphabet(Alphabet.Alphabet):
         """Initialize with the number of queens we are calculating for.
         """
         # set up the letters for the alphabet
-        self.letters = []
-        for num in range(num_queens):
-            self.letters.append(num)
+        assert 0 <= num_queens <= 9
+        self.letters = "".join(str(i) for i in range(num_queens))
 
 # --- Problem specific crossover, mutation and repair operations
 class QueensRepair:
@@ -357,7 +356,7 @@ class QueensMutation:
         """Mutate the genome trying to put in 'helpful' mutations.
         """
         new_org = organism.copy()
-        gene_choices = new_org.genome.alphabet.letters
+        gene_choices = list(new_org.genome.alphabet.letters)
 
         # potentially mutate any gene in the genome
         for gene_index in range(len(new_org.genome)):
@@ -366,7 +365,7 @@ class QueensMutation:
             if mutation_chance <= self._mutation_rate:
                 # find only choices that are not already taken elsewhere
                 # in the genome
-                gene_choices = copy.copy(new_org.genome.alphabet.letters)
+                gene_choices = list(new_org.genome.alphabet.letters)
 
                 for gene in new_org.genome:
                     if gene in gene_choices:
@@ -374,7 +373,7 @@ class QueensMutation:
 
                 # if there are no choices left, we are stuck going for random
                 if len(gene_choices) == 0:
-                    gene_choices = new_org.genome.alphabet.letters
+                    gene_choices = list(new_org.genome.alphabet.letters)
                 
                 # get a new letter with the left-over choices
                 new_letter = random.choice(gene_choices)

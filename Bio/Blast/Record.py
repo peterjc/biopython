@@ -102,9 +102,15 @@ class HSP:
     bits            Number of bits for that score.  (float)
     expect          Expect value.  (float)
     num_alignments  Number of alignments for same subject.  (int)
-    identities      Number of identities/total aligned.  tuple of (int, int)
-    positives       Number of positives/total aligned.  tuple of (int, int)
-    gaps            Numer of gaps/total aligned.  tuple of (int, int)
+    identities      Number of identities (int) if using the XML parser.
+                    Tuple of numer of identities/total aligned (int, int)
+                    if using the (obsolete) plain text parser.
+    positives       Number of positives (int) if using the XML parser.
+                    Tuple of numer of positives/total aligned (int, int)
+                    if using the (obsolete) plain text parser.
+    gaps            Number of gaps (int) if using the XML parser.
+                    Tuple of numer of gaps/total aligned (int, int) if
+                    using the (obsolete) plain text parser.
     align_length    Length of the alignment. (int)
     strand          Tuple of (query, target) strand.
     frame           Tuple of 1 or 2 frame shifts, depending on the flavor.
@@ -158,7 +164,7 @@ class HSP:
     def __str__(self):
         lines = ["Score %i (%i bits), expectation %0.1e, alignment length %i" \
                  % (self.score, self.bits, self.expect, self.align_length)]
-        if self.align_length < 50 :
+        if self.align_length < 50:
             lines.append("Query:%s %s %s" % (str(self.query_start).rjust(8),
                                        str(self.query),
                                        str(self.query_end)))
@@ -167,7 +173,7 @@ class HSP:
             lines.append("Sbjct:%s %s %s" % (str(self.sbjct_start).rjust(8),
                                        str(self.sbjct),
                                        str(self.sbjct_end)))
-        else :
+        else:
             lines.append("Query:%s %s...%s %s" \
                          % (str(self.query_start).rjust(8),
                             str(self.query)[:45],

@@ -1,14 +1,11 @@
-# Nexus.py - a NEXUS parser
-#
 # Copyright 2005-2008 by Frank Kauff & Cymon J. Cox. All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license. Please see the LICENSE file that should have been included
 # as part of this package.
-# 
-# Bug reports welcome: fkauff@biologie.uni-kl.de
 #
+# Bug reports welcome: fkauff@biologie.uni-kl.de or on Biopython's bugzilla.
+"""Nexus class. Parse the contents of a NEXUS file.
 
-"""Nexus class. Parse the contents of a nexus file.
 Based upon 'NEXUS: An extensible file format for systematic information'
 Maddison, Swofford, Maddison. 1997. Syst. Biol. 46(4):590-621
 """
@@ -27,13 +24,6 @@ except ImportError:
     C=False
 else:
     C=True
-
-try:
-    #Check the built in set function is present (python 2.4+)
-    set = set
-except NameError:
-    #For python 2.3 fall back on the sets module (deprecated in python 2.6)
-    from sets import Set as set
 
 INTERLEAVE=70
 SPECIAL_COMMANDS=['charstatelabels','charlabels','taxlabels', 'taxset', 'charset','charpartition','taxpartition',\
@@ -1079,10 +1069,10 @@ class Nexus(object):
             close=opts.next_nonwhitespace()
             if  qualifier.lower()=='vector':
                 raise NexusError('Unsupported VECTOR format in line %s' \
-                                 % (options))
+                                 % (opts))
             elif qualifier.lower()!='standard':
                 raise NexusError('Unknown qualifier %s in line %s' \
-                                 % (qualifier,options))
+                                 % (qualifier, opts))
         if opts.next_nonwhitespace()!=separator:
             raise NexusError('Formatting error in line: %s ' % rest)
         return name
@@ -1293,7 +1283,7 @@ class Nexus(object):
                 raise NexusError('Could not open %s for writing.' % filename)
         elif hasattr(file, "write"):
             fh=filename
-        else :
+        else:
             raise ValueError("Neither a filename nor a handle was supplied")
         if not omit_NEXUS:
             fh.write('#NEXUS\n')
@@ -1367,10 +1357,10 @@ class Nexus(object):
             else:
                 fh.write(self.append_sets(exclude=exclude,delete=delete,mrbayes=mrbayes))
 
-        if fh == filename :
+        if fh == filename:
             #We were given the handle, don't close it.
             return filename
-        else :
+        else:
             #We opened the handle, so we should close it.
             fh.close()
             return filename
@@ -1501,7 +1491,7 @@ class Nexus(object):
                     # subset of an ambig or only missing in previous -> take subset
                     newconstant.append((site[0],self.ambiguous_values.get(seqsite,seqsite)))
                 elif seqsite in self.ambiguous_values:  # is it an ambig: check the intersection with prev. values
-                    intersect=sets.set(self.ambiguous_values[seqsite]).intersection(sets.set(site[1]))
+                    intersect = set(self.ambiguous_values[seqsite]).intersection(set(site[1]))
                     if intersect:
                         newconstant.append((site[0],''.join(intersect)))
                     #    print 'ok'
@@ -1558,7 +1548,7 @@ class Nexus(object):
             matrix=self.matrix
         if [t for t in delete if not self._check_taxlabels(t)]:
             raise NexusError('Unknown taxa: %s' \
-                             % ', '.join(sets.set(delete).difference(self.taxlabels)))
+                             % ', '.join(set(delete).difference(self.taxlabels)))
         if exclude!=[]:
             undelete=[t for t in self.taxlabels if t in matrix and t not in delete]
             if not undelete:
@@ -1652,10 +1642,10 @@ class Nexus(object):
             raise NexusError('Illegal gap position: %d' % pos)
         if n==0:
             return
-        if self.taxlabels :
+        if self.taxlabels:
             #python 2.3 does not support zip(*[])
             sitesm=zip(*[self.matrix[t].tostring() for t in self.taxlabels])
-        else :
+        else:
             sitesm=[]
         sitesm[pos:pos]=[['-']*len(self.taxlabels)]*n
         # #self.matrix=dict([(taxon,Seq(map(''.join,zip(*sitesm))[i],self.alphabet)) for\

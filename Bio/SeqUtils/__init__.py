@@ -11,7 +11,6 @@
 
 import re, time
 from Bio import SeqIO
-from Bio import Translate
 from Bio.Seq import Seq
 from Bio import Alphabet
 from Bio.Alphabet import IUPAC
@@ -24,13 +23,18 @@ from Bio.Data import IUPACData, CodonTable
 # {{{ 
 
 def reverse(seq):
-    """Reverse the sequence. Works on string sequences.
+    """Reverse the sequence. Works on string sequences (DEPRECATED).
 
-    e.g.
-    >>> reverse("ACGGT")
+    This function is now deprecated, instead use the string's built in slice
+    method with a step of minus one:
+
+    >>> "ACGGT"[::-1]
     'TGGCA'
-    
     """
+    import warnings
+    warnings.warn("Bio.SeqUtils.reverse() is deprecated, use the string's "
+                  "slice method with a step of minus one instead.",
+                  DeprecationWarning)
     r = list(seq)
     r.reverse()
     return ''.join(r)
@@ -48,10 +52,10 @@ def GC(seq):
 
     Note that this will return zero for an empty sequence.
     """
-    try :
+    try:
         gc = sum(map(seq.count,['G','C','g','c','S','s']))
         return gc*100.0/len(seq)
-    except ZeroDivisionError :
+    except ZeroDivisionError:
         return 0.0
         
     
@@ -178,12 +182,7 @@ def molecular_weight(seq):
     """Calculate the molecular weight of a DNA sequence."""
     if type(seq) == type(''): seq = Seq(seq, IUPAC.unambiguous_dna)
     weight_table = IUPACData.unambiguous_dna_weights
-    #TODO, use a generator expession once we drop Python 2.3?
-    #e.g. return sum(weight_table[x] for x in seq)
-    total = 0
-    for x in seq:
-        total += weight_table[x]
-    return total
+    return sum(weight_table[x] for x in seq)
 
 def nt_search(seq, subseq):
     """Search for a DNA subseq in sequence.
@@ -222,13 +221,18 @@ def nt_search(seq, subseq):
 # should be moved to ???
 
 class ProteinX(Alphabet.ProteinAlphabet):
+    """Variant of the extended IUPAC extended protein alphabet (DEPRECATED)."""
     letters = IUPACData.extended_protein_letters + "X"
 
+#Can't add a deprecation warning to the class due to the following line:
 proteinX = ProteinX()
 
 class MissingTable:
     def __init__(self, table):
         self._table = table
+        import warnings
+        warnings.warn("Function Bio.SeqUtils.makeTableX() and related classes ProteinX "
+                      "and MissingTable are deprecated.", DeprecationWarning)
     def get(self, codon, stop_symbol):
         try:
             return self._table.get(codon, stop_symbol)
@@ -282,44 +286,6 @@ def seq3(seq):
 # Mixed ??? 
 ######################
 # {{{ 
-
-def translate(seq, frame = 1, genetic_code = 1, translator = None):
-    """Translation of DNA in one of the six different reading frames (DEPRECATED).
-
-    Use the Bio.Seq.Translate function, or the Seq object's translate method
-    instead:
-
-    >>> from Bio.Seq import Seq
-    >>> my_seq = Seq("AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAG")
-    >>> my_seq = Seq("AUGGCCAUUGUAAUGGGCCGCUGAAAGGGUGCCCGAUAGUA")
-    >>> for frame in [0,1,2] :
-    ...    print my_seq[frame:].translate()
-    ... 
-    MAIVMGR*KGAR*
-    WPL*WAAERVPDS
-    GHCNGPLKGCPIV
-    >>> for frame in [0,1,2] :
-    ...     print my_seq.reverse_complement()[frame:].translate()
-    ... 
-    YYRAPFQRPITMA
-    TIGHPFSGPLQWP
-    LSGTLSAAHYNGH
-    """
-    import warnings
-    warnings.warn("Bio.SeqUtils.translate() has been deprecated, and we intend" \
-                  +" to remove it in a future release of Biopython.  Please use"\
-                  +" the method or function in Bio.Seq instead, as described in"\
-                  +" the Tutorial.", DeprecationWarning)
-
-    if frame not in [1,2,3,-1,-2,-3]:
-        raise ValueError('invalid frame')
-
-    if not translator:
-        table = makeTableX(CodonTable.ambiguous_dna_by_id[genetic_code])
-        translator = Translate.Translator(table)
-
-    #Does this frame calculation do something sensible?  No RC taken!
-    return translator.translate(Seq(seq[frame-1:], IUPAC.ambiguous_dna)).data
 
 def GC_Frame(seq, genetic_code = 1):
     """Just an alias for six_frame_translations (OBSOLETE).
@@ -507,7 +473,7 @@ def quicker_apply_on_multi_fasta(file, function, *args):
         result = f(*arguments)
         if result:
             results.append('>%s\n%s' % (name, result))
-    handle.close()
+    file.close()
     return results
 
 # }}}

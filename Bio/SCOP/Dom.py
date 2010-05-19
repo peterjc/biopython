@@ -3,7 +3,7 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 
-# Gavin E. Crooks 2001-11-07 :
+# Gavin E. Crooks 2001-11-07:
 #     Interface and comments modified to reflect changes to the SCOP
 #     module, and to SCOP itself.
 
@@ -73,6 +73,8 @@ def parse(handle):
         handle -- file-like object.
     """ 
     for line in handle:
+        if line.startswith('#'):
+            continue
         yield Record(line)
 
     
@@ -89,6 +91,8 @@ class Iterator:
                   of the file will be returned.
                   
         """
+        import warnings
+        warnings.warn("Bio.SCOP.Dom.Iterator is deprecated. Please use Bio.SCOP.Dom.parse() instead.", DeprecationWarning)
         from types import FileType, InstanceType
         if type(handle) is not FileType and type(handle) is not InstanceType:
             raise ValueError("I expected a file handle or file-like object")
@@ -99,6 +103,8 @@ class Iterator:
         line = self._handle.readline()
         if not line:
             return None
+        if line.startswith('#'):
+            return self.next()
         if self._parser is not None:
             return self._parser.parse(line)
         return line
@@ -116,5 +122,5 @@ class Parser:
         please use
 
         record = Dom.Record(entry)
-        """)
+        """, DeprecationWarning)
         return Record(entry)

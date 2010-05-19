@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+
+# This code is part of the Biopython distribution and governed by its
+# license.  Please see the LICENSE file that should have been included
+# as part of this package.
+
 """Test the different representations of Genes.
 
 This exercises the Motif, Schema and Signature methods of representing
@@ -9,7 +14,7 @@ import os
 import unittest
 
 # Biopython
-from Bio import Fasta
+from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.Alphabet import IUPAC
 
@@ -31,13 +36,13 @@ class PatternIOTest(unittest.TestCase):
         self.alphabet = IUPAC.ambiguous_dna
         self.test_file = os.path.join("NeuralNetwork", "patternio.txt")
         #Remove any existing copy of the output file,
-        if os.path.isfile(self.test_file) :
+        if os.path.isfile(self.test_file):
             os.remove(self.test_file)
         self.pattern_io = Pattern.PatternIO(self.alphabet)
 
     def tearDown(self):
         #Clean up by removing our output file,
-        if os.path.isfile(self.test_file) :
+        if os.path.isfile(self.test_file):
             os.remove(self.test_file)
 
     def test_motif(self):
@@ -230,11 +235,13 @@ class MotifFinderTest(unittest.TestCase):
 
             handle = open(file, 'r')
 
-            seq_parser = Fasta.SequenceParser(alphabet = IUPAC.unambiguous_dna)
-            iterator = Fasta.Iterator(handle, seq_parser)
+            iterator = SeqIO.parse(handle, "fasta",
+                                   alphabet=IUPAC.unambiguous_dna)
             while 1:
-                seq_record = iterator.next()
-            
+                try:
+                    seq_record = iterator.next()
+                except StopIteration:
+                    break
                 if seq_record is None:
                     break
 
@@ -392,17 +399,8 @@ class SchemaFinderTest(unittest.TestCase):
                               (diff_file, self.diff_records)):
 
             handle = open(file, 'r')
-
-            seq_parser = Fasta.SequenceParser(alphabet = IUPAC.unambiguous_dna)
-            iterator = Fasta.Iterator(handle, seq_parser)
-            while 1:
-                seq_record = iterator.next()
-            
-                if seq_record is None:
-                    break
-
-                records.append(seq_record)
-
+            records.extend(SeqIO.parse(handle, "fasta",
+                                       alphabet=IUPAC.unambiguous_dna))
             handle.close()
 
         self.num_schemas = 2
@@ -547,19 +545,8 @@ class SchemaFactoryTest(unittest.TestCase):
 
         # read in the all of the motif records
         motif_handle = open(self.test_file, 'r')
-
-        seq_parser = Fasta.SequenceParser(alphabet = IUPAC.unambiguous_dna)
-        iterator = Fasta.Iterator(motif_handle, seq_parser)
-
-        seq_records = []
-        while 1:
-            seq_record = iterator.next()
-            
-            if seq_record is None:
-                break
-
-            seq_records.append(seq_record)
-
+        seq_records = list(SeqIO.parse(motif_handle, "fasta",
+                                       alphabet=IUPAC.unambiguous_dna))
         motif_handle.close()
 
         # find motifs from the file
@@ -585,20 +572,11 @@ class SchemaFactoryTest(unittest.TestCase):
 
         # get the sequences one at a time, and encode them
         fasta_handle = open(self.test_file, 'r')
-
-        seq_parser = Fasta.SequenceParser(alphabet = IUPAC.unambiguous_dna)
-        iterator = Fasta.Iterator(fasta_handle, seq_parser)
-
-        while 1:
-            seq_record = iterator.next()
-            
-            if seq_record is None:
-                break
-
+        for seq_record in SeqIO.parse(fasta_handle, "fasta",
+                                      alphabet=IUPAC.unambiguous_dna):
             schema_values = schema_coder.representation(seq_record.seq)
             if VERBOSE:
                 print "Schema values:", schema_values
-
         fasta_handle.close()
 
 # --- Tests for Signatures
@@ -612,17 +590,8 @@ class SignatureFinderTest(unittest.TestCase):
 
         # load the records
         handle = open(test_file, 'r')
-
-        seq_parser = Fasta.SequenceParser(alphabet = IUPAC.unambiguous_dna)
-        iterator = Fasta.Iterator(handle, seq_parser)
-        while 1:
-            seq_record = iterator.next()
-            
-            if seq_record is None:
-                break
-
-            self.test_records.append(seq_record)
-
+        self.test_records = list(SeqIO.parse(handle, "fasta",
+                                             alphabet=IUPAC.unambiguous_dna))
         handle.close()
 
         self.sig_finder = Signature.SignatureFinder()

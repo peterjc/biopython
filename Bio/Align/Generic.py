@@ -1,6 +1,6 @@
 # Copyright 2000-2004 Brad Chapman.
 # Copyright 2001 Iddo Friedberg.
-# Copyright 2007-2009 by Peter Cock.
+# Copyright 2007-2010 by Peter Cock.
 # All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
@@ -19,10 +19,14 @@ from Bio.SeqRecord import SeqRecord
 from Bio import Alphabet
 
 class Alignment:
-    """Represent a set of alignments.
+    """Represent a set of alignments (OBSOLETE?).
 
     This is a base class to represent alignments, which can be subclassed
     to deal with an alignment in a specific format.
+
+    With the introduction of the MultipleSeqAlignment class in Bio.Align,
+    this base class is effectively obsolete and will likely be deprecated and
+    later removed in future releases of Biopython.
     """
     def __init__(self, alphabet):
         """Initialize a new Alignment object.
@@ -50,18 +54,18 @@ class Alignment:
         # hold everything at a list of SeqRecord objects
         self._records = []
 
-    def _str_line(self, record) :
+    def _str_line(self, record):
         """Returns a truncated string representation of a SeqRecord (PRIVATE).
 
         This is a PRIVATE function used by the __str__ method.
         """
-        if len(record.seq) <= 50 :
+        if len(record.seq) <= 50:
             return "%s %s" % (record.seq, record.id)
-        else :
+        else:
             return "%s...%s %s" \
                    % (record.seq[:44], record.seq[-3:], record.id)
 
-    def __str__(self) :
+    def __str__(self):
         """Returns a multi-line string summary of the alignment.
 
         This output is intended to be readable, but large alignments are
@@ -85,15 +89,15 @@ class Alignment:
         rows = len(self._records)
         lines = ["%s alignment with %i rows and %i columns" \
                  % (str(self._alphabet), rows, self.get_alignment_length())]
-        if rows <= 20 :
+        if rows <= 20:
             lines.extend([self._str_line(rec) for rec in self._records])
-        else :
+        else:
             lines.extend([self._str_line(rec) for rec in self._records[:18]])
             lines.append("...")
             lines.append(self._str_line(self._records[-1]))
         return "\n".join(lines)
 
-    def __repr__(self) :
+    def __repr__(self):
         """Returns a representation of the object for debugging.
 
         The representation cannot be used with eval() to recreate the object,
@@ -116,7 +120,7 @@ class Alignment:
         #return "%s(%s, %s)" \
         #       % (self.__class__, repr(self._records), repr(self._alphabet))
 
-    def format(self, format) :
+    def format(self, format):
         """Returns the alignment as a string in the specified file format.
 
         The format should be a lower case string supported as an output
@@ -152,7 +156,7 @@ class Alignment:
         return self.__format__(format)
 
 
-    def __format__(self, format_spec) :
+    def __format__(self, format_spec):
         """Returns the alignment as a string in the specified file format.
 
         This method supports the python format() function added in
@@ -165,22 +169,28 @@ class Alignment:
             handle = StringIO()
             AlignIO.write([self], handle, format_spec)
             return handle.getvalue()
-        else :
+        else:
             #Follow python convention and default to using __str__
             return str(self)    
 
     def get_all_seqs(self):
-        """Return all of the sequences involved in the alignment.
+        """Return all of the sequences involved in the alignment (DEPRECATED).
 
         The return value is a list of SeqRecord objects.
 
-        This method is semi-obsolete, as the Alignment object itself offers
+        This method is deprecated, as the Alignment object itself now offers
         much of the functionality of a list of SeqRecord objects (e.g.
-        iteration or slicing to create a sub-alignment).
+        iteration or slicing to create a sub-alignment). Instead use the
+        Python builtin function list, i.e. my_list = list(my_align)
         """
+        import warnings
+        warnings.warn("This method is deprecated, since the alignment object"
+                      "now acts more like a list. Instead of calling "
+                      "align.get_all_seqs() you can use list(align)",
+                      DeprecationWarning)
         return self._records
 
-    def __iter__(self) :
+    def __iter__(self):
         """Iterate over alignment rows as SeqRecord objects.
 
         e.g.
@@ -189,7 +199,7 @@ class Alignment:
         >>> align.add_sequence("Alpha", "ACTGCTAGCTAG")
         >>> align.add_sequence("Beta",  "ACT-CTAGCTAG")
         >>> align.add_sequence("Gamma", "ACTGCTAGATAG")
-        >>> for record in align :
+        >>> for record in align:
         ...    print record.id
         ...    print record.seq
         Alpha
@@ -214,7 +224,7 @@ class Alignment:
         the rows of the alignment (i.e. the sequences) consider iterating
         over them or accessing them as SeqRecord objects.  e.g.
 
-        for record in alignment :
+        for record in alignment:
             print record.id
             print record.seq
         first_record = alignment[0]
@@ -222,7 +232,7 @@ class Alignment:
         """
         return self._records[number].seq
 
-    def __len__(self) :
+    def __len__(self):
         """Returns the number of sequences in the alignment.
 
         Use len(alignment) to get the number of sequences (i.e. the number of
@@ -336,7 +346,7 @@ class Alignment:
             col_str += rec.seq[col]
         return col_str
 
-    def __getitem__(self, index) :
+    def __getitem__(self, index):
         """Access part of the alignment.
 
         We'll use the following example alignment here for illustration:
@@ -393,11 +403,11 @@ class Alignment:
         Right now, these are the ONLY indexing operations supported.  The use of
         a second column based index is under discussion for a future update.
         """
-        if isinstance(index, int) :
+        if isinstance(index, int):
             #e.g. result = align[x]
             #Return a SeqRecord
             return self._records[index]
-        elif isinstance(index, slice) :
+        elif isinstance(index, slice):
             #e.g. sub_aling = align[i:j:k]
             #Return a new Alignment using only the specified records.
             #TODO - See Bug 2554 for changing the __init__ method
@@ -405,14 +415,14 @@ class Alignment:
             sub_align = Alignment(self._alphabet)
             sub_align._records = self._records[index]
             return sub_align
-        elif len(index)==2 :
+        elif len(index)==2:
             raise TypeError("Row and Column indexing is not currently supported,"\
                             +"but may be in future.")
-        else :
+        else:
             raise TypeError("Invalid index type.")
 
 def _test():
-    """Run the Bio.Seq module's doctests."""
+    """Run the Bio.Align.Generic module's doctests."""
     print "Running doctests..."
     import doctest
     doctest.testmod()

@@ -12,6 +12,9 @@ http://www.ncbi.nlm.nih.gov/Entrez/
 A list of the Entrez utilities is available at:
 http://www.ncbi.nlm.nih.gov/entrez/utils/utils_index.html
 
+Variables:
+email        Set the Entrez email parameter (default is not set).
+tool         Set the Entrez tool parameter (default is  biopython).
 
 Functions:
 efetch       Retrieves records in the requested format from a list of one or
@@ -50,23 +53,11 @@ from Bio import File
 
 
 email = None
+tool = "biopython"
 
-def query(cmd, db, cgi='http://www.ncbi.nlm.nih.gov/sites/entrez',
-          **keywds):
-    """Query Entrez and return a handle to the HTML results (DEPRECATED).
-
-    See the online documentation for an explanation of the parameters:
-    http://www.ncbi.nlm.nih.gov/books/bv.fcgi?rid=helplinks.chapter.linkshelp
-
-    Return a handle to the results.
-
-    Raises an IOError exception if there's a network error.
-    """
-    import warnings
-    warnings.warn("Bio.Entrez.query is deprecated, since it breaks NCBI's rule to only use the E-Utilities URL.", DeprecationWarning)
 
 # XXX retmode?
-def epost(db, cgi=None, **keywds):
+def epost(db, **keywds):
     """Post a file of identifiers for future use.
 
     Posts a file containing a list of UIs for future use in the user's
@@ -79,15 +70,12 @@ def epost(db, cgi=None, **keywds):
 
     Raises an IOError exception if there's a network error.
     """
-    if cgi:
-        import warnings
-        warnings.warn("Using a URL other than NCBI's main url for the E-Utilities is deprecated.", DeprecationWarning)
     cgi='http://eutils.ncbi.nlm.nih.gov/entrez/eutils/epost.fcgi'
     variables = {'db' : db}
     variables.update(keywds)
-    return _open(cgi, variables)
+    return _open(cgi, variables, post=True)
 
-def efetch(db, cgi=None, **keywds):
+def efetch(db, **keywds):
     """Fetches Entrez results which are returned as a handle.
 
     EFetch retrieves records in the requested format from a list of one or
@@ -106,26 +94,21 @@ def efetch(db, cgi=None, **keywds):
     handle = Entrez.efetch(db="nucleotide", id="57240072", rettype="gb")
     print handle.read()
     """
-    for key in keywds :
-        if key.lower()=="rettype" and keywds[key].lower()=="genbank" :
-            import warnings
-            warnings.warn('As of Easter 2009, Entrez EFtech no longer '
+    for key in keywds:
+        if key.lower()=="rettype" and keywds[key].lower()=="genbank":
+            warnings.warn('As of Easter 2009, Entrez EFetch no longer '
                           'supports the unofficial return type "genbank", '
                           'use "gb" or "gp" instead.', DeprecationWarning)
-            if db.lower()=="protein" :
+            if db.lower()=="protein":
                 keywds[key] = "gp" #GenPept
-            else :
+            else:
                 keywds[key] = "gb" #GenBank
-    if cgi:
-        import warnings
-        warnings.warn("Using a URL other than NCBI's main url for the "
-                      "E-Utilities is deprecated.", DeprecationWarning)
     cgi='http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi'
     variables = {'db' : db}
     variables.update(keywds)
     return _open(cgi, variables)
 
-def esearch(db, term, cgi=None, **keywds):
+def esearch(db, term, **keywds):
     """ESearch runs an Entrez search and returns a handle to the results.
 
     ESearch searches and retrieves primary IDs (for use in EFetch, ELink
@@ -147,16 +130,13 @@ def esearch(db, term, cgi=None, **keywds):
     print record["Count"]
     print record["IdList"]
     """
-    if cgi:
-        import warnings
-        warnings.warn("Using a URL other than NCBI's main url for the E-Utilities is deprecated.", DeprecationWarning)
     cgi='http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
     variables = {'db' : db,
                  'term' : term}
     variables.update(keywds)
     return _open(cgi, variables)
 
-def elink(cgi=None, **keywds):
+def elink(**keywds):
     """ELink checks for linked external articles and returns a handle.
 
     ELink checks for the existence of an external or Related Articles link
@@ -172,15 +152,12 @@ def elink(cgi=None, **keywds):
 
     Raises an IOError exception if there's a network error.
     """
-    if cgi:
-        import warnings
-        warnings.warn("Using a URL other than NCBI's main url for the E-Utilities is deprecated.", DeprecationWarning)
     cgi='http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi'
     variables = {}
     variables.update(keywds)
     return _open(cgi, variables)
 
-def einfo(cgi=None, **keywds):
+def einfo(**keywds):
     """EInfo returns a summary of the Entez databases as a results handle.
 
     EInfo provides field names, index term counts, last update, and
@@ -199,15 +176,12 @@ def einfo(cgi=None, **keywds):
     record = Entrez.read(Entrez.einfo())
     print record['DbList']
     """
-    if cgi:
-        import warnings
-        warnings.warn("Using a URL other than NCBI's main url for the E-Utilities is deprecated.", DeprecationWarning)
     cgi='http://eutils.ncbi.nlm.nih.gov/entrez/eutils/einfo.fcgi'
     variables = {}
     variables.update(keywds)
     return _open(cgi, variables)
 
-def esummary(cgi=None, **keywds):
+def esummary(**keywds):
     """ESummary retrieves document summaries as a results handle.
 
     ESummary retrieves document summaries from a list of primary IDs or
@@ -220,15 +194,12 @@ def esummary(cgi=None, **keywds):
 
     Raises an IOError exception if there's a network error.
     """
-    if cgi:
-        import warnings
-        warnings.warn("Using a URL other than NCBI's main url for the E-Utilities is deprecated.", DeprecationWarning)
     cgi='http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi'
     variables = {}
     variables.update(keywds)
     return _open(cgi, variables)
 
-def egquery(cgi=None, **keywds):
+def egquery(**keywds):
     """EGQuery provides Entrez database counts for a global search.
 
     EGQuery provides Entrez database counts in XML for a single search
@@ -241,15 +212,12 @@ def egquery(cgi=None, **keywds):
 
     Raises an IOError exception if there's a network error.
     """
-    if cgi:
-        import warnings
-        warnings.warn("Using a URL other than NCBI's main url for the E-Utilities is deprecated.", DeprecationWarning)
     cgi='http://eutils.ncbi.nlm.nih.gov/entrez/eutils/egquery.fcgi'
     variables = {}
     variables.update(keywds)
     return _open(cgi, variables)
 
-def espell(cgi=None, **keywds):
+def espell(**keywds):
     """ESpell retrieves spelling suggestions, returned in a results handle.
 
     ESpell retrieves spelling suggestions, if available.
@@ -268,9 +236,6 @@ def espell(cgi=None, **keywds):
     print record["Query"] 
     print record["CorrectedQuery"] 
     """
-    if cgi:
-        import warnings
-        warnings.warn("Using a URL other than NCBI's main url for the E-Utilities is deprecated.", DeprecationWarning)
     cgi='http://eutils.ncbi.nlm.nih.gov/entrez/eutils/espell.fcgi'
     variables = {}
     variables.update(keywds)
@@ -294,18 +259,25 @@ def read(handle):
     from Parser import DataHandler
     DTDs = os.path.join(__path__[0], "DTDs")
     handler = DataHandler(DTDs)
-    record = handler.run(handle)
+    record = handler.read(handle)
     return record
 
-def _open(cgi, params={}):
+def parse(handle):
+    from Parser import DataHandler
+    DTDs = os.path.join(__path__[0], "DTDs")
+    handler = DataHandler(DTDs)
+    records = handler.parse(handle)
+    return records
+
+def _open(cgi, params={}, post=False):
     """Helper function to build the URL and open a handle to it (PRIVATE).
 
     Open a handle to Entrez.  cgi is the URL for the cgi script to access.
     params is a dictionary with the options to pass to it.  Does some
     simple error checking, and will raise an IOError if it encounters one.
 
-    This function also enforces the "three second rule" to avoid abusing
-    the NCBI servers.
+    This function also enforces the "up to three queries per second rule"
+    to avoid abusing the NCBI servers.
     """
     # NCBI requirement: At most three queries per second.
     # Equivalently, at least a third of second between queries
@@ -321,17 +293,36 @@ def _open(cgi, params={}):
     for key, value in params.items():
         if value is None:
             del params[key]
-    # Tell Entrez that we are using Biopython
+    # Tell Entrez that we are using Biopython (or whatever the user has
+    # specified explicitly in the parameters or by changing the default)
     if not "tool" in params:
-        params["tool"] = "biopython"
+        params["tool"] = tool
     # Tell Entrez who we are
     if not "email" in params:
         if email!=None:
             params["email"] = email
+        else:
+            warnings.warn("""
+Email address is not specified.
+
+To make use of NCBI's E-utilities, NCBI strongly recommends you to specify
+your email address with each request. From June 1, 2010, this will be
+mandatory. As an example, if your email address is A.N.Other@example.com, you
+can specify it as follows:
+   from Bio import Entrez
+   Entrez.email = 'A.N.Other@example.com'
+In case of excessive usage of the E-utilities, NCBI will attempt to contact
+a user at the email address provided before blocking access to the
+E-utilities.""", UserWarning)
     # Open a handle to Entrez.
     options = urllib.urlencode(params, doseq=True)
-    cgi += "?" + options
-    handle = urllib.urlopen(cgi)
+    if post:
+        #HTTP POST
+        handle = urllib.urlopen(cgi, data=options)
+    else:
+        #HTTP GET
+        cgi += "?" + options
+        handle = urllib.urlopen(cgi)
 
     # Wrap the handle inside an UndoHandle.
     uhandle = File.UndoHandle(handle)
@@ -352,22 +343,25 @@ def _open(cgi, params={}):
         raise IOError("502 Proxy Error (NCBI busy?)")
     elif "WWW Error 500 Diagnostic" in data:
         raise IOError("WWW Error 500 Diagnostic (NCBI busy?)")
-    elif "<title>Service unavailable!</title>" in data :
+    elif "<title>Service unavailable!</title>" in data:
         #Probably later in the file it will say "Error 503"
         raise IOError("Service unavailable!")
-    elif "<title>Bad Gateway!</title>" in data :
+    elif "<title>Bad Gateway!</title>" in data:
         #Probably later in the file it will say:
         #  "The proxy server received an invalid
         #   response from an upstream server."
         raise IOError("Bad Gateway!")
-    elif data.startswith("Error:") :
+    elif "<title>414 Request-URI Too Large</title>" in data \
+    or "<h1>Request-URI Too Large</h1>" in data:
+        raise IOError("Requested URL too long (try using EPost?)")
+    elif data.startswith("Error:"):
         #e.g. 'Error: Your session has expired. Please repeat your search.\n'
         raise IOError(data.strip())
-    elif data.startswith("The resource is temporarily unavailable") :
+    elif data.startswith("The resource is temporarily unavailable"):
         #This can occur with an invalid query_key
         #Perhaps this should be a ValueError?
         raise IOError("The resource is temporarily unavailable")
-    elif data.startswith("download dataset is empty") :
+    elif data.startswith("download dataset is empty"):
         #This can occur when omit the identifier, or the WebEnv and query_key
         #Perhaps this should be a ValueError?
         raise IOError("download dataset is empty")

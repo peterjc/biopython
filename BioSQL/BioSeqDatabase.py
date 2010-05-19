@@ -1,5 +1,6 @@
 # Copyright 2002 by Andrew Dalke.  All rights reserved.
-# Revisions 2007-2008 by Peter Cock.
+# Revisions 2007-2009 copyright by Peter Cock.  All rights reserved.
+# Revisions 2009 copyright by Cymon J. Cox.  All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
@@ -14,6 +15,8 @@ database, and is compatible with the BioSQL standards.
 import BioSeq
 import Loader
 import DBUtils
+
+_POSTGRES_RULES_PRESENT = False # Hack for BioSQL Bug 2839
 
 def open_database(driver = "MySQLdb", **kwargs):
     """Main interface for loading a existing BioSQL-style database.
@@ -53,24 +56,56 @@ def open_database(driver = "MySQLdb", **kwargs):
         if "passwd" in kw:
             kw["password"] = kw["passwd"]
             del kw["passwd"]
-    if driver in ["psycopg", "psycopg2"] and not kw.get("database"):
+    if driver in ["psycopg", "psycopg2", "pgdb"] and not kw.get("database"):
         kw["database"] = "template1"
-    try:
-        conn = connect(**kw)
-    except module.InterfaceError:
-        # Ok, so let's try building a DSN
-        # (older releases of psycopg need this)
-        if "database" in kw:
-            kw["dbname"] = kw["database"]
-            del kw["database"]
-        elif "db" in kw:
-            kw["dbname"] = kw["db"]
-            del kw["db"]
-        
-        dsn = ' '.join(['='.join(i) for i in kw.items()])
-        conn = connect(dsn)
-    
-    return DBServer(conn, module)
+    # SQLite connect takes the database name as input
+    if driver in ["sqlite3"]:
+        conn = connect(kw["database"])
+    else:
+        try:
+            conn = connect(**kw)
+        except module.InterfaceError:
+            # Ok, so let's try building a DSN
+            # (older releases of psycopg need this)
+            if "database" in kw:
+                kw["dbname"] = kw["database"]
+                del kw["database"]
+            elif "db" in kw:
+                kw["dbname"] = kw["db"]
+                del kw["db"]
+            dsn = ' '.join(['='.join(i) for i in kw.items()])
+            conn = connect(dsn)
+
+    server = DBServer(conn, module)
+
+    if driver == "psycopg":
+        import warnings
+        warnings.warn("Using BioSQL with psycopg (version one) is deprecated. "
+                      "It still works for now, but we recommend you update "
+                      "to using psycopg2 as a future release of Biopython "
+                      "will drop support for psycop (version one).",
+                      DeprecationWarning)
+
+    # TODO - Remove the following once BioSQL Bug 2839 is fixed.
+    # Test for RULES in PostgreSQL schema, see also Bug 2833.
+    if driver in ["psycopg", "psycopg2", "pgdb"]:
+        sql = "SELECT ev_class FROM pg_rewrite WHERE " + \
+              "rulename='rule_bioentry_i1' OR " + \
+              "rulename='rule_bioentry_i2';"
+        if server.adaptor.execute_and_fetchall(sql):
+            import warnings
+            warnings.warn("Your BioSQL PostgreSQL schema includes some "
+                          "rules currently required for bioperl-db but "
+                          "which may cause problems loading data using "
+                          "Biopython (see BioSQL Bug 2839). If you do not "
+                          "use BioPerl, please remove these rules. "
+                          "Biopython should cope with the rules present, "
+                          "but with a performance penalty when loading "
+                          "new records.")
+            global _POSTGRES_RULES_PRESENT
+            _POSTGRES_RULES_PRESENT = True
+
+    return server
 
 class DBServer:
     def __init__(self, conn, module, module_name=None):
@@ -134,11 +169,11 @@ class DBServer:
         # 1. PostgreSQL can load it all at once and actually needs to
         # due to FUNCTION defines at the end of the SQL which mess up
         # the splitting by semicolons
-        if self.module_name in ["psycopg", "psycopg2"]:
+        if self.module_name in ["psycopg", "psycopg2", "pgdb"]:
             self.adaptor.cursor.execute(sql)
         # 2. MySQL needs the database loading split up into single lines of
         # SQL executed one at a time
-        elif self.module_name in ["MySQLdb"]:
+        elif self.module_name in ["MySQLdb", "sqlite3"]:
             sql_parts = sql.split(";") # one line per sql command
             for sql_line in sql_parts[:-1]: # don't use the last item, it's blank
                 self.adaptor.cursor.execute(sql_line)
@@ -184,7 +219,7 @@ class Adaptor:
         return self.conn.close()
 
     def fetch_dbid_by_dbname(self, dbname):
-        self.cursor.execute(
+        self.execute(
             r"select biodatabase_id from biodatabase where name = %s",
             (dbname,))
         rv = self.cursor.fetchall()
@@ -200,7 +235,7 @@ class Adaptor:
         if dbid:
             sql += " and biodatabase_id = %s"
             fields.append(dbid)
-        self.cursor.execute(sql, fields)
+        self.execute(sql, fields)
         rv = self.cursor.fetchall()
         if not rv:
             raise IndexError("Cannot find display id %r" % name)
@@ -214,7 +249,7 @@ class Adaptor:
         if dbid:
             sql += " and biodatabase_id = %s"
             fields.append(dbid)
-        self.cursor.execute(sql, fields)
+        self.execute(sql, fields)
         rv = self.cursor.fetchall()
         if not rv:
             raise IndexError("Cannot find accession %r" % name)
@@ -245,7 +280,7 @@ class Adaptor:
         if dbid:
             sql += " and biodatabase_id = %s"
             fields.append(dbid)
-        self.cursor.execute(sql, fields)
+        self.execute(sql, fields)
         rv = self.cursor.fetchall()
         if not rv:
             raise IndexError("Cannot find version %r" % name)
@@ -260,7 +295,7 @@ class Adaptor:
         if dbid:
             sql += " and biodatabase_id = %s"
             fields.append(dbid)
-        self.cursor.execute(sql, fields)
+        self.execute(sql, fields)
         rv = self.cursor.fetchall()
         if not rv:
             raise IndexError("Cannot find display id %r" % identifier)
@@ -287,10 +322,10 @@ class Adaptor:
         returns a list of items. This parses them out of the 2D list
         they come as and just returns them in a list.
         """
-        return self.cursor.execute_and_fetch_col0(sql, args)
+        return self.execute_and_fetch_col0(sql, args)
 
     def execute_one(self, sql, args=None):
-        self.cursor.execute(sql, args or ())
+        self.execute(sql, args or ())
         rv = self.cursor.fetchall()
         assert len(rv) == 1, "Expected 1 response, got %d" % len(rv)
         return rv[0]
@@ -298,21 +333,30 @@ class Adaptor:
     def execute(self, sql, args=None):
         """Just execute an sql command.
         """
-        self.cursor.execute(sql, args or ())
+        self.dbutils.execute(self.cursor, sql, args)
 
     def get_subseq_as_string(self, seqid, start, end):
         length = end - start
-        return self.execute_one(
-            """select SUBSTRING(seq FROM %s FOR %s)
+        # XXX Check this on MySQL and PostgreSQL. substr should be general,
+        # does it need dbutils?
+        #return self.execute_one(
+        #    """select SUBSTRING(seq FROM %s FOR %s)
+        #             from biosequence where bioentry_id = %s""",
+        #    (start+1, length, seqid))[0]
+        # 
+        # Convert to a string on returning for databases that give back
+        # unicode. Shouldn't need unicode for sequences so this seems safe.
+        return str(self.execute_one(
+            """select SUBSTR(seq, %s, %s)
                      from biosequence where bioentry_id = %s""",
-            (start+1, length, seqid))[0]
+            (start+1, length, seqid))[0])
 
     def execute_and_fetch_col0(self, sql, args=None):
-        self.cursor.execute(sql, args or ())
+        self.execute(sql, args or ())
         return [field[0] for field in self.cursor.fetchall()]
 
     def execute_and_fetchall(self, sql, args=None):
-        self.cursor.execute(sql, args or ())
+        self.execute(sql, args or ())
         return self.cursor.fetchall()
 
 _allowed_lookups = {
@@ -330,6 +374,7 @@ class BioSeqDatabase:
         self.adaptor = adaptor
         self.name = name
         self.dbid = self.adaptor.fetch_dbid_by_dbname(name)
+
     def __repr__(self):
         return "BioSeqDatabase(%r, %r)" % (self.adaptor, self.name)
         
@@ -437,7 +482,36 @@ class BioSeqDatabase:
         db_loader = Loader.DatabaseLoader(self.adaptor, self.dbid, \
                                           fetch_NCBI_taxonomy)
         num_records = 0
-        for cur_record in record_iterator :
+        global _POSTGRES_RULES_PRESENT
+        for cur_record in record_iterator:
             num_records += 1
+            #Hack to work arround BioSQL Bug 2839 - If using PostgreSQL and
+            #the RULES are present check for a duplicate record before loading
+            if _POSTGRES_RULES_PRESENT:
+                #Recreate what the Loader's _load_bioentry_table will do:
+                if cur_record.id.count(".") == 1:
+                    accession, version = cur_record.id.split('.')
+                    try:
+                        version = int(version)
+                    except ValueError:
+                        accession = cur_record.id
+                        version = 0
+                else:
+                    accession = cur_record.id
+                    version = 0
+                gi = cur_record.annotations.get("gi", None)
+                sql = "SELECT bioentry_id FROM bioentry WHERE (identifier " + \
+                      "= '%s' AND biodatabase_id = '%s') OR (accession = " + \
+                      "'%s' AND version = '%s' AND biodatabase_id = '%s')"
+                self.adaptor.execute(sql % (gi, self.dbid, accession, version, self.dbid))
+                if self.adaptor.cursor.fetchone():
+                    try:
+                        raise self.adaptor.conn.IntegrityError("Duplicate record " 
+                        "detected: record has not been inserted")
+                    except AttributeError: #psycopg version 1
+                        import psycopg
+                        raise psycopg.IntegrityError("Psycopg1: Duplicate record " 
+                        "detected: record has not been inserted")
+            #End of hack
             db_loader.load_seqrecord(cur_record)
         return num_records

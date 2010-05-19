@@ -5,10 +5,21 @@
 # Patches by Mike Poidinger to support multiple databases.
 # Updated by Peter Cock in 2007 to do a better job on BLAST 2.2.15
 
-"""
-This module provides code to work with the standalone version of
-BLAST, either blastall or blastpgp, provided by the NCBI.
-http://www.ncbi.nlm.nih.gov/BLAST/
+"""Code for calling standalone BLAST and parsing plain text output (OBSOLETE).
+
+Rather than parsing the human readable plain text BLAST output (which seems to
+change with every update to BLAST), we and the NBCI recommend you parse the
+XML output instead. The plain text parser in this module still works at the
+time of writing, but is considered obsolete and updating it to cope with the
+latest versions of BLAST is not a priority for us.
+
+This module also provides code to work with the "legacy" standalone version of
+NCBI BLAST, tools blastall, rpsblast and blastpgp via three helper functions of
+the same name. These functions are very limited for dealing with the output as
+files rather than handles, for which the wrappers in Bio.Blast.Applications are
+prefered. Furthermore, the NCBI themselves regard these command line tools as
+"legacy", and encourage using the new BLAST+ tools instead. Biopython has
+wrappers for these under Bio.Blast.Applications (see the tutorial).
 
 Classes:
 LowQualityBlastError     Except that indicates low quality query sequences.
@@ -28,10 +39,14 @@ _DatabaseReportConsumer  Consumes database report information.
 _ParametersConsumer      Consumes parameters information.
 
 Functions:
-blastall        Execute blastall.
-blastpgp        Execute blastpgp.
-rpsblast        Execute rpsblast.
+blastall        Execute blastall (OBSOLETE).
+blastpgp        Execute blastpgp (OBSOLETE).
+rpsblast        Execute rpsblast (OBSOLETE).
 
+For calling the BLAST command line tools, we encourage you to use the
+command line wrappers in Bio.Blast.Applications - the three functions
+blastall, blastpgp and rpsblast are considered to be obsolete now, and
+are likely to be deprecated and then removed in future releases.
 """
 
 import os
@@ -40,7 +55,7 @@ import re
 from Bio import File
 from Bio.ParserSupport import *
 from Bio.Blast import Record
-
+from Bio.Application import _escape_filename
 
 class LowQualityBlastError(Exception):
     """Error caused by running a low quality sequence through BLAST.
@@ -152,17 +167,17 @@ class _Scanner:
 
         # Read the reference(s)
         while attempt_read_and_call(uhandle,
-                                consumer.reference, start='Reference') :
+                                consumer.reference, start='Reference'):
             # References are normally multiline terminated by a blank line
             # (or, based on the old code, the RID line)
             while 1:
                 line = uhandle.readline()
-                if is_blank_line(line) :
+                if is_blank_line(line):
                     consumer.noevent(line)
                     break
                 elif line.startswith("RID"):
                     break
-                else :
+                else:
                     #More of the reference
                     consumer.reference(line)
 
@@ -187,7 +202,7 @@ class _Scanner:
         line = uhandle.peekline()
         assert line.strip() != ""
         assert not line.startswith("RID:")
-        if line.startswith("Query=") :
+        if line.startswith("Query="):
             #This is an old style query then database...
 
             # Read the Query lines and the following blank line.
@@ -199,17 +214,25 @@ class _Scanner:
             read_and_call_until(uhandle, consumer.database_info, end='total letters')
             read_and_call(uhandle, consumer.database_info, contains='sequences')
             read_and_call_while(uhandle, consumer.noevent, blank=1)
-        elif line.startswith("Database:") :
+        elif line.startswith("Database:"):
             #This is a new style database then query...
             read_and_call_until(uhandle, consumer.database_info, end='total letters')
             read_and_call(uhandle, consumer.database_info, contains='sequences')
             read_and_call_while(uhandle, consumer.noevent, blank=1)
 
             # Read the Query lines and the following blank line.
+            # Or, on BLAST 2.2.22+ there is no blank link - need to spot
+            # the "... Score     E" line instead.
             read_and_call(uhandle, consumer.query_info, start='Query=')
-            read_and_call_until(uhandle, consumer.query_info, blank=1)
+            #read_and_call_until(uhandle, consumer.query_info, blank=1)
+            while True:
+                line = uhandle.peekline()
+                if not line.strip() : break
+                if "Score     E" in line : break
+                #It is more of the query (and its length)
+                read_and_call(uhandle, consumer.query_info)
             read_and_call_while(uhandle, consumer.noevent, blank=1)
-        else :
+        else:
             raise ValueError("Invalid header?")
 
         consumer.end_header()
@@ -222,14 +245,13 @@ class _Scanner:
         # If there is no 'Searching.....' line then you'll first see a 
         # 'Results from round' line
 
-        while 1:
+        while not self._eof(uhandle):
             line = safe_peekline(uhandle)
             if (not line.startswith('Searching') and
                 not line.startswith('Results from round') and
                 re.search(r"Score +E", line) is None and
                 line.find('No hits found') == -1):
                 break
-
             self._scan_descriptions(uhandle, consumer)
             self._scan_alignments(uhandle, consumer)
 
@@ -311,7 +333,10 @@ class _Scanner:
             # Either case 2 or 3.  Look for "No hits found".
             attempt_read_and_call(uhandle, consumer.no_hits,
                                   contains='No hits found')
-            read_and_call_while(uhandle, consumer.noevent, blank=1)
+            try:
+                read_and_call_while(uhandle, consumer.noevent, blank=1)
+            except ValueError, err:
+                if str(err) != "Unexpected end of stream." : raise err
 
             consumer.end_descriptions()
             # Stop processing.
@@ -325,6 +350,14 @@ class _Scanner:
         attempt_read_and_call(uhandle, consumer.model_sequences,
                               start='Sequences used in model')
         read_and_call_while(uhandle, consumer.noevent, blank=1)
+
+        # In BLAT, rather than a "No hits found" line, we just
+        # get no descriptions (and no alignments). This can be
+        # spotted because the next line is the database block:
+        if safe_peekline(uhandle).startswith("  Database:"):
+            consumer.end_descriptions()
+            # Stop processing.
+            return
 
         # Read the descriptions and the following blank lines, making
         # sure that there are descriptions.
@@ -356,12 +389,17 @@ class _Scanner:
         consumer.end_descriptions()
 
     def _scan_alignments(self, uhandle, consumer):
+        if self._eof(uhandle) : return
+        
         # qblast inserts a helpful line here.
         attempt_read_and_call(uhandle, consumer.noevent, start="ALIGNMENTS")
 
         # First, check to see if I'm at the database report.
         line = safe_peekline(uhandle)
-        if line.startswith('  Database'):
+        if not line:
+            #EOF
+            return
+        elif line.startswith('  Database') or line.startswith("Lambda"):
             return
         elif line[0] == '>':
             # XXX make a better check here between pairwise and masterslave
@@ -371,19 +409,23 @@ class _Scanner:
             self._scan_masterslave_alignment(uhandle, consumer)
 
     def _scan_pairwise_alignments(self, uhandle, consumer):
-        while 1:
+        while not self._eof(uhandle):
             line = safe_peekline(uhandle)
             if line[0] != '>':
                 break
             self._scan_one_pairwise_alignment(uhandle, consumer)
 
     def _scan_one_pairwise_alignment(self, uhandle, consumer):
+        if self._eof(uhandle) : return
         consumer.start_alignment()
 
         self._scan_alignment_header(uhandle, consumer)
 
         # Scan a bunch of score/alignment pairs.
         while 1:
+            if self._eof(uhandle):
+                #Shouldn't have issued that _scan_alignment_header event...
+                break
             line = safe_peekline(uhandle)
             if not line.startswith(' Score'):
                 break
@@ -456,7 +498,14 @@ class _Scanner:
             read_and_call(uhandle, consumer.query, start='Query')
             read_and_call(uhandle, consumer.align, start='     ')
             read_and_call(uhandle, consumer.sbjct, start='Sbjct')
-            read_and_call_while(uhandle, consumer.noevent, blank=1)
+            try:
+                read_and_call_while(uhandle, consumer.noevent, blank=1)
+            except ValueError, err:
+                if str(err) != "Unexpected end of stream." : raise err
+                # End of File (well, it looks like it with recent versions
+                # of BLAST for multiple queries after the Iterator class
+                # has broken up the whole file into chunks).
+                break
             line = safe_peekline(uhandle)
             # Alignment continues if I see a 'Query' or the spaces for Blastn.
             if not (line.startswith('Query') or line.startswith('     ')):
@@ -485,6 +534,14 @@ class _Scanner:
         read_and_call_while(uhandle, consumer.noevent, blank=1)
         consumer.end_alignment()
 
+    def _eof(self, uhandle):
+        try:
+            line = safe_peekline(uhandle)
+        except ValueError, err:
+            if str(err) != "Unexpected end of stream." : raise err
+            line = ""
+        return not line
+
     def _scan_database_report(self, uhandle, consumer):
         #   Database: sdqib40-1.35.seg.fa
         #     Posted date:  Nov 1, 1999  4:25 PM
@@ -510,8 +567,9 @@ class _Scanner:
         #    0.319    0.136    0.395 
         # Gapped
         # Lambda     K      H
-        #    0.267   0.0410    0.140 
+        #    0.267   0.0410    0.140
 
+        if self._eof(uhandle) : return
 
         consumer.start_database_report()
         
@@ -530,7 +588,8 @@ class _Scanner:
             # BLAT output ends abruptly here, without any of the other
             # information.  Check to see if this is the case.  If so,
             # then end the database report here gracefully.
-            if not uhandle.peekline():
+            if not uhandle.peekline().strip() \
+            or uhandle.peekline().startswith("BLAST"):
                 consumer.end_database_report()
                 return
             
@@ -626,9 +685,10 @@ class _Scanner:
 
 
         # Blast 2.2.4 can sometimes skip the whole parameter section.
+        # BLAT also skips the whole parameter section.
         # Thus, check to make sure that the parameter section really
         # exists.
-        if not uhandle.peekline():
+        if not uhandle.peekline().strip():
             return
 
         # BLASTN 2.2.9 looks like it reverses the "Number of Hits" and
@@ -642,16 +702,16 @@ class _Scanner:
 
         attempt_read_and_call(uhandle, consumer.num_sequences,
                               start='Number of Sequences')
-        read_and_call(uhandle, consumer.num_hits,
+        attempt_read_and_call(uhandle, consumer.num_hits,
                       start='Number of Hits')
         attempt_read_and_call(uhandle, consumer.num_sequences,
                               start='Number of Sequences')
-        read_and_call(uhandle, consumer.num_extends,
+        attempt_read_and_call(uhandle, consumer.num_extends,
                       start='Number of extensions')
-        read_and_call(uhandle, consumer.num_good_extends,
+        attempt_read_and_call(uhandle, consumer.num_good_extends,
                       start='Number of successful')
 
-        read_and_call(uhandle, consumer.num_seqs_better_e,
+        attempt_read_and_call(uhandle, consumer.num_seqs_better_e,
                       start='Number of sequences')
 
         # not BLASTN, TBLASTX
@@ -681,8 +741,9 @@ class _Scanner:
         # not in blastx 2.2.1
         attempt_read_and_call(uhandle, consumer.query_length,
                               has_re=re.compile(r"[Ll]ength of query"))
-        read_and_call(uhandle, consumer.database_length,
-                      has_re=re.compile(r"[Ll]ength of \s*[Dd]atabase"))
+        # Not in BLASTX 2.2.22+
+        attempt_read_and_call(uhandle, consumer.database_length,
+                          has_re=re.compile(r"[Ll]ength of \s*[Dd]atabase"))
 
         # BLASTN 2.2.9
         attempt_read_and_call(uhandle, consumer.noevent,
@@ -720,15 +781,18 @@ class _Scanner:
         attempt_read_and_call(uhandle, consumer.window_size, start='A')
         # get this instead: "Window for multiple hits: 40"
         attempt_read_and_call(uhandle, consumer.window_size, start='Window for multiple hits')
-        
-        read_and_call(uhandle, consumer.dropoff_1st_pass, start='X1')
-        read_and_call(uhandle, consumer.gap_x_dropoff, start='X2')
+
+        # not in BLASTX 2.2.22+        
+        attempt_read_and_call(uhandle, consumer.dropoff_1st_pass, start='X1')
+        # not TBLASTN
+        attempt_read_and_call(uhandle, consumer.gap_x_dropoff, start='X2')
 
         # not BLASTN, TBLASTX
         attempt_read_and_call(uhandle, consumer.gap_x_dropoff_final,
                               start='X3')
 
-        read_and_call(uhandle, consumer.gap_trigger, start='S1')
+        # not TBLASTN
+        attempt_read_and_call(uhandle, consumer.gap_trigger, start='S1')
         # not in blastx 2.2.1
         # first we make sure we have additional lines to work with, if
         # not then the file is done and we don't have a final S2
@@ -773,7 +837,10 @@ class _HeaderConsumer:
         c = line.split()
         self._header.application = c[0]
         self._header.version = c[1]
-        self._header.date = c[2][1:-1]
+        if len(c) > 2:
+            #The date is missing in the new C++ output from blastx 2.2.22+
+            #Just get "BLASTX 2.2.22+\n" and that's all.
+            self._header.date = c[2][1:-1]
 
     def reference(self, line):
         if line.startswith('Reference: '):
@@ -783,10 +850,14 @@ class _HeaderConsumer:
             
     def query_info(self, line):
         if line.startswith('Query= '):
-            self._header.query = line[7:]
+            self._header.query = line[7:].lstrip()
+        elif line.startswith('Length='):
+            #New style way to give the query length in BLAST 2.2.22+ (the C++ code)
+            self._header.query_letters = _safe_int(line[7:].strip())
         elif not line.startswith('       '):  # continuation of query_info
             self._header.query = "%s%s" % (self._header.query, line)
         else:
+            #Hope it is the old style way to give the query length:
             letters, = _re_search(
                 r"([0-9,]+) letters", line,
                 "I could not find the number of letters in line\n%s" % line)
@@ -797,7 +868,11 @@ class _HeaderConsumer:
         if line.startswith('Database: '):
             self._header.database = line[10:]
         elif not line.endswith('total letters'):
-            self._header.database = self._header.database + line.strip()
+            if self._header.database:
+                #Need to include a space when merging multi line datase descr
+                self._header.database = self._header.database + " " + line.strip()
+            else:
+                self._header.database = line.strip()                
         else:
             sequences, letters =_re_search(
                 r"([0-9,]+) sequences; ([0-9,-]+) total letters", line,
@@ -899,8 +974,9 @@ class _AlignmentConsumer:
         self._multiple_alignment = Record.MultipleAlignment()
 
     def title(self, line):
-        self._alignment.title = "%s%s" % (self._alignment.title,
-                                           line.lstrip())
+        if self._alignment.title:
+            self._alignment.title += " "
+        self._alignment.title += line.strip()
 
     def length(self, line):
         #e.g. "Length = 81" or more recently, "Length=428"
@@ -1338,25 +1414,25 @@ class _ParametersConsumer:
            line, (4, 5), ncols=6, expected={0:"frameshift", 2:"decay"})
 
     def threshold(self, line):
-        if line[:2] == "T:" :
+        if line[:2] == "T:":
             #Assume its an old stlye line like "T: 123"
             self._params.threshold, = _get_cols(
                 line, (1,), ncols=2, expected={0:"T:"})
-        elif line[:28] == "Neighboring words threshold:" :
+        elif line[:28] == "Neighboring words threshold:":
             self._params.threshold, = _get_cols(
                 line, (3,), ncols=4, expected={0:"Neighboring", 1:"words", 2:"threshold:"})
-        else :
+        else:
             raise ValueError("Unrecognised threshold line:\n%s" % line)
         self._params.threshold = _safe_int(self._params.threshold)
         
     def window_size(self, line):
-        if line[:2] == "A:" :
+        if line[:2] == "A:":
             self._params.window_size, = _get_cols(
                 line, (1,), ncols=2, expected={0:"A:"})
-        elif line[:25] == "Window for multiple hits:" :
+        elif line[:25] == "Window for multiple hits:":
             self._params.window_size, = _get_cols(
                 line, (4,), ncols=5, expected={0:"Window", 2:"multiple", 3:"hits:"})
-        else :
+        else:
             raise ValueError("Unrecognised window size line:\n%s" % line)
         self._params.window_size = _safe_int(self._params.window_size)
         
@@ -1530,6 +1606,7 @@ class Iterator:
                 % type(handle))
         self._uhandle = File.UndoHandle(handle)
         self._parser = parser
+        self._header = []
 
     def next(self):
         """next(self) -> object
@@ -1539,6 +1616,7 @@ class Iterator:
 
         """
         lines = []
+        query = False
         while 1:
             line = self._uhandle.readline()
             if not line:
@@ -1549,7 +1627,26 @@ class Iterator:
                           or line.startswith('<?xml ')):
                 self._uhandle.saveline(line)
                 break
+            # New style files ommit the BLAST line to mark a new query:
+            if line.startswith("Query="):
+                if not query:
+                    if not self._header:
+                        self._header = lines[:]
+                    query = True
+                else:
+                    #Start of another record
+                    self._uhandle.saveline(line)
+                    break
             lines.append(line)
+
+        if query and "BLAST" not in lines[0]:
+            #Cheat and re-insert the header
+            #print "-"*50
+            #print "".join(self._header)
+            #print "-"*50
+            #print "".join(lines)
+            #print "-"*50
+            lines = self._header + lines
             
         if not lines:
             return None
@@ -1563,8 +1660,11 @@ class Iterator:
         return iter(self.next, None)
 
 def blastall(blastcmd, program, database, infile, align_view='7', **keywds):
-    """Execute and retrieve data from standalone BLASTPALL as handles.
+    """Execute and retrieve data from standalone BLASTPALL as handles (OBSOLETE).
     
+    NOTE - This function is obsolete, you are encouraged to the command
+    line wrapper Bio.Blast.Applications.BlastallCommandline instead.
+
     Execute and retrieve data from blastall.  blastcmd is the command
     used to launch the 'blastall' executable.  program is the blast program
     to use, e.g. 'blastp', 'blastn', etc.  database is the path to the database
@@ -1658,20 +1758,22 @@ def blastall(blastcmd, program, database, infile, align_view='7', **keywds):
         'seqalign_file' : '-O',
         'outfile' : '-o',
         }
+    from Applications import BlastallCommandline
+    cline = BlastallCommandline(blastcmd)
+    cline.set_parameter(att2param['program'], program)
+    cline.set_parameter(att2param['database'], database)
+    cline.set_parameter(att2param['infile'], infile)
+    cline.set_parameter(att2param['align_view'], str(align_view))
+    for key, value in keywds.iteritems():
+        cline.set_parameter(att2param[key], str(value))
+    return _invoke_blast(cline)
 
-    params = []
-    params.extend([att2param['program'], program])
-    params.extend([att2param['database'], database])
-    params.extend([att2param['infile'], _escape_filename(infile)])
-    params.extend([att2param['align_view'], str(align_view)])
-
-    for attr in keywds.keys():
-        params.extend([att2param[attr], str(keywds[attr])])
-
-    return _invoke_blast(blastcmd, params)
 
 def blastpgp(blastcmd, database, infile, align_view='7', **keywds):
-    """Execute and retrieve data from standalone BLASTPGP as handles.
+    """Execute and retrieve data from standalone BLASTPGP as handles (OBSOLETE).
+
+    NOTE - This function is obsolete, you are encouraged to the command
+    line wrapper Bio.Blast.Applications.BlastpgpCommandline instead.
     
     Execute and retrieve data from blastpgp.  blastcmd is the command
     used to launch the 'blastpgp' executable.  database is the path to the
@@ -1786,20 +1888,22 @@ def blastpgp(blastcmd, database, infile, align_view='7', **keywds):
         'matrix_outfile' : '-Q',
         'align_infile' : '-B',
         }
+    from Applications import BlastpgpCommandline
+    cline = BlastpgpCommandline(blastcmd)
+    cline.set_parameter(att2param['database'], database)
+    cline.set_parameter(att2param['infile'], infile)
+    cline.set_parameter(att2param['align_view'], str(align_view))
+    for key, value in keywds.iteritems():
+        cline.set_parameter(att2param[key], str(value))
+    return _invoke_blast(cline)
 
-    params = []
-    params.extend([att2param['database'], database])
-    params.extend([att2param['infile'], _escape_filename(infile)])
-    params.extend([att2param['align_view'], str(align_view)])
-
-    for attr in keywds.keys():
-        params.extend([att2param[attr], str(keywds[attr])])
-
-    return _invoke_blast(blastcmd, params)
 
 def rpsblast(blastcmd, database, infile, align_view="7", **keywds):
-    """Execute and retrieve data from standalone RPS-BLAST as handles.
+    """Execute and retrieve data from standalone RPS-BLAST as handles (OBSOLETE).
     
+    NOTE - This function is obsolete, you are encouraged to the command
+    line wrapper Bio.Blast.Applications.RpsBlastCommandline instead.
+
     Execute and retrieve data from standalone RPS-BLAST.  blastcmd is the
     command used to launch the 'rpsblast' executable.  database is the path
     to the database to search against.  infile is the path to the file
@@ -1886,17 +1990,16 @@ def rpsblast(blastcmd, database, infile, align_view="7", **keywds):
         'seqalign_file' : '-O',
         'align_outfile' : '-o',
         }
-        
-    params = []
 
-    params.extend([att2param['database'], database])
-    params.extend([att2param['infile'], _escape_filename(infile)])
-    params.extend([att2param['align_view'], str(align_view)])
+    from Applications import RpsBlastCommandline
+    cline = RpsBlastCommandline(blastcmd)
+    cline.set_parameter(att2param['database'], database)
+    cline.set_parameter(att2param['infile'], infile)
+    cline.set_parameter(att2param['align_view'], str(align_view))
+    for key, value in keywds.iteritems():
+        cline.set_parameter(att2param[key], str(value))
+    return _invoke_blast(cline)
 
-    for attr in keywds.keys():
-        params.extend([att2param[attr], str(keywds[attr])])
-
-    return _invoke_blast(blastcmd, params)
 
 def _re_search(regex, line, error_msg):
     m = re.search(regex, line)
@@ -1956,64 +2059,30 @@ def _safe_float(str):
     # try again.
     return float(str)
 
-def _escape_filename(filename) :
-    """Escape filenames with spaces (PRIVATE)."""
-    if " " not in filename :
-        return filename
 
-    #See Bug 2480 - is adding the following helpful?
-    #if os.path.isfile(filename) :
-    #    #On Windows, if the file exists, we can ask for
-    #    #its alternative short name (DOS style 8.3 format)
-    #    #which has no spaces in it.
-    #    try :
-    #        import win32api
-    #        short = win32api.GetShortPathName(filename)
-    #        assert os.path.isfile(short)
-    #        return short
-    #    except ImportError :
-    #        pass
-
-    #We'll just quote it - works on Mac etc
-    if filename.startswith('"') and filename.endswith('"') :
-        #Its already quoted
-        return filename
-    else :
-        return '"%s"' % filename
-
-def _invoke_blast(blast_cmd, params) :
+def _invoke_blast(cline):
     """Start BLAST and returns handles for stdout and stderr (PRIVATE).
 
-    Tries to deal with spaces in the BLAST executable path.
+    Expects a command line wrapper object from Bio.Blast.Applications
     """
+    import subprocess, sys
+    blast_cmd = cline.program_name
     if not os.path.exists(blast_cmd):
         raise ValueError("BLAST executable does not exist at %s" % blast_cmd)
+    #We don't need to supply any piped input, but we setup the
+    #standard input pipe anyway as a work around for a python
+    #bug if this is called from a Windows GUI program.  For
+    #details, see http://bugs.python.org/issue1124861
+    blast_process = subprocess.Popen(str(cline),
+                                     stdin=subprocess.PIPE,
+                                     stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE,
+                                     shell=(sys.platform!="win32"))
+    blast_process.stdin.close()
+    return blast_process.stdout, blast_process.stderr
 
-    cmd_string = " ".join([_escape_filename(blast_cmd)] + params)
 
-    #Try and use subprocess (available in python 2.4+)
-    try :
-        import subprocess, sys
-        #We don't need to supply any piped input, but we setup the
-        #standard input pipe anyway as a work around for a python
-        #bug if this is called from a Windows GUI program.  For
-        #details, see http://bugs.python.org/issue1124861
-        blast_process = subprocess.Popen(cmd_string,
-                                         stdin=subprocess.PIPE,
-                                         stdout=subprocess.PIPE,
-                                         stderr=subprocess.PIPE,
-                                         shell=(sys.platform!="win32"))
-        blast_process.stdin.close()
-        return blast_process.stdout, blast_process.stderr
-    except ImportError :
-        #subprocess isn't available on python 2.3
-        #Note os.popen3 is deprecated in python 2.6
-        write_handle, result_handle, error_handle \
-                      = os.popen3(cmd_string)
-        write_handle.close()
-        return result_handle, error_handle
-
-def _security_check_parameters(param_dict) :
+def _security_check_parameters(param_dict):
     """Look for any attempt to insert a command into a parameter.
 
     e.g. blastall(..., matrix='IDENTITY -F 0; rm -rf /etc/passwd')
@@ -2022,10 +2091,10 @@ def _security_check_parameters(param_dict) :
     for appending a command line), or ">", "<" or "|" (redirection)
     and if any are found raises an exception.
     """
-    for key, value in param_dict.iteritems() :
+    for key, value in param_dict.iteritems():
         str_value = str(value) # Could easily be an int or a float
-        for bad_str in [";", "&&", ">", "<", "|"] :
-            if bad_str in str_value :
+        for bad_str in [";", "&&", ">", "<", "|"]:
+            if bad_str in str_value:
                 raise ValueError("Rejecting suspicious argument for %s" % key)
 
 class _BlastErrorConsumer(_BlastConsumer):
@@ -2110,4 +2179,3 @@ class BlastErrorParser(AbstractParser):
                 raise LowQualityBlastError("Blast failure occured on query: ",
                                            data_record.query)
             line = handle.readline()
-

@@ -1,15 +1,8 @@
-# Copyright 2003 by Bartek Wilczynski.  All rights reserved.
+# Copyright 2003-2009 by Bartek Wilczynski.  All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
-"""
-Implementation of sequence motifs.
-
-Changes:
-10.2007 - BW added matrix (vertical, horizontal) input, jaspar, transfac-like output
-26.08.2007 - added a background attribute  (Bartek Wilczynski)
-26.08.2007 - added a DPQ measure   (Bartek Wilczynski)
-9.2007 (BW) : added the .to_fasta() and .weblogo() methods allowing to use the Berkeley weblogo server at http://weblogo.berkeley.edu/
+"""Implementation of sequence motifs (PRIVATE).
 """
 from Bio.Seq import Seq
 from Bio.SubsMat import FreqTable
@@ -41,7 +34,7 @@ class Motif(object):
         if self.length==None:
             self.length = len
         elif self.length != len:
-            print "len",self.length,self.instances
+            print "len",self.length,self.instances, len
             raise ValueError("You can't change the length of the motif")
 
     def _check_alphabet(self,alphabet):
@@ -416,10 +409,10 @@ class Motif(object):
                 res.add_instance(i.reverse_complement())
         else: # has counts
             res.has_counts=True
-            res.counts["A"]=self.counts["T"]
-            res.counts["T"]=self.counts["A"]
-            res.counts["G"]=self.counts["C"]
-            res.counts["C"]=self.counts["G"]
+            res.counts["A"]=self.counts["T"][:]
+            res.counts["T"]=self.counts["A"][:]
+            res.counts["G"]=self.counts["C"][:]
+            res.counts["C"]=self.counts["G"][:]
             res.counts["A"].reverse()
             res.counts["C"].reverse()
             res.counts["G"].reverse()
@@ -581,7 +574,7 @@ class Motif(object):
         for i in range(self.length):
             max_f=0
             max_n="X"
-            for n in self[i].keys():
+            for n in sorted(self[i]):
                 if self[i][n]>max_f:
                     max_f=self[i][n]
                     max_n=n
@@ -595,7 +588,7 @@ class Motif(object):
         for i in range(self.length):
             min_f=10.0
             min_n="X"
-            for n in self[i].keys():
+            for n in sorted(self[i]):
                 if self[i][n]<min_f:
                     min_f=self[i][n]
                     min_n=n
@@ -757,3 +750,25 @@ class Motif(object):
             return formatters[format]()
         except KeyError:
             raise ValueError("Wrong format type")
+
+    def scanPWM(self,seq):
+        """
+        scans (using a fast C extension) a nucleotide sequence and returns the matrix of log-odds scores for all positions
+
+        - the result is a one-dimensional numpy array
+        - the sequence can only be a DNA sequence
+        - the search is performed only on one strand
+        """
+        if self.alphabet!=IUPAC.unambiguous_dna:
+            raise ValueError("Wrong alphabet! Use only with DNA motifs")
+        if seq.alphabet!=IUPAC.unambiguous_dna:
+            raise ValueError("Wrong alphabet! Use only with DNA sequences")
+
+        
+        import numpy
+        # get the log-odds matrix into a proper shape (each column contains sorted (ACGT) log-odds values)
+        logodds=numpy.array([map(lambda x: x[1],sorted(x.items())) for x in self.log_odds()]).transpose()
+        
+        import _pwm
+        
+        return _pwm.calculate(seq.tostring(),logodds)

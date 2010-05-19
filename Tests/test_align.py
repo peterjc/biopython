@@ -16,16 +16,15 @@ from Bio import Alphabet
 from Bio import Seq
 from Bio.Alphabet import IUPAC
 from Bio import Clustalw
-from Bio.Align.FormatConvert import FormatConverter
 from Bio.Align import AlignInfo
-from Bio.Fasta import FastaAlign
+from Bio import AlignIO
 from Bio.SubsMat import FreqTable
 from Bio.Align.Generic import Alignment
 
 #Very simple tests on an empty alignment
 alignment = Alignment(Alphabet.generic_alphabet)
 assert alignment.get_alignment_length() == 0
-assert alignment.get_all_seqs() == []
+assert len(alignment) == 0
 del alignment
 
 #Basic tests on simple three string alignment
@@ -35,14 +34,14 @@ alignment.add_sequence("mixed", letters)
 alignment.add_sequence("lower", letters.lower())
 alignment.add_sequence("upper", letters.upper())
 assert alignment.get_alignment_length() == 26
-assert len(alignment.get_all_seqs()) == 3
+assert len(alignment) == 3
 assert alignment.get_seq_by_num(0).tostring() == letters
 assert alignment.get_seq_by_num(1).tostring() == letters.lower()
 assert alignment.get_seq_by_num(2).tostring() == letters.upper()
-assert alignment.get_all_seqs()[0].description == "mixed"
-assert alignment.get_all_seqs()[1].description == "lower"
-assert alignment.get_all_seqs()[2].description == "upper"
-for (col, letter) in enumerate(letters) :
+assert alignment[0].description == "mixed"
+assert alignment[1].description == "lower"
+assert alignment[2].description == "upper"
+for (col, letter) in enumerate(letters):
     assert alignment.get_column(col) == letter \
                                       + letter.lower() \
                                       + letter.upper()
@@ -76,8 +75,7 @@ alignment = Clustalw.parse_file(os.path.join(test_dir, test_names[0]))
 
 # test the base alignment stuff
 print 'all_seqs...'
-all_seqs = alignment.get_all_seqs()
-for seq_record in all_seqs:
+for seq_record in alignment:
     print 'description:', seq_record.description
     print 'seq:', repr(seq_record.seq)
 print 'length:', alignment.get_alignment_length()
@@ -133,20 +131,20 @@ print 'test print_info_content'
 AlignInfo.print_info_content(align_info)
 print "testing reading and writing fasta format..."
 
-to_parse = os.path.join(os.curdir, 'Fasta', 'fa01')
+to_parse = os.path.join(os.curdir, 'Quality', 'example.fasta')
 
-alignment = FastaAlign.parse_file(to_parse, 'PROTEIN')
+alignment = AlignIO.read(open(to_parse), "fasta",
+                         alphabet = Alphabet.Gapped(IUPAC.ambiguous_dna))
 
 # test the base alignment stuff
 print 'all_seqs...'
-all_seqs = alignment.get_all_seqs()
-for seq_record in all_seqs:
+for seq_record in alignment:
     print 'description:', seq_record.description
     print 'seq:', repr(seq_record.seq)
 
 print 'length:', alignment.get_alignment_length()
 align_info = AlignInfo.SummaryInfo(alignment)
-consensus = align_info.dumb_consensus(ambiguous = "X")
+consensus = align_info.dumb_consensus(ambiguous="N", threshold=0.6)
 assert isinstance(consensus, Seq.Seq)
 print 'consensus:', repr(consensus)
 
@@ -159,13 +157,10 @@ print "Test format conversion..."
 alignment = Clustalw.parse_file(os.path.join(os.curdir, 'Clustalw',
                                              'opuntia.aln'))
 
-converter = FormatConverter(alignment)
-
-fasta_align = converter.to_fasta()
-clustal_align = converter.to_clustal()
-
-print fasta_align
-print clustal_align
+print "As FASTA:"
+print alignment.format("fasta")
+print "As Clustal:"
+print alignment.format("clustal")
 
 """
 # test to find a position in an original sequence given a

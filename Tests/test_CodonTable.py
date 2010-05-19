@@ -14,44 +14,50 @@ assert list_ambiguous_codons(['TGA', 'TAA', 'TAG'],IUPACData.ambiguous_dna_value
 
 
 #Basic sanity test,
-for n in ambiguous_generic_by_id.keys() :
+for n in ambiguous_generic_by_id.keys():
     assert ambiguous_rna_by_id[n].forward_table["GUU"] == "V"
     assert ambiguous_rna_by_id[n].forward_table["GUN"] == "V"
-    assert ambiguous_rna_by_id[n].forward_table["UUN"] == "X" #F or L
+    if n != 23 :
+        assert ambiguous_rna_by_id[n].forward_table["UUN"] == "X" #F or L
 
     assert ambiguous_dna_by_id[n].forward_table["GTT"] == "V"
-    assert ambiguous_dna_by_id[n].forward_table["TTN"] == "X" #F or L
+    if n != 23 :
+        assert ambiguous_dna_by_id[n].forward_table["TTN"] == "X" #F or L
     assert ambiguous_dna_by_id[n].forward_table["GTN"] == "V"
 
-    assert ambiguous_generic_by_id[n].forward_table.get("TTN") == "X"
+    if n != 23 :
+        assert ambiguous_generic_by_id[n].forward_table.get("TTN") == "X"
     assert ambiguous_generic_by_id[n].forward_table["ACN"] == "T"
     assert ambiguous_generic_by_id[n].forward_table["GUU"] == "V"
     assert ambiguous_generic_by_id[n].forward_table["GUN"] == "V"
-    assert ambiguous_generic_by_id[n].forward_table["UUN"] == "X" #F or L
+    if n != 23 :
+        assert ambiguous_generic_by_id[n].forward_table["UUN"] == "X" #F or L
     assert ambiguous_generic_by_id[n].forward_table["GTT"] == "V"
-    assert ambiguous_generic_by_id[n].forward_table["TTN"] == "X" #F or L
+    if n != 23 :
+        assert ambiguous_generic_by_id[n].forward_table["TTN"] == "X" #F or L
     assert ambiguous_generic_by_id[n].forward_table["GTN"] == "V"
     #And finally something evil, an RNA-DNA mixture:
-    assert ambiguous_generic_by_id[n].forward_table["UTN"] == "X" #F or L
+    if n != 23 :
+        assert ambiguous_generic_by_id[n].forward_table["UTN"] == "X" #F or L
     assert ambiguous_generic_by_id[n].forward_table["UTU"] == "F"
 
     #R = A or G, so URR = UAA or UGA / TRA = TAA or TGA = stop codons
     if "UAA" in unambiguous_rna_by_id[n].stop_codons \
-    and "UGA" in unambiguous_rna_by_id[n].stop_codons :
-        try :
+    and "UGA" in unambiguous_rna_by_id[n].stop_codons:
+        try:
             print ambiguous_dna_by_id[n].forward_table["TRA"]
             assert False, "Should be a stop only"
-        except KeyError :
+        except KeyError:
             pass
-        try :
+        try:
             print ambiguous_rna_by_id[n].forward_table["URA"]
             assert False, "Should be a stop only"
-        except KeyError :
+        except KeyError:
             pass
-        try :
+        try:
             print ambiguous_generic_by_id[n].forward_table["URA"]
             assert False, "Should be a stop only"
-        except KeyError :
+        except KeyError:
             pass
         assert "URA" in ambiguous_generic_by_id[n].stop_codons
         assert "URA" in ambiguous_rna_by_id[n].stop_codons
@@ -60,26 +66,26 @@ for n in ambiguous_generic_by_id.keys() :
 
     if "UAG" in unambiguous_rna_by_id[n].stop_codons \
     and "UAA" in unambiguous_rna_by_id[n].stop_codons \
-    and "UGA" in unambiguous_rna_by_id[n].stop_codons :
-        try :
+    and "UGA" in unambiguous_rna_by_id[n].stop_codons:
+        try:
             print ambiguous_dna_by_id[n].forward_table["TAR"]
             assert False, "Should be a stop only"
-        except KeyError :
+        except KeyError:
             pass
-        try :
+        try:
             print ambiguous_rna_by_id[n].forward_table["UAR"]
             assert False, "Should be a stop only"
-        except KeyError :
+        except KeyError:
             pass
-        try :
+        try:
             print ambiguous_generic_by_id[n].forward_table["UAR"]
             assert False, "Should be a stop only"
-        except KeyError :
+        except KeyError:
             pass
-        try :
+        try:
             print ambiguous_generic_by_id[n].forward_table["URR"]
             assert False, "Should be a stop OR an amino"
-        except TranslationError :
+        except TranslationError:
             pass
         assert "UAR" in ambiguous_generic_by_id[n].stop_codons
         assert "UAR" in ambiguous_rna_by_id[n].stop_codons
@@ -93,7 +99,7 @@ for n in ambiguous_generic_by_id.keys() :
     if "UUG" in unambiguous_rna_by_id[n].start_codons \
     and "CUG" in unambiguous_rna_by_id[n].start_codons \
     and "AUG" in unambiguous_rna_by_id[n].start_codons \
-    and "UUG" not in unambiguous_rna_by_id[n].start_codons :
+    and "UUG" not in unambiguous_rna_by_id[n].start_codons:
         assert "NUG" not in ambiguous_dna_by_id[n].start_codons
         assert "RUG" not in ambiguous_dna_by_id[n].start_codons
         assert "WUG" not in ambiguous_dna_by_id[n].start_codons

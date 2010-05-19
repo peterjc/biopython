@@ -1,6 +1,15 @@
-# Clustalw modules
+# This code is part of the Biopython distribution and governed by its
+# license.  Please see the LICENSE file that should have been included
+# as part of this package.
+"""Code for calling ClustalW and parsing its output (OBSOLETE).
 
-"""
+This module has been superseded by the Bio.AlignIO framework for
+alignment parsing, and the ClustalW command line wrapper in
+Bio.Align.Applications for calling the tool. These are both described
+in the current version of the Biopython Tutorial and Cookbook.
+This means Bio.Clustalw is now obsolete and is likely to be deprecated
+and eventually removed in future releases of Biopython.
+
 A set of classes to interact with the multiple alignment command
 line program clustalw. 
 
@@ -23,14 +32,16 @@ o MultipleAlignCL"""
 # standard library
 import os
 import sys
+import subprocess
 
 # biopython
 from Bio import Alphabet
 from Bio.Alphabet import IUPAC
 from Bio.Align.Generic import Alignment
+from Bio.Application import _escape_filename
 
 def parse_file(file_name, alphabet = IUPAC.unambiguous_dna, debug_level = 0):
-    """Parse the given file into a clustal aligment object.
+    """Parse the given file into a clustal aligment object (OBSOLETE).
     
     Arguments:
     o file_name - The name of the file to parse.
@@ -40,7 +51,28 @@ def parse_file(file_name, alphabet = IUPAC.unambiguous_dna, debug_level = 0):
 
     There is a deprecated optional argument debug_level which has no effect.
 
-    Since Biopython 1.46, this has called Bio.AlignIO internally.
+    This function is obsolete, and any new code should call Bio.AlignIO
+    instead. For example using Bio.Clustalw, you might have:
+
+    >>> from Bio import Clustalw
+    >>> from Bio import Alphabet
+    >>> filename = "Clustalw/protein.aln"
+    >>> alpha = Alphabet.Gapped(Alphabet.generic_protein)
+    >>> align = Clustalw.parse_file(filename, alphabet=alpha)
+    >>> print align.get_alignment_length()
+    411
+    >>> clustalw_string = str(align)
+
+    This becomes:
+
+    >>> from Bio import AlignIO
+    >>> from Bio import Alphabet
+    >>> filename = "Clustalw/protein.aln"
+    >>> alpha = Alphabet.Gapped(Alphabet.generic_protein)
+    >>> align = AlignIO.read(open(filename), "clustal", alphabet=alpha)
+    >>> print align.get_alignment_length()
+    411
+    >>> assert clustalw_string == align.format("clustal")
     """ 
 
     # Avoid code duplication by calling Bio.AlignIO to do this for us.
@@ -50,31 +82,31 @@ def parse_file(file_name, alphabet = IUPAC.unambiguous_dna, debug_level = 0):
     handle.close()
 
     #Force this generic alignment into a ClustalAlignment... nasty hack
-    if isinstance(alphabet, Alphabet.Gapped) :
+    if isinstance(alphabet, Alphabet.Gapped):
         alpha = alphabet
-    else :
+    else:
         alpha = Alphabet.Gapped(alphabet)
     clustal_alignment = ClustalAlignment(alpha)
     clustal_alignment._records = generic_alignment._records
-    for record in clustal_alignment._records :
+    for record in clustal_alignment._records:
         record.seq.alphabet = alpha
 
-    try :
+    try:
         clustal_alignment._version = generic_alignment._version
-    except AttributeError :
+    except AttributeError:
         #Missing the version, could be a 3rd party tool's output
         pass
 
     try :       
         clustal_alignment._star_info = generic_alignment._star_info
-    except AttributeError :
+    except AttributeError:
         #Missing the consensus, again, this is not always present
         pass
 
     return clustal_alignment
 
 def do_alignment(command_line, alphabet=None):
-    """Perform an alignment with the given command line.
+    """Perform an alignment with the given command line (OBSOLETE).
     
     Arguments:
     o command_line - A command line object that can give out
@@ -86,34 +118,30 @@ def do_alignment(command_line, alphabet=None):
     Returns:
     o A clustal alignment object corresponding to the created alignment.
     If the alignment type was not a clustal object, None is returned.
+
+    This function (and the associated command line object) are now obsolete.
+    Please use the Bio.Align.Applications.ClustalwCommandline wrapper with
+    the Python subprocess module (and Bio.AlignIO for parsing) as described
+    in the tutorial.
     """
-    #Try and use subprocess (available in python 2.4+)
-    try :
-        import subprocess
-        #We don't need to supply any piped input, but we setup the
-        #standard input pipe anyway as a work around for a python
-        #bug if this is called from a Windows GUI program.  For
-        #details, see http://bugs.python.org/issue1124861
-        child_process = subprocess.Popen(str(command_line),
-                                         stdin=subprocess.PIPE,
-                                         stdout=subprocess.PIPE,
-                                         stderr=subprocess.PIPE,
-                                         shell=(sys.platform!="win32")
-                                         )
-        #Use .communicate as can get deadlocks with .wait(), see Bug 2804
-        child_process.communicate() #ignore the stdout and strerr data
-        value = child_process.returncode
-    except ImportError :
-        #Fall back for python 2.3
-        run_clust = os.popen(str(command_line))
-        status = run_clust.close()
-        # The exit status is the second byte of the termination status
-        # TODO - Check this holds on win32...
-        value = 0
-        if status: value = status / 256
+    #We don't need to supply any piped input, but we setup the
+    #standard input pipe anyway as a work around for a python
+    #bug if this is called from a Windows GUI program.  For
+    #details, see http://bugs.python.org/issue1124861
+    child_process = subprocess.Popen(str(command_line),
+                                     stdin=subprocess.PIPE,
+                                     stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE,
+                                     shell=(sys.platform!="win32")
+                                     )
+    #Use .communicate as can get deadlocks with .wait(), see Bug 2804
+    child_process.communicate() #ignore the stdout and strerr data
+    value = child_process.returncode
 
     # check the return value for errors, as on 1.81 the return value
     # from Clustalw is actually helpful for figuring out errors
+    # TODO - Update this for new error codes using in clustalw 2
+
     # 1 => bad command line option
     if value == 1:
         raise ValueError("Bad command line option in the command: %s"
@@ -155,20 +183,23 @@ def do_alignment(command_line, alphabet=None):
 
 
 class ClustalAlignment(Alignment):
-    """Work with the clustal aligment format.
+    """Work with the clustal aligment format (OBSOLETE).
 
     This format is the default output from clustal -- these files normally
     have an extension of .aln.
+
+    This obsolete alignment object is a subclass of the more general alignment
+    object used in Bio.AlignIO. The old practical difference is here str(align)
+    would give the alignment as a string in clustal format, whereas in general
+    you must do align.format("clustal"), which supports other formats too.
     """
     # the default version to use if one isn't set
     DEFAULT_VERSION = '1.81'
     
     def __init__(self, alphabet = Alphabet.Gapped(IUPAC.ambiguous_dna)):
         Alignment.__init__(self, alphabet)
-
         # represent all of those stars in the aln output format
         self._star_info = ''
-        
         self._version = ''
 
     def __str__(self):
@@ -177,41 +208,15 @@ class ClustalAlignment(Alignment):
         The output produced from this should also be formatted in valid
         clustal format.
         """
-        # Avoid code duplication by calling Bio.AlignIO to do this for us.
-        from Bio import AlignIO
-        from StringIO import StringIO
-        handle = StringIO()
-        AlignIO.write([self], handle, "clustal")
-        handle.seek(0)
-        return handle.read()
-            
-def _escape_filename(filename) :
-    """Escape filenames with spaces (PRIVATE).
-
-    NOTE - This code is duplicated in Bio.Blast.NCBIStandalone,
-    scope for refactoring!
-    """
-    if " " not in filename :
-        return filename
-
-    #We'll just quote it - works on Mac etc
-    if filename.startswith('"') and filename.endswith('"') :
-        #Its already quoted
-        return filename
-    else :
-        return '"%s"' % filename
+        return self.format("clustal")
 
 class MultipleAlignCL:
-    """Represent a clustalw multiple alignment command line.
+    """Represent a clustalw multiple alignment command line (OBSOLETE).
 
-    This is meant to make it easy to code the command line options you
-    want to submit to clustalw.
-
-    Clustalw has a ton of options and things to do but this is set up to
-    represent a clustalw mutliple alignment.
-
-    Warning: I don't use all of these options personally, so if you find
-    one to be broken for any reason, please let us know!
+    This command line wrapper is considerd obsolete. Please use the replacement
+    Bio.Align.Applications.ClustalwCommandline wrapper instead, which uses the
+    standardised Bio.Application style interface. This is described in the
+    tutorial, with examples using ClustalW.
     """
     # set the valid options for different parameters
     OUTPUT_TYPES = ['GCG', 'GDE', 'PHYLIP', 'PIR', 'NEXUS', 'FASTA']
@@ -489,3 +494,22 @@ class MultipleAlignCL:
             raise ValueError("Invalid residue type %s. Valid choices are %s"
                              % (residue_type, self.RESIDUE_TYPES))
 
+def _test():
+    """Run the Bio.Clustalw module's doctests (PRIVATE).
+
+    This will try and locate the unit tests directory, and run the doctests
+    from there in order that the relative paths used in the examples work.
+    """
+    import doctest
+    import os
+    if os.path.isdir(os.path.join("..","..","Tests")):
+        print "Runing doctests..."
+        cur_dir = os.path.abspath(os.curdir)
+        os.chdir(os.path.join("..","..","Tests"))
+        doctest.testmod()
+        os.chdir(cur_dir)
+        del cur_dir
+        print "Done"
+
+if __name__ == "__main__":
+    _test()

@@ -17,18 +17,13 @@ import string #for maketrans only
 import array
 import sys
 
-#TODO - Remove this work around once we drop python 2.3 support
-try:
-    set = set
-except NameError:
-    from sets import Set as set
-
 import Alphabet
 from Alphabet import IUPAC
+from Bio.SeqRecord import SeqRecord
 from Data.IUPACData import ambiguous_dna_complement, ambiguous_rna_complement
 from Bio.Data import CodonTable
 
-def _maketrans(complement_mapping) :
+def _maketrans(complement_mapping):
     """Makes a python string translation table (PRIVATE).
 
     Arguments:
@@ -94,32 +89,48 @@ class Seq(object):
         self.alphabet = alphabet  # Seq API requirement
  
     # A data property is/was a Seq API requirement
-    def _set_data(self, value) :
-        #TODO - In the next release, actually raise an exception?
-        #The Seq object is like a python string, it should be read only!
-        import warnings
-        warnings.warn("Writing to the Seq object's .data propery is deprecated.",
-                      DeprecationWarning)
-        self._data = value
-    data = property(fget= lambda self : str(self),
-                    fset=_set_data,
-                    doc="Sequence as a string (DEPRECATED)")
+    # Note this is read only since the Seq object is meant to be imutable
+    @property
+    def data(self) :
+        """Sequence as a string (OBSOLETE/DEPRECATED).
+
+        This is a read only property provided for backwards compatility with
+        older versions of Biopython (as is the tostring() method). We now
+        encourage you to use str(my_seq) instead of my_seq.data or the method
+        my_seq.tostring().
+
+        In recent releases of Biopython it was possible to change a Seq object
+        by updating its data property, but this triggered a deprecation warning.
+        Now the data property is read only, since Seq objects are meant to be
+        immutable:
+
+        >>> from Bio.Seq import Seq
+        >>> from Bio.Alphabet import generic_dna
+        >>> my_seq = Seq("ACGT", generic_dna)
+        >>> str(my_seq) == my_seq.tostring() == my_seq.data == "ACGT"
+        True
+        >>> my_seq.data = "AAAA"
+        Traceback (most recent call last):
+           ...
+        AttributeError: can't set attribute
+        """
+        return str(self)
 
     def __repr__(self):
         """Returns a (truncated) representation of the sequence for debugging."""
-        if len(self) > 60 :
+        if len(self) > 60:
             #Shows the last three letters as it is often useful to see if there
             #is a stop codon at the end of a sequence.
             #Note total length is 54+3+3=60
             return "%s('%s...%s', %s)" % (self.__class__.__name__,
                                    str(self)[:54], str(self)[-3:],
                                    repr(self.alphabet))
-        else :
+        else:
             return "%s(%s, %s)" % (self.__class__.__name__,
                                   repr(self.data),
                                    repr(self.alphabet))
     def __str__(self):
-        """Returns the full sequence as a python string.
+        """Returns the full sequence as a python string, use str(my_seq).
 
         Note that Biopython 1.44 and earlier would give a truncated
         version of repr(my_seq) for str(my_seq).  If you are writing code
@@ -128,73 +139,153 @@ class Seq(object):
         """
         return self._data
 
-    """
-    TODO - Work out why this breaks test_Restriction.py
-    (Comparing Seq objects would be nice to have.  May need to think about
-    hashes and the in operator for when have list/dictionary of Seq objects...)
     def __cmp__(self, other):
-        if hasattr(other, "alphabet") :
-            #other should be a Seq or a MutableSeq
-            if not Alphabet._check_type_compatible([self.alphabet,
-                                                    other.alphabet]) :
-                raise TypeError("Incompatable alphabets %s and %s" \
-                                % (repr(self.alphabet), repr(other.alphabet)))
-            #They should be the same sequence type (or one of them is generic)
-            return cmp(str(self), str(other))
-        elif isinstance(other, basestring) :
-            return cmp(str(self), other)
-        else :
-            raise TypeError
-    """
+        """Compare the sequence to another sequence or a string (README).
 
-    def __len__(self): return len(self._data)       # Seq API requirement
+        Historically comparing Seq objects has done Python object comparison.
+        After considerable discussion (keeping in mind constraints of the
+        Python language, hashes and dictionary support) a future release of
+        Biopython will change this to use simple string comparison. The plan is
+        that comparing incompatible alphabets (e.g. DNA to RNA) will trigger a
+        warning.
+
+        This version of Biopython still does Python object comparison, but with
+        a warning about this future change. During this transition period,
+        please just do explicit comparisons:
+
+        >>> seq1 = Seq("ACGT")
+        >>> seq2 = Seq("ACGT")
+        >>> id(seq1) == id(seq2)
+        False
+        >>> str(seq1) == str(seq2)
+        True
+
+        Note - This method indirectly supports ==, < , etc.
+        """
+        if hasattr(other, "alphabet"):
+            #other should be a Seq or a MutableSeq
+            import warnings
+            warnings.warn("In future comparing Seq objects will use string "
+                          "comparison (not object comparison). Incompatible "
+                          "alphabets will trigger a warning (not an exception). "
+                          "In the interim please use id(seq1)==id(seq2) or "
+                          "str(seq1)==str(seq2) to make your code explicit "
+                          "and to avoid this warning.", FutureWarning)
+        return cmp(id(self), id(other))
+
+    def __len__(self):
+        """Returns the length of the sequence, use len(my_seq)."""
+        return len(self._data)       # Seq API requirement
 
     def __getitem__(self, index) :                 # Seq API requirement
+        """Returns a subsequence of single letter, use my_seq[index]."""
         #Note since Python 2.0, __getslice__ is deprecated
         #and __getitem__ is used instead.
         #See http://docs.python.org/ref/sequence-methods.html
-        if isinstance(index, int) :
+        if isinstance(index, int):
             #Return a single letter as a string
             return self._data[index]
-        else :
+        else:
             #Return the (sub)sequence as another Seq object
             return Seq(self._data[index], self.alphabet)
 
     def __add__(self, other):
-        """Add another sequence or string to this sequence."""
-        if hasattr(other, "alphabet") :
+        """Add another sequence or string to this sequence.
+
+        If adding a string to a Seq, the alphabet is preserved:
+
+        >>> from Bio.Seq import Seq
+        >>> from Bio.Alphabet import generic_protein
+        >>> Seq("MELKI", generic_protein) + "LV"
+        Seq('MELKILV', ProteinAlphabet())
+
+        When adding two Seq (like) objects, the alphabets are important.
+        Consider this example:
+
+        >>> from Bio.Seq import Seq
+        >>> from Bio.Alphabet.IUPAC import unambiguous_dna, ambiguous_dna
+        >>> unamb_dna_seq = Seq("ACGT", unambiguous_dna)
+        >>> ambig_dna_seq = Seq("ACRGT", ambiguous_dna)
+        >>> unamb_dna_seq
+        Seq('ACGT', IUPACUnambiguousDNA())
+        >>> ambig_dna_seq
+        Seq('ACRGT', IUPACAmbiguousDNA())
+
+        If we add the ambiguous and unambiguous IUPAC DNA alphabets, we get
+        the more general ambiguous IUPAC DNA alphabet:
+        
+        >>> unamb_dna_seq + ambig_dna_seq
+        Seq('ACGTACRGT', IUPACAmbiguousDNA())
+
+        However, if the default generic alphabet is included, the result is
+        a generic alphabet:
+
+        >>> Seq("") + ambig_dna_seq
+        Seq('ACRGT', Alphabet())
+
+        You can't add RNA and DNA sequences:
+        
+        >>> from Bio.Alphabet import generic_dna, generic_rna
+        >>> Seq("ACGT", generic_dna) + Seq("ACGU", generic_rna)
+        Traceback (most recent call last):
+           ...
+        TypeError: Incompatable alphabets DNAAlphabet() and RNAAlphabet()
+
+        You can't add nucleotide and protein sequences:
+
+        >>> from Bio.Alphabet import generic_dna, generic_protein
+        >>> Seq("ACGT", generic_dna) + Seq("MELKI", generic_protein)
+        Traceback (most recent call last):
+           ...
+        TypeError: Incompatable alphabets DNAAlphabet() and ProteinAlphabet()
+        """
+        if hasattr(other, "alphabet"):
             #other should be a Seq or a MutableSeq
             if not Alphabet._check_type_compatible([self.alphabet,
-                                                    other.alphabet]) :
+                                                    other.alphabet]):
                 raise TypeError("Incompatable alphabets %s and %s" \
                                 % (repr(self.alphabet), repr(other.alphabet)))
             #They should be the same sequence type (or one of them is generic)
             a = Alphabet._consensus_alphabet([self.alphabet, other.alphabet])
             return self.__class__(str(self) + str(other), a)
-        elif isinstance(other, basestring) :
+        elif isinstance(other, basestring):
             #other is a plain string - use the current alphabet
             return self.__class__(str(self) + other, self.alphabet)
+        elif isinstance(other, SeqRecord):
+            #Get the SeqRecord's __radd__ to handle this
+            return NotImplemented
         else :
             raise TypeError
 
     def __radd__(self, other):
-        if hasattr(other, "alphabet") :
+        """Adding a sequence on the left.
+
+        If adding a string to a Seq, the alphabet is preserved:
+
+        >>> from Bio.Seq import Seq
+        >>> from Bio.Alphabet import generic_protein
+        >>> "LV" + Seq("MELKI", generic_protein)
+        Seq('LVMELKI', ProteinAlphabet())
+
+        Adding two Seq (like) objects is handled via the __add__ method.
+        """
+        if hasattr(other, "alphabet"):
             #other should be a Seq or a MutableSeq
             if not Alphabet._check_type_compatible([self.alphabet,
-                                                    other.alphabet]) :
+                                                    other.alphabet]):
                 raise TypeError("Incompatable alphabets %s and %s" \
                                 % (repr(self.alphabet), repr(other.alphabet)))
             #They should be the same sequence type (or one of them is generic)
             a = Alphabet._consensus_alphabet([self.alphabet, other.alphabet])
             return self.__class__(str(other) + str(self), a)
-        elif isinstance(other, basestring) :
+        elif isinstance(other, basestring):
             #other is a plain string - use the current alphabet
             return self.__class__(other + str(self), self.alphabet)
-        else :
+        else:
             raise TypeError
 
     def tostring(self):                            # Seq API requirement
-        """Returns the full sequence as a python string.
+        """Returns the full sequence as a python string (OBSOLETE).
 
         Although not formally deprecated, you are now encouraged to use
         str(my_seq) instead of my_seq.tostring()."""
@@ -216,7 +307,7 @@ class Seq(object):
         """
         return MutableSeq(str(self), self.alphabet)
 
-    def _get_seq_str_and_check_alphabet(self, other_sequence) :
+    def _get_seq_str_and_check_alphabet(self, other_sequence):
         """string/Seq/MutableSeq to string, checking alphabet (PRIVATE).
 
         For a string argument, returns the string.
@@ -224,14 +315,14 @@ class Seq(object):
         For a Seq or MutableSeq, it checks the alphabet is compatible
         (raising an exception if it isn't), and then returns a string.
         """
-        try :
+        try:
             other_alpha = other_sequence.alphabet
-        except AttributeError :
+        except AttributeError:
             #Assume other_sequence is a string
             return other_sequence
 
         #Other should be a Seq or a MutableSeq
-        if not Alphabet._check_type_compatible([self.alphabet, other_alpha]) :
+        if not Alphabet._check_type_compatible([self.alphabet, other_alpha]):
             raise TypeError("Incompatable alphabets %s and %s" \
                             % (repr(self.alphabet), repr(other_alpha)))
         #Return as a string
@@ -281,6 +372,37 @@ class Seq(object):
         sub_str = self._get_seq_str_and_check_alphabet(sub)
         return str(self).count(sub_str, start, end)
 
+    def __contains__(self, char):
+        """Implements the 'in' keyword, like a python string.
+
+        e.g.
+
+        >>> from Bio.Seq import Seq
+        >>> from Bio.Alphabet import generic_dna, generic_rna, generic_protein
+        >>> my_dna = Seq("ATATGAAATTTGAAAA", generic_dna)
+        >>> "AAA" in my_dna
+        True
+        >>> Seq("AAA") in my_dna
+        True
+        >>> Seq("AAA", generic_dna) in my_dna
+        True
+
+        Like other Seq methods, this will raise a type error if another Seq
+        (or Seq like) object with an incompatible alphabet is used:
+
+        >>> Seq("AAA", generic_rna) in my_dna
+        Traceback (most recent call last):
+           ...
+        TypeError: Incompatable alphabets DNAAlphabet() and RNAAlphabet()
+        >>> Seq("AAA", generic_protein) in my_dna
+        Traceback (most recent call last):
+           ...
+        TypeError: Incompatable alphabets DNAAlphabet() and ProteinAlphabet()
+        """
+        #If it has one, check the alphabet:
+        sub_str = self._get_seq_str_and_check_alphabet(char)
+        return sub_str in str(self)
+
     def find(self, sub, start=0, end=sys.maxint):
         """Find method, like that of a python string.
 
@@ -295,7 +417,7 @@ class Seq(object):
          - end - optional integer, slice end
 
         Returns -1 if the subsequence is NOT found.
-
+        
         e.g. Locating the first typical start codon, AUG, in an RNA sequence:
 
         >>> from Bio.Seq import Seq
@@ -333,7 +455,7 @@ class Seq(object):
         sub_str = self._get_seq_str_and_check_alphabet(sub)
         return str(self).rfind(sub_str, start, end)
 
-    def startswith(self, prefix, start=0, end=sys.maxint) :
+    def startswith(self, prefix, start=0, end=sys.maxint):
         """Does the Seq start with the given prefix?  Returns True/False.
 
         This behaves like the python string method of the same name.
@@ -356,21 +478,21 @@ class Seq(object):
         True
         """
         #If it has one, check the alphabet:
-        if isinstance(prefix, tuple) :
+        if isinstance(prefix, tuple):
             #TODO - Once we drop support for Python 2.4, instead of this
             #loop offload to the string method (requires Python 2.5+).
             #Check all the alphabets first...
             prefix_strings = [self._get_seq_str_and_check_alphabet(p) \
                               for p in prefix]
-            for prefix_str in prefix_strings :
-                if str(self).startswith(prefix_str, start, end) :
+            for prefix_str in prefix_strings:
+                if str(self).startswith(prefix_str, start, end):
                     return True
             return False
-        else :
+        else:
             prefix_str = self._get_seq_str_and_check_alphabet(prefix)
             return str(self).startswith(prefix_str, start, end)
 
-    def endswith(self, suffix, start=0, end=sys.maxint) :
+    def endswith(self, suffix, start=0, end=sys.maxint):
         """Does the Seq end with the given suffix?  Returns True/False.
 
         This behaves like the python string method of the same name.
@@ -393,22 +515,22 @@ class Seq(object):
         True
         """        
         #If it has one, check the alphabet:
-        if isinstance(suffix, tuple) :
+        if isinstance(suffix, tuple):
             #TODO - Once we drop support for Python 2.4, instead of this
             #loop offload to the string method (requires Python 2.5+).
             #Check all the alphabets first...
             suffix_strings = [self._get_seq_str_and_check_alphabet(p) \
                               for p in suffix]
-            for suffix_str in suffix_strings :
-                if str(self).endswith(suffix_str, start, end) :
+            for suffix_str in suffix_strings:
+                if str(self).endswith(suffix_str, start, end):
                     return True
             return False
-        else :
+        else:
             suffix_str = self._get_seq_str_and_check_alphabet(suffix)
             return str(self).endswith(suffix_str, start, end)
 
 
-    def split(self, sep=None, maxsplit=-1) :
+    def split(self, sep=None, maxsplit=-1):
         """Split method, like that of a python string.
 
         This behaves like the python string method of the same name.
@@ -446,7 +568,7 @@ class Seq(object):
         return [Seq(part, self.alphabet) \
                 for part in str(self).split(sep_str, maxsplit)]
 
-    def rsplit(self, sep=None, maxsplit=-1) :
+    def rsplit(self, sep=None, maxsplit=-1):
         """Right split method, like that of a python string.
 
         This behaves like the python string method of the same name.
@@ -466,19 +588,10 @@ class Seq(object):
         """
         #If it has one, check the alphabet:
         sep_str = self._get_seq_str_and_check_alphabet(sep)
-        try :
-            return [Seq(part, self.alphabet) \
-                    for part in str(self).rsplit(sep_str, maxsplit)]
-        except AttributeError :
-            #Python 2.3 doesn't have a string rsplit method, which we can
-            #word around by reversing the sequence, using (left) split,
-            #and then reversing the answer. Not very efficient!
-            words = [Seq(word[::-1], self.alphabet) for word \
-                     in str(self)[::-1].split(sep_str[::-1], maxsplit)]
-            words.reverse()
-            return words
+        return [Seq(part, self.alphabet) \
+                for part in str(self).rsplit(sep_str, maxsplit)]
 
-    def strip(self, chars=None) :
+    def strip(self, chars=None):
         """Returns a new Seq object with leading and trailing ends stripped.
 
         This behaves like the python string method of the same name.
@@ -495,7 +608,7 @@ class Seq(object):
         strip_str = self._get_seq_str_and_check_alphabet(chars)
         return Seq(str(self).strip(strip_str), self.alphabet)
 
-    def lstrip(self, chars=None) :
+    def lstrip(self, chars=None):
         """Returns a new Seq object with leading (left) end stripped.
 
         This behaves like the python string method of the same name.
@@ -512,7 +625,7 @@ class Seq(object):
         strip_str = self._get_seq_str_and_check_alphabet(chars)
         return Seq(str(self).lstrip(strip_str), self.alphabet)
 
-    def rstrip(self, chars=None) :
+    def rstrip(self, chars=None):
         """Returns a new Seq object with trailing (right) end stripped.
 
         This behaves like the python string method of the same name.
@@ -536,6 +649,42 @@ class Seq(object):
         #If it has one, check the alphabet:
         strip_str = self._get_seq_str_and_check_alphabet(chars)
         return Seq(str(self).rstrip(strip_str), self.alphabet)
+
+    def upper(self):
+        """Returns an upper case copy of the sequence.
+
+        >>> from Bio.Alphabet import HasStopCodon, generic_protein
+        >>> from Bio.Seq import Seq
+        >>> my_seq = Seq("VHLTPeeK*", HasStopCodon(generic_protein))
+        >>> my_seq
+        Seq('VHLTPeeK*', HasStopCodon(ProteinAlphabet(), '*'))
+        >>> my_seq.lower()
+        Seq('vhltpeek*', HasStopCodon(ProteinAlphabet(), '*'))
+        >>> my_seq.upper()
+        Seq('VHLTPEEK*', HasStopCodon(ProteinAlphabet(), '*'))
+
+        This will adjust the alphabet if required. See also the lower method.
+        """
+        return Seq(str(self).upper(), self.alphabet._upper())
+
+    def lower(self):
+        """Returns a lower case copy of the sequence.
+
+        This will adjust the alphabet if required. Note that the IUPAC alphabets
+        are upper case only, and thus a generic alphabet must be substituted.
+
+        >>> from Bio.Alphabet import Gapped, generic_dna
+        >>> from Bio.Alphabet import IUPAC
+        >>> from Bio.Seq import Seq
+        >>> my_seq = Seq("CGGTACGCTTATGTCACGTAG*AAAAAA", Gapped(IUPAC.unambiguous_dna, "*"))
+        >>> my_seq
+        Seq('CGGTACGCTTATGTCACGTAG*AAAAAA', Gapped(IUPACUnambiguousDNA(), '*'))
+        >>> my_seq.lower()
+        Seq('cggtacgcttatgtcacgtag*aaaaaa', Gapped(DNAAlphabet(), '*'))
+
+        See also the upper method.
+        """
+        return Seq(str(self).lower(), self.alphabet._lower())
 
     def complement(self):
         """Returns the complement sequence. New Seq object.
@@ -570,11 +719,11 @@ class Seq(object):
         ValueError: Proteins do not have complements!
         """
         base = Alphabet._get_base_alphabet(self.alphabet)
-        if isinstance(base, Alphabet.ProteinAlphabet) :
+        if isinstance(base, Alphabet.ProteinAlphabet):
             raise ValueError("Proteins do not have complements!")
-        if isinstance(base, Alphabet.DNAAlphabet) :
+        if isinstance(base, Alphabet.DNAAlphabet):
             ttable = _dna_complement_table
-        elif isinstance(base, Alphabet.RNAAlphabet) :
+        elif isinstance(base, Alphabet.RNAAlphabet):
             ttable = _rna_complement_table
         elif ('U' in self._data or 'u' in self._data) \
         and ('T' in self._data or 't' in self._data):
@@ -600,7 +749,7 @@ class Seq(object):
         Seq('YNCTATCGGGGG', IUPACAmbiguousDNA())
 
         Note in the above example, since R = G or A, its complement
-        is Y (which denotes  C or T).
+        is Y (which denotes C or T).
 
         You can of course used mixed case sequences,
 
@@ -644,9 +793,9 @@ class Seq(object):
         ValueError: Proteins cannot be transcribed!
         """
         base = Alphabet._get_base_alphabet(self.alphabet)
-        if isinstance(base, Alphabet.ProteinAlphabet) :
+        if isinstance(base, Alphabet.ProteinAlphabet):
             raise ValueError("Proteins cannot be transcribed!")
-        if isinstance(base, Alphabet.RNAAlphabet) :
+        if isinstance(base, Alphabet.RNAAlphabet):
             raise ValueError("RNA cannot be transcribed!")
 
         if self.alphabet==IUPAC.unambiguous_dna:
@@ -679,9 +828,9 @@ class Seq(object):
         ValueError: Proteins cannot be back transcribed!
         """
         base = Alphabet._get_base_alphabet(self.alphabet)
-        if isinstance(base, Alphabet.ProteinAlphabet) :
+        if isinstance(base, Alphabet.ProteinAlphabet):
             raise ValueError("Proteins cannot be back transcribed!")
-        if isinstance(base, Alphabet.DNAAlphabet) :
+        if isinstance(base, Alphabet.DNAAlphabet):
             raise ValueError("DNA cannot be back transcribed!")
 
         if self.alphabet==IUPAC.unambiguous_rna:
@@ -692,7 +841,8 @@ class Seq(object):
             alphabet = Alphabet.generic_dna
         return Seq(str(self).replace("U", "T").replace("u", "t"), alphabet)
 
-    def translate(self, table="Standard", stop_symbol="*", to_stop=False):
+    def translate(self, table="Standard", stop_symbol="*", to_stop=False,
+                  cds=False):
         """Turns a nucleotide sequence into a protein sequence. New Seq object.
 
         This method will translate DNA or RNA sequences, and those with a
@@ -711,7 +861,14 @@ class Seq(object):
                      terminated at the first in frame stop codon (and the
                      stop_symbol is not appended to the returned protein
                      sequence).
-
+         - cds - Boolean, indicates this is a complete CDS.  If True,
+                 this checks the sequence starts with a valid alternative start
+                 codon (which will be translated as methionine, M), that the
+                 sequence length is a multiple of three, and that there is a
+                 single in frame stop codon at the end (this will be excluded
+                 from the protein sequence, regardless of the to_stop option).
+                 If these tests fail, an exception is raised.
+        
         e.g. Using the standard table:
 
         >>> coding_dna = Seq("GTGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG")
@@ -728,6 +885,20 @@ class Seq(object):
         Seq('VAIVMGRWKGAR*', HasStopCodon(ExtendedIUPACProtein(), '*'))
         >>> coding_dna.translate(table=2, to_stop=True)
         Seq('VAIVMGRWKGAR', ExtendedIUPACProtein())
+
+        In fact, GTG is an alternative start codon under NCBI table 2, meaning
+        this sequence could be a complete CDS:
+
+        >>> coding_dna.translate(table=2, cds=True)
+        Seq('MAIVMGRWKGAR', ExtendedIUPACProtein())
+
+        It isn't a valid CDS under NCBI table 1, due to both the start codon and
+        also the in frame stop codons:
+        
+        >>> coding_dna.translate(table=1, cds=True)
+        Traceback (most recent call last):
+            ...
+        TranslationError: First codon 'GTG' is not a start codon
 
         If the sequence has no in-frame stop codon, then the to_stop argument
         has no effect:
@@ -751,13 +922,13 @@ class Seq(object):
             table_id = int(table)
         except ValueError:
             table_id = None
-        if isinstance(table, str) and len(table)==256 :
+        if isinstance(table, str) and len(table)==256:
             raise ValueError("The Seq object translate method DOES NOT take " \
                              + "a 256 character string mapping table like " \
                              + "the python string object's translate method. " \
                              + "Use str(my_seq).translate(...) instead.")
         if isinstance(Alphabet._get_base_alphabet(self.alphabet),
-                      Alphabet.ProteinAlphabet) :
+                      Alphabet.ProteinAlphabet):
             raise ValueError("Proteins cannot be translated!")
         if self.alphabet==IUPAC.unambiguous_dna:
             #Will use standard IUPAC protein alphabet, no need for X
@@ -765,22 +936,12 @@ class Seq(object):
                 codon_table = CodonTable.unambiguous_dna_by_name[table]
             else:
                 codon_table = CodonTable.unambiguous_dna_by_id[table_id]
-        #elif self.alphabet==IUPAC.ambiguous_dna:
-        #    if table_id is None:
-        #        codon_table = CodonTable.ambiguous_dna_by_name[table]
-        #    else:
-        #        codon_table = CodonTable.ambiguous_dna_by_id[table_id]
         elif self.alphabet==IUPAC.unambiguous_rna:
             #Will use standard IUPAC protein alphabet, no need for X
             if table_id is None:
                 codon_table = CodonTable.unambiguous_rna_by_name[table]
             else:
                 codon_table = CodonTable.unambiguous_rna_by_id[table_id]
-        #elif self.alphabet==IUPAC.ambiguous_rna:
-        #    if table_id is None:
-        #        codon_table = CodonTable.ambiguous_rna_by_name[table]
-        #    else:
-        #        codon_table = CodonTable.ambiguous_rna_by_id[table_id]
         else:
             #This will use the extend IUPAC protein alphabet with X etc.
             #The same table can be used for RNA or DNA (we use this for
@@ -789,13 +950,97 @@ class Seq(object):
                 codon_table = CodonTable.ambiguous_generic_by_name[table]
             else:
                 codon_table = CodonTable.ambiguous_generic_by_id[table_id]
-        protein = _translate_str(str(self), codon_table, stop_symbol, to_stop)
-        if stop_symbol in protein :
+        protein = _translate_str(str(self), codon_table, \
+                                 stop_symbol, to_stop, cds)
+        if stop_symbol in protein:
             alphabet = Alphabet.HasStopCodon(codon_table.protein_alphabet,
                                              stop_symbol = stop_symbol)
-        else :
+        else:
             alphabet = codon_table.protein_alphabet
         return Seq(protein, alphabet)
+
+    def ungap(self, gap=None):
+        """Return a copy of the sequence without the gap character(s).
+
+        The gap character can be specified in two ways - either as an explicit
+        argument, or via the sequence's alphabet. For example:
+
+        >>> from Bio.Seq import Seq
+        >>> from Bio.Alphabet import generic_dna
+        >>> my_dna = Seq("-ATA--TGAAAT-TTGAAAA", generic_dna)
+        >>> my_dna
+        Seq('-ATA--TGAAAT-TTGAAAA', DNAAlphabet())
+        >>> my_dna.ungap("-")
+        Seq('ATATGAAATTTGAAAA', DNAAlphabet())
+
+        If the gap character is not given as an argument, it will be taken from
+        the sequence's alphabet (if defined). Notice that the returned sequence's
+        alphabet is adjusted since it no longer requires a gapped alphabet:
+
+        >>> from Bio.Seq import Seq
+        >>> from Bio.Alphabet import IUPAC, Gapped, HasStopCodon
+        >>> my_pro = Seq("MVVLE=AD*", HasStopCodon(Gapped(IUPAC.protein, "=")))
+        >>> my_pro
+        Seq('MVVLE=AD*', HasStopCodon(Gapped(IUPACProtein(), '='), '*'))
+        >>> my_pro.ungap()
+        Seq('MVVLEAD*', HasStopCodon(IUPACProtein(), '*'))
+
+        Or, with a simpler gapped DNA example:
+
+        >>> from Bio.Seq import Seq
+        >>> from Bio.Alphabet import IUPAC, Gapped
+        >>> my_seq = Seq("CGGGTAG=AAAAAA", Gapped(IUPAC.unambiguous_dna, "="))
+        >>> my_seq
+        Seq('CGGGTAG=AAAAAA', Gapped(IUPACUnambiguousDNA(), '='))
+        >>> my_seq.ungap()
+        Seq('CGGGTAGAAAAAA', IUPACUnambiguousDNA())
+
+        As long as it is consistent with the alphabet, although it is redundant,
+        you can still supply the gap character as an argument to this method:
+
+        >>> my_seq
+        Seq('CGGGTAG=AAAAAA', Gapped(IUPACUnambiguousDNA(), '='))
+        >>> my_seq.ungap("=")
+        Seq('CGGGTAGAAAAAA', IUPACUnambiguousDNA())
+        
+        However, if the gap character given as the argument disagrees with that
+        declared in the alphabet, an exception is raised:
+
+        >>> my_seq
+        Seq('CGGGTAG=AAAAAA', Gapped(IUPACUnambiguousDNA(), '='))
+        >>> my_seq.ungap("-")
+        Traceback (most recent call last):
+           ...
+        ValueError: Gap '-' does not match '=' from alphabet
+
+        Finally, if a gap character is not supplied, and the alphabet does not
+        define one, an exception is raised:
+
+        >>> from Bio.Seq import Seq
+        >>> from Bio.Alphabet import generic_dna
+        >>> my_dna = Seq("ATA--TGAAAT-TTGAAAA", generic_dna)
+        >>> my_dna
+        Seq('ATA--TGAAAT-TTGAAAA', DNAAlphabet())
+        >>> my_dna.ungap()
+        Traceback (most recent call last):
+           ...
+        ValueError: Gap character not given and not defined in alphabet
+
+        """
+        if hasattr(self.alphabet, "gap_char"):
+            if not gap:
+                gap = self.alphabet.gap_char
+            elif gap != self.alphabet.gap_char:
+                raise ValueError("Gap %s does not match %s from alphabet" \
+                                 % (repr(gap), repr(self.alphabet.gap_char)))
+            alpha = Alphabet._ungap(self.alphabet)
+        elif not gap:
+            raise ValueError("Gap character not given and not defined in alphabet")
+        else:
+            alpha = self.alphabet #modify!
+        if len(gap)!=1 or not isinstance(gap, str):
+            raise ValueError("Unexpected gap character, %s" % repr(gap))
+        return Seq(str(self).replace(gap, ""), alpha)
 
 class UnknownSeq(Seq):
     """A read-only sequence object of known length but unknown contents.
@@ -848,37 +1093,37 @@ class UnknownSeq(Seq):
     >>> known_seq + unk_four
     Seq('ACGT????', Alphabet())
     """
-    def __init__(self, length, alphabet = Alphabet.generic_alphabet, character = None) :
+    def __init__(self, length, alphabet = Alphabet.generic_alphabet, character = None):
         """Create a new UnknownSeq object.
 
         If character is ommited, it is determed from the alphabet, "N" for
         nucleotides, "X" for proteins, and "?" otherwise.
         """
         self._length = int(length)
-        if self._length < 0 :
+        if self._length < 0:
             #TODO - Block zero length UnknownSeq?  You can just use a Seq!
             raise ValueError("Length must not be negative.")
         self.alphabet = alphabet
-        if character :
-            if len(character) != 1 :
+        if character:
+            if len(character) != 1:
                 raise ValueError("character argument should be a single letter string.")
             self._character = character
-        else :
+        else:
             base = Alphabet._get_base_alphabet(alphabet)
             #TODO? Check the case of the letters in the alphabet?
             #We may have to use "n" instead of "N" etc.
-            if isinstance(base, Alphabet.NucleotideAlphabet) :
+            if isinstance(base, Alphabet.NucleotideAlphabet):
                 self._character = "N"
-            elif isinstance(base, Alphabet.ProteinAlphabet) :
+            elif isinstance(base, Alphabet.ProteinAlphabet):
                 self._character = "X"
-            else :
+            else:
                 self._character = "?"
 
-    def __len__(self) :
+    def __len__(self):
         """Returns the stated length of the unknown sequence."""
         return self._length
     
-    def __str__(self) :
+    def __str__(self):
         """Returns the unknown sequence as full string of the given length."""
         return self._character * self._length
 
@@ -886,29 +1131,52 @@ class UnknownSeq(Seq):
         return "UnknownSeq(%i, alphabet = %s, character = %s)" \
                % (self._length, repr(self.alphabet), repr(self._character))
 
-    def __add__(self, other) :
+    def __add__(self, other):
+        """Add another sequence or string to this sequence.
+
+        Adding two UnknownSeq objects returns another UnknownSeq object
+        provided the character is the same and the alphabets are compatible.
+
+        >>> from Bio.Seq import UnknownSeq
+        >>> from Bio.Alphabet import generic_protein
+        >>> UnknownSeq(10, generic_protein) + UnknownSeq(5, generic_protein)
+        UnknownSeq(15, alphabet = ProteinAlphabet(), character = 'X')
+
+        If the characters differ, an UnknownSeq object cannot be used, so a
+        Seq object is returned:
+
+        >>> from Bio.Seq import UnknownSeq
+        >>> from Bio.Alphabet import generic_protein
+        >>> UnknownSeq(10, generic_protein) + UnknownSeq(5, generic_protein,
+        ...                                              character="x")
+        Seq('XXXXXXXXXXxxxxx', ProteinAlphabet())
+
+        If adding a string to an UnknownSeq, a new Seq is returned with the
+        same alphabet:
+        
+        >>> from Bio.Seq import UnknownSeq
+        >>> from Bio.Alphabet import generic_protein
+        >>> UnknownSeq(5, generic_protein) + "LV"
+        Seq('XXXXXLV', ProteinAlphabet())
+        """
         if isinstance(other, UnknownSeq) \
-        and other._character == self._character :
+        and other._character == self._character:
             #TODO - Check the alphabets match
             return UnknownSeq(len(self)+len(other),
                               self.alphabet, self._character)
         #Offload to the base class...
         return Seq(str(self), self.alphabet) + other
 
-    def __radd__(self, other) :
-        if isinstance(other, UnknownSeq) \
-        and other._character == self._character :
-            #TODO - Check the alphabets match
-            return UnknownSeq(len(self)+len(other),
-                              self.alphabet, self._character)
+    def __radd__(self, other):
+        #If other is an UnknownSeq, then __add__ would be called.
         #Offload to the base class...
         return other + Seq(str(self), self.alphabet)
 
     def __getitem__(self, index):
-        if isinstance(index, int) :
+        if isinstance(index, int):
             #TODO - Check the bounds without wasting memory
             return str(self)[index]
-        else :
+        else:
             #TODO - Work out the length without wasting memory
             return UnknownSeq(len(("#"*self._length)[index]),
                               self.alphabet, self._character)
@@ -950,26 +1218,26 @@ class UnknownSeq(Seq):
         1
         """
         sub_str = self._get_seq_str_and_check_alphabet(sub)
-        if len(sub_str) == 1 :
-            if str(sub_str) == self._character :
-                if start==0 and end >= self._length :
+        if len(sub_str) == 1:
+            if str(sub_str) == self._character:
+                if start==0 and end >= self._length:
                     return self._length
-                else :
+                else:
                     #This could be done more cleverly...
                     return str(self).count(sub_str, start, end)
-            else :
+            else:
                 return 0
-        else :
-            if set(sub_str) == set(self._character) :
-                if start==0 and end >= self._length :
+        else:
+            if set(sub_str) == set(self._character):
+                if start==0 and end >= self._length:
                     return self._length // len(sub_str)
-                else :
+                else:
                     #This could be done more cleverly...
                     return str(self).count(sub_str, start, end)
-            else :
+            else:
                 return 0
 
-    def complement(self) :
+    def complement(self):
         """The complement of an unknown nucleotide equals itself.
 
         >>> my_nuc = UnknownSeq(8)
@@ -983,11 +1251,11 @@ class UnknownSeq(Seq):
         ????????
         """
         if isinstance(Alphabet._get_base_alphabet(self.alphabet),
-                      Alphabet.ProteinAlphabet) :
+                      Alphabet.ProteinAlphabet):
             raise ValueError("Proteins do not have complements!")
         return self
 
-    def reverse_complement(self) :
+    def reverse_complement(self):
         """The reverse complement of an unknown nucleotide equals itself.
 
         >>> my_nuc = UnknownSeq(10)
@@ -1001,11 +1269,11 @@ class UnknownSeq(Seq):
         ??????????
         """
         if isinstance(Alphabet._get_base_alphabet(self.alphabet),
-                      Alphabet.ProteinAlphabet) :
+                      Alphabet.ProteinAlphabet):
             raise ValueError("Proteins do not have complements!")
         return self
 
-    def transcribe(self) :
+    def transcribe(self):
         """Returns unknown RNA sequence from an unknown DNA sequence.
 
         >>> my_dna = UnknownSeq(10, character="N")
@@ -1023,7 +1291,7 @@ class UnknownSeq(Seq):
         s = Seq(self._character, self.alphabet).transcribe()
         return UnknownSeq(self._length, s.alphabet, self._character)
 
-    def back_transcribe(self) :
+    def back_transcribe(self):
         """Returns unknown DNA sequence from an unknown RNA sequence.
 
         >>> my_rna = UnknownSeq(20, character="N")
@@ -1041,7 +1309,47 @@ class UnknownSeq(Seq):
         s = Seq(self._character, self.alphabet).back_transcribe()
         return UnknownSeq(self._length, s.alphabet, self._character)
 
-    def translate(self, **kwargs) :
+    def upper(self):
+        """Returns an upper case copy of the sequence.
+
+        >>> from Bio.Alphabet import generic_dna
+        >>> from Bio.Seq import UnknownSeq
+        >>> my_seq = UnknownSeq(20, generic_dna, character="n")
+        >>> my_seq
+        UnknownSeq(20, alphabet = DNAAlphabet(), character = 'n')
+        >>> print my_seq
+        nnnnnnnnnnnnnnnnnnnn
+        >>> my_seq.upper()
+        UnknownSeq(20, alphabet = DNAAlphabet(), character = 'N')
+        >>> print my_seq.upper()
+        NNNNNNNNNNNNNNNNNNNN
+
+        This will adjust the alphabet if required. See also the lower method.
+        """
+        return UnknownSeq(self._length, self.alphabet._upper(), self._character.upper())
+
+    def lower(self):
+        """Returns a lower case copy of the sequence.
+
+        This will adjust the alphabet if required:
+
+        >>> from Bio.Alphabet import IUPAC
+        >>> from Bio.Seq import UnknownSeq
+        >>> my_seq = UnknownSeq(20, IUPAC.extended_protein)
+        >>> my_seq
+        UnknownSeq(20, alphabet = ExtendedIUPACProtein(), character = 'X')
+        >>> print my_seq
+        XXXXXXXXXXXXXXXXXXXX
+        >>> my_seq.lower()
+        UnknownSeq(20, alphabet = ProteinAlphabet(), character = 'x')
+        >>> print my_seq.lower()
+        xxxxxxxxxxxxxxxxxxxx
+
+        See also the upper method.
+        """
+        return UnknownSeq(self._length, self.alphabet._lower(), self._character.lower())
+
+    def translate(self, **kwargs):
         """Translate an unknown nucleotide sequence into an unknown protein.
 
         e.g.
@@ -1068,10 +1376,46 @@ class UnknownSeq(Seq):
 
         """
         if isinstance(Alphabet._get_base_alphabet(self.alphabet),
-                      Alphabet.ProteinAlphabet) :
+                      Alphabet.ProteinAlphabet):
             raise ValueError("Proteins cannot be translated!")
         return UnknownSeq(self._length//3, Alphabet.generic_protein, "X")
 
+    def ungap(self, gap=None):
+        """Return a copy of the sequence without the gap character(s).
+
+        The gap character can be specified in two ways - either as an explicit
+        argument, or via the sequence's alphabet. For example:
+
+        >>> from Bio.Seq import UnknownSeq
+        >>> from Bio.Alphabet import Gapped, generic_dna
+        >>> my_dna = UnknownSeq(20, Gapped(generic_dna,"-"))
+        >>> my_dna
+        UnknownSeq(20, alphabet = Gapped(DNAAlphabet(), '-'), character = 'N')
+        >>> my_dna.ungap()
+        UnknownSeq(20, alphabet = DNAAlphabet(), character = 'N')
+        >>> my_dna.ungap("-")
+        UnknownSeq(20, alphabet = DNAAlphabet(), character = 'N')
+
+        If the UnknownSeq is using the gap character, then an empty Seq is
+        returned:
+
+        >>> my_gap = UnknownSeq(20, Gapped(generic_dna,"-"), character="-")
+        >>> my_gap
+        UnknownSeq(20, alphabet = Gapped(DNAAlphabet(), '-'), character = '-')
+        >>> my_gap.ungap()
+        Seq('', DNAAlphabet())
+        >>> my_gap.ungap("-")
+        Seq('', DNAAlphabet())
+
+        Notice that the returned sequence's alphabet is adjusted to remove any
+        explicit gap character declaration.
+        """
+        #Offload the alphabet stuff
+        s = Seq(self._character, self.alphabet).ungap()
+        if s :
+            return UnknownSeq(self._length, s.alphabet, self._character)
+        else :
+            return Seq("", s.alphabet)
 
 class MutableSeq(object):
     """An editable sequence object (with an alphabet).
@@ -1110,14 +1454,14 @@ class MutableSeq(object):
     
     def __repr__(self):
         """Returns a (truncated) representation of the sequence for debugging."""
-        if len(self) > 60 :
+        if len(self) > 60:
             #Shows the last three letters as it is often useful to see if there
             #is a stop codon at the end of a sequence.
             #Note total length is 54+3+3=60
             return "%s('%s...%s', %s)" % (self.__class__.__name__,
                                    str(self[:54]), str(self[-3:]),
                                    repr(self.alphabet))
-        else :
+        else:
             return "%s('%s', %s)" % (self.__class__.__name__,
                                    str(self),
                                    repr(self.alphabet))
@@ -1134,20 +1478,39 @@ class MutableSeq(object):
         return "".join(self.data)
 
     def __cmp__(self, other):
-        """Compare the sequence for to another sequence or a string.
+        """Compare the sequence to another sequence or a string (README).
 
-        If compared to another sequence the alphabets must be compatible.
-        Comparing DNA to RNA, or Nucleotide to Protein will raise an
-        exception.
+        Currently if compared to another sequence the alphabets must be
+        compatible. Comparing DNA to RNA, or Nucleotide to Protein will raise
+        an exception. Otherwise only the sequence itself is compared, not the
+        precise alphabet.
 
-        Otherwise only the sequence itself is compared, not the precise
-        alphabet.
+        A future release of Biopython will change this (and the Seq object etc)
+        to use simple string comparison. The plan is that comparing sequences
+        with incompatible alphabets (e.g. DNA to RNA) will trigger a warning
+        but not an exception.
 
-        This method indirectly supports ==, < , etc."""
-        if hasattr(other, "alphabet") :
+        During this transition period, please just do explicit comparisons:
+
+        >>> seq1 = MutableSeq("ACGT")
+        >>> seq2 = MutableSeq("ACGT")
+        >>> id(seq1) == id(seq2)
+        False
+        >>> str(seq1) == str(seq2)
+        True
+
+        This method indirectly supports ==, < , etc.
+        """
+        if hasattr(other, "alphabet"):
             #other should be a Seq or a MutableSeq
+            import warnings
+            warnings.warn("In future comparing incompatible alphabets will "
+                          "only trigger a warning (not an exception). In " 
+                          "the interim please use id(seq1)==id(seq2) or "
+                          "str(seq1)==str(seq2) to make your code explicit "
+                          "and to avoid this warning.", FutureWarning)
             if not Alphabet._check_type_compatible([self.alphabet,
-                                                    other.alphabet]) :
+                                                    other.alphabet]):
                 raise TypeError("Incompatable alphabets %s and %s" \
                                 % (repr(self.alphabet), repr(other.alphabet)))
             #They should be the same sequence type (or one of them is generic)
@@ -1155,23 +1518,23 @@ class MutableSeq(object):
                 #See test_GAQueens.py for an historic usage of a non-string
                 #alphabet!  Comparing the arrays supports this.
                 return cmp(self.data, other.data)
-            else :
+            else:
                 return cmp(str(self), str(other))
-        elif isinstance(other, basestring) :
+        elif isinstance(other, basestring):
             return cmp(str(self), other)
-        else :
+        else:
             raise TypeError
 
     def __len__(self): return len(self.data)
 
-    def __getitem__(self, index) :
+    def __getitem__(self, index):
         #Note since Python 2.0, __getslice__ is deprecated
         #and __getitem__ is used instead.
         #See http://docs.python.org/ref/sequence-methods.html
-        if isinstance(index, int) :
+        if isinstance(index, int):
             #Return a single letter as a string
             return self.data[index]
-        else :
+        else:
             #Return the (sub)sequence as another Seq object
             return MutableSeq(self.data[index], self.alphabet)
 
@@ -1179,10 +1542,10 @@ class MutableSeq(object):
         #Note since Python 2.0, __setslice__ is deprecated
         #and __setitem__ is used instead.
         #See http://docs.python.org/ref/sequence-methods.html
-        if isinstance(index, int) :
+        if isinstance(index, int):
             #Replacing a single letter with a new string
             self.data[index] = value
-        else :
+        else:
             #Replacing a sub-sequence
             if isinstance(value, MutableSeq):
                 self.data[index] = value.data
@@ -1203,10 +1566,10 @@ class MutableSeq(object):
         """Add another sequence or string to this sequence.
 
         Returns a new MutableSeq object."""
-        if hasattr(other, "alphabet") :
+        if hasattr(other, "alphabet"):
             #other should be a Seq or a MutableSeq
             if not Alphabet._check_type_compatible([self.alphabet,
-                                                    other.alphabet]) :
+                                                    other.alphabet]):
                 raise TypeError("Incompatable alphabets %s and %s" \
                                 % (repr(self.alphabet), repr(other.alphabet)))
             #They should be the same sequence type (or one of them is generic)
@@ -1215,19 +1578,19 @@ class MutableSeq(object):
                 #See test_GAQueens.py for an historic usage of a non-string
                 #alphabet!  Adding the arrays should support this.
                 return self.__class__(self.data + other.data, a)
-            else :
+            else:
                 return self.__class__(str(self) + str(other), a)
-        elif isinstance(other, basestring) :
+        elif isinstance(other, basestring):
             #other is a plain string - use the current alphabet
             return self.__class__(str(self) + str(other), self.alphabet)
-        else :
+        else:
             raise TypeError
 
     def __radd__(self, other):
-        if hasattr(other, "alphabet") :
+        if hasattr(other, "alphabet"):
             #other should be a Seq or a MutableSeq
             if not Alphabet._check_type_compatible([self.alphabet,
-                                                    other.alphabet]) :
+                                                    other.alphabet]):
                 raise TypeError("Incompatable alphabets %s and %s" \
                                 % (repr(self.alphabet), repr(other.alphabet)))
             #They should be the same sequence type (or one of them is generic)
@@ -1236,12 +1599,12 @@ class MutableSeq(object):
                 #See test_GAQueens.py for an historic usage of a non-string
                 #alphabet!  Adding the arrays should support this.
                 return self.__class__(other.data + self.data, a)
-            else :
+            else:
                 return self.__class__(str(other) + str(self), a)
-        elif isinstance(other, basestring) :
+        elif isinstance(other, basestring):
             #other is a plain string - use the current alphabet
             return self.__class__(str(other) + str(self), self.alphabet)
-        else :
+        else:
             raise TypeError
 
     def append(self, c):
@@ -1302,22 +1665,22 @@ class MutableSeq(object):
 
         A non-overlapping search would give the answer as three!
         """
-        try :
+        try:
             #TODO - Should we check the alphabet?
             search = sub.tostring()
-        except AttributeError :
+        except AttributeError:
             search = sub
 
-        if not isinstance(search, basestring) :
+        if not isinstance(search, basestring):
             raise TypeError("expected a string, Seq or MutableSeq")
 
-        if len(search) == 1 :
+        if len(search) == 1:
             #Try and be efficient and work directly from the array.
             count = 0
             for c in self.data[start:end]:
                 if c == search: count += 1
             return count
-        else :
+        else:
             #TODO - Can we do this more efficiently?
             return self.tostring().count(search, start, end)
 
@@ -1342,13 +1705,13 @@ class MutableSeq(object):
         No return value.
         """
         if isinstance(Alphabet._get_base_alphabet(self.alphabet),
-                      Alphabet.ProteinAlphabet) :
+                      Alphabet.ProteinAlphabet):
             raise ValueError("Proteins do not have complements!")
         if self.alphabet in (IUPAC.ambiguous_dna, IUPAC.unambiguous_dna):
             d = ambiguous_dna_complement
         elif self.alphabet in (IUPAC.ambiguous_rna, IUPAC.unambiguous_rna):
             d = ambiguous_rna_complement
-        elif 'U' in self.data and 'T' in self.data :
+        elif 'U' in self.data and 'T' in self.data:
             #TODO - Handle this cleanly?
             raise ValueError("Mixed RNA/DNA found")
         elif 'U' in self.data:
@@ -1432,7 +1795,7 @@ def transcribe(dna):
     >>> transcribe("ACTGN")
     'ACUGN'
     """
-    if isinstance(dna, Seq) :
+    if isinstance(dna, Seq):
         return dna.transcribe()
     elif isinstance(dna, MutableSeq):
         return dna.toseq().transcribe()
@@ -1453,15 +1816,15 @@ def back_transcribe(rna):
     >>> back_transcribe("ACUGN")
     'ACTGN'
     """
-    if isinstance(rna, Seq) :
+    if isinstance(rna, Seq):
         return rna.back_transcribe()
     elif isinstance(rna, MutableSeq):
         return rna.toseq().back_transcribe()
     else:
         return rna.replace('U','T').replace('u','t')
     
-def _translate_str(sequence, table, stop_symbol="*",
-                   to_stop=False, pos_stop="X") :
+def _translate_str(sequence, table, stop_symbol="*", to_stop=False,
+                   cds=False, pos_stop="X"):
     """Helper function to translate a nucleotide string (PRIVATE).
 
     Arguments:
@@ -1473,6 +1836,13 @@ def _translate_str(sequence, table, stop_symbol="*",
                      then translation continues to the end.
      - pos_stop    - a single character string for a possible stop codon
                      (e.g. TAN or NNN)
+     - cds - Boolean, indicates this is a complete CDS.  If True, this
+             checks the sequence starts with a valid alternative start
+             codon (which will be translated as methionine, M), that the
+             sequence length is a multiple of three, and that there is a
+             single in frame stop codon at the end (this will be excluded
+             from the protein sequence, regardless of the to_stop option).
+             If these tests fail, an exception is raised.
 
     Returns a string.
 
@@ -1492,37 +1862,63 @@ def _translate_str(sequence, table, stop_symbol="*",
     Traceback (most recent call last):
        ...
     TranslationError: Codon 'TA?' is invalid
+    >>> _translate_str("ATGCCCTAG", table, cds=True)
+    'MP'
+    >>> _translate_str("AAACCCTAG", table, cds=True)
+    Traceback (most recent call last):
+       ...
+    TranslationError: First codon 'AAA' is not a start codon
+    >>> _translate_str("ATGCCCTAGCCCTAG", table, cds=True)
+    Traceback (most recent call last):
+       ...
+    TranslationError: Extra in frame stop codon found.
     """
     sequence = sequence.upper()
     amino_acids = []
     forward_table = table.forward_table
     stop_codons = table.stop_codons
-    if table.nucleotide_alphabet.letters is not None :
+    if table.nucleotide_alphabet.letters is not None:
         valid_letters = set(table.nucleotide_alphabet.letters.upper())
-    else :
+    else:
         #Assume the worst case, ambiguous DNA or RNA:
         valid_letters = set(IUPAC.ambiguous_dna.letters.upper() + \
                             IUPAC.ambiguous_rna.letters.upper())
-
+    if cds:
+        if str(sequence[:3]).upper() not in table.start_codons:
+            raise CodonTable.TranslationError(\
+                "First codon '%s' is not a start codon" % sequence[:3])
+        if len(sequence) % 3 != 0:
+            raise CodonTable.TranslationError(\
+                "Sequence length %i is not a multiple of three" % len(sequence))
+        if str(sequence[-3:]).upper() not in stop_codons:
+            raise CodonTable.TranslationError(\
+                "Final codon '%s' is not a stop codon" % sequence[-3:])
+        #Don't translate the stop symbol, and manually translate the M
+        sequence = sequence[3:-3]
+        amino_acids = ["M"]
     n = len(sequence)
-    for i in xrange(0,n-n%3,3) :
+    for i in xrange(0,n-n%3,3):
         codon = sequence[i:i+3]
-        try :
+        try:
             amino_acids.append(forward_table[codon])
-        except (KeyError, CodonTable.TranslationError) :
+        except (KeyError, CodonTable.TranslationError):
             #Todo? Treat "---" as a special case (gapped translation)
-            if codon in table.stop_codons :
+            if codon in table.stop_codons:
+                if cds:
+                    raise CodonTable.TranslationError(\
+                        "Extra in frame stop codon found.")
                 if to_stop : break
                 amino_acids.append(stop_symbol)
-            elif valid_letters.issuperset(set(codon)) :
+            elif valid_letters.issuperset(set(codon)):
                 #Possible stop codon (e.g. NNN or TAN)
                 amino_acids.append(pos_stop)
-            else :
+            else:
                 raise CodonTable.TranslationError(\
                     "Codon '%s' is invalid" % codon)
     return "".join(amino_acids)
 
-def translate(sequence, table="Standard", stop_symbol="*", to_stop=False):
+def translate(sequence, table="Standard", stop_symbol="*", to_stop=False,
+              cds=False):
     """Translate a nucleotide sequence into amino acids.
 
     If given a string, returns a new string object. Given a Seq or
@@ -1540,7 +1936,14 @@ def translate(sequence, table="Standard", stop_symbol="*", to_stop=False):
                  True, translation is terminated at the first in
                  frame stop codon (and the stop_symbol is not
                  appended to the returned protein sequence).
-
+     - cds - Boolean, indicates this is a complete CDS.  If True, this
+                 checks the sequence starts with a valid alternative start
+                 codon (which will be translated as methionine, M), that the
+                 sequence length is a multiple of three, and that there is a
+                 single in frame stop codon at the end (this will be excluded
+                 from the protein sequence, regardless of the to_stop option).
+                 If these tests fail, an exception is raised.
+    
     A simple string example using the default (standard) genetic code:
     
     >>> coding_dna = "GTGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG"
@@ -1557,6 +1960,13 @@ def translate(sequence, table="Standard", stop_symbol="*", to_stop=False):
     'VAIVMGRWKGAR*'
     >>> translate(coding_dna, table=2, to_stop=True)
     'VAIVMGRWKGAR'
+
+    In fact this example uses an alternative start codon valid under NCBI table 2,
+    GTG, which means this example is a complete valid CDS which when translated
+    should really start with methionine (not valine):
+    
+    >>> translate(coding_dna, table=2, cds=True)
+    'MAIVMGRWKGAR'
 
     Note that if the sequence has no in-frame stop codon, then the to_stop
     argument has no effect:
@@ -1575,18 +1985,18 @@ def translate(sequence, table="Standard", stop_symbol="*", to_stop=False):
     
     It will however translate either DNA or RNA.
     """
-    if isinstance(sequence, Seq) :
-        return sequence.translate(table, stop_symbol, to_stop)
+    if isinstance(sequence, Seq):
+        return sequence.translate(table, stop_symbol, to_stop, cds)
     elif isinstance(sequence, MutableSeq):
         #Return a Seq object
-        return sequence.toseq().translate(table, stop_symbol, to_stop)
+        return sequence.toseq().translate(table, stop_symbol, to_stop, cds)
     else:
         #Assume its a string, return a string
-        try :
+        try:
             codon_table = CodonTable.ambiguous_generic_by_id[int(table)]
-        except ValueError :
+        except ValueError:
             codon_table = CodonTable.ambiguous_generic_by_name[table]
-        return _translate_str(sequence, codon_table, stop_symbol, to_stop)
+        return _translate_str(sequence, codon_table, stop_symbol, to_stop, cds)
       
 def reverse_complement(sequence):
     """Returns the reverse complement sequence of a nucleotide string.
@@ -1601,10 +2011,10 @@ def reverse_complement(sequence):
     >>> reverse_complement("ACTG-NH")
     'DN-CAGT'
     """
-    if isinstance(sequence, Seq) :
+    if isinstance(sequence, Seq):
         #Return a Seq
         return sequence.reverse_complement()
-    elif isinstance(sequence, MutableSeq) :
+    elif isinstance(sequence, MutableSeq):
         #Return a Seq
         #Don't use the MutableSeq reverse_complement method as it is 'in place'.
         return sequence.toseq().reverse_complement()

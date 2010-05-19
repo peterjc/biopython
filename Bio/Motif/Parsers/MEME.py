@@ -5,13 +5,55 @@
 # as part of this package.
 
 from Bio.Alphabet import IUPAC
-from Bio import File
-from Bio.ParserSupport import *
 from Bio import Seq
 import re
 from math import sqrt
 import sys
 from Bio.Motif import Motif
+
+
+
+def read(handle):
+    """Parses the text output of the MEME program into MEME.Record object.
+    
+    Example:
+    
+    >>> f = open("meme.output.txt")
+    >>> from Bio.Motif.Parsers import MEME
+    >>> record = MEME.read(f)
+    >>> for motif in record.motifs:
+    ...     for instance in motif.instances:
+    ...         print instance.motif_name, instance.sequence_name, instance.strand, instance.pvalue
+    
+    """
+    record = MEMERecord()
+    __read_version(record, handle)
+    __read_datafile(record, handle)
+    __read_alphabet(record, handle)
+    __read_sequence_names(record, handle)
+    __read_command(record, handle)
+    for line in handle:
+        if line.startswith('MOTIF  1'):
+            break
+    else:
+        raise ValueError('Unexpected end of stream')
+    while True:
+        motif = __create_motif(line)
+        motif.alphabet = record.alphabet
+        record.motifs.append(motif)
+        __read_motif_name(motif, handle)
+        __read_motif_sequences(motif, handle, 'revcomp' in record.command)
+        __skip_unused_lines(handle)
+        try:
+            line = handle.next()
+        except StopIteration:
+            raise ValueError('Unexpected end of stream: Expected to find new motif, or the summary of motifs')
+        if line.startswith("SUMMARY OF MOTIFS"):
+            break
+        if not line.startswith('MOTIF'):
+            raise ValueError("Line does not start with 'MOTIF':\n%s" % line)
+    return record
+
 
 class MEMEMotif (Motif):
     """A subclass of Motif used in parsing MEME (and MAST) output.
@@ -121,8 +163,208 @@ class MEMERecord:
             if m.name == name:
                 return m
 
+
+# Everything below is private
+
+
+def __read_version(record, handle):
+    for line in handle:
+        if line.startswith('MEME version'):
+            break
+    else:
+        raise ValueError("Improper input file. File should contain a line starting MEME version.")
+    line = line.strip()
+    ls = line.split()
+    record.version = ls[2]
+
+
+def __read_datafile(record, handle):
+    for line in handle:
+        if line.startswith('TRAINING SET'):
+            break
+    else:
+        raise ValueError("Unexpected end of stream: 'TRAINING SET' not found.")
+    try:
+        line = handle.next()
+    except StopIteration:
+        raise ValueError("Unexpected end of stream: Expected to find line starting with '****'")
+    if not line.startswith('****'):
+        raise ValueError("Line does not start with '****':\n%s" % line)
+    try:
+        line = handle.next()
+    except StopIteration:
+        raise ValueError("Unexpected end of stream: Expected to find line starting with 'DATAFILE'")
+    if not line.startswith('DATAFILE'):
+        raise ValueError("Line does not start with 'DATAFILE':\n%s" % line)
+    line = line.strip()
+    line = line.replace('DATAFILE= ','')
+    record.datafile = line
+
+
+def __read_alphabet(record, handle):
+    try:
+        line = handle.next()
+    except StopIteration:
+        raise ValueError("Unexpected end of stream: Expected to find line starting with 'ALPHABET'")
+    if not line.startswith('ALPHABET'):
+        raise ValueError("Line does not start with 'ALPHABET':\n%s" % line)
+    line = line.strip()
+    line = line.replace('ALPHABET= ','')
+    if line == 'ACGT':
+        al = IUPAC.unambiguous_dna
+    else:
+        al = IUPAC.protein
+    record.alphabet = al
+
+
+def __read_sequence_names(record, handle):
+    try:
+        line = handle.next()
+    except StopIteration:
+        raise ValueError("Unexpected end of stream: Expected to find line starting with 'Sequence name'")
+    if not line.startswith('Sequence name'):
+        raise ValueError("Line does not start with 'Sequence name':\n%s" % line)
+    try:
+        line = handle.next()
+    except StopIteration:
+        raise ValueError("Unexpected end of stream: Expected to find line starting with '----'")
+    if not line.startswith('----'):
+        raise ValueError("Line does not start with '----':\n%s" % line)
+    for line in handle:
+        if line.startswith('***'):
+            break
+        line = line.strip()
+        ls = line.split()
+        record.sequence_names.append(ls[0])
+        if len(ls) == 6:
+            record.sequence_names.append(ls[3])
+    else:
+        raise ValueError("Unexpected end of stream: Expected to find line starting with '***'")
+
+
+def __read_command(record, handle):
+    for line in handle:
+        if line.startswith('command:'):
+            break
+    else:
+        raise ValueError("Unexpected end of stream: Expected to find line starting with 'command'")
+    line = line.strip()
+    line = line.replace('command: ','')
+    record.command = line
+
+
+def __create_motif(line):
+    line = line.strip()
+    ls = line.split()
+    motif = MEMEMotif()
+    motif.length = int(ls[4])
+    motif._numoccurrences(ls[7])
+    motif._evalue(ls[13])
+    return motif
+
+
+def __read_motif_name(motif, handle):
+    for line in handle:
+        if 'sorted by position p-value' in line:
+            break
+    else:
+        raise ValueError('Unexpected end of stream: Failed to find motif name')
+    line = line.strip()
+    ls = line.split()
+    name = " ".join(ls[0:2])
+    motif.name=name
+
+
+def __read_motif_sequences(motif, handle, rv):
+    try:
+        line = handle.next()
+    except StopIteration:
+        raise ValueError('Unexpected end of stream: Failed to find motif sequences')
+    if not line.startswith('---'):
+        raise ValueError("Line does not start with '---':\n%s" % line)
+    try:
+        line = handle.next()
+    except StopIteration:
+        raise ValueError("Unexpected end of stream: Expected to find line starting with 'Sequence name'")
+    if not line.startswith('Sequence name'):
+        raise ValueError("Line does not start with 'Sequence name':\n%s" % line)
+    try:
+        line = handle.next()
+    except StopIteration:
+        raise ValueError('Unexpected end of stream: Failed to find motif sequences')
+    if not line.startswith('---'):
+        raise ValueError("Line does not start with '---':\n%s" % line)
+    for line in handle:
+        if line.startswith('---'):
+            break
+        line = line.strip()
+        ls = line.split()
+        if rv:
+            #seq = Seq.Seq(ls[5], record.alphabet)
+            motif.add_instance_from_values(name = ls[0], sequence = ls[5], start = ls[2], pvalue = ls[3], strand = ls[1])
+        else:
+            #seq = Seq.Seq(ls[4], record.alphabet)
+            motif.add_instance_from_values(name = ls[0], sequence = ls[4], start = ls[1], pvalue = ls[2])
+    else:
+        raise ValueError('Unexpected end of stream')
+
+
+def __skip_unused_lines(handle):
+    for line in handle:
+        if line.startswith('log-odds matrix'):
+            break
+    else:
+        raise ValueError("Unexpected end of stream: Expected to find line starting with 'log-odds matrix'")
+    for line in handle:
+        if line.startswith('---'):
+            break
+    else:
+        raise ValueError("Unexpected end of stream: Expected to find line starting with '---'")
+    for line in handle:
+        if line.startswith('letter-probability matrix'):
+            break
+    else:
+        raise ValueError("Unexpected end of stream: Expected to find line starting with 'letter-probability matrix'")
+    for line in handle:
+        if line.startswith('---'):
+            break
+    else:
+        raise ValueError("Unexpected end of stream: Expected to find line starting with '---'")
+    for line in handle:
+        if line.startswith('Time'):
+            break
+    else:
+        raise ValueError("Unexpected end of stream: Expected to find line starting with 'Time'")
+    try:
+        line = handle.next()
+    except StopIteration:
+        raise ValueError('Unexpected end of stream: Expected to find blank line')
+    if line.strip():
+        raise ValueError("Expected blank line, but got:\n%s" % line)
+    try:
+        line = handle.next()
+    except StopIteration:
+        raise ValueError("Unexpected end of stream: Expected to find line starting with '***'")
+    if not line.startswith('***'):
+        raise ValueError("Line does not start with '***':\n%s" % line)
+    for line in handle:
+        if line.strip():
+            break
+    else:
+        raise ValueError("Unexpected end of stream: Expected to find line starting with '***'")
+    if not line.startswith('***'):
+        raise ValueError("Line does not start with '***':\n%s" % line)
+
+
+# Everything below is obsolete.
+
+
+from Bio import File
+from Bio.ParserSupport import *
+
+
 class MEMEParser (AbstractParser):
-    """A parser for the text output of the MEME program.
+    """A parser for the text output of the MEME program (OBSOLETE).
     Parses the output into an object of the MEMERecord class.
     
     Methods:
@@ -137,6 +379,8 @@ class MEMEParser (AbstractParser):
     ...    for instance in motif.instances:
     ...        print instance.motif_name, instance.sequence_name, instance.strand, instance.pvalue
     
+    This class is OBSOLETE; please use the read() function in this module
+    instead.
     """
     def __init__ (self):
         """__init__ (self)"""
@@ -151,11 +395,13 @@ class MEMEParser (AbstractParser):
 
 
 class _MEMEScanner:
-    """Scanner for MEME output. 
+    """Scanner for MEME output (OBSOLETE).
     
     Methods:
     feed
-        
+    
+    This class is OBSOLETE; please use the read() function in this module
+    instead.
     """
     
     def feed (self, handle, consumer):
@@ -219,10 +465,13 @@ class _MEMEScanner:
 
 class _MEMEConsumer:
     """
-    Consumer that can receive events from MEME Scanner.
+    Consumer that can receive events from MEME Scanner (OBSOLETE).
     
     This is the Consumer object that should be passed to the 
     MEME Scanner.
+    
+    This class is OBSOLETE; please use the read() function in this module
+    instead.
     """
     
     def __init__ (self):
@@ -301,7 +550,7 @@ class _MEMEConsumer:
 
 class _MASTConsumer:
     """
-    Consumer that can receive events from _MASTScanner.
+    Consumer that can receive events from _MASTScanner (OBSOLETE).
     
     A _MASTConsumer parses lines from a mast text output file.
     The motif match diagrams are parsed using line buffering. 
@@ -309,6 +558,9 @@ class _MASTConsumer:
     required for testing using the Bio.ParserSupport.TaggingConsumer.
     If this variable isn't there, the TaggingConsumer barfs. In
     the _MASTScanner, None is passed in the place of this variable.
+    
+    This class is OBSOLETE; please use the read() function in the module
+    Bio.Motif.Parsers.MAST instead.
     """
     def __init__ (self):
         self.data = MASTRecord()
@@ -531,10 +783,10 @@ class _MASTConsumer:
         pass
     
 
-
 class MASTParser(AbstractParser):
     """
-    Parser for MAST text output. HTML output cannot be parsed, yet. Returns a MASTRecord
+    Parser for MAST text output (OBSOLETE).
+    HTML output cannot be parsed, yet. Returns a MASTRecord
     
     A MASTParser takes a file handle for a MAST text output file and 
     returns a MASTRecord, containing the hits between motifs and 
@@ -553,6 +805,9 @@ class MASTParser(AbstractParser):
     >>>for motif in mast_record.motifs:
     >>>    for instance in motif.instances:
     >>>        print instance.motif_name, instance.sequence_name, instance.strand, instance.pvalue
+    
+    This class is OBSOLETE; please use the read() function in the module
+    Bio.Motif.Parsers.MAST instead.
     """
     def __init__ (self):
         self._consumer = _MASTConsumer()
@@ -566,8 +821,10 @@ class MASTParser(AbstractParser):
 
 class _MASTScanner:
     """
-    Scanner for MAST text output. 
-        
+    Scanner for MAST text output (OBSOLETE).
+    
+    This class is OBSOLETE; please use the read() function in the module
+    Bio.Motif.Parsers.MAST instead.
     """
     def feed (self, handle, consumer):
         if isinstance(handle, File.UndoHandle):
@@ -643,7 +900,7 @@ class _MASTScanner:
 
 
 class MASTRecord:
-    """The class for holding the results from a MAST run.
+    """The class for holding the results from a MAST run (OBSOLETE).
     
     A MASTRecord holds data about matches between motifs and sequences.
     The motifs held by the MASTRecord are objects of the class MEMEMotif.
@@ -657,6 +914,9 @@ class MASTRecord:
     MEMEInstance
     get_motif_by_name (motif_name): returns a MEMEMotif with the given
     name.
+    
+    This class is OBSOLETE; please use the read() function in the module
+    Bio.Motif.Parsers.MAST instead.
     """
     def __init__ (self):
         self.sequences = []

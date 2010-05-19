@@ -3,26 +3,30 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 
-"""
+"""Module to work with enzyme.dat file (DEPRECATED).
+
 This module provides code to work with the enzyme.dat file from
 Enzyme (OBSOLETE as of Biopython version 1.50).
 http://www.expasy.ch/enzyme/
 
-The functionality of Bio.Enzyme has moved to Bio.ExPASy.Enzyme;
-please use that module instead of Bio.Enzyme. Most likely, Bio.Enzyme
-will be deprecated in a future release of Biopython.
-
-
-Classes:
-_Scanner     Scans Enzyme data.
-
+The functionality of Bio.Enzyme has moved to Bio.ExPASy.ExPASy;
+please use that module instead of Bio.Enzyme. Bio.Enzyme is now
+deprecated and will be removed in a future release of Biopython.
 """
+
+import warnings
+warnings.warn("Bio.Enzyme is deprecated, and will be removed in a"\
+              " future release of Biopython. Most of the functionality "
+              " is now provided by Bio.ExPASy.Enzyme.  If you want to "
+              " continue to use Bio.Enzyme, please get in contact "
+              " via the mailing lists to avoid its permanent removal from"\
+              " Biopython.", DeprecationWarning)
 
 from Bio import File
 from Bio.ParserSupport import *
 
 class _Scanner:
-    """Scans Enzyme data.
+    """Scans Enzyme data (PRIVATE).
 
     Tested with:
     Release 33
@@ -169,41 +173,41 @@ class EnzymeRecord:
         return output
         
 class RecordParser(AbstractParser):
-	def __init__(self):
-		self._scanner = _Scanner()
-		self._consumer = _RecordConsumer()
+    def __init__(self):
+        self._scanner = _Scanner()
+        self._consumer = _RecordConsumer()
 
-	def parse(self, handle):
-		if isinstance(handle, File.UndoHandle):
-			uhandle = handle
-		else:
-			uhandle = File.UndoHandle(handle)
-			self._scanner.feed(uhandle, self._consumer)
-		return self._consumer.enzyme_record
+    def parse(self, handle):
+        if isinstance(handle, File.UndoHandle):
+            uhandle = handle
+        else:
+            uhandle = File.UndoHandle(handle)
+            self._scanner.feed(uhandle, self._consumer)
+        return self._consumer.enzyme_record
 
 class Iterator:
-	def __init__(self, handle, parser=None):
-		self._uhandle = File.UndoHandle(handle)
+    def __init__(self, handle, parser=None):
+        self._uhandle = File.UndoHandle(handle)
 
-	def next(self):
-		self._parser = RecordParser()
-		lines = []
-		while 1:
-			line = self._uhandle.readline()
-			if not line: break
-			if line[:2] == '//':
-				break
-			lines.append(line)
-		if not lines:
-			return None
-		lines.append('//')
-		data = string.join(lines,'')
-		if self._parser is not None:
-			return self._parser.parse(File.StringHandle(data))
-		return data
+    def next(self):
+        self._parser = RecordParser()
+        lines = []
+        while True:
+            line = self._uhandle.readline()
+            if not line: break
+            if line[:2] == '//':
+                break
+            lines.append(line)
+        if not lines:
+            return None
+        lines.append('//')
+        data = ''.join(lines)
+        if self._parser is not None:
+            return self._parser.parse(File.StringHandle(data))
+        return data
 
-        def __iter__(self):
-                return iter(self.next, None)
+    def __iter__(self):
+        return iter(self.next, None)
 
 class _RecordConsumer(AbstractConsumer):
     def __init__(self):
@@ -215,7 +219,7 @@ class _RecordConsumer(AbstractConsumer):
     def alternate_name(self,an_info):
         self.enzyme_record.AN.append(an_info[2:].strip())
     def catalytic_activity(self, ca_info):
-        self.enzyme_record.CA = string.join([self.enzyme_record.CA,ca_info[2:].strip()],'')
+        self.enzyme_record.CA = ''.join([self.enzyme_record.CA, ca_info[2:].strip()])
     def cofactor(self, cf_info):
         self.enzyme_record.CF.append(cf_info[2:].strip())
     def comment(self, cc_info):
@@ -247,5 +251,5 @@ class _RecordConsumer(AbstractConsumer):
                 t1.strip(), t2.strip()
             self.enzyme_record.DR.append(data_record)
 
-	def terminator(self,schwarzenegger):
-		pass # Hasta la Vista, baby!
+    def terminator(self,schwarzenegger):
+        pass # Hasta la Vista, baby!

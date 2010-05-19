@@ -11,6 +11,12 @@ See http://www.rubic.rdg.ac.uk/~mab/software.html .
 
 Classes:
 Record           Holds FDist data.
+
+Functions:
+read             Parses a FDist record (file) into a Record object.
+
+
+Obsolete classes:
 RecordParser     Parses a FDist record (file) into a Record object.
 
 _Scanner         Scans a FDist record.
@@ -18,12 +24,32 @@ _RecordConsumer  Consumes FDist data to a Record object.
 
 
 """
-from types import *
 
 
-from Bio import File
-from Bio.ParserSupport import *
 
+
+def read(handle):
+    """Parses FDist data into a Record object.
+
+       handle is a file-like object that contains a FDist record.
+    """
+    record = Record()
+    record.data_org = int(handle.next().rstrip())
+    record.num_pops = int(handle.next().rstrip())
+    record.num_loci = int(handle.next().rstrip())
+    for i in range(record.num_loci):
+        handle.next()
+        num_alleles = int(handle.next().rstrip())
+        pops_data = []
+        if record.data_org==0:
+            for j in range(record.num_pops):
+                line_comp = handle.next().rstrip().split(' ')
+                pop_dist = map(lambda x: int(x), line_comp)
+                pops_data.append(pop_dist)
+        else:
+            raise NotImplementedError('1/alleles by rows not implemented')
+        record.loci_data.append((num_alleles, pops_data))
+    return record
 
 
 class Record:
@@ -66,10 +92,15 @@ class Record:
             rep.append('\n')
         return "".join(rep)
     
+# Everything below is obsolete
+
+from Bio.ParserSupport import *
 
 class RecordParser(AbstractParser):
-    """Parses FDist data into a Record object.
+    """Parses FDist data into a Record object (OBSOLETE).
 
+    This function is OBSOLETE; plesae use the read() function in this module
+    instead.
     """
     def __init__(self):
         self._scanner = _Scanner()
@@ -80,10 +111,12 @@ class RecordParser(AbstractParser):
         return self._consumer.data
 
 class _Scanner:
-    """Scans a FDist record.
+    """Scans a FDist record (OBSOLETE).
     
     There is only one record per file.
-    
+
+    This function is OBSOLETE; plesae use the read() function in this module
+    instead.
     """
 
     def feed(self, handle, consumer):
@@ -121,11 +154,13 @@ class _Scanner:
         consumer.end_record()
 
 class _RecordConsumer(AbstractConsumer):
-    """Consumer that converts a FDist record to a Record object.
+    """Consumer that converts a FDist record to a Record object (OBSOLETE).
 
     Members:
     data    Record with FDist data.
 
+    This function is OBSOLETE; plesae use the read() function in this module
+    instead.
     """
     def __init__(self):
         self.data = None

@@ -8,21 +8,14 @@
 
 import unittest
 
-#TODO - Remove this work around once we drop python 2.3 support
 try:
-    set
-except NameError:
-    from sets import Set as set
-
-try :
     import numpy
-except ImportError :
+except ImportError:
     from Bio import MissingExternalDependencyError
     raise MissingExternalDependencyError(\
         "Install NumPy if you want to use Bio.kNN.")
 
 from Bio import kNN
-
 
 xs = [[-53, -200.78],
       [117, -267.14],

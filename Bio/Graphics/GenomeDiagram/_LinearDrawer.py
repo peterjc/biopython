@@ -602,7 +602,7 @@ class LinearDrawer(AbstractDrawer):
             tctr = ctr + self.fragment_lines[fragment][0]
             ttop = top + self.fragment_lines[fragment][0]  
             box = draw_box((self.x0, tbtm), (self.xlim, ttop),  # Grey track bg
-                           colors.Color(0.98,0.98, 0.98))       # is just a box
+                           colors.Color(0.96,0.96, 0.96))       # is just a box
             greytrack_bgs.append(box)
 
             if track.greytrack_labels:  # If labels are required
@@ -782,9 +782,8 @@ class LinearDrawer(AbstractDrawer):
         kwargs['head_length_ratio'] = feature.arrowhead_length
         kwargs['shaft_height_ratio'] = feature.arrowshaft_height
 
-        #Support for clickable links... needs a recent version of
-        #ReportLab.   Support for links in SVG output was added
-        #in Feb 2009, just after ReportLab 2.3 was released.
+        #Support for clickable links... needs ReportLab 2.4 or later
+        #which added support for links in SVG output.
         if hasattr(feature, "url") :
             kwargs["hrefURL"] = feature.url
             kwargs["hrefTitle"] = feature.name
@@ -792,15 +791,15 @@ class LinearDrawer(AbstractDrawer):
         strand = feature.strand
         
         # Get sigil for the feature, location dependent on the feature strand
-        if strand == 0:
-            sigil = method((x0, btm), (x1, top), color=feature.color,
-                           **kwargs)
         if strand == 1:
             sigil = method((x0, ctr), (x1, top), color=feature.color,
                            orientation='right', **kwargs)
-        if strand == -1:
+        elif strand == -1:
             sigil = method((x1, btm), (x0, ctr), color=feature.color,
                            orientation='left', **kwargs)
+        else:
+            sigil = method((x0, btm), (x1, top), color=feature.color,
+                           **kwargs)
         if feature.label:   # Feature requires a label
             label = String(0, 0, feature.name,
                            fontName=feature.label_font,
@@ -891,13 +890,13 @@ class LinearDrawer(AbstractDrawer):
         pos, val = data[0]
         lastfrag, lastx = self.canvas_location(pos)
         lastx += self.x0        # Start xy co-ords
-        lasty = trackheight*(val-minval)/resolution + \
+        lasty = trackheight*(val-midval)/resolution + \
                 self.fragment_lines[lastfrag][0] + ctr
         lastval = val
         # Add a series of lines linking consecutive data points
         for pos, val in data:   
             frag, x = self.canvas_location(pos)
-            x += self.x0        # next xy co-ords            
+            x += self.x0        # next xy co-ords
             y = trackheight*(val-midval)/resolution + \
                 self.fragment_lines[frag][0] + ctr
             if frag == lastfrag:    # Points on the same fragment: draw the line
@@ -915,7 +914,7 @@ class LinearDrawer(AbstractDrawer):
                         self.fragment_lines[frag][0] + ctr
                 line_elements.append(Line(self.x0, tempy, x, y,
                                           strokeColor = graph.poscolor,
-                                          strokeWidth = graph.linewidth))                
+                                          strokeWidth = graph.linewidth))
             lastfrag, lastx, lasty, lastval = frag, x, y, val
             
         return line_elements

@@ -7,7 +7,7 @@ just type the command:
 python setup.py install
 
 For more in-depth instructions, see the installation section of the
-biopython manual, linked to from:
+Biopython manual, linked to from:
 
 http://biopython.org/wiki/Documentation
 
@@ -25,22 +25,17 @@ import sys
 import os
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (2, 3):
-    print "Biopython requires Python 2.3 or better.  Python %d.%d detected" % \
+if sys.version_info[:2] < (2, 4):
+    print "Biopython requires Python 2.4 or better.  Python %d.%d detected" % \
           sys.version_info[:2]
     sys.exit(-1)
-elif sys.version_info[:2] == (2, 3):
-    print >> sys.stderr, \
-          "This should be the last release of Biopython for Python 2.3"
 
 from distutils.core import setup
 from distutils.core import Command
 from distutils.command.install import install
-from distutils.command.install_data import install_data
 from distutils.command.build_py import build_py
 from distutils.command.build_ext import build_ext
 from distutils.extension import Extension
-from distutils import sysconfig
 
 def get_yes_or_no(question, default):
     if default:
@@ -78,46 +73,29 @@ def check_dependencies():
     # --force option that gets saved in self.user_options.  It
     # means overwrite previous installations.  If the user has
     # forced an installation, should we also ignore dependencies?
-    
-    #This is a list of tuples, containing:
-    # - package name, string
-    # - is packaged installed, boolean
-    # - is packaged required, boolean
-    # - package website, string
-    dependencies = [
-        ("Numerical Python (NumPy)", is_Numpy_installed, 0,
-         "http://numpy.scipy.org/"),
-        ]
 
-    for name, is_installed_fn, is_required, url in dependencies:
-        if is_installed_fn():
-            continue
+    # We only check for NumPy, as this is a compile time dependency
+    if is_Numpy_installed() : return True
 
-        print "*** %s *** is either not installed or out of date." % name
-        if is_required:
+    if os.name=='java':
+        return True #NumPy is not avaliable for Jython (for now)
 
-            print """
+    print """
+Numerical Python (NumPy) is not installed.
+
 This package is required for many Biopython features.  Please install
-it before you install Biopython."""
-            default = 0
-        else:
-            print """
-This package is optional, which means it is only used in a few
-specialized modules in Biopython.  You probably don't need this if you
-are unsure.  You can ignore this requirement, and install it later if
-you see ImportErrors."""
-            default = 1
-        print "You can find %s at %s." % (name, url)
-        print
-        # exit automatically if required packages not installed
-        if not(default):
-            sys.exit(-1)
+it before you install Biopython. You can install Biopython anyway, but
+anything dependent on NumPy will not work. If you do this, and later
+install NumPy, you should then re-install Biopython.
 
-        if not get_yes_or_no(
-            "Do you want to continue this installation?", default):
-            return 0
-        
-    return 1
+You can find NumPy at http://numpy.scipy.org
+"""
+    # exit automatically if running as part of some script
+    # (e.g. PyPM, ActiveState's Python Package Manager)
+    if not sys.stdout.isatty() :
+        sys.exit(-1)
+    # We can ask the user
+    return get_yes_or_no("Do you want to continue this installation?", False)
 
 class install_biopython(install):
     """Override the standard install to check for dependencies.
@@ -140,27 +118,6 @@ class build_py_biopython(build_py):
             self.packages.extend(NUMPY_PACKAGES)
         build_py.run(self)
 
-        # In addition to installing the data files, we also need to make
-        # sure that they are copied to the build directory. Otherwise,
-        # the unit tests will fail because they cannot find the data files
-        # in the build directory.
-        # This is taken care of automatically in Python 2.4 or higher by
-        # using package_data.
-
-        import glob
-        data_files = self.distribution.data_files
-        for entry in data_files:
-            if type(entry) is not type(""):
-                raise ValueError, "data_files must be strings"
-            # Unix- to platform-convention conversion
-            entry = os.sep.join(entry.split("/"))
-            filenames = glob.glob(entry)
-            for filename in filenames:
-                dst = os.path.join(self.build_lib, filename)
-                dstdir = os.path.split(dst)[0]
-                self.mkpath(dstdir)
-                self.copy_file(filename, dst)
-
 
 class build_ext_biopython(build_ext):
     def run(self):
@@ -180,6 +137,11 @@ class build_ext_biopython(build_ext):
                 Extension('Bio.KDTree._CKDTree',
                           ["Bio/KDTree/KDTree.c",
                            "Bio/KDTree/KDTreemodule.c"],
+                          include_dirs=[numpy_include_dir],
+                          ))
+            self.extensions.append(
+                Extension('Bio.Motif._pwm',
+                          ["Bio/Motif/_pwm.c"],
                           include_dirs=[numpy_include_dir],
                           ))
         build_ext.run(self)
@@ -225,13 +187,14 @@ def can_import(module_name):
         return None
 
 def is_Numpy_installed():
-    return can_import("numpy")
+    return bool(can_import("numpy"))
 
 # --- set up the packages we are going to install
 # standard biopython packages
 PACKAGES = [
     'Bio',
     'Bio.Align',
+    'Bio.Align.Applications',
     'Bio.AlignIO',
     'Bio.AlignAce',
     'Bio.Alphabet',
@@ -246,8 +209,6 @@ PACKAGES = [
     'Bio.Encodings',
     'Bio.Entrez',
     'Bio.Enzyme',
-    'Bio.EUtils',
-    'Bio.EUtils.DTDs',
     'Bio.ExPASy',
     'Bio.Fasta',
     'Bio.FSSP',
@@ -262,7 +223,6 @@ PACKAGES = [
     'Bio.Graphics',
     'Bio.Graphics.GenomeDiagram',
     'Bio.HMM',
-    'Bio.IntelliGenetics',
     'Bio.InterPro',
     'Bio.KEGG',
     'Bio.KEGG.Compound',
@@ -272,11 +232,7 @@ PACKAGES = [
     'Bio.MEME',
     'Bio.Motif',
     'Bio.Motif.Parsers',
-    #'Bio.Motif.Applications', #New, deliberately left out for Biopython 1.50 
-    'Bio.MetaTool',
-    'Bio.Mindy',
-    'Bio.NBRF',
-    'Bio.Ndb',
+    'Bio.Motif.Applications',
     'Bio.NeuralNetwork',
     'Bio.NeuralNetwork.BackPropagation',
     'Bio.NeuralNetwork.Gene',
@@ -295,23 +251,20 @@ PACKAGES = [
     'Bio.Prosite',
     'Bio.Restriction',
     'Bio.Restriction._Update',
-    'Bio.Saf',
     'Bio.SCOP',
     'Bio.SeqIO',
     'Bio.SeqUtils',
     'Bio.Sequencing',
+    'Bio.Sequencing.Applications',
     'Bio.Statistics',
     'Bio.SubsMat',
     'Bio.SVDSuperimposer',
     'Bio.SwissProt',
+    'Bio.Phylo',
     'Bio.UniGene',
-    'Bio.writers',
-    'Bio.writers.SeqRecord',
     'Bio.Wise',
-    'Bio.WWW',
     #Other top level packages,
     'BioSQL',
-    'Martel', #Deprecated as of Biopython 1.49
     ]
 
 # packages that require Numeric Python
@@ -321,18 +274,11 @@ NUMPY_PACKAGES = [
     'Bio.KDTree',
 ]
 
-EXTENSIONS = [
-    Extension('Bio.clistfns',
-              ['Bio/clistfnsmodule.c']
-              ),
-    Extension('Bio.cmathfns',
-              ['Bio/cmathfnsmodule.c',
-               'Bio/csupport.c'],
-              include_dirs=["Bio"]
-              ),
-    Extension('Bio.cstringfns',
-              ['Bio/cstringfnsmodule.c']
-              ),
+if os.name == 'java' :
+    # Jython doesn't support C extensions
+    EXTENSIONS = []
+else :
+    EXTENSIONS = [
     Extension('Bio.cpairwise2',
               ['Bio/cpairwise2module.c',
                'Bio/csupport.c'],
@@ -358,51 +304,8 @@ EXTENSIONS = [
     Extension('Bio.Nexus.cnexus',
               ['Bio/Nexus/cnexus.c']
               ),
-    Extension('Bio.Restriction.DNAUtils',
-              ['Bio/Restriction/DNAUtils.c']
-              ),
     ]
 
-DATA_FILES=[
-    "Bio/Entrez/DTDs/*.dtd",
-    "Bio/EUtils/DTDs/*.dtd",
-    "Bio/PopGen/SimCoal/data/*.par"
-    ]
-
-# EUtils contains dtd files that need to be installed in the same
-# directory as the python modules.  Distutils doesn't have a simple
-# way of handling this, and we need to subclass install_data.  This
-# code is adapted from the mx.TextTools distribution.
-
-# We can use package_data instead once we require Python 2.4 or higher.
-
-class install_data_biopython(install_data):
-    def finalize_options(self):
-        if self.install_dir is None:
-            installobj = self.distribution.get_command_obj('install')
-            self.install_dir = installobj.install_platlib
-        install_data.finalize_options(self)
-
-    def run (self):
-        import glob
-        if not self.dry_run:
-            self.mkpath(self.install_dir)
-        data_files = self.get_inputs()
-        for entry in data_files:
-            if type(entry) is not type(""):
-                raise ValueError, "data_files must be strings"
-            # Unix- to platform-convention conversion
-            entry = os.sep.join(entry.split("/"))
-            filenames = glob.glob(entry)
-            for filename in filenames:
-                dst = os.path.join(self.install_dir, filename)
-                dstdir = os.path.split(dst)[0]
-                if not self.dry_run:
-                    self.mkpath(dstdir)
-                    outfile = self.copy_file(filename, dst)[0]
-                else:
-                    outfile = dst
-                self.outfiles.append(outfile)
 
 #We now define the Biopython version number in Bio/__init__.py
 #Here we can't use "import Bio" then "Bio.__version__" as that would
@@ -424,16 +327,15 @@ setup(
         "install" : install_biopython,
         "build_py" : build_py_biopython,
         "build_ext" : build_ext_biopython,
-        "install_data" : install_data_biopython,
         "test" : test_biopython,
         },
     packages=PACKAGES,
     ext_modules=EXTENSIONS,
-    data_files=DATA_FILES,
+    package_data = {'Bio.Entrez': ['DTDs/*.dtd', 'DTDs/*.ent', 'DTDs/*.mod'],
+                    'Bio.PopGen': ['SimCoal/data/*.par'],
+                   },
     #install_requires = ['numpy>=1.0'],
     #extras_require = {
     #    'PDF' : ['reportlab>=2.0']
     #    }
-    # package_data = {'Bio.Entrez': ['DTDs/*.dtd']}
-    ## Use this once we require Python version >= 2.4.
     )

@@ -4,7 +4,7 @@
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
-"""Module for working with Prosite files from ExPASy (OBSOLETE).
+"""Module for working with Prosite files from ExPASy (DEPRECATED).
 
 Most of the functionality in this module has moved to Bio.ExPASy.Prosite;
 please see
@@ -50,19 +50,26 @@ Record                Holds Prosite data.
 PatternHit            Holds data from a hit against a Prosite pattern.
 Dictionary            Accesses a Prosite file using a dictionary interface.
 RecordParser          Parses a Prosite record into a Record object.
-Iterator              Iterates over entries in a Prosite file; DEPRECATED.
 
 _Scanner              Scans Prosite-formatted data.
 _RecordConsumer       Consumes Prosite data to a Record object.
 
 """
+
+import warnings
+warnings.warn("Bio.Prosite is deprecated, and will be removed in a"\
+              " future release of Biopython. Most of the functionality "
+              " is now provided by Bio.ExPASy.Prosite.  If you want to "
+              " continue to use Bio.Prosite, please get in contact "
+              " via the mailing lists to avoid its permanent removal from"\
+              " Biopython.", DeprecationWarning)
+
 from types import *
 import re
 import sgmllib
 from Bio import File
 from Bio import Index
 from Bio.ParserSupport import *
-
 
 # There is probably a cleaner way to write the read/parse functions
 # if we don't use the "parser = RecordParser(); parser.parse(handle)"
@@ -221,67 +228,6 @@ class PatternHit:
                 lines.append("%7s %10s %s" % (' ', range_str, seq))
         return "\n".join(lines)
     
-class Iterator:
-    """Returns one record at a time from a Prosite file.
-
-    Methods:
-    next   Return the next record from the stream, or None.
-
-    """
-    def __init__(self, handle, parser=None):
-        """__init__(self, handle, parser=None)
-
-        Create a new iterator.  handle is a file-like object.  parser
-        is an optional Parser object to change the results into another form.
-        If set to None, then the raw contents of the file will be returned.
-
-        """
-        import warnings
-        warnings.warn("Bio.Prosite.Iterator is deprecated; we recommend using the function Bio.Prosite.parse instead. Please contact the Biopython developers at biopython-dev@biopython.org you cannot use Bio.Prosite.parse instead of Bio.Prosite.Iterator.",
-              DeprecationWarning)
-        if type(handle) is not FileType and type(handle) is not InstanceType:
-            raise ValueError("I expected a file handle or file-like object")
-        self._uhandle = File.UndoHandle(handle)
-        self._parser = parser
-
-    def next(self):
-        """next(self) -> object
-
-        Return the next Prosite record from the file.  If no more records,
-        return None.
-
-        """
-        # Skip the copyright info, if it's the first record.
-        line = self._uhandle.peekline()
-        if line[:2] == 'CC':
-            while 1:
-                line = self._uhandle.readline()
-                if not line:
-                    break
-                if line[:2] == '//':
-                    break
-                if line[:2] != 'CC':
-                    raise ValueError("Oops, where's the copyright?")
-        
-        lines = []
-        while 1:
-            line = self._uhandle.readline()
-            if not line:
-                break
-            lines.append(line)
-            if line[:2] == '//':
-                break
-            
-        if not lines:
-            return None
-            
-        data = "".join(lines)
-        if self._parser is not None:
-            return self._parser.parse(File.StringHandle(data))
-        return data
-    
-    def __iter__(self):
-        return iter(self.next, None)
 
 class Dictionary:
     """Accesses a Prosite file using a dictionary interface.
@@ -601,7 +547,7 @@ class _RecordConsumer(AbstractConsumer):
                 # CC   Automatic scaling using reversed database
                 # Throw it away.  (Should I keep it?)
                 continue
-            if col.count("=") == 0 :
+            if col.count("=") == 0:
                 #Missing qualifier!  Can we recover gracefully?
                 #For example, from Bug 2403, in PS50293 have:
                 #CC /AUTHOR=K_Hofmann; N_Hulo

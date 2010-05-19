@@ -28,12 +28,6 @@ classify       Classify an observation into a class.
 
 import numpy
 
-#TODO - Remove this work around once we drop python 2.3 support
-try:
-    set
-except NameError:
-    from sets import Set as set
-
 def _contents(items):
     term = 1.0/len(items)
     counts = {}
@@ -200,7 +194,7 @@ def train(training_set, results, priors=None, typecode=None):
             nb.p_conditional[i][j] = _contents(values)
     return nb
 
-if __name__ == "__main__" :
+if __name__ == "__main__":
     # Car data from example 'Naive Bayes Classifier example' by Eric Meisner November 22, 2003
     # http://www.inf.u-szeged.hu/~ormandi/teaching/mi2/02-naiveBayes-example.pdf
     xcar=[

@@ -4,6 +4,7 @@
 # as part of this package.
 
 import os.path
+import warnings
 import Bio.PDB.mmCIF.MMCIFlex
 from UserDict import UserDict
 
@@ -77,7 +78,7 @@ class MMCIF2Dict(UserDict):
                         # print token, value
                     if pos!=nr_fields-1:
                         warnings.warn("ERROR: broken name-data pair "
-                                      "(data missing)!", RuntimeError)
+                                      "(data missing)!", RuntimeWarning)
                     # The last token was not used, so
                     # don't set token to None! (this means the 
                     # last parsed token goes through the loop again)
@@ -89,7 +90,7 @@ class MMCIF2Dict(UserDict):
                     mmcif_dict[value]=data
                     if next_token<4:
                         warnings.warn("ERROR: broken name-data pair "
-                                      "(name-non data pair)!", RuntimeError)
+                                      "(name-non data pair)!", RuntimeWarning)
                         # print token, value
                     else:   
                         # get next token
@@ -106,7 +107,7 @@ class MMCIF2Dict(UserDict):
                 # we found some complete garbage
                 warnings.warn("ERROR: broken name-data pair "
                               "(missing name)!\n%s %s" % (token, value),
-                              RuntimeError)
+                              RuntimeWarning)
                 mmcif_dict[None].append(value)
                 # get next token
                 token=None

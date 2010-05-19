@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# This code is part of the Biopython distribution and governed by its
+# license.  Please see the LICENSE file that should have been included
+# as part of this package.
 """Tests for GenomeDiagram general functionality.
 """
 
@@ -8,6 +11,7 @@
 # Builtins
 import os
 import unittest
+import math
 
 # Do we have ReportLab?  Raise error if not present.
 from Bio import MissingExternalDependencyError
@@ -135,9 +139,9 @@ def calc_gc_skew(sequence):
     """
     g = sequence.count('G') + sequence.count('g')
     c = sequence.count('C') + sequence.count('c')
-    if g+c == 0 :
+    if g+c == 0:
         return 0.0 #TODO - return NaN or None here?
-    else :
+    else:
         return (g-c)/float(g+c)
 
 
@@ -150,9 +154,9 @@ def calc_at_skew(sequence):
     """
     a = sequence.count('A') + sequence.count('a')
     t = sequence.count('T') + sequence.count('t')
-    if a+t == 0 :
+    if a+t == 0:
         return 0.0 #TODO - return NaN or None here?
-    else :
+    else:
         return (a-t)/float(a+t)
 
 def calc_dinucleotide_counts(sequence):
@@ -165,7 +169,7 @@ def calc_dinucleotide_counts(sequence):
     NOTE - "AA" scores 1, "AAA" scores 2, "AAAA" scores 3 etc.
     """
     total = 0
-    for letter in "ACTGUactgu" :
+    for letter in "ACTGUactgu":
         total += sequence.count(letter+letter)
     return total
     
@@ -197,27 +201,124 @@ class ColorsTest(unittest.TestCase):
 
             
 class GraphTest(unittest.TestCase):
-    def setUp(self):
-        self.data = [(1, 10), (5, 15), (20, 40)]
+    def test_limits(self):
+        """Check line graphs."""
+        #TODO - Fix GD so that the same min/max is used for all three lines?
+        points = 1000
+        scale = math.pi * 2.0 / points
+        data1 = [math.sin(x*scale) for x in range(points)]
+        data2 = [math.cos(x*scale) for x in range(points)]
+        data3 = [2*math.sin(2*x*scale) for x in range(points)]
+        
+        gdd = Diagram('Test Diagram', circular=False,
+                      y=0.01, yt=0.01, yb=0.01,
+                      x=0.01, xl=0.01, xr=0.01)
+        gdt_data = gdd.new_track(1, greytrack=False)
+        gds_data = gdt_data.new_set("graph")
+        for data_values, name, color in zip([data1,data2,data3],
+                                            ["sin", "cos", "2sin2"],
+                                            ["red","green","blue"]):
+            data = zip(range(points), data_values)
+            gds_data.new_graph(data, "", style="line",
+                               color = color, altcolor = color,
+                               center = 0)
+
+        gdd.draw(format='linear',
+                 tracklines=False,
+                 pagesize=(15*cm,15*cm),
+                 fragments=1,
+                 start=0, end=points)
+        gdd.write(os.path.join('Graphics', "line_graph.pdf"), "pdf")
+        #Circular diagram - move tracks to make an empty space in the middle
+        for track_number in gdd.tracks.keys():
+            gdd.move_track(track_number,track_number+1)
+        gdd.draw(tracklines=False,
+                 pagesize=(15*cm,15*cm),
+                 circular=True, #Data designed to be periodic
+                 start=0, end=points)
+        gdd.write(os.path.join('Graphics', "line_graph_c.pdf"), "pdf")
         
     def test_slicing(self):
         """Check GraphData slicing."""
         gd = GraphData()
-        gd.set_data(self.data)
+        gd.set_data([(1, 10), (5, 15), (20, 40)])
         gd.add_point((10, 20))
         
         assert gd[4:16] == [(5, 15), (10, 20)], \
                 "Unable to insert and retrieve points correctly"
-class LinearSigilsTest(unittest.TestCase):
-    """Check the different feature sigils.
 
-    These figures are intended to be used in the Tutorial..."""
-    def setUp(self) :
+
+class LabelTest(unittest.TestCase):
+    """Check label positioning."""
+    def setUp(self):
         self.gdd = Diagram('Test Diagram', circular=False,
                            y=0.01, yt=0.01, yb=0.01,
                            x=0.01, xl=0.01, xr=0.01)
 
-    def add_track_with_sigils(self, **kwargs) :
+    def finish(self, name, circular=True):
+        #And draw it...
+        tracks = len(self.gdd.tracks)
+        #Work arround the page orientation code being too clever
+        #and flipping the h & w round:
+        if tracks <= 3:
+            orient = "landscape"
+        else:
+            orient = "portrait"
+        self.gdd.draw(format='linear', orientation=orient,
+                      tracklines=False,
+                      pagesize=(15*cm,5*cm*tracks),
+                      fragments=1,
+                      start=0, end=400)
+        self.gdd.write(os.path.join('Graphics', name+".pdf"), "pdf")
+        #For the tutorial this might be useful:
+        #self.gdd.write(os.path.join('Graphics', name+".png"), "png")
+        if circular:
+            #Circular diagram - move tracks to make an empty space in the middle
+            for track_number in self.gdd.tracks.keys():
+                self.gdd.move_track(track_number,track_number+1)
+            self.gdd.draw(tracklines=False,
+                          pagesize=(15*cm,15*cm),
+                          fragments=1,
+                          start=0, end=400)
+            self.gdd.write(os.path.join('Graphics', name+"_c.pdf"), "pdf")
+    
+    def add_track_with_sigils(self, **kwargs):
+        self.gdt_features = self.gdd.new_track(1, greytrack=False)
+        self.gds_features = self.gdt_features.new_set()
+        for i in range(18):
+            start = int((400 * i)/18.0)
+            end = start + 17
+            if i % 3 == 0:
+                strand=None
+                name = "Strandless"
+                color=colors.orange
+            elif i % 3 == 1:
+                strand=+1
+                name="Forward"
+                color=colors.red
+            else:
+                strand = -1
+                name="Reverse"
+                color=colors.blue
+            feature = SeqFeature(FeatureLocation(start, end), strand=strand)
+            self.gds_features.add_feature(feature, name=name,
+                                          color=color, label=True, **kwargs)
+
+    def test_label_default(self):
+        """Feature labels - default."""
+        self.add_track_with_sigils()
+        self.finish("labels_default")
+
+class SigilsTest(unittest.TestCase):
+    """Check the different feature sigils.
+
+    These figures are intended to be used in the Tutorial..."""
+    def setUp(self):
+        self.gdd = Diagram('Test Diagram', circular=False,
+                           y=0.01, yt=0.01, yb=0.01,
+                           x=0.01, xl=0.01, xr=0.01)
+
+    def add_track_with_sigils(self, **kwargs):
         #Add a track of features,
         self.gdt_features = self.gdd.new_track(1, greytrack=False)
         #We'll just use one feature set for these features,
@@ -230,14 +331,14 @@ class LinearSigilsTest(unittest.TestCase):
         feature = SeqFeature(FeatureLocation(275, 375), strand=-1)
         self.gds_features.add_feature(feature, name="Reverse", **kwargs)
 
-    def finish(self, name) :
+    def finish(self, name, circular=True):
         #And draw it...
         tracks = len(self.gdd.tracks)
         #Work arround the page orientation code being too clever
         #and flipping the h & w round:
-        if tracks <= 3 :
+        if tracks <= 3:
             orient = "landscape"
-        else :
+        else:
             orient = "portrait"
         self.gdd.draw(format='linear', orientation=orient,
                       tracklines=False,
@@ -247,8 +348,17 @@ class LinearSigilsTest(unittest.TestCase):
         self.gdd.write(os.path.join('Graphics', name+".pdf"), "pdf")
         #For the tutorial this might be useful:
         #self.gdd.write(os.path.join('Graphics', name+".png"), "png")
+        if circular:
+            #Circular diagram - move tracks to make an empty space in the middle
+            for track_number in self.gdd.tracks.keys():
+                self.gdd.move_track(track_number,track_number+1)
+            self.gdd.draw(tracklines=False,
+                          pagesize=(15*cm,15*cm),
+                          fragments=1,
+                          start=0, end=400)
+            self.gdd.write(os.path.join('Graphics', name+"_c.pdf"), "pdf")
 
-    def test_labels(self) :
+    def test_labels(self):
         """Feature labels."""
         self.add_track_with_sigils(label=True)
         self.add_track_with_sigils(label=True, color="green",
@@ -260,9 +370,9 @@ class LinearSigilsTest(unittest.TestCase):
                                    label_position="middle",
                                    label_size=6, label_angle=-90)
         self.assertEqual(len(self.gdd.tracks), 4)
-        self.finish("GD_sigil_labels")
+        self.finish("GD_sigil_labels", circular=False)
 
-    def test_arrow_shafts(self) :
+    def test_arrow_shafts(self):
         """Feature arrow sigils, varying shafts."""
         self.add_track_with_sigils(sigil="ARROW")
         self.add_track_with_sigils(sigil="ARROW", color="brown",
@@ -274,7 +384,7 @@ class LinearSigilsTest(unittest.TestCase):
         self.assertEqual(len(self.gdd.tracks), 4)
         self.finish("GD_sigil_arrow_shafts")        
 
-    def test_arrow_heads(self) :
+    def test_arrow_heads(self):
         """Feature arrow sigils, varying heads."""
         self.add_track_with_sigils(sigil="ARROW")
         self.add_track_with_sigils(sigil="ARROW", color="blue",
@@ -284,40 +394,108 @@ class LinearSigilsTest(unittest.TestCase):
         self.add_track_with_sigils(sigil="ARROW", color="red",
                                    arrowhead_length=10000) #Triangles
         self.assertEqual(len(self.gdd.tracks), 4)
-        self.finish("GD_sigil_arrows")        
+        self.finish("GD_sigil_arrows")
 
+    def test_small_arrow_heads(self):
+        """Feature arrow sigil heads within bounding box."""
+        #Add a track of features, bigger height to emphasise any sigil errors
+        self.gdt_features = self.gdd.new_track(1, greytrack=True, height=3)
+        #We'll just use one feature set for these features,
+        self.gds_features = self.gdt_features.new_set()
+        #Green arrows just have small heads (meaning if there is a mitre
+        #it will escape the bounding box).  Red arrows are small triangles.
+        feature = SeqFeature(FeatureLocation(15, 30), strand=+1)
+        self.gds_features.add_feature(feature, color="grey")
+        self.gds_features.add_feature(feature, name="Forward", sigil="ARROW",
+                                      arrowhead_length=0.05)
+        feature = SeqFeature(FeatureLocation(55, 60), strand=+1)
+        self.gds_features.add_feature(feature, color="grey")
+        self.gds_features.add_feature(feature, name="Forward", sigil="ARROW",
+                                      arrowhead_length=1000, color="red")
+        feature = SeqFeature(FeatureLocation(75, 125), strand=+1)
+        self.gds_features.add_feature(feature, color="grey")
+        self.gds_features.add_feature(feature, name="Forward", sigil="ARROW",
+                                      arrowhead_length=0.05)
+        feature = SeqFeature(FeatureLocation(140, 155), strand=None)
+        self.gds_features.add_feature(feature, color="grey")
+        self.gds_features.add_feature(feature, name="Strandless", sigil="ARROW",
+                                      arrowhead_length=0.05)
+        feature = SeqFeature(FeatureLocation(180, 185), strand=None)
+        self.gds_features.add_feature(feature, color="grey")
+        self.gds_features.add_feature(feature, name="Strandless", sigil="ARROW",
+                                      arrowhead_length=1000, color="red")
+        feature = SeqFeature(FeatureLocation(200, 250), strand=None)
+        self.gds_features.add_feature(feature, color="grey")
+        self.gds_features.add_feature(feature, name="Strandless", sigil="ARROW",
+                                      arrowhead_length=0.05)
+        feature = SeqFeature(FeatureLocation(265, 280), strand=-1)
+        self.gds_features.add_feature(feature, name="Reverse", sigil="ARROW",
+                                      arrowhead_length=0.05)
+        feature = SeqFeature(FeatureLocation(305, 310), strand=-1)
+        self.gds_features.add_feature(feature, color="grey")
+        self.gds_features.add_feature(feature, name="Reverse", sigil="ARROW",
+                                      arrowhead_length=1000, color="red")
+        feature = SeqFeature(FeatureLocation(325, 375), strand=-1)
+        self.gds_features.add_feature(feature, color="grey")
+        self.gds_features.add_feature(feature, name="Reverse", sigil="ARROW",
+                                      arrowhead_length=0.05)
+        self.finish("GD_sigil_arrows_small")
+
+    def test_long_arrow_heads(self):
+        """Feature arrow sigil heads within bounding box."""
+        #Add a track of features, bigger height to emphasise any sigil errors
+        self.gdt_features = self.gdd.new_track(1, greytrack=True, height=3)
+        #We'll just use one feature set for these features,
+        self.gds_features = self.gdt_features.new_set()
+        feature = SeqFeature(FeatureLocation(25, 375), strand=+1)
+        self.gds_features.add_feature(feature, color="lightblue")
+        self.gds_features.add_feature(feature, name="Forward", sigil="ARROW",
+                                      color="blue", arrowhead_length=2.0)
+        feature = SeqFeature(FeatureLocation(25, 375), strand=-1)
+        self.gds_features.add_feature(feature, color="pink")
+        self.gds_features.add_feature(feature, name="Reverse", sigil="ARROW",
+                                      color="red", arrowhead_length=2.0)
+        #Add another track of features, bigger height to emphasise any sigil errors
+        self.gdt_features = self.gdd.new_track(1, greytrack=True, height=3)
+        #We'll just use one feature set for these features,
+        self.gds_features = self.gdt_features.new_set()
+        feature = SeqFeature(FeatureLocation(25, 375), strand=None)
+        self.gds_features.add_feature(feature, color="lightgreen")
+        self.gds_features.add_feature(feature, name="Standless", sigil="ARROW",
+                                      color="green", arrowhead_length=2.0)
+        self.finish("GD_sigil_arrows_long")
 
 class DiagramTest(unittest.TestCase):
     """Creating feature sets, graph sets, tracks etc individually for the diagram."""
-    def setUp(self) :
+    def setUp(self):
         """Test setup, just loads a GenBank file as a SeqRecord."""
         handle = open(os.path.join("GenBank","NC_005816.gb"), 'r')
         self.record = SeqIO.read(handle, "genbank")
         handle.close()
 
-    def test_write_arguments(self) :
+    def test_write_arguments(self):
         """Check how the write methods respond to output format arguments."""
         gdd = Diagram('Test Diagram')
         gdd.drawing = None #Hack - need the ReportLab drawing object to be created.
         filename = os.path.join("Graphics","error.txt")
         #We (now) allow valid formats in any case.
-        for output in ["XXX","xxx",None,123,5.9] :
-            try :
+        for output in ["XXX","xxx",None,123,5.9]:
+            try:
                 gdd.write(filename, output)
                 assert False, \
                        "Should have rejected %s as an output format" % output
-            except ValueError, e :
+            except ValueError, e:
                 #Good!
                 pass
-            try :
+            try:
                 gdd.write_to_string(output)
                 assert False, \
                        "Should have rejected %s as an output format" % output
-            except ValueError, e :
+            except ValueError, e:
                 #Good!
                 pass
 
-    def test_partial_diagram(self) :
+    def test_partial_diagram(self):
         """construct and draw SVG and PDF for just part of a SeqRecord."""
         genbank_entry = self.record
         start = 6500
@@ -338,18 +516,18 @@ class DiagramTest(unittest.TestCase):
         #We'll just use one feature set for these features,
         gds_features = gdt_features.new_set()
         for feature in genbank_entry.features:
-            if feature.type <> "CDS" :
+            if feature.type <> "CDS":
                 #We're going to ignore these.
                 continue
-            if feature.location.end.position < start :
+            if feature.location.end.position < start:
                 #Out of frame (too far left)
                 continue
-            if feature.location.start.position > end :
+            if feature.location.start.position > end:
                 #Out of frame (too far right)
                 continue
 
             #This URL should work in SVG output from recent versions
-            #of ReportLab.  You need something newer than ReportLab 2.3
+            #of ReportLab.  You need ReportLab 2.4 or later
             try :
                 url = "http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi"+\
                       "?db=protein&id=%s" % feature.qualifiers["protein_id"][0]
@@ -358,9 +536,9 @@ class DiagramTest(unittest.TestCase):
                 
             #Note that I am using strings for color names, instead
             #of passing in color objects.  This should also work!
-            if len(gds_features) % 2 == 0 :
+            if len(gds_features) % 2 == 0:
                 color = "white" #for testing the automatic black border!
-            else :
+            else:
                 color = "red"
             #Checking it can cope with the old UK spelling colour.
             #Also show the labels perpendicular to the track.
@@ -397,7 +575,7 @@ class DiagramTest(unittest.TestCase):
         output_filename = os.path.join('Graphics', 'GD_region_circular.svg')
         gdd.write(output_filename, 'SVG')
 
-    def test_diagram_via_methods_pdf(self) :
+    def test_diagram_via_methods_pdf(self):
         """Construct and draw PDF using method approach."""
         genbank_entry = self.record
         gdd = Diagram('Test Diagram')
@@ -409,10 +587,10 @@ class DiagramTest(unittest.TestCase):
         #We'll just use one feature set for the genes and misc_features,
         gds_features = gdt_features.new_set()
         for feature in genbank_entry.features:
-            if feature.type == "gene" :
-                if len(gds_features) % 2 == 0 :
+            if feature.type == "gene":
+                if len(gds_features) % 2 == 0:
                     color = "blue"
-                else :
+                else:
                     color = "lightblue"
                 gds_features.add_feature(feature, color=color,
                                             #label_position = "middle",
@@ -428,19 +606,29 @@ class DiagramTest(unittest.TestCase):
         for site, name, color in [("GAATTC","EcoRI","green"),
                                   ("CCCGGG","SmaI","orange"),
                                   ("AAGCTT","HindIII","red"),
-                                  ("GGATCC","BamHI","purple")] :
+                                  ("GGATCC","BamHI","purple")]:
             index = 0
-            while True :
+            while True:
                 index  = genbank_entry.seq.find(site, start=index)
                 if index == -1 : break
                 feature = SeqFeature(FeatureLocation(index, index+6), strand=None)
-                gds_features.add_feature(feature, color=color,
-                                            #label_position = "middle",
-                                            label_size = 10,
-                                            label_color=color,
-                                            #label_angle = 90,
-                                            name=name,
-                                            label=True)
+
+                #This URL should work in SVG output from recent versions
+                #of ReportLab.  You need ReportLab 2.4 or later
+                try :
+                    url = "http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi"+\
+                          "?db=protein&id=%s" % feature.qualifiers["protein_id"][0]
+                except KeyError :
+                    url = None
+
+                gds_features.add_feature(feature, color = color,
+                                         url = url,
+                                         #label_position = "middle",
+                                         label_size = 10,
+                                         label_color = color,
+                                         #label_angle = 90,
+                                         name = name,
+                                         label = True)
                 index += len(site)
             del index
 
@@ -489,9 +677,9 @@ class DiagramTest(unittest.TestCase):
         for feature in genbank_entry.features:
             if feature.type == 'CDS':
                 cds_count += 1
-                if cds_count % 2 == 0 :
+                if cds_count % 2 == 0:
                     gdfs1.add_feature(feature, color=colors.pink)
-                else :
+                else:
                     gdfs1.add_feature(feature, color=colors.red)
 
             if feature.type == 'gene':
