@@ -123,10 +123,14 @@ def SamIterator(handle, alphabet=generic_dna):
         seq_string, quality_string, tags = (line.rstrip("\r\n")+"\t").split("\t",11)
         tags = tags.split("\t")
         
-        #If sequence has "." in it, means matches the reference...
         qualities = [q_mapping[letter] for letter in quality_string]
 
-        yield _make_seq_record(name, seq_string, alphabet, qualities,
+        #TODO - How to handle any "." in the sequece?
+        
+        #SAM spec allows upper/lower case seq, while BAM uses a binary encoding
+        #which ignores the case. The convention is to treat everything as
+        #upper case (tolerate lower case in SAM but encourage upper case).
+        yield _make_seq_record(name, seq_string.upper(), alphabet, qualities,
                                int(flag), int(map_qual))
 
 def _make_seq_record(name, sequence, alphabet, qualities, flag, map_qual):
