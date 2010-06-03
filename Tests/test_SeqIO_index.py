@@ -16,6 +16,18 @@ from seq_tests_common import compare_record
 
 class IndexDictTests(unittest.TestCase):
     """Cunning unit test where methods are added at run time."""
+    def test_get_header_gbk(self):
+	"""Header from GenBank file"""
+	data = SeqIO.index("GenBank/gbvrl1_start.seq", "gb")
+	header = data.get_header()
+	expected = "GBVRL1.SEQ           Genetic Sequence Data Bank\n" \
+	           "                          February 15 2007\n\n" \
+		   "                NCBI-GenBank Flat File Release 158.0\n\n" \
+		   "                          Viral Sequences (Part 1)\n\n" \
+		   "   72061 loci,    66147687 bases, from    72061 " \
+		   "reported sequences\n\n\n"
+	self.assertEqual(header, expected)
+	
     def simple_check(self, filename, format, alphabet):
         if format in SeqIO._BinaryFormats:
             mode = "rb"

@@ -149,6 +149,14 @@ class _IndexedSeqFileDict(dict):
         #Should be done by each sub-class (if possible)
         raise NotImplementedError("Not available for this file format.")
 
+    def get_header(self):
+        """Similar to the get_raw method, returns any file header as a string.
+
+        NOTE - This functionality is not supported for every file format.
+        """
+        #Should be done by each sub-class (if possible)
+        raise NotImplementedError("Not available for this file format.")
+
     def __setitem__(self, key, value):
         """Would allow setting or replacing records, but not implemented."""
         raise NotImplementedError("An indexed a sequence file is read only.")
@@ -269,7 +277,8 @@ class _SequentialSeqFileDict(_IndexedSeqFileDict):
         while True:
             offset = handle.tell()
             line = handle.readline()
-            if not line : break #End of file
+            if not line:
+                break #End of file
             if marker_re.match(line):
                 #Here we can assume the record.id is the first word after the
                 #marker. This is generally fine... but not for GenBank, EMBL, Swiss
@@ -290,6 +299,25 @@ class _SequentialSeqFileDict(_IndexedSeqFileDict):
                 break
             data += line
         return data
+
+    def get_header(self):
+        """Similar to the get_raw method, returns any file header as a string.
+        
+        For many sequential sequence formats files there may be some header
+        text before the first record. This function will return that text (if
+        any) as a string.
+        """
+        data = []
+        handle = self._handle
+        handle.seek(0)
+        marker_re = self._marker_re
+        while True:
+            line = handle.readline()
+            if not line or marker_re.match(line):
+                break #End of header, start of record
+            data.append(line)
+        return "".join(data)
+
 
 class FastaDict(_SequentialSeqFileDict):
     """Indexed dictionary like access to a FASTA file."""
