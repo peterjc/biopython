@@ -156,6 +156,334 @@ def _make_seq_record(name, sequence, alphabet, qualities, flag, map_qual):
                          annotations={"mapping_quality":map_qual},
                          letter_annotations={"phred_quality":qualities})
 
+def _bgzf_blocks(handle):
+    r"""Parse the BGZF blocks (special GZIP header used in BAM files).
+    
+    The BAM file format uses a GZIP variant called BGZF. This consists of many
+    GZIP blocks one after the other, with an extra subfield in each GZIP block
+    header recording the block size. The GZIP format allows for such extra
+    subfields. The BGZF standard is a subtype of GZIP using a specific
+    compression (while GZIP in general allows several kinds) and a specific
+    gzip flag (which indicates the presense of extra fields) where the block
+    size is stored in an extra field under subfield identifier BC.
+    
+    Assumes the handle is at the start of the file and importantly has NOT
+    been decompressed (e.g. with the gzip module).
+    
+    Returns block offset and size, plus the compressed data offset and size.
+    Each block should be a self contained gzip entry with its own gzip header.
+
+    >>> import gzip
+    >>> handle = open("SamBam/ex1.bam", "rb")
+    >>> for offsets in _bgzf_blocks(handle): print offsets
+    (0, 18239, 18, 18214)
+    (18239, 18223, 18257, 18198)
+    (36462, 18017, 36480, 17992)
+    (54479, 17342, 54497, 17317)
+    (71821, 17715, 71839, 17690)
+    (89536, 17728, 89554, 17703)
+    (107264, 17292, 107282, 17267)
+    (124556, 28, 124574, 3)
+
+    Let's try and read the penultimate block, first check it starts with the
+    expected header:
+
+    >>> handle.seek(107264)
+    >>> handle.read(4)
+    '\x1f\x8b\x08\x04'
+
+    Note this starts part way into a read. Now here is the clever bit :
+    
+    >>> block_offset = 107264
+    >>> relative_offset = 101
+    >>> handle.seek(block_offset)
+    >>> h = gzip.GzipFile(fileobj=handle)
+    >>> h.seek(relative_offset)
+    >>> parts = _bam_file_read_header(h)
+    >>> parts[0]
+    'EAS139_19:7:85:262:751'
+    >>> h.close()
+    >>> handle.close()
+    
+    This is how the BAI (BAM index files) work. They give the BGZF/GZIP block
+    offset (raw bytes in the compressed data) and the local offset within that
+    block (bytes within the decompressed data).
+    """
+    while True:
+        start_offset = handle.tell()
+        magic = handle.read(4)
+        if not magic:
+            #End of file
+            break
+        if magic != "\x1f\x8b\x08\x04":
+            raise ValueError(r"A BGZF (e.g. a BAM file) block should start with "
+                             r"'\x1f\x8b\x08\x04' (decimal 31 139 8 4), not %s"
+                             % repr(magic))
+        gzip_mod_time = handle.read(4) #uint32_t
+        gzip_extra_flags = handle.read(1) #uint8_t
+        gzip_os = handle.read(1) #uint8_t
+        extra_len = struct.unpack("<H", handle.read(2))[0] #uint16_t
+        
+        block_size = None
+        x_len = 0
+        while x_len < extra_len:
+            subfield_id = handle.read(2)
+            subfield_len = struct.unpack("<H", handle.read(2))[0] #uint16_t
+            subfield_data = handle.read(subfield_len)
+            x_len += subfield_len + 4
+            if subfield_id == "BC":
+                assert subfield_len == 2, "Wrong BC payload length"
+                assert block_size is None, "Two BC subfields?"
+                block_size = struct.unpack("<H", subfield_data)[0]+1 #uint16_t
+        assert x_len == extra_len, (x_len, extra_len)
+        #Now comes the compressed data, CRC, and length of uncompressed data.
+        deflate_offset = handle.tell()
+        deflate_size = block_size - extra_len - 19
+        yield start_offset, block_size, deflate_offset, deflate_size
+        #Note this will cope if the calling code moved the handle ;)
+        handle.seek(start_offset + block_size)
+
+from StringIO import StringIO #TODO - Use zlib instead of gzip+StringIO?
+class _BgzfHandle(object):
+    r"""Handle wrapper to read BGZF chunks (PRIVATE).
+    
+    >>> import gzip
+    >>> h2 = gzip.open("SamBam/ex1.bam")
+    >>> h2.seek(100)
+    >>> data = h2.read(75000)
+    >>> h2.tell()
+    75100
+
+    >>> handle = open("SamBam/ex1.bam", "rb")
+    >>> h = _BgzfHandle(handle)
+    >>> h.read(4)
+    'BAM\x01'
+    >>> h.tell()
+    4
+    >>> h.seek(4)
+    >>> h.tell()
+    4
+    >>> h.seek(100)
+    >>> h.tell()
+    100
+    >>> assert data == h.read(75000) #Should cover three gzip blocks
+    >>> sorted(h._chunk_decompressed_offsets.iteritems())
+    [(0, 0), (18239, 65536), (36462, 131072)]
+    >>> assert len(data) == 75000, len(data)
+    >>> h.tell()
+    75100
+    >>> h.seek(0)
+    >>> h.tell()
+    0
+    >>> h.read(4)
+    'BAM\x01'
+    
+    The clever bit of this is it allows random access to a BGFZ style GZIP file
+    (i.e. random access to a BAM file), at the cost of decompressing each chunk
+    into memory (typically under 20kb compressed data at a time).
+    """
+    def __init__(self, handle):
+        self._handle = handle
+        assert handle.tell()==0
+        self._chunk_offset = 0
+        self._chunk_decompressed_offsets = {0:0}
+        next_chunk_offset, data = self._get_chunk(0)
+        self._buffer = StringIO(data)
+        #print "Decompressed data starts %s" % repr(data[:4])
+        #print "Next offset %i" % self._next_chunk_offset
+
+    def __iter__(self):
+        raise NotImplementedError("Don't be silly, its binary not text")
+    
+    def readline(self):
+        raise NotImplementedError("Don't be silly, its binary not text")
+        
+    def readlines(self):
+        raise NotImplementedError("Don't be silly, that would be massive")
+    
+    def read(self, length):
+        data = self._buffer.read(length)
+        while len(data) < length:
+            #Either end of file, or end of chunk.
+            chunk_offsets = sorted(self._chunk_decompressed_offsets.keys())
+            next_chunk_offset = chunk_offsets[chunk_offsets.index(self._chunk_offset)+1]
+            try:
+                next_next_chunk_offset, chunk_data = self._get_chunk(next_chunk_offset)
+            except StopIteration:
+                #Looks like end of file
+                return data
+            missing = length-len(data)
+            self._buffer = StringIO(chunk_data)
+            data += self._buffer.read(missing)
+            self._relative_offset = 0          
+            self._chunk_offset = next_chunk_offset
+        return data
+    
+    def _get_chunk(self, start_offset):
+        handle = self._handle
+        handle.seek(start_offset)
+        magic = handle.read(4)
+        if not magic:
+            #End of file
+            #raise ValueError("End of file")
+            raise StopIteration
+        if magic != "\x1f\x8b\x08\x04":
+            raise ValueError(r"A BGZF (e.g. a BAM file) block should start with "
+                             r"'\x1f\x8b\x08\x04' (decimal 31 139 8 4), not %s"
+                             % repr(magic))
+        gzip_mod_time = handle.read(4) #uint32_t
+        gzip_extra_flags = handle.read(1) #uint8_t
+        gzip_os = handle.read(1) #uint8_t
+        extra_len = struct.unpack("<H", handle.read(2))[0] #uint16_t
+        
+        block_size = None
+        x_len = 0
+        while x_len < extra_len:
+            subfield_id = handle.read(2)
+            subfield_len = struct.unpack("<H", handle.read(2))[0] #uint16_t
+            subfield_data = handle.read(subfield_len)
+            x_len += subfield_len + 4
+            if subfield_id == "BC":
+                assert subfield_len == 2, "Wrong BC payload length"
+                assert block_size is None, "Two BC subfields?"
+                block_size = struct.unpack("<H", subfield_data)[0]+1 #uint16_t
+        assert x_len == extra_len, (x_len, extra_len)
+        #Now comes the compressed data, CRC, and length of uncompressed data.
+        deflate_offset = handle.tell()
+        deflate_size = block_size - extra_len - 19
+        #TODO - Should be able to use zlib instead of gzip...
+        handle.seek(start_offset)
+        data = gzip.GzipFile(fileobj=StringIO(handle.read(block_size))).read()
+        
+        self._chunk_decompressed_offsets[start_offset + block_size] \
+            = self._chunk_decompressed_offsets[start_offset] + len(data)
+        return start_offset + block_size, data
+    
+    def seek(self, offset):
+        if self._chunk_decompressed_offsets[self._chunk_offset] <= offset \
+        and offset < self._chunk_decompressed_offsets[self._chunk_offset] \
+        + len(self._buffer.getvalue()):
+            #Within current chunk
+            self._buffer.seek(offset - self._chunk_decompressed_offsets[self._chunk_offset])
+            assert offset == self.tell()
+            return
+        #Assume we've loaded enough chunks
+        chunks = sorted(self._chunk_decompressed_offsets.iteritems())
+        while chunks:
+            chunk_offset, chunk_decompressed_offset = chunks.pop()
+            if chunk_decompressed_offset <= offset:
+                #Found the right chunk
+                self._seek_chunk(chunk_offset, offset-chunk_decompressed_offset)
+                break
+        assert offset == self.tell()
+    
+    def tell(self):
+        return self._chunk_decompressed_offsets[self._chunk_offset] \
+                   + self._buffer.tell()
+        #raise NotImplementedError("Use the tell_chunk method")
+    
+    def _seek_chunk(self, chunk_offset, relative_offset):
+        if chunk_offset < 0:
+            raise ValueError("Chunk offsets must be non-negative")
+        if chunk_offset not in self._chunk_decompressed_offsets:
+            raise ValueError("Haven't seen this chunk yet %i, only %s" % \
+                             (chunk_offset,
+                              repr(sorted(self._chunk_decompressed_offsets.keys()))))
+        if relative_offset < 0:
+            raise ValueError("Relative offsets must be non-negative")
+        if chunk_offset != self._chunk_offset:
+            try:
+                next_chunk_offset, data = self._get_chunk(chunk_offset)
+            except StopIteration:
+                #End of file
+                data = ""
+            if len(data) < relative_offset:
+                raise ValueError("Relative offset bigger than chunk")
+            self._buffer = StringIO(data)
+            self._chunk_offset = chunk_offset
+        self._buffer.seek(relative_offset)
+    
+    def _tell_chunk(self):
+        return self._chunk_offset, self._buffer.tell()
+        
+
+def _bgzf_index(handle):
+    """Index a BAM file using the BGZF block structure.
+
+    >>> handle = open("SamBam/ex1.bam", "rb")
+    >>> data = list(_bgzf_index(handle))
+    >>> data[0]
+    ('EAS56_57:6:190:289:82/1', 38)
+    >>> data[-1]
+    ('EAS114_26:7:37:79:581/1', 456475)
+    
+    
+    >>> h = _BgzfHandle(open("SamBam/ex1.bam", "rb"))
+    >>> data = h.read(100)
+    >>> while data: data = h.read(100)
+    >>> h.tell()
+    456614
+
+    >>> h.seek(38)
+    >>> h.tell()
+    38
+    >>> h.seek(456475)
+    >>> h.tell()
+    456475
+    >>> parts = _bam_file_read_header(h)
+    >>> parts[0]
+    'EAS114_26:7:37:79:581'
+
+    >>> sorted(h._chunk_decompressed_offsets.iteritems())
+    [(0, 0), (18239, 65536), (36462, 131072), (54479, 196608), (71821, 262144), (89536, 327680), (107264, 393216), (124556, 456614), (124584, 456614)]
+    >>> h._seek_chunk(124584, 0)
+    >>> h._buffer.tell()
+    0
+    >>> h.tell()
+    456614
+    >>> for chunk, offset in sorted(h._chunk_decompressed_offsets.iteritems()):
+    ...    print chunk, offset
+    ...    h._seek_chunk(chunk, 0)
+    ...    assert offset == h.tell()
+    0 0
+    18239 65536
+    36462 131072
+    54479 196608
+    71821 262144
+    89536 327680
+    107264 393216
+    124556 456614
+    124584 456614
+
+    """
+    h = _BgzfHandle(handle)
+    header, ref_count = _bam_file_header(h)
+    #Skip any reference information
+    for i in range(ref_count):
+        ref_name, ref_len = _bam_file_reference(h)
+    
+    while True:
+        try:
+            key, start_offset, end_offset, ref_id, ref_pos, bin, \
+                map_qual, cigar_len, flag, read_len, mate_ref_id, \
+                mate_ref_pos = _bam_file_read_header(h)
+        except StopIteration:
+            #End of the reads
+            break
+
+        h.seek(start_offset)
+        assert h.tell() == start_offset
+        parts = _bam_file_read_header(h)
+        assert parts[0] == key
+
+        if flag & 0x40:
+            key += "/1"
+        elif flag & 0x80:
+            key += "/2"
+        yield key, start_offset
+        h.seek(end_offset)
+
+
 def _bam_file_header(handle):
     """Read in a BAM file header (PRIVATE).
 
@@ -223,7 +551,6 @@ def _build_decoder():
     assert answer[241] == "NA"
     return answer
 _decode_dibase_byte = _build_decoder()
-
 
 def _bam_file_read_header(handle):
     """Parse the header of the next read in a BAM file (PRIVATE).
@@ -353,6 +680,16 @@ def _test():
         print "Runing doctests..."
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..", "..", "Tests"))
+        assert os.path.isfile("SamBam/ex1.sam")
+        assert os.path.isfile("SamBam/ex1.bam")
+        doctest.testmod(verbose=0)
+        os.chdir(cur_dir)
+        del cur_dir
+        print "Done"
+    elif os.path.isdir("Tests"):
+        print "Runing doctests..."
+        cur_dir = os.path.abspath(os.curdir)
+        os.chdir("Tests")
         assert os.path.isfile("SamBam/ex1.sam")
         assert os.path.isfile("SamBam/ex1.bam")
         doctest.testmod(verbose=0)

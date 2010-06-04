@@ -478,7 +478,7 @@ class SamDict(_IndexedSeqFileDict):
         handle.seek(dict.__getitem__(self, key))
         return handle.readline()
 
-class BamDict(_IndexedSeqFileDict):
+class OldBamDict(_IndexedSeqFileDict):
     """Indexed dictionary like access to a BAM (Binary sequence Alignment/Map) file."""
     def __init__(self, filename, alphabet, key_function):
         import gzip
@@ -513,6 +513,45 @@ class BamDict(_IndexedSeqFileDict):
         return SeqIO.SamBamIO._make_seq_record(name, seq_str, self._alphabet,
                                                quals, flag, map_qual)
 
+class NewBamDict(_IndexedSeqFileDict):
+    """Indexed dictionary like access to a BAM (Binary sequence Alignment/Map) file."""
+    def __init__(self, filename, alphabet, key_function):
+        _IndexedSeqFileDict.__init__(self, filename, alphabet, key_function)
+        self._format = "bam"
+        h = SeqIO.SamBamIO._BgzfHandle(open(filename, "rb"))
+        self._handle = h
+        header, ref_count = SeqIO.SamBamIO._bam_file_header(h)
+        #Skip any reference information
+        for i in range(ref_count):
+            ref_name, ref_len = SeqIO.SamBamIO._bam_file_reference(h)
+        
+        while True:
+            try:
+                key, start_offset, end_offset, ref_id, ref_pos, bin, \
+                    map_qual, cigar_len, flag, read_len, mate_ref_id, \
+                    mate_ref_pos = SeqIO.SamBamIO._bam_file_read_header(h)
+            except StopIteration:
+                #End of the reads
+                break
+    
+            h.seek(start_offset)
+            assert h.tell() == start_offset
+            parts = SeqIO.SamBamIO._bam_file_read_header(h)
+            assert parts[0] == key
+    
+            if flag & 0x40:
+                key += "/1"
+            elif flag & 0x80:
+                key += "/2"
+            self._record_key(key, start_offset)
+            h.seek(end_offset)
+
+    def __getitem__(self, key) :
+        h = self._handle
+        h.seek(dict.__getitem__(self, key))
+        name, seq_str, quals, flag, map_qual = SeqIO.SamBamIO._bam_file_read(h)
+        return SeqIO.SamBamIO._make_seq_record(name, seq_str, self._alphabet,
+                                               quals, flag, map_qual)
 
 class TabDict(_IndexedSeqFileDict):
     """Indexed dictionary like access to a simple tabbed file."""
@@ -672,6 +711,8 @@ _FormatToIndexedDict = {"ace" : AceDict,
                         "tab" : TabDict,
                         "qual" : QualDict,
                         "sam" : SamDict,
-                        "bam" : BamDict,
+                        "bam" : NewBamDict,
+                        "old-bam" : OldBamDict,
+                        "new-bam" : NewBamDict,
                         }
 
