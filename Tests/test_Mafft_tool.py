@@ -28,6 +28,36 @@ if not mafft_exe:
     raise MissingExternalDependencyError(\
         "Install MAFFT if you want to use the Bio.Align.Applications wrapper.")
 
+def check_mafft_version(mafft_exe):
+    child = subprocess.Popen("%s --help" % mafft_exe,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             shell=(sys.platform!="win32"))
+    stdoutdata, stderrdata = child.communicate()
+    output = stdoutdata + "\n" + stderrdata
+    return_code = child.returncode
+    del child
+    if "correctly installed?" in output \
+    or "mafft binaries have to be installed" in output:
+        raise MissingExternalDependencyError(
+            "MAFFT does not seem to be correctly installed.")
+
+    #e.g. "MAFFT version 5.732 (2005/09/14)\n"
+    #e.g. "  MAFFT v6.717b (2009/12/03)\n"
+    for marker in ["MAFFT version", "MAFFT v"]:
+        index = output.find(marker)
+        if index == -1:
+            continue
+        version = output[index+len(marker):].strip().split(None,1)[0]
+        if int(version.split(".",1)[0]) < 6:
+            raise MissingExternalDependencyError("Test requires MAFFT v6 or "
+                                                 "later (found %s)." % version)
+        return True
+    raise MissingExternalDependencyError("Couldn't determine MAFFT version.")
+
+#This also checks it actually runs!
+check_mafft_version(mafft_exe)
+
 class MafftApplication(unittest.TestCase):
 
     def setUp(self):
@@ -48,12 +78,13 @@ class MafftApplication(unittest.TestCase):
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
                                  shell=(sys.platform!="win32"))
-        return_code = child.wait()
-        self.assertEqual(return_code, 0)
-        stderr_string = child.stderr.read()
-        self.assert_(child.stdout.read().startswith(">gi|1348912|gb|G26680|G26680"))
-        self.assert_("STEP     2 / 2 d" in stderr_string)
-        self.assert_("$#=0" not in stderr_string)
+        stdoutdata, stderrdata = child.communicate()
+        return_code = child.returncode
+        self.assertEqual(return_code, 0, "Got error code %i back from:\n%s"
+                         % (return_code, cmdline))
+        self.assert_(stdoutdata.startswith(">gi|1348912|gb|G26680|G26680"))
+        self.assert_("Progressive alignment ..." in stderrdata, stderrdata)
+        self.assert_("$#=0" not in stderrdata)
         del child
 
     def test_Mafft_with_options(self):
@@ -69,10 +100,12 @@ class MafftApplication(unittest.TestCase):
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
                                  shell=(sys.platform!="win32"))
-        return_code = child.wait()
-        self.assertEqual(return_code, 0)
-        self.assert_(child.stdout.read().startswith(">gi|1348912|gb|G26680|G26680"))
-        self.assert_("$#=0" not in child.stderr.read())
+        stdoutdata, stderrdata = child.communicate()
+        return_code = child.returncode
+        self.assertEqual(return_code, 0, "Got error code %i back from:\n%s"
+                         % (return_code, cmdline))
+        self.assert_(stdoutdata.startswith(">gi|1348912|gb|G26680|G26680"))
+        self.assert_("$#=0" not in stderrdata)
         del child
 
     def test_Mafft_with_Clustalw_output(self):
@@ -86,13 +119,14 @@ class MafftApplication(unittest.TestCase):
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
                                  shell=(sys.platform!="win32"))
-        return_code = child.wait()
-        self.assertEqual(return_code, 0)
-        output = child.stdout.read()
+        stdoutdata, stderrdata = child.communicate()
+        return_code = child.returncode
+        self.assertEqual(return_code, 0, "Got error code %i back from:\n%s"
+                         % (return_code, cmdline))
         #e.g. "CLUSTAL format alignment by MAFFT ..."
         #or "CLUSTAL (-like) formatted alignment by MAFFT FFT-NS-2 (v6.240)"
-        self.assert_(output.startswith("CLUSTAL"), output)
-        self.assert_("$#=0" not in child.stderr.read())
+        self.assert_(stdoutdata.startswith("CLUSTAL"), stdoutdata)
+        self.assert_("$#=0" not in stderrdata)
         del child
 
     def test_Mafft_with_complex_command_line(self):
@@ -121,10 +155,12 @@ class MafftApplication(unittest.TestCase):
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
                                  shell=(sys.platform!="win32"))
-        return_code = child.wait()
-        self.assertEqual(return_code, 0)
-        self.assert_(child.stdout.read().startswith(">gi|1348912|gb|G26680|G26680"))
-        self.assert_("$#=0" not in child.stderr.read())
+        stdoutdata, stderrdata = child.communicate()
+        return_code = child.returncode
+        self.assertEqual(return_code, 0, "Got error code %i back from:\n%s"
+                         % (return_code, cmdline))
+        self.assert_(stdoutdata.startswith(">gi|1348912|gb|G26680|G26680"))
+        self.assert_("$#=0" not in stderrdata)
         del child
 
 if __name__ == "__main__":

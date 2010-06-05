@@ -162,12 +162,24 @@ class InsdcScanner:
                     line = self.handle.readline()
             else:
                 #Build up a list of the lines making up this feature:
-                feature_key = line[2:self.FEATURE_QUALIFIER_INDENT].strip()
-                feature_lines = [line[self.FEATURE_QUALIFIER_INDENT:]]
+                if line[self.FEATURE_QUALIFIER_INDENT]!=" " \
+                and " " in line[self.FEATURE_QUALIFIER_INDENT:]:
+                    #The feature table design enforces a length limit on the feature keys.
+                    #Some third party files (e.g. IGMT's EMBL like files) solve this by
+                    #over indenting the location and qualifiers.
+                    feature_key, line = line[2:].strip().split(None,1)
+                    feature_lines = [line]
+                    import warnings
+                    warnings.warn("Overindented %s feature?" % feature_key)
+                else:
+                    feature_key = line[2:self.FEATURE_QUALIFIER_INDENT].strip()
+                    feature_lines = [line[self.FEATURE_QUALIFIER_INDENT:]]
                 line = self.handle.readline()
                 while line[:self.FEATURE_QUALIFIER_INDENT] == self.FEATURE_QUALIFIER_SPACER \
                 or line.rstrip() == "" : # cope with blank lines in the midst of a feature
-                    feature_lines.append(line[self.FEATURE_QUALIFIER_INDENT:].rstrip())
+                    #Use strip to remove any harmless trailing white space AND and leading
+                    #white space (e.g. out of spec files with too much intentation)
+                    feature_lines.append(line[self.FEATURE_QUALIFIER_INDENT:].strip())
                     line = self.handle.readline()
                 features.append(self.parse_feature(feature_key, feature_lines))
         self.line = line
@@ -674,8 +686,9 @@ class EmblScanner(InsdcScanner):
                 elif line_type == 'RP':
                     # Reformat reference numbers for the GenBank based consumer
                     # e.g. '1-4639675' becomes '(bases 1 to 4639675)'
-                    assert data.count("-")==1
-                    consumer.reference_bases("(bases " + data.replace("-", " to ") + ")")
+                    # and '160-550, 904-1055' becomes '(bases 160 to 550; 904 to 1055)'
+                    parts = [bases.replace("-"," to ").strip() for bases in data.split(",")]
+                    consumer.reference_bases("(bases %s)" % "; ".join(parts))
                 elif line_type == 'RT':
                     #Remove the enclosing quotes and trailing semi colon.
                     #Note the title can be split over multiple lines.
