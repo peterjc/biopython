@@ -123,7 +123,8 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
                               (key, seek_position))
         except _IntegrityError: #column key is not unique
             assert key in self
-            raise ValueError("Duplicate key")
+            raise ValueError("Duplicate key %s (identifier %s)" \
+                             % (repr(key), repr(identifier)))
 
     def _get_offset(self, key) :
         #Separate method to help ease complex subclassing like SFF
