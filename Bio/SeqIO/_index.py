@@ -11,16 +11,11 @@ public interface for this functionality.
 The basic idea is that we scan over a sequence file, looking for new record
 markers. We then try and extract the string that Bio.SeqIO.parse/read would
 use as the record id, ideally without actually parsing the full record. We
-then use a subclassed Python dictionary to record the file offset for the
-record start against the record id.
+then use an SQLite3 database to record the file offset for the record start
+against the record id.
 
 Note that this means full parsing is on demand, so any invalid or problem
 record may not trigger an exception until it is accessed. This is by design.
-
-This means our dictionary like objects have in memory ALL the keys (all the
-record identifiers), which shouldn't be a problem even with second generation
-sequencing. If this is an issue later on, storing the keys and offsets in a
-temp lookup file might be one idea (e.g. using SQLite or an OBDA style index).
 """
 
 import os
@@ -229,36 +224,33 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
 
     def __setitem__(self, key, value):
         """Would allow setting or replacing records, but not implemented."""
-        raise NotImplementedError("An indexed a sequence file is read only.")
+        raise NotImplementedError("A sequence file index is read only.")
     
     def update(self, **kwargs):
         """Would allow adding more values, but not implemented."""
-        raise NotImplementedError("An indexed a sequence file is read only.")
-
+        raise NotImplementedError("A sequence file index is read only.")
     
     def pop(self, key, default=None):
         """Would remove specified record, but not implemented."""
-        raise NotImplementedError("An indexed a sequence file is read only.")
+        raise NotImplementedError("A sequence file index is read only.")
     
     def popitem(self):
         """Would remove and return a SeqRecord, but not implemented."""
-        raise NotImplementedError("An indexed a sequence file is read only.")
-
+        raise NotImplementedError("A sequence file index is read only.")
     
     def clear(self):
         """Would clear dictionary, but not implemented."""
-        raise NotImplementedError("An indexed a sequence file is read only.")
+        raise NotImplementedError("A sequence file index is read only.")
 
     def fromkeys(self, keys, value=None):
         """A dictionary method which we don't implement."""
-        raise NotImplementedError("An indexed a sequence file doesn't "
+        raise NotImplementedError("A sequence file index doesn't "
                                   "support this.")
 
     def copy(self):
         """A dictionary method which we don't implement."""
-        raise NotImplementedError("An indexed a sequence file doesn't "
+        raise NotImplementedError("A sequence file index doesn't "
                                   "support this.")
-
 
 
 ####################
