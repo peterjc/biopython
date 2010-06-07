@@ -759,6 +759,10 @@ def index(filename, format, alphabet=None, key_function=None, db=None):
     would impose a severe performance penalty as it would require the file
     to be completely parsed while building the index. Right now this is
     usually avoided.
+    
+    Also note that if the index is to be stored in an SQLite database (and
+    not just in memory), the key returned by the key_function should be a
+    string.
     """
     #Try and give helpful error messages:
     if not isinstance(filename, basestring):
