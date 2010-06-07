@@ -766,8 +766,10 @@ def index(filename, format, alphabet=None, key_function=None, db=None):
     #Try and give helpful error messages:
     if not isinstance(filename, basestring):
         raise TypeError("Need a filename (not a handle)")
-    if not(db and isinstance(db, basestring)):
-        db = bool(db)
+    if not db:
+        db = None
+    elif not isinstance(db, basestring):
+        db = filename + ".idx"
     if not isinstance(format, basestring): 
         raise TypeError("Need a string for the file format (lower case)")
     if not format:
