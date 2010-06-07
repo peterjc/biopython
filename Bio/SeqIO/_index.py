@@ -53,8 +53,12 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
     add or change values, pop values, nor clear the dictionary.
     """
     def __init__(self, filename, index_filename, format, alphabet,
-                 key_function, mode="rU"):
+                 key_function):
         #Use key_function=None for default value
+        if format in SeqIO._BinaryFormats:
+            mode = "rb"
+        else:
+            mode = "rU"
         self._handle = open(filename, mode)
         self._alphabet = alphabet
         self._format = format
@@ -341,17 +345,10 @@ class _SqliteOffsetDict(UserDict.DictMixin):
 
 class SffDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to a Standard Flowgram Format (SFF) file."""
-    def __init__(self, filename, index_filename, format,
-                 alphabet, key_function):
-        if alphabet is None:
-            alphabet = Alphabet.generic_dna
-        #On Unix, using mode="r" or "rb" works, "rU" does not.
-        #On Windows, only using mode="rb" works, "r" and "rU" fail.
-        _IndexedSeqFileDict.__init__(self, filename, index_filename, format,
-                                     alphabet, key_function, "rb")
-
     def _setup(self):
         """Load the header information."""
+        if self._alphabet is None:
+            self._alphabet = Alphabet.generic_dna
         handle = self._handle
         #Record the what we'll need for parsing a record given its offset
         header_length, index_offset, index_length, number_of_reads, \
@@ -715,8 +712,8 @@ class FastqDict(_IndexedSeqFileDict):
 _FormatToIndexedDict = {"ace" : SequentialSeqFileDict,
                         "embl" : EmblDict,
                         "fasta" : SequentialSeqFileDict,
-                        "fastq" : FastqDict, #Handles all three variants
-                        "fastq-sanger" : FastqDict,
+                        "fastq" : FastqDict, #Class handles all three variants
+                        "fastq-sanger" : FastqDict, #alias of the above
                         "fastq-solexa" : FastqDict,
                         "fastq-illumina" : FastqDict,
                         "genbank" : GenBankDict,
