@@ -91,6 +91,8 @@ into memory at once, and therefore is not possible on very large files.
 Instead, for *some* file formats Bio.SeqIO provides an indexing approach
 providing dictionary like access to any record. For example,
 
+    >>> import os
+    >>> if os.path.isfile("temp.idx"): os.remove("temp.idx")
     >>> from Bio import SeqIO
     >>> record_dict = SeqIO.index("Fasta/f002", "fasta", db="temp.idx")
     >>> len(record_dict)
@@ -725,12 +727,14 @@ def index(filename, format, alphabet=None, key_function=None, db=None):
     is used as the key. You can specify a callback function to transform
     this (the record identifier string) into your prefered key. For example:
 
+    >>> import os
+    >>> if os.path.isfile("temp.idx"): os.remove("temp.idx")
     >>> from Bio import SeqIO
     >>> def make_pair(identifier):
     ...     parts = identifier.split("_")
     ...     return parts[-2] + "-" + parts[-1]
     >>> records = SeqIO.index("Quality/example.fastq", "fastq",
-    ...                       key_function=make_pair)
+    ...                       key_function=make_pair, db="temp.idx")
     >>> len(records)
     3
     >>> sorted(records.keys())
