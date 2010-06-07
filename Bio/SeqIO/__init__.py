@@ -98,6 +98,12 @@ providing dictionary like access to any record. For example,
     >>> print len(record_dict["gi|1348917|gb|G26685|G26685"])
     413
 
+By default this stores the record identifiers and their offsets within the
+file in memory as a Python dictionary. This is very fast and can cope with
+millions of records. You can also do this with an SQLite database to hold the
+lookup table, which is slower but needs even less memory - see the db optional
+argument for details.
+
 Many but not all of the supported input file formats can be indexed like
 this. For example "fasta", "fastq", "qual" and even the binary format "sff"
 work, but alignment formats like "phylip", "clustalw" and "nexus" will not.
@@ -656,10 +662,11 @@ def to_dict(sequences, key_function=None):
         d[key] = record
     return d
 
-def index(filename, format, alphabet=None, key_function=None):
+def index(filename, format, alphabet=None, key_function=None, db=None):
     """Indexes a sequence file and returns a dictionary like object.
 
      - filename - string giving name of file to be indexed
+     - index_filename - string giving filename for SQLite index
      - format   - lower case string describing the file format
      - alphabet - optional Alphabet object, useful when the sequence type
                   cannot be automatically inferred from the file itself
@@ -667,6 +674,13 @@ def index(filename, format, alphabet=None, key_function=None):
      - key_function - Optional callback function which when given a
                   SeqRecord identifier string should return a unique
                   key for the dictionary.
+     - db       - Option controlling the use of an SQLite database.
+                  If evaluates to false (default), offsets are kept in memory.
+                  If evaluates to true the offsets are kept in an SQLite DB.
+                  If this is a string it is taken as the filename for the
+                  SQLite DB to hold the offsets, otherwise the base filename
+                  is used with the suffix of ".idx" added. If this index file
+                  (SQLite DB) already exists it is just reloaded.
     
     This indexing function will return a dictionary like object, giving the
     SeqRecord objects as values:
@@ -691,9 +705,10 @@ def index(filename, format, alphabet=None, key_function=None):
     would require loading all of the records into memory at once.
 
     When you call the index function, it will scan through the file, noting
-    the location of each record. When you access a particular record via the
-    dictionary methods, the code will jump to the appropriate part of the
-    file and then parse that section into a SeqRecord.
+    the location of each record (or load this from the saved index file).
+    When you access a particular record via the dictionary methods, the code
+    will jump to the appropriate part of the file and then parse that section
+    into a SeqRecord.
 
     Note that not all the input formats supported by Bio.SeqIO can be used
     with this index function. It is designed to work only with sequential
@@ -719,20 +734,20 @@ def index(filename, format, alphabet=None, key_function=None):
     this (the record identifier string) into your prefered key. For example:
 
     >>> from Bio import SeqIO
-    >>> def make_tuple(identifier):
+    >>> def make_pair(identifier):
     ...     parts = identifier.split("_")
-    ...     return int(parts[-2]), int(parts[-1])
+    ...     return parts[-2] + "-" + parts[-1]
     >>> records = SeqIO.index("Quality/example.fastq", "fastq",
-    ...                       key_function=make_tuple)
+    ...                       key_function=make_pair)
     >>> len(records)
     3
     >>> sorted(records.keys())
-    [(413, 324), (443, 348), (540, 792)]
-    >>> print records[(540, 792)].format("fasta")
+    ['413-324', '443-348', '540-792']
+    >>> print records["540-792"].format("fasta")
     >EAS54_6_R1_2_1_540_792
     TTGGCAGGCCAAGGCCGATGGATCA
     <BLANKLINE>
-    >>> (540, 792) in records
+    >>> "540-792" in records
     True
     >>> "EAS54_6_R1_2_1_540_792" in records
     False
@@ -748,11 +763,19 @@ def index(filename, format, alphabet=None, key_function=None):
     would impose a severe performance penalty as it would require the file
     to be completely parsed while building the index. Right now this is
     usually avoided.
+    
+    Also note that if the index is to be stored in an SQLite database (and
+    not just in memory), the key returned by the key_function should be a
+    string.
     """
     #Try and give helpful error messages:
     if not isinstance(filename, basestring):
         raise TypeError("Need a filename (not a handle)")
-    if not isinstance(format, basestring):
+    if not db:
+        db = None
+    elif not isinstance(db, basestring):
+        db = filename + ".idx"
+    if not isinstance(format, basestring): 
         raise TypeError("Need a string for the file format (lower case)")
     if not format:
         raise ValueError("Format required (lower case string)")
@@ -768,7 +791,7 @@ def index(filename, format, alphabet=None, key_function=None):
         indexer = _index._FormatToIndexedDict[format]
     except KeyError:
         raise ValueError("Unsupported format '%s'" % format)
-    return indexer(filename, alphabet, key_function)
+    return indexer(filename, db, format, alphabet, key_function)
 
 def to_alignment(sequences, alphabet=None, strict=True):
     """Returns a multiple sequence alignment (DEPRECATED).

@@ -16,6 +16,13 @@ from seq_tests_common import compare_record
 
 class IndexDictTests(unittest.TestCase):
     """Cunning unit test where methods are added at run time."""
+
+    def setUp(self) :
+        if os.path.isfile("temp.idx") : os.remove("temp.idx")
+
+    def tearDown(self) :
+        if os.path.isfile("temp.idx") : os.remove("temp.idx")
+
     def simple_check(self, filename, format, alphabet):
         if format in SeqIO._BinaryFormats:
             mode = "rb"
@@ -23,7 +30,9 @@ class IndexDictTests(unittest.TestCase):
             mode = "r"
         id_list = [rec.id for rec in \
                    SeqIO.parse(open(filename, mode), format, alphabet)]
-        rec_dict = SeqIO.index(filename, format, alphabet)
+        rec_dict = SeqIO.index(filename, format, alphabet, db="temp.idx")
+	self.assert_(hasattr(rec_dict, "_offsets"))
+	self.assert_(hasattr(rec_dict._offsets, "_con"))
         self.assertEqual(set(id_list), set(rec_dict.keys()))
         #This is redundant, I just want to make sure len works:
         self.assertEqual(len(id_list), len(rec_dict))
@@ -55,6 +64,24 @@ class IndexDictTests(unittest.TestCase):
         self.assertRaises(NotImplementedError, rec_dict.__setitem__, "X", None)
         self.assertRaises(NotImplementedError, rec_dict.copy)
         self.assertRaises(NotImplementedError, rec_dict.fromkeys, [])
+	#Now check reloading the index works!
+	rec_dict2 = SeqIO.index(filename, format, alphabet, db="temp.idx")
+	self.assert_(hasattr(rec_dict2, "_offsets"))
+	self.assert_(hasattr(rec_dict2._offsets, "_con"))
+        self.assertEqual(set(id_list), set(rec_dict2.keys()))
+        for key in id_list:
+            self.assert_(key in rec_dict2)
+            self.assertEqual(key, rec_dict2[key].id)
+            self.assertEqual(key, rec_dict2.get(key).id)
+	#Now check in memory works
+	rec_dict3 = SeqIO.index(filename, format, alphabet, db=False)
+	self.assert_(hasattr(rec_dict3, "_offsets"))
+	self.assert_(not hasattr(rec_dict3._offsets, "_con"))
+        self.assertEqual(set(id_list), set(rec_dict3.keys()))
+        for key in id_list:
+            self.assert_(key in rec_dict3)
+            self.assertEqual(key, rec_dict3[key].id)
+            self.assertEqual(key, rec_dict3.get(key).id)
         #Done
 
     def get_raw_check(self, filename, format, alphabet):
@@ -69,7 +96,8 @@ class IndexDictTests(unittest.TestCase):
         id_list = [rec.id.lower() for rec in \
                    SeqIO.parse(filename, format, alphabet)]
         rec_dict = SeqIO.index(filename, format, alphabet,
-                               key_function = lambda x : x.lower())
+                               key_function = lambda x : x.lower(),
+			       db="temp.idx")
         self.assertEqual(set(id_list), set(rec_dict.keys()))
         self.assertEqual(len(id_list), len(rec_dict))
         for i, key in enumerate(id_list):
