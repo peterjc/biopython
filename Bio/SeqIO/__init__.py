@@ -91,24 +91,18 @@ into memory at once, and therefore is not possible on very large files.
 Instead, for *some* file formats Bio.SeqIO provides an indexing approach
 providing dictionary like access to any record. For example,
 
-    >>> import os
-    >>> if os.path.isfile("temp.idx"): os.remove("temp.idx")
     >>> from Bio import SeqIO
-    >>> record_dict = SeqIO.index("Fasta/f002", "fasta", db="temp.idx")
+    >>> record_dict = SeqIO.index("Fasta/f002", "fasta")
     >>> len(record_dict)
     3
     >>> print len(record_dict["gi|1348917|gb|G26685|G26685"])
     413
 
-You can also do this with an SQLite database to hold the lookup table,
-which is slower but needs even less memory:
-
-    >>> from Bio import SeqIO
-    >>> record_dict = SeqIO.index("Fasta/f002", "fasta", db="temp.idx")
-    >>> len(record_dict)
-    3
-    >>> print len(record_dict["gi|1348917|gb|G26685|G26685"])
-    413
+By default this stores the record identifiers and their offsets within the
+file in memory as a Python dictionary. This is very fast and can cope with
+millions of records. You can also do this with an SQLite database to hold the
+lookup table, which is slower but needs even less memory - see the db optional
+argument for details.
 
 Many but not all of the supported input file formats can be indexed like
 this. For example "fasta", "fastq", "qual" and even the binary format "sff"
@@ -676,6 +670,12 @@ def index(filename, format, alphabet=None, key_function=None, db=None):
                   SeqRecord identifier string should return a unique
                   key for the dictionary.
      - db       - Option controlling the use of an SQLite database.
+                  If evaluates to false (default), offsets are kept in memory.
+                  If evaluates to true the offsets are kept in an SQLite DB.
+                  If this is a string it is taken as the filename for the
+                  SQLite DB to hold the offsets, otherwise the base filename
+                  is used with the suffix of ".idx" added. If this index file
+                  (SQLite DB) already exists it is just reloaded.
     
     This indexing function will return a dictionary like object, giving the
     SeqRecord objects as values:
@@ -700,9 +700,10 @@ def index(filename, format, alphabet=None, key_function=None, db=None):
     would require loading all of the records into memory at once.
 
     When you call the index function, it will scan through the file, noting
-    the location of each record. When you access a particular record via the
-    dictionary methods, the code will jump to the appropriate part of the
-    file and then parse that section into a SeqRecord.
+    the location of each record (or load this from the saved index file).
+    When you access a particular record via the dictionary methods, the code
+    will jump to the appropriate part of the file and then parse that section
+    into a SeqRecord.
 
     Note that not all the input formats supported by Bio.SeqIO can be used
     with this index function. It is designed to work only with sequential
@@ -727,14 +728,12 @@ def index(filename, format, alphabet=None, key_function=None, db=None):
     is used as the key. You can specify a callback function to transform
     this (the record identifier string) into your prefered key. For example:
 
-    >>> import os
-    >>> if os.path.isfile("temp.idx"): os.remove("temp.idx")
     >>> from Bio import SeqIO
     >>> def make_pair(identifier):
     ...     parts = identifier.split("_")
     ...     return parts[-2] + "-" + parts[-1]
     >>> records = SeqIO.index("Quality/example.fastq", "fastq",
-    ...                       key_function=make_pair, db="temp.idx")
+    ...                       key_function=make_pair)
     >>> len(records)
     3
     >>> sorted(records.keys())
@@ -767,11 +766,9 @@ def index(filename, format, alphabet=None, key_function=None, db=None):
     #Try and give helpful error messages:
     if not isinstance(filename, basestring):
         raise TypeError("Need a filename (not a handle)")
-    if not db:
-        db = filename + ".idx"
-    elif not isinstance(db, basestring) :
-        raise TypeError("Need an index filename (as a string)")
-    if not isinstance(format, basestring) :
+    if not(db and isinstance(db, basestring)):
+        db = bool(db)
+    if not isinstance(format, basestring): 
         raise TypeError("Need a string for the file format (lower case)")
     if not format:
         raise ValueError("Format required (lower case string)")

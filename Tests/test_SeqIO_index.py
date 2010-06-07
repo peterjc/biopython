@@ -31,6 +31,8 @@ class IndexDictTests(unittest.TestCase):
         id_list = [rec.id for rec in \
                    SeqIO.parse(open(filename, mode), format, alphabet)]
         rec_dict = SeqIO.index(filename, format, alphabet, db="temp.idx")
+	self.assert_(hasattr(rec_dict, "_offsets"))
+	self.assert_(hasattr(rec_dict._offsets, "_con"))
         self.assertEqual(set(id_list), set(rec_dict.keys()))
         #This is redundant, I just want to make sure len works:
         self.assertEqual(len(id_list), len(rec_dict))
@@ -64,11 +66,22 @@ class IndexDictTests(unittest.TestCase):
         self.assertRaises(NotImplementedError, rec_dict.fromkeys, [])
 	#Now check reloading the index works!
 	rec_dict2 = SeqIO.index(filename, format, alphabet, db="temp.idx")
+	self.assert_(hasattr(rec_dict2, "_offsets"))
+	self.assert_(hasattr(rec_dict2._offsets, "_con"))
         self.assertEqual(set(id_list), set(rec_dict2.keys()))
         for key in id_list:
-            self.assert_(key in rec_dict)
-            self.assertEqual(key, rec_dict[key].id)
-            self.assertEqual(key, rec_dict.get(key).id)
+            self.assert_(key in rec_dict2)
+            self.assertEqual(key, rec_dict2[key].id)
+            self.assertEqual(key, rec_dict2.get(key).id)
+	#Now check in memory works
+	rec_dict3 = SeqIO.index(filename, format, alphabet, db=False)
+	self.assert_(hasattr(rec_dict3, "_offsets"))
+	self.assert_(not hasattr(rec_dict3._offsets, "_con"))
+        self.assertEqual(set(id_list), set(rec_dict3.keys()))
+        for key in id_list:
+            self.assert_(key in rec_dict3)
+            self.assertEqual(key, rec_dict3[key].id)
+            self.assertEqual(key, rec_dict3.get(key).id)
         #Done
 
     def get_raw_check(self, filename, format, alphabet):

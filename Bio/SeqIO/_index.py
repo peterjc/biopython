@@ -27,9 +27,6 @@ import UserDict
 from Bio import SeqIO
 from Bio import Alphabet
 
-#Based in part on this recipe for implementing a dictionary on top of SQLite:
-#http://sebsauvage.net/python/snyppets/index.html#dbdict
-#TODO - What about closing the connection nicely?
 class _IndexedSeqFileDict(UserDict.DictMixin):
     """Read only dictionary interface to a sequential sequence file.
 
@@ -64,23 +61,27 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
         self._key_function = key_function
         self._index_filename = index_filename
         self._setup()
-        if os.path.isfile(index_filename):
+        if not index_filename:
+            #Hold the offsets in memory
+            self._offsets = {}
+            self._build()
+        elif os.path.isfile(index_filename):
             #Reuse the index
-            self._con = _sqlite.connect(index_filename)
+            self._offsets = _SqliteOffsetDict(index_filename)
             #Very basic test of the index
             #Using first and last entries alphabetically since there is an
             #index on the key column. I would like to use the first and last
             #entries in the file, but would be slow without an index on the
             #offset column which we don't otherwise need.
             if len(self):
-                key = str(self._con.execute("SELECT key FROM data ORDER BY key ASC LIMIT 1").fetchone()[0])
+                key = str(self._offsets._con.execute("SELECT key FROM data ORDER BY key ASC LIMIT 1").fetchone()[0])
                 try:
                     record = self[key]
                     del key, record
                 except Exception, err:
                     raise ValueError("Is %s an out of date index database? %s" \
                                      % (index_filename, err))
-                key = str(self._con.execute("SELECT key FROM data ORDER BY key DESC LIMIT 1").fetchone()[0])
+                key = str(self._offsets._con.execute("SELECT key FROM data ORDER BY key DESC LIMIT 1").fetchone()[0])
                 try:
                     record = self[key]
                     del key, record
@@ -89,11 +90,9 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
                                      % (index_filename, err))
         else :
             #Create the index
-            self._con = _sqlite.connect(index_filename)
-            self._con.execute("CREATE TABLE data (key TEXT PRIMARY KEY, "
-                              "offset INTEGER)")
+            self._offsets = _SqliteOffsetDict(index_filename)
             self._build()
-            self._commit()
+            self._offsets._con.commit()
     
     def _setup(self):
         """Parse the header etc if required (PRIVATE)."""
@@ -103,9 +102,6 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
         """Actually scan the file identifying records and offsets (PRIVATE)."""
         pass
 
-    def _commit(self):
-        self._con.commit()
-
     def __repr__(self):
         return "SeqIO.index('%s', '%s', alphabet=%s, key_function=%s, mode=%s, index_filename=%s)" \
                % (self._handle.name, self._format,
@@ -114,13 +110,13 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
 
     def __str__(self):
         if self:
-            key = str(self._con.execute("SELECT key FROM data LIMIT 1").fetchone()[0])
+            key = self._offsets.next()
             return "{%s : SeqRecord(...), ...}" % repr(key)
         else:
             return "{}"
 
     def __contains__(self, key) :
-        return bool(self._con.execute("SELECT key FROM data WHERE key=?",(key,)).fetchone())
+        return key in self._offsets
         
     def _record_key(self, identifier, seek_position):
         """Used by subclasses to record file offsets for identifiers (PRIVATE).
@@ -135,29 +131,20 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
             key = self._key_function(identifier)
         else:
             key = identifier
-        try:
-            self._con.execute("INSERT INTO data (key,offset) VALUES (?,?)",
-                              (key, seek_position))
-        except _IntegrityError: #column key is not unique
-            assert key in self
-            raise ValueError("Duplicate key %s (identifier %s)" \
-                             % (repr(key), repr(identifier)))
+        self._offsets[key] = seek_position
 
     def _get_offset(self, key) :
         #Separate method to help ease complex subclassing like SFF
-        row = self._con.execute("SELECT offset FROM data WHERE key=?",(key,)).fetchone()
-        if not row: raise KeyError
-        return row[0]
+        return self._offsets[key]
 
     def __len__(self):
         """How many records are there?"""
-        return self._con.execute("SELECT COUNT(key) FROM data").fetchone()[0]
+        return len(self._offsets)
 
     def keys(self) :
         """Return a list of all the keys (SeqRecord identifiers)."""
         #TODO - Stick a warning in here for large lists? Or just refuse?
-        return [str(row[0]) for row in \
-                self._con.execute("SELECT key FROM data").fetchall()]
+        return self._offsets.keys()
 
     def values(self):
         """Would be a list of the SeqRecord objects, but not implemented.
@@ -251,6 +238,96 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
         """A dictionary method which we don't implement."""
         raise NotImplementedError("A sequence file index doesn't "
                                   "support this.")
+
+#Based in part on this recipe for implementing a dictionary on top of SQLite:
+#http://sebsauvage.net/python/snyppets/index.html#dbdict
+#TODO - What about closing the connection nicely?
+class _SqliteOffsetDict(UserDict.DictMixin):
+    """Simple dictionary like object based on SQLite (PRIVATE)."""
+    def __init__(self, index_filename):
+        #Use key_function=None for default value
+        if os.path.isfile(index_filename):
+            #Reuse the index
+            self._con = _sqlite.connect(index_filename)
+        else :
+            #Create the index
+            self._con = _sqlite.connect(index_filename)
+            self._con.execute("CREATE TABLE data (key TEXT PRIMARY KEY, "
+                              "offset INTEGER)")
+            self._con.commit()
+    
+    def __contains__(self, key) :
+        return bool(self._con.execute("SELECT key FROM data WHERE key=?",(key,)).fetchone())
+        
+    def __setitem__(self, key, offset):
+        try:
+            self._con.execute("INSERT INTO data (key,offset) VALUES (?,?)",
+                              (key, offset))
+        except _IntegrityError: #column key is not unique
+            assert key in self
+            raise ValueError("Duplicate key %s (offset %i)" \
+                             % (repr(key), offset))
+
+    def __getitem__(self, key) :
+        row = self._con.execute("SELECT offset FROM data WHERE key=?",(key,)).fetchone()
+        if not row: raise KeyError
+        return row[0]
+
+    def __len__(self):
+        """How many records are there?"""
+        return self._con.execute("SELECT COUNT(key) FROM data").fetchone()[0]
+
+    def keys(self) :
+        """Return a list of all the keys (SeqRecord identifiers)."""
+        #TODO - Stick a warning in here for large lists? Or just refuse?
+        return [str(row[0]) for row in \
+                self._con.execute("SELECT key FROM data").fetchall()]
+
+    def values(self):
+        """Would be a list of the offsets (integers)."""
+        return [row[0] for row in \
+                self._con.execute("SELECT offset FROM data").fetchall()]
+
+    def items(self):
+        """List of (key, offset) tuples."""
+        return [(str(row[0]),row[1]) for row in \
+                self._con.execute("SELECT key, offset FROM data").fetchall()]
+
+    def iteritems(self):
+        """Iterate over the (key, SeqRecord) items."""
+        for key in self.__iter__():
+            yield key, self.__getitem__(key)
+
+    def get(self, k, d=None):
+        """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None."""
+        try:
+            return self.__getitem__(k)
+        except KeyError:
+            return d
+
+    def update(self, **kwargs):
+        """Would allow adding more values, but not implemented."""
+        raise NotImplementedError()
+    
+    def pop(self, key, default=None):
+        """Would remove specified record, but not implemented."""
+        raise NotImplementedError()
+    
+    def popitem(self):
+        """Would remove and return a SeqRecord, but not implemented."""
+        raise NotImplementedError()
+    
+    def clear(self):
+        """Would clear dictionary, but not implemented."""
+        raise NotImplementedError()
+
+    def fromkeys(self, keys, value=None):
+        """A dictionary method which we don't implement."""
+        raise NotImplementedError()
+
+    def copy(self):
+        """A dictionary method which we don't implement."""
+        raise NotImplementedError()
 
 
 ####################
