@@ -17,7 +17,7 @@ from seq_tests_common import compare_record
 class IndexDictTests(unittest.TestCase):
     """Cunning unit test where methods are added at run time."""
 
-    def startUp(self) :
+    def setUp(self) :
         if os.path.isfile("temp.idx") : os.remove("temp.idx")
 
     def tearDown(self) :
