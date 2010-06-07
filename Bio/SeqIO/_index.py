@@ -73,6 +73,20 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
             self._con = _sqlite.connect(index_filename)
             self._con.execute("CREATE TABLE data (key TEXT PRIMARY KEY, "
                               "offset INTEGER)")
+        #Separate any setup (e.g. reading the header to get field sizes in SFF)
+        #from getting the record offsets, which we will later load from the DB
+        self._setup()
+        self._build()
+        self._commit()
+    
+    def _setup(self):
+        """Parse the header etc if required (PRIVATE)."""
+        pass
+    
+    def _build(self):
+        """Actually scan the file identifying records and offsets (PRIVATE)."""
+        pass
+
     def _commit(self):
         self._con.commit()
 
@@ -241,7 +255,19 @@ class SffDict(_IndexedSeqFileDict) :
         #On Unix, using mode="r" or "rb" works, "rU" does not.
         #On Windows, only using mode="rb" works, "r" and "rU" fail.
         _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function, "rb")
+
+    def _setup(self):
+        """Load the header information."""
         handle = self._handle
+        #Record the what we'll need for parsing a record given its offset
+        header_length, index_offset, index_length, number_of_reads, \
+        self._flows_per_read, self._flow_chars, self._key_sequence \
+            = SeqIO.SffIO._sff_file_header(handle)
+    
+    def _build(self):
+        """Load any index block in the file, or build it the slow way (PRIVATE)."""
+        handle = self._handle
+        handle.seek(0)
         header_length, index_offset, index_length, number_of_reads, \
         self._flows_per_read, self._flow_chars, self._key_sequence \
             = SeqIO.SffIO._sff_file_header(handle)
@@ -269,7 +295,6 @@ class SffDict(_IndexedSeqFileDict) :
             self._record_key(name, offset)
         assert len(self) == number_of_reads, \
                "Indexed %i records, expected %i" % (len(self), number_of_reads)
-        self._commit()
         
     def __getitem__(self, key) :
         handle = self._handle
@@ -302,12 +327,16 @@ class SffTrimmedDict(SffDict) :
 class _SequentialSeqFileDict(_IndexedSeqFileDict):
     """Subclass for easy cases (PRIVATE)."""
     def __init__(self, filename, index_filename, alphabet, key_function, format, marker):
+        marker_re = re.compile("^%s" % marker)
+        self._marker = marker
+        self._marker_re = marker_re #saved for the get_raw method
         _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function)
         self._format = format
+    
+    def _build(self):
         handle = self._handle
-        marker_re = re.compile("^%s" % marker)
-        marker_offset = len(marker)
-        self._marker_re = marker_re #saved for the get_raw method
+        marker_re = self._marker_re
+        marker_offset = len(self._marker)
         while True:
             offset = handle.tell()
             line = handle.readline()
@@ -317,7 +346,6 @@ class _SequentialSeqFileDict(_IndexedSeqFileDict):
                 #marker. This is generally fine... but not for GenBank, EMBL, Swiss
                 self._record_key(line[marker_offset:].strip().split(None, 1)[0], \
                                  offset)
-        self._commit()
 
     def get_raw(self, key):
         """Similar to the get method, but returns the record as a raw string."""
@@ -374,6 +402,8 @@ class GenBankDict(_SequentialSeqFileDict):
     def __init__(self, filename, index_filename, alphabet, key_function):
         _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function)
         self._format = "genbank"
+    
+    def _build(self):
         handle = self._handle
         marker_re = re.compile("^LOCUS ")
         self._marker_re = marker_re #saved for the get_raw method
@@ -407,13 +437,14 @@ class GenBankDict(_SequentialSeqFileDict):
                 if not key:
                     raise ValueError("Did not find ACCESSION/VERSION lines")
                 self._record_key(key, offset)
-        self._commit()
 
 class EmblDict(_SequentialSeqFileDict):
     """Indexed dictionary like access to an EMBL file."""
     def __init__(self, filename, index_filename, alphabet, key_function):
         _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function)
         self._format = "embl"
+
+    def _build(self):
         handle = self._handle
         marker_re = re.compile("^ID ")
         self._marker_re = marker_re #saved for the get_raw method
@@ -451,13 +482,14 @@ class EmblDict(_SequentialSeqFileDict):
                     or not line:
                         break
                 self._record_key(key, offset)
-        self._commit()
 
 class SwissDict(_SequentialSeqFileDict):
     """Indexed dictionary like access to a SwissProt file."""
     def __init__(self, filename, index_filename, alphabet, key_function):
         _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function)
         self._format = "swiss"
+    
+    def _build(self):
         handle = self._handle
         marker_re = re.compile("^ID ")
         self._marker_re = marker_re #saved for the get_raw method
@@ -472,13 +504,14 @@ class SwissDict(_SequentialSeqFileDict):
                 assert line.startswith("AC ")
                 key = line[3:].strip().split(";")[0].strip()
                 self._record_key(key, offset)
-        self._commit()
 
 class IntelliGeneticsDict(_SequentialSeqFileDict):
     """Indexed dictionary like access to a IntelliGenetics file."""
     def __init__(self, filename, index_filename, alphabet, key_function):
         _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function)
         self._format = "ig"
+    
+    def _build(self):
         handle = self._handle
         marker_re = re.compile("^;")
         self._marker_re = marker_re #saved for the get_raw method
@@ -496,13 +529,14 @@ class IntelliGeneticsDict(_SequentialSeqFileDict):
                         key = line.split()[0]
                         self._record_key(key, offset)
                         break
-        self._commit()
 
 class TabDict(_IndexedSeqFileDict):
     """Indexed dictionary like access to a simple tabbed file."""
     def __init__(self, filename, index_filename, alphabet, key_function):
         _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function)
         self._format = "tab"
+    
+    def _build(self):
         handle = self._handle
         while True:
             offset = handle.tell()
@@ -518,7 +552,6 @@ class TabDict(_IndexedSeqFileDict):
                     raise err
             else:
                 self._record_key(key, offset)
-        self._commit()
 
     def get_raw(self, key):
         """Like the get method, but returns the record as a raw string."""
@@ -539,6 +572,8 @@ class _FastqSeqFileDict(_IndexedSeqFileDict):
     def __init__(self, filename, index_filename, alphabet, key_function, fastq_format):
         _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function)
         self._format = fastq_format
+    
+    def _build(self):
         handle = self._handle
         pos = handle.tell()
         line = handle.readline()
@@ -576,7 +611,6 @@ class _FastqSeqFileDict(_IndexedSeqFileDict):
             if seq_len != qual_len:
                 raise ValueError("Problem with quality section")
         #print "EOF"
-        self._commit()
 
     def get_raw(self, key):
         """Similar to the get method, but returns the record as a raw string."""
