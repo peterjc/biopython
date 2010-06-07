@@ -53,13 +53,12 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
     add or change values, pop values, nor clear the dictionary.
     """
     def __init__(self, filename, index_filename, format, alphabet,
-                 key_function, mode=None):
+                 key_function):
         #Use key_function=None for default value
-        if not mode:
-            if format in SeqIO._BinaryFormats:
-                mode = "rb"
-            else:
-                mode = "rU"
+        if format in SeqIO._BinaryFormats:
+            mode = "rb"
+        else:
+            mode = "rU"
         self._handle = open(filename, mode)
         self._alphabet = alphabet
         self._format = format
@@ -348,6 +347,8 @@ class SffDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to a Standard Flowgram Format (SFF) file."""
     def _setup(self):
         """Load the header information."""
+        if self._alphabet is None:
+            self._alphabet = Alphabet.generic_dna
         handle = self._handle
         #Record the what we'll need for parsing a record given its offset
         header_length, index_offset, index_length, number_of_reads, \
@@ -832,8 +833,8 @@ class FastqDict(_IndexedSeqFileDict):
 _FormatToIndexedDict = {"ace" : SequentialSeqFileDict,
                         "embl" : EmblDict,
                         "fasta" : SequentialSeqFileDict,
-                        "fastq" : FastqDict, #Handles all three variants
-                        "fastq-sanger" : FastqDict,
+                        "fastq" : FastqDict, #Class handles all three variants
+                        "fastq-sanger" : FastqDict, #alias of the above
                         "fastq-solexa" : FastqDict,
                         "fastq-illumina" : FastqDict,
                         "genbank" : GenBankDict,
