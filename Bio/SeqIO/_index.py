@@ -326,13 +326,14 @@ class SffTrimmedDict(SffDict) :
 
 class _SequentialSeqFileDict(_IndexedSeqFileDict):
     """Subclass for easy cases (PRIVATE)."""
-    def __init__(self, filename, index_filename, alphabet, key_function, format, marker):
-        marker_re = re.compile("^%s" % marker)
-        self._marker = marker
-        self._marker_re = marker_re #saved for the get_raw method
-        _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function)
+    def _setup(self):
+        raise NotImplementedError("Subclass should call _setup_re()")
+
+    def _setup_re(self, format, marker):
         self._format = format
-    
+        self._marker = marker
+        self._marker_re = re.compile("^%s" % marker)
+
     def _build(self):
         handle = self._handle
         marker_re = self._marker_re
@@ -364,33 +365,28 @@ class _SequentialSeqFileDict(_IndexedSeqFileDict):
 
 class FastaDict(_SequentialSeqFileDict):
     """Indexed dictionary like access to a FASTA file."""
-    def __init__(self, filename, index_filename, alphabet, key_function):
-        _SequentialSeqFileDict.__init__(self, filename, index_filename, alphabet,
-                                        key_function, "fasta", ">")
+    def _setup(self):
+        self._setup_re("fasta", ">")
 
 class QualDict(_SequentialSeqFileDict):
     """Indexed dictionary like access to a QUAL file."""
-    def __init__(self, filename, index_filename, alphabet, key_function):
-        _SequentialSeqFileDict.__init__(self, filename, index_filename, alphabet,
-                                        key_function, "qual", ">")
+    def _setup(self):
+        self._setup_re("qual", ">")
 
 class PirDict(_SequentialSeqFileDict):
     """Indexed dictionary like access to a PIR/NBRF file."""
-    def __init__(self, filename, index_filename, alphabet, key_function):
-        _SequentialSeqFileDict.__init__(self, filename, index_filename, alphabet,
-                                        key_function, "pir", ">..;")
+    def _setup(self):
+        self._setup_re("pir", ">..;")
 
 class PhdDict(_SequentialSeqFileDict):
     """Indexed dictionary like access to a PHD (PHRED) file."""
-    def __init__(self, filename, index_filename, alphabet, key_function):
-        _SequentialSeqFileDict.__init__(self, filename, index_filename, alphabet,
-                                        key_function, "phd", "BEGIN_SEQUENCE")
+    def _setup(self):
+        self._setup_re("phd", "BEGIN_SEQUENCE")
 
 class AceDict(_SequentialSeqFileDict):
     """Indexed dictionary like access to an ACE file."""
-    def __init__(self, filename, index_filename, alphabet, key_function):
-        _SequentialSeqFileDict.__init__(self, filename, index_filename, alphabet,
-                                        key_function, "ace", "CO ")
+    def _setup(self):
+        self._setup_re("ace", "CO ")
 
 
 #######################################
@@ -399,14 +395,12 @@ class AceDict(_SequentialSeqFileDict):
 
 class GenBankDict(_SequentialSeqFileDict):
     """Indexed dictionary like access to a GenBank file."""
-    def __init__(self, filename, index_filename, alphabet, key_function):
-        _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function)
-        self._format = "genbank"
+    def _setup(self):
+        self._setup_re("genbank", "LOCUS ")
     
     def _build(self):
         handle = self._handle
-        marker_re = re.compile("^LOCUS ")
-        self._marker_re = marker_re #saved for the get_raw method
+        marker_re = self._marker_re
         while True:
             offset = handle.tell()
             line = handle.readline()
@@ -440,14 +434,12 @@ class GenBankDict(_SequentialSeqFileDict):
 
 class EmblDict(_SequentialSeqFileDict):
     """Indexed dictionary like access to an EMBL file."""
-    def __init__(self, filename, index_filename, alphabet, key_function):
-        _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function)
-        self._format = "embl"
-
+    def _setup(self):
+        self._setup_re("embl", "ID ")
+    
     def _build(self):
         handle = self._handle
-        marker_re = re.compile("^ID ")
-        self._marker_re = marker_re #saved for the get_raw method
+        marker_re = self._marker_re
         while True:
             offset = handle.tell()
             line = handle.readline()
@@ -485,14 +477,12 @@ class EmblDict(_SequentialSeqFileDict):
 
 class SwissDict(_SequentialSeqFileDict):
     """Indexed dictionary like access to a SwissProt file."""
-    def __init__(self, filename, index_filename, alphabet, key_function):
-        _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function)
-        self._format = "swiss"
+    def _setup(self):
+        self._setup_re("swiss", "ID ")
     
     def _build(self):
         handle = self._handle
-        marker_re = re.compile("^ID ")
-        self._marker_re = marker_re #saved for the get_raw method
+        marker_re = self._marker_re
         while True:
             offset = handle.tell()
             line = handle.readline()
@@ -507,14 +497,12 @@ class SwissDict(_SequentialSeqFileDict):
 
 class IntelliGeneticsDict(_SequentialSeqFileDict):
     """Indexed dictionary like access to a IntelliGenetics file."""
-    def __init__(self, filename, index_filename, alphabet, key_function):
-        _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function)
-        self._format = "ig"
+    def _setup(self):
+        self._setup_re("ig", ";")
     
     def _build(self):
         handle = self._handle
-        marker_re = re.compile("^;")
-        self._marker_re = marker_re #saved for the get_raw method
+        marker_re = self._marker_re
         while True:
             offset = handle.tell()
             line = handle.readline()
@@ -532,8 +520,7 @@ class IntelliGeneticsDict(_SequentialSeqFileDict):
 
 class TabDict(_IndexedSeqFileDict):
     """Indexed dictionary like access to a simple tabbed file."""
-    def __init__(self, filename, index_filename, alphabet, key_function):
-        _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function)
+    def _setup(self):
         self._format = "tab"
     
     def _build(self):
@@ -569,10 +556,10 @@ class _FastqSeqFileDict(_IndexedSeqFileDict):
     With FASTQ the records all start with a "@" line, but so too can some
     quality lines. Note this will cope with line-wrapped FASTQ files.
     """
-    def __init__(self, filename, index_filename, alphabet, key_function, fastq_format):
-        _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function)
-        self._format = fastq_format
-    
+    def _setup(self):
+        raise NotImplmentedError("Subclass should set FASTQ format")
+        #self._format = "fastq"
+
     def _build(self):
         handle = self._handle
         pos = handle.tell()
@@ -656,21 +643,18 @@ class _FastqSeqFileDict(_IndexedSeqFileDict):
 
 class FastqSangerDict(_FastqSeqFileDict):
     """Indexed dictionary like access to a standard Sanger FASTQ file."""
-    def __init__(self, filename, index_filename, alphabet, key_function):
-        _FastqSeqFileDict.__init__(self, filename, index_filename, alphabet,
-                                   key_function, "fastq-sanger")
+    def _setup(self):
+        self._format = "fastq-sanger"
 
 class FastqSolexaDict(_FastqSeqFileDict):
     """Indexed dictionary like access to a Solexa (or early Illumina) FASTQ file."""
-    def __init__(self, filename, index_filename, alphabet, key_function):
-        _FastqSeqFileDict.__init__(self, filename, index_filename, alphabet,
-                                   key_function, "fastq-solexa")
+    def _setup(self):
+        self._format = "fastq-solexa"
 
 class FastqIlluminaDict(_FastqSeqFileDict):
     """Indexed dictionary like access to a Illumina 1.3+ FASTQ file."""
-    def __init__(self, filename, index_filename, alphabet, key_function):
-        _FastqSeqFileDict.__init__(self, filename, index_filename, alphabet,
-                                   key_function, "fastq-illumina")
+    def _setup(self):
+        self._format = "fastq-illumina"
 
 ###############################################################################
 
