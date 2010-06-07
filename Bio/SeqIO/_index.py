@@ -67,17 +67,17 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
         self._format = ""
         self._key_function = key_function
         self._index_filename = index_filename
+        self._setup()
         if os.path.isfile(index_filename):
+            #Reuse the index
             self._con = _sqlite.connect(index_filename)
         else :
+            #Create the index
             self._con = _sqlite.connect(index_filename)
             self._con.execute("CREATE TABLE data (key TEXT PRIMARY KEY, "
                               "offset INTEGER)")
-        #Separate any setup (e.g. reading the header to get field sizes in SFF)
-        #from getting the record offsets, which we will later load from the DB
-        self._setup()
-        self._build()
-        self._commit()
+            self._build()
+            self._commit()
     
     def _setup(self):
         """Parse the header etc if required (PRIVATE)."""

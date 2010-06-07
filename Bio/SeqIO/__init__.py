@@ -773,11 +773,6 @@ def index(filename, format, alphabet=None, key_function=None, db=None):
                                      isinstance(alphabet, AlphabetEncoder)):
         raise ValueError("Invalid alphabet, %s" % repr(alphabet))
 
-    #hack
-    import os
-    if os.path.isfile(db):
-        os.remove(db)
-
     #Map the file format to a sequence iterator:    
     import _index #Lazy import
     try:
