@@ -787,7 +787,7 @@ def index(filename, format, alphabet=None, key_function=None, db=None):
         indexer = _index._FormatToIndexedDict[format]
     except KeyError:
         raise ValueError("Unsupported format '%s'" % format)
-    return indexer(filename, db, alphabet, key_function)
+    return indexer(filename, db, format, alphabet, key_function)
 
 def to_alignment(sequences, alphabet=None, strict=True):
     """Returns a multiple sequence alignment (DEPRECATED).

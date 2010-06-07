@@ -60,11 +60,12 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
     Note that this dictionary is essentially read only. You cannot
     add or change values, pop values, nor clear the dictionary.
     """
-    def __init__(self, filename, index_filename, alphabet, key_function, mode="rU"):
+    def __init__(self, filename, index_filename, format, alphabet,
+                 key_function, mode="rU"):
         #Use key_function=None for default value
         self._handle = open(filename, mode)
         self._alphabet = alphabet
-        self._format = ""
+        self._format = format
         self._key_function = key_function
         self._index_filename = index_filename
         self._setup()
@@ -271,12 +272,14 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
 
 class SffDict(_IndexedSeqFileDict) :
     """Indexed dictionary like access to a Standard Flowgram Format (SFF) file."""
-    def __init__(self, filename, index_filename, alphabet, key_function) :
+    def __init__(self, filename, index_filename, format,
+                 alphabet, key_function):
         if alphabet is None:
             alphabet = Alphabet.generic_dna
         #On Unix, using mode="r" or "rb" works, "rU" does not.
         #On Windows, only using mode="rb" works, "r" and "rU" fail.
-        _IndexedSeqFileDict.__init__(self, filename, index_filename, alphabet, key_function, "rb")
+        _IndexedSeqFileDict.__init__(self, filename, index_filename, format,
+                                     alphabet, key_function, "rb")
 
     def _setup(self):
         """Load the header information."""
@@ -346,13 +349,15 @@ class SffTrimmedDict(SffDict) :
 # Simple indexers #
 ###################
 
-class _SequentialSeqFileDict(_IndexedSeqFileDict):
-    """Subclass for easy cases (PRIVATE)."""
+class SequentialSeqFileDict(_IndexedSeqFileDict):
+    """Indexed dictionary like access to most sequential sequence files."""
     def _setup(self):
-        raise NotImplementedError("Subclass should call _setup_re()")
-
-    def _setup_re(self, format, marker):
-        self._format = format
+        marker = {"ace" : "CO ",
+                  "fasta": ">",
+                  "phd" : "BEGIN_SEQUENCE",
+                  "pir" : ">..;",
+                  "qual": ">",
+                   }[self._format]
         self._marker = marker
         self._marker_re = re.compile("^%s" % marker)
 
@@ -385,40 +390,17 @@ class _SequentialSeqFileDict(_IndexedSeqFileDict):
             data += line
         return data
 
-class FastaDict(_SequentialSeqFileDict):
-    """Indexed dictionary like access to a FASTA file."""
-    def _setup(self):
-        self._setup_re("fasta", ">")
-
-class QualDict(_SequentialSeqFileDict):
-    """Indexed dictionary like access to a QUAL file."""
-    def _setup(self):
-        self._setup_re("qual", ">")
-
-class PirDict(_SequentialSeqFileDict):
-    """Indexed dictionary like access to a PIR/NBRF file."""
-    def _setup(self):
-        self._setup_re("pir", ">..;")
-
-class PhdDict(_SequentialSeqFileDict):
-    """Indexed dictionary like access to a PHD (PHRED) file."""
-    def _setup(self):
-        self._setup_re("phd", "BEGIN_SEQUENCE")
-
-class AceDict(_SequentialSeqFileDict):
-    """Indexed dictionary like access to an ACE file."""
-    def _setup(self):
-        self._setup_re("ace", "CO ")
-
 
 #######################################
 # Fiddly indexers: GenBank, EMBL, ... #
 #######################################
 
-class GenBankDict(_SequentialSeqFileDict):
+class GenBankDict(SequentialSeqFileDict):
     """Indexed dictionary like access to a GenBank file."""
     def _setup(self):
-        self._setup_re("genbank", "LOCUS ")
+        marker = "LOCUS "
+        self._marker = marker
+        self._marker_re = re.compile("^%s" % marker)
     
     def _build(self):
         handle = self._handle
@@ -454,10 +436,12 @@ class GenBankDict(_SequentialSeqFileDict):
                     raise ValueError("Did not find ACCESSION/VERSION lines")
                 self._record_key(key, offset)
 
-class EmblDict(_SequentialSeqFileDict):
+class EmblDict(SequentialSeqFileDict):
     """Indexed dictionary like access to an EMBL file."""
     def _setup(self):
-        self._setup_re("embl", "ID ")
+        marker = "ID "
+        self._marker = marker
+        self._marker_re = re.compile("^%s" % marker)
     
     def _build(self):
         handle = self._handle
@@ -497,10 +481,12 @@ class EmblDict(_SequentialSeqFileDict):
                         break
                 self._record_key(key, offset)
 
-class SwissDict(_SequentialSeqFileDict):
+class SwissDict(SequentialSeqFileDict):
     """Indexed dictionary like access to a SwissProt file."""
     def _setup(self):
-        self._setup_re("swiss", "ID ")
+        marker = "ID "
+        self._marker = marker
+        self._marker_re = re.compile("^%s" % marker)
     
     def _build(self):
         handle = self._handle
@@ -517,10 +503,12 @@ class SwissDict(_SequentialSeqFileDict):
                 key = line[3:].strip().split(";")[0].strip()
                 self._record_key(key, offset)
 
-class IntelliGeneticsDict(_SequentialSeqFileDict):
+class IntelliGeneticsDict(SequentialSeqFileDict):
     """Indexed dictionary like access to a IntelliGenetics file."""
     def _setup(self):
-        self._setup_re("ig", ";")
+        marker = ";"
+        self._marker = marker
+        self._marker_re = re.compile("^%s" % marker)
     
     def _build(self):
         handle = self._handle
@@ -542,9 +530,6 @@ class IntelliGeneticsDict(_SequentialSeqFileDict):
 
 class TabDict(_IndexedSeqFileDict):
     """Indexed dictionary like access to a simple tabbed file."""
-    def _setup(self):
-        self._format = "tab"
-    
     def _build(self):
         handle = self._handle
         while True:
@@ -568,20 +553,12 @@ class TabDict(_IndexedSeqFileDict):
         handle.seek(self._get_offset(key))
         return handle.readline()
 
-##########################
-# Now the FASTQ indexers #
-##########################
-         
-class _FastqSeqFileDict(_IndexedSeqFileDict):
-    """Subclass for easy cases (PRIVATE).
+class FastqDict(_IndexedSeqFileDict):
+    """Indexed dictionary like access to a FASTQ file (any supported variant).
 
-    With FASTQ the records all start with a "@" line, but so too can some
-    quality lines. Note this will cope with line-wrapped FASTQ files.
+    With FASTQ the records all start with a "@" line, but so can quality lines.
+    Note this will cope with line-wrapped FASTQ files.
     """
-    def _setup(self):
-        raise NotImplmentedError("Subclass should set FASTQ format")
-        #self._format = "fastq"
-
     def _build(self):
         handle = self._handle
         pos = handle.tell()
@@ -663,39 +640,25 @@ class _FastqSeqFileDict(_IndexedSeqFileDict):
             raise ValueError("Problem with quality section")
         return data
 
-class FastqSangerDict(_FastqSeqFileDict):
-    """Indexed dictionary like access to a standard Sanger FASTQ file."""
-    def _setup(self):
-        self._format = "fastq-sanger"
-
-class FastqSolexaDict(_FastqSeqFileDict):
-    """Indexed dictionary like access to a Solexa (or early Illumina) FASTQ file."""
-    def _setup(self):
-        self._format = "fastq-solexa"
-
-class FastqIlluminaDict(_FastqSeqFileDict):
-    """Indexed dictionary like access to a Illumina 1.3+ FASTQ file."""
-    def _setup(self):
-        self._format = "fastq-illumina"
 
 ###############################################################################
 
-_FormatToIndexedDict = {"ace" : AceDict,
+_FormatToIndexedDict = {"ace" : SequentialSeqFileDict,
                         "embl" : EmblDict,
-                        "fasta" : FastaDict,
-                        "fastq" : FastqSangerDict,
-                        "fastq-sanger" : FastqSangerDict, #alias of the above
-                        "fastq-solexa" : FastqSolexaDict,
-                        "fastq-illumina" : FastqIlluminaDict,
+                        "fasta" : SequentialSeqFileDict,
+                        "fastq" : FastqDict, #Handles all three variants
+                        "fastq-sanger" : FastqDict,
+                        "fastq-solexa" : FastqDict,
+                        "fastq-illumina" : FastqDict,
                         "genbank" : GenBankDict,
                         "gb" : GenBankDict, #alias of the above
                         "ig" : IntelliGeneticsDict,
-                        "phd" : PhdDict,
-                        "pir" : PirDict,
+                        "phd" : SequentialSeqFileDict,
+                        "pir" : SequentialSeqFileDict,
                         "sff" : SffDict,
                         "sff-trim" : SffTrimmedDict,
                         "swiss" : SwissDict,
                         "tab" : TabDict,
-                        "qual" : QualDict
+                        "qual" : SequentialSeqFileDict,
                         }
 
