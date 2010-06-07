@@ -664,11 +664,24 @@ class NewBamDict(_IndexedSeqFileDict):
         assert 0 == h.tell()
         h = SeqIO.SamBamIO._BgzfHandle(h)
         self._handle = h
+
+        #Short term hack to make sure the BGZF block tracking is all loaded.
+        #This would happen during parsing (via _build() call) but we might be
+        #using an existing SQLite offset DB:
+        offset = 0
+        while True:
+            try:
+                offset, data = h._get_chunk(offset)
+            except StopIteration:
+                #Looks like end of file
+                break
+        h.seek(0)
         
         header, ref_count = SeqIO.SamBamIO._bam_file_header(h)
         #Skip any reference information
         for i in range(ref_count):
             ref_name, ref_len = SeqIO.SamBamIO._bam_file_reference(h)
+        
   
     def _build(self):
         h = self._handle
@@ -834,7 +847,7 @@ _FormatToIndexedDict = {"ace" : SequentialSeqFileDict,
                         "tab" : TabDict,
                         "qual" : SequentialSeqFileDict,
                         "sam" : SamDict,
-                        "bam" : OldBamDict,
+                        "bam" : NewBamDict,
                         "old-bam" : OldBamDict,
                         "new-bam" : NewBamDict,
                         }

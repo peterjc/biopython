@@ -306,7 +306,12 @@ class _BgzfHandle(object):
         while len(data) < length:
             #Either end of file, or end of chunk.
             chunk_offsets = sorted(self._chunk_decompressed_offsets.keys())
-            next_chunk_offset = chunk_offsets[chunk_offsets.index(self._chunk_offset)+1]
+            try:
+                next_chunk_offset = chunk_offsets[chunk_offsets.index(self._chunk_offset)+1]
+            except IndexError:
+                assert self._chunk_offset == max(chunk_offsets)
+                #Looks like end of file (and last chunk)
+                return data
             try:
                 next_next_chunk_offset, chunk_data = self._get_chunk(next_chunk_offset)
             except StopIteration:
