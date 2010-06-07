@@ -16,6 +16,10 @@ from seq_tests_common import compare_record
 
 class IndexDictTests(unittest.TestCase):
     """Cunning unit test where methods are added at run time."""
+
+    def startUp(self) :
+        if os.path.isfile("temp.idx") : os.remove("temp.idx")
+
     def tearDown(self) :
         if os.path.isfile("temp.idx") : os.remove("temp.idx")
 
@@ -58,6 +62,13 @@ class IndexDictTests(unittest.TestCase):
         self.assertRaises(NotImplementedError, rec_dict.__setitem__, "X", None)
         self.assertRaises(NotImplementedError, rec_dict.copy)
         self.assertRaises(NotImplementedError, rec_dict.fromkeys, [])
+	#Now check reloading the index works!
+	rec_dict2 = SeqIO.index(filename, format, alphabet, db="temp.idx")
+        self.assertEqual(set(id_list), set(rec_dict2.keys()))
+        for key in id_list:
+            self.assert_(key in rec_dict)
+            self.assertEqual(key, rec_dict[key].id)
+            self.assertEqual(key, rec_dict.get(key).id)
         #Done
 
     def get_raw_check(self, filename, format, alphabet):
@@ -72,7 +83,8 @@ class IndexDictTests(unittest.TestCase):
         id_list = [rec.id.lower() for rec in \
                    SeqIO.parse(filename, format, alphabet)]
         rec_dict = SeqIO.index(filename, format, alphabet,
-                               key_function = lambda x : x.lower())
+                               key_function = lambda x : x.lower(),
+			       db="temp.idx")
         self.assertEqual(set(id_list), set(rec_dict.keys()))
         self.assertEqual(len(id_list), len(rec_dict))
         for key in id_list:
