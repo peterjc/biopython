@@ -71,6 +71,26 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
         if os.path.isfile(index_filename):
             #Reuse the index
             self._con = _sqlite.connect(index_filename)
+            #Very basic test of the index
+            #Using first and last entries alphabetically since there is an
+            #index on the key column. I would like to use the first and last
+            #entries in the file, but would be slow without an index on the
+            #offset column which we don't otherwise need.
+            if len(self):
+                key = str(self._con.execute("SELECT key FROM data ORDER BY key ASC LIMIT 1").fetchone()[0])
+                try:
+                    record = self[key]
+                    del key, record
+                except Exception, err:
+                    raise ValueError("Is %s an out of date index database? %s" \
+                                     % (index_filename, err))
+                key = str(self._con.execute("SELECT key FROM data ORDER BY key DESC LIMIT 1").fetchone()[0])
+                try:
+                    record = self[key]
+                    del key, record
+                except Exception, err:
+                    raise ValueError("Is %s an out of date index database? %s" \
+                                     % (index_filename, err))
         else :
             #Create the index
             self._con = _sqlite.connect(index_filename)
@@ -98,12 +118,13 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
 
     def __str__(self):
         if self:
-            return "{%s : SeqRecord(...), ...}" % repr(self.keys()[0])
+            key = str(self._con.execute("SELECT key FROM data LIMIT 1").fetchone()[0])
+            return "{%s : SeqRecord(...), ...}" % repr(key)
         else:
             return "{}"
 
     def __contains__(self, key) :
-        return bool(self._con.execute("select key from data where key=?",(key,)).fetchone())
+        return bool(self._con.execute("SELECT key FROM data WHERE key=?",(key,)).fetchone())
         
     def _record_key(self, identifier, seek_position):
         """Used by subclasses to record file offsets for identifiers (PRIVATE).
