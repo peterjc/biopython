@@ -275,20 +275,17 @@ class _SqliteOffsetDict(UserDict.DictMixin):
     
     def _flush(self):
         #print "Flushing %i values" % len(self._pending)
+        con = self._con
         if self._pending:
-            execute = self._con.execute
-            execute("BEGIN TRANSACTION;")
-            for key, offset in self._pending:
-                try:
-                    execute("INSERT INTO data (key,offset) VALUES (?,?);",
-                            (key, offset))
-                except _IntegrityError: #column key is not unique
-                    #assert key in self
-                    raise KeyError("Duplicate key %s (offset %i)" \
-                                     % (repr(key), offset))
-            execute("COMMIT TRANSACTION;")
+            con.execute("BEGIN TRANSACTION;")
+            try:
+                con.executemany("INSERT INTO data (key,offset) VALUES (?,?);",
+                                self._pending)
+            except _IntegrityError, err:
+                raise KeyError("Duplicate key? %s" % err)
+            con.execute("COMMIT TRANSACTION;")
             self._pending = []
-        self._con.commit()
+        con.commit()
     
     def _finish(self):
         """Flush any pending commits, and build the index. May raise KeyError."""
@@ -314,7 +311,7 @@ class _SqliteOffsetDict(UserDict.DictMixin):
                              % (repr(key), offset))
         """
         self._pending.append((key, offset))
-        if len(self._pending) >= 10000:
+        if len(self._pending) >= 1000000:
             self._flush()
 
     def __getitem__(self, key) :
