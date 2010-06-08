@@ -264,8 +264,7 @@ class _SqliteOffsetDict(UserDict.DictMixin):
             self._con = _sqlite.connect(index_filename)
         else :
             #Create the index
-            #Use isolation_level=None to handle transactions explicitly
-            self._con = _sqlite.connect(index_filename, isolation_level=None)
+            self._con = _sqlite.connect(index_filename)
             #Don't index the key column until the end (faster)
             #self._con.execute("CREATE TABLE data (key TEXT PRIMARY KEY, "
             #                  "offset INTEGER);")
@@ -277,13 +276,11 @@ class _SqliteOffsetDict(UserDict.DictMixin):
         #print "Flushing %i values" % len(self._pending)
         con = self._con
         if self._pending:
-            con.execute("BEGIN TRANSACTION;")
             try:
                 con.executemany("INSERT INTO data (key,offset) VALUES (?,?);",
                                 self._pending)
             except _IntegrityError, err:
                 raise KeyError("Duplicate key? %s" % err)
-            con.execute("COMMIT TRANSACTION;")
             self._pending = []
         con.commit()
     
