@@ -96,15 +96,8 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
         else :
             #Create the index file
             self._offsets = _SqliteOffsetDict(index_filename)
-
-            import time
-            start = time.time()
             self._build()
-            print "Loading offsets done in %0.1fs" % (time.time()-start)
-
-            start = time.time()
             self._offsets._finish() #build the index on the key column
-            print "Indexing offsets done in %0.1fs" % (time.time()-start)
     
     def _setup(self):
         """Parse the header etc if required (PRIVATE)."""
@@ -304,7 +297,7 @@ class _SqliteOffsetDict(UserDict.DictMixin):
             self._con.execute("CREATE UNIQUE INDEX IF NOT EXISTS "
                               "key_index ON data(key);")
         except _IntegrityError, err:
-            raise ValueError("Duplicate key? %s" % err)
+            raise KeyError("Duplicate key? %s" % err)
         self._con.commit()
     
     def __contains__(self, key) :
