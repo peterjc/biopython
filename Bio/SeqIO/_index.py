@@ -284,7 +284,7 @@ class _SqliteOffsetDict(UserDict.DictMixin):
                             (key, offset))
                 except _IntegrityError: #column key is not unique
                     #assert key in self
-                    raise ValueError("Duplicate key %s (offset %i)" \
+                    raise KeyError("Duplicate key %s (offset %i)" \
                                      % (repr(key), offset))
             execute("COMMIT TRANSACTION;")
             self._pending = []
@@ -301,7 +301,7 @@ class _SqliteOffsetDict(UserDict.DictMixin):
         self._con.commit()
     
     def __contains__(self, key) :
-        return bool(self._con.execute("SELECT key FROM data WHERE key=?",(key,)).fetchone())
+        return bool(self._con.execute("SELECT key FROM data WHERE key=?;",(key,)).fetchone())
         
     def __setitem__(self, key, offset):
         """
