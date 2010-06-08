@@ -69,6 +69,7 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
             #Hold the offsets in memory
             self._offsets = {}
             self._build()
+            #TODO - Need to add a duplicate key check
         elif os.path.isfile(index_filename):
             #Reuse the index
             self._offsets = _SqliteOffsetDict(index_filename)
@@ -93,11 +94,17 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
                     raise ValueError("Is %s an out of date index database? %s" \
                                      % (index_filename, err))
         else :
-            #Create the index
+            #Create the index file
             self._offsets = _SqliteOffsetDict(index_filename)
+
+            import time
+            start = time.time()
             self._build()
-            self._offsets._flush()
-            self._offsets._con.commit()
+            print "Loading offsets done in %0.1fs" % (time.time()-start)
+
+            start = time.time()
+            self._offsets._finish() #build the index on the key column
+            print "Indexing offsets done in %0.1fs" % (time.time()-start)
     
     def _setup(self):
         """Parse the header etc if required (PRIVATE)."""
@@ -266,8 +273,10 @@ class _SqliteOffsetDict(UserDict.DictMixin):
             #Create the index
             #Use isolation_level=None to handle transactions explicitly
             self._con = _sqlite.connect(index_filename, isolation_level=None)
-            self._con.execute("CREATE TABLE data (key TEXT PRIMARY KEY, "
-                              "offset INTEGER);")
+            #Don't index the key column until the end (faster)
+            #self._con.execute("CREATE TABLE data (key TEXT PRIMARY KEY, "
+            #                  "offset INTEGER);")
+            self._con.execute("CREATE TABLE data (key TEXT, offset INTEGER);")
             #self._con.execute("PRAGMA synchronous = off;")
             self._con.commit()
     
@@ -286,6 +295,16 @@ class _SqliteOffsetDict(UserDict.DictMixin):
                                      % (repr(key), offset))
             execute("COMMIT TRANSACTION;")
             self._pending = []
+        self._con.commit()
+    
+    def _finish(self):
+        """Flush any pending commits, and build the index. May raise KeyError."""
+        self._flush()
+        try:
+            self._con.execute("CREATE UNIQUE INDEX IF NOT EXISTS "
+                              "key_index ON data(key);")
+        except _IntegrityError, err:
+            raise ValueError("Duplicate key? %s" % err)
         self._con.commit()
     
     def __contains__(self, key) :
