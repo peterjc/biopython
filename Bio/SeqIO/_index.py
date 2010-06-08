@@ -78,14 +78,14 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
             #entries in the file, but would be slow without an index on the
             #offset column which we don't otherwise need.
             if len(self):
-                key = str(self._offsets._con.execute("SELECT key FROM data ORDER BY key ASC LIMIT 1").fetchone()[0])
+                key = str(self._offsets._con.execute("SELECT key FROM data ORDER BY key ASC LIMIT 1;").fetchone()[0])
                 try:
                     record = self[key]
                     del key, record
                 except Exception, err:
                     raise ValueError("Is %s an out of date index database? %s" \
                                      % (index_filename, err))
-                key = str(self._offsets._con.execute("SELECT key FROM data ORDER BY key DESC LIMIT 1").fetchone()[0])
+                key = str(self._offsets._con.execute("SELECT key FROM data ORDER BY key DESC LIMIT 1;").fetchone()[0])
                 try:
                     record = self[key]
                     del key, record
@@ -96,6 +96,7 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
             #Create the index
             self._offsets = _SqliteOffsetDict(index_filename)
             self._build()
+            self._offsets._flush()
             self._offsets._con.commit()
     
     def _setup(self):
@@ -105,6 +106,13 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
     def _build(self):
         """Actually scan the file identifying records and offsets (PRIVATE)."""
         pass
+    
+    def _flush(self):
+        """Flush an pending commits to the DB (PRIVATE)."""
+        try:
+            self._offsets._flush()
+        except AttributeError:
+            pass
 
     def __repr__(self):
         return "SeqIO.index('%s', '%s', alphabet=%s, key_function=%s, mode=%s, index_filename=%s)" \
@@ -250,52 +258,77 @@ class _SqliteOffsetDict(UserDict.DictMixin):
     """Simple dictionary like object based on SQLite (PRIVATE)."""
     def __init__(self, index_filename):
         #Use key_function=None for default value
+        self._pending = []
         if os.path.isfile(index_filename):
             #Reuse the index
             self._con = _sqlite.connect(index_filename)
         else :
             #Create the index
-            self._con = _sqlite.connect(index_filename)
+            #Use isolation_level=None to handle transactions explicitly
+            self._con = _sqlite.connect(index_filename, isolation_level=None)
             self._con.execute("CREATE TABLE data (key TEXT PRIMARY KEY, "
-                              "offset INTEGER)")
+                              "offset INTEGER);")
+            #self._con.execute("PRAGMA synchronous = off;")
             self._con.commit()
+    
+    def _flush(self):
+        #print "Flushing %i values" % len(self._pending)
+        if self._pending:
+            execute = self._con.execute
+            execute("BEGIN TRANSACTION;")
+            for key, offset in self._pending:
+                try:
+                    execute("INSERT INTO data (key,offset) VALUES (?,?);",
+                            (key, offset))
+                except _IntegrityError: #column key is not unique
+                    #assert key in self
+                    raise ValueError("Duplicate key %s (offset %i)" \
+                                     % (repr(key), offset))
+            execute("COMMIT TRANSACTION;")
+            self._pending = []
+        self._con.commit()
     
     def __contains__(self, key) :
         return bool(self._con.execute("SELECT key FROM data WHERE key=?",(key,)).fetchone())
         
     def __setitem__(self, key, offset):
+        """
         try:
-            self._con.execute("INSERT INTO data (key,offset) VALUES (?,?)",
+            self._con.execute("INSERT INTO data (key,offset) VALUES (?,?);",
                               (key, offset))
         except _IntegrityError: #column key is not unique
             assert key in self
             raise ValueError("Duplicate key %s (offset %i)" \
                              % (repr(key), offset))
+        """
+        self._pending.append((key, offset))
+        if len(self._pending) >= 10000:
+            self._flush()
 
     def __getitem__(self, key) :
-        row = self._con.execute("SELECT offset FROM data WHERE key=?",(key,)).fetchone()
+        row = self._con.execute("SELECT offset FROM data WHERE key=?;",(key,)).fetchone()
         if not row: raise KeyError
         return row[0]
 
     def __len__(self):
         """How many records are there?"""
-        return self._con.execute("SELECT COUNT(key) FROM data").fetchone()[0]
+        return self._con.execute("SELECT COUNT(key) FROM data;").fetchone()[0]
 
     def keys(self) :
         """Return a list of all the keys (SeqRecord identifiers)."""
         #TODO - Stick a warning in here for large lists? Or just refuse?
         return [str(row[0]) for row in \
-                self._con.execute("SELECT key FROM data").fetchall()]
+                self._con.execute("SELECT key FROM data;").fetchall()]
 
     def values(self):
         """Would be a list of the offsets (integers)."""
         return [row[0] for row in \
-                self._con.execute("SELECT offset FROM data").fetchall()]
+                self._con.execute("SELECT offset FROM data;").fetchall()]
 
     def items(self):
         """List of (key, offset) tuples."""
         return [(str(row[0]),row[1]) for row in \
-                self._con.execute("SELECT key, offset FROM data").fetchall()]
+                self._con.execute("SELECT key, offset FROM data;").fetchall()]
 
     def iteritems(self):
         """Iterate over the (key, SeqRecord) items."""
@@ -367,6 +400,7 @@ class SffDict(_IndexedSeqFileDict) :
             try :
                 for name, offset in SeqIO.SffIO._sff_read_roche_index(handle) :
                     self._record_key(name, offset)
+                self._flush()
                 assert len(self) == number_of_reads, \
                        "Indexed %i records, expected %i" \
                        % (len(self), number_of_reads)
@@ -384,6 +418,7 @@ class SffDict(_IndexedSeqFileDict) :
         for name, offset in SeqIO.SffIO._sff_do_slow_index(handle) :
             #print "%s -> %i" % (name, offset)
             self._record_key(name, offset)
+        self._flush()
         assert len(self) == number_of_reads, \
                "Indexed %i records, expected %i" % (len(self), number_of_reads)
         
