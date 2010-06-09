@@ -70,15 +70,14 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
         else:
             offset_iter = self._build()
         if not index_filename:
-            #Hold the offsets in memory
+            #Hold the offsets in memory as a Python dict
             offsets = {}
             for key, offset in offset_iter:
                 if key in offsets:
-                    raise KeyError("Duplicate key")
+                    raise KeyError("Duplicate key %s" % repr(key))
                 else:
                     offsets[key] = offset
             self._offsets = offsets
-            #TODO - Need to add a duplicate key check
         elif os.path.isfile(index_filename):
             #Reuse the index
             self._offsets = _SqliteOffsetDict(index_filename)
@@ -352,11 +351,10 @@ class SffDict(_IndexedSeqFileDict) :
         """Load the header information."""
         if self._alphabet is None:
             self._alphabet = Alphabet.generic_dna
-        handle = self._handle
         #Record the what we'll need for parsing a record given its offset
         header_length, index_offset, index_length, number_of_reads, \
         self._flows_per_read, self._flow_chars, self._key_sequence \
-            = SeqIO.SffIO._sff_file_header(handle)
+            = SeqIO.SffIO._sff_file_header(self._handle)
     
     def _build(self):
         """Load any index block in the file, or build it the slow way (PRIVATE)."""
@@ -391,7 +389,10 @@ class SffDict(_IndexedSeqFileDict) :
                                                   self._flow_chars,
                                                   self._key_sequence,
                                                   self._alphabet)
-        assert record.id == key
+        if self._key_function:
+            assert key_function(record.id) == key
+        else:
+            assert record.id == key
         return record
 
 class SffTrimmedDict(SffDict) :
@@ -404,7 +405,10 @@ class SffTrimmedDict(SffDict) :
                                                   self._key_sequence,
                                                   self._alphabet,
                                                   trim=True)
-        assert record.id == key
+        if self._key_function:
+            assert key_function(record.id) == key
+        else:
+            assert record.id == key
         return record
 
 ###################
