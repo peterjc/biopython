@@ -65,10 +65,19 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
         self._key_function = key_function
         self._index_filename = index_filename
         self._setup()
+        if key_function:
+            offset_iter = ((key_function(k),o) for (k,o) in self._build())
+        else:
+            offset_iter = self._build()
         if not index_filename:
             #Hold the offsets in memory
-            self._offsets = {}
-            self._build()
+            offsets = {}
+            for key, offset in offset_iter:
+                if key in offsets:
+                    raise KeyError("Duplicate key")
+                else:
+                    offsets[key] = offset
+            self._offsets = offsets
             #TODO - Need to add a duplicate key check
         elif os.path.isfile(index_filename):
             #Reuse the index
@@ -95,25 +104,19 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
                                      % (index_filename, err))
         else :
             #Create the index file
-            self._offsets = _SqliteOffsetDict(index_filename)
-            self._build()
-            self._offsets._finish() #build the index on the key column
+            self._offsets = _SqliteOffsetDict(index_filename, offset_iter)
     
     def _setup(self):
         """Parse the header etc if required (PRIVATE)."""
         pass
     
     def _build(self):
-        """Actually scan the file identifying records and offsets (PRIVATE)."""
+        """Actually scan the file identifying records and offsets (PRIVATE).
+        
+        Returns an iterator giving tuples of record names and their offsets.
+        """
         pass
     
-    def _flush(self):
-        """Flush an pending commits to the DB (PRIVATE)."""
-        try:
-            self._offsets._flush()
-        except AttributeError:
-            pass
-
     def __repr__(self):
         return "SeqIO.index('%s', '%s', alphabet=%s, key_function=%s, mode=%s, index_filename=%s)" \
                % (self._handle.name, self._format,
@@ -130,21 +133,6 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
     def __contains__(self, key) :
         return key in self._offsets
         
-    def _record_key(self, identifier, seek_position):
-        """Used by subclasses to record file offsets for identifiers (PRIVATE).
-
-        This will apply the key_function (if given) to map the record id
-        string to the desired key.
-
-        This will raise a ValueError if a key (record id string) occurs
-        more than once.
-        """
-        if self._key_function:
-            key = self._key_function(identifier)
-        else:
-            key = identifier
-        self._offsets[key] = seek_position
-
     def _get_offset(self, key) :
         #Separate method to help ease complex subclassing like SFF
         return self._offsets[key]
@@ -256,7 +244,7 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
 #TODO - What about closing the connection nicely?
 class _SqliteOffsetDict(UserDict.DictMixin):
     """Simple dictionary like object based on SQLite (PRIVATE)."""
-    def __init__(self, index_filename):
+    def __init__(self, index_filename, offsets=None):
         #Use key_function=None for default value
         self._pending = []
         if os.path.isfile(index_filename):
@@ -264,52 +252,28 @@ class _SqliteOffsetDict(UserDict.DictMixin):
             self._con = _sqlite.connect(index_filename)
         else :
             #Create the index
-            self._con = _sqlite.connect(index_filename)
+            con = _sqlite.connect(index_filename)
             #Don't index the key column until the end (faster)
-            #self._con.execute("CREATE TABLE data (key TEXT PRIMARY KEY, "
+            #con.execute("CREATE TABLE data (key TEXT PRIMARY KEY, "
             #                  "offset INTEGER);")
-            self._con.execute("CREATE TABLE data (key TEXT, offset INTEGER);")
+            con.execute("CREATE TABLE data (key TEXT, offset INTEGER);")
             #self._con.execute("PRAGMA synchronous = off;")
-            self._con.commit()
-    
-    def _flush(self):
-        #print "Flushing %i values" % len(self._pending)
-        con = self._con
-        if self._pending:
+            con.executemany("INSERT INTO data (key,offset) VALUES (?,?);",
+                            offsets)
+            con.commit()
             try:
-                con.executemany("INSERT INTO data (key,offset) VALUES (?,?);",
-                                self._pending)
+                con.execute("CREATE UNIQUE INDEX IF NOT EXISTS "
+                            "key_index ON data(key);")
             except _IntegrityError, err:
                 raise KeyError("Duplicate key? %s" % err)
-            self._pending = []
-        con.commit()
-    
-    def _finish(self):
-        """Flush any pending commits, and build the index. May raise KeyError."""
-        self._flush()
-        try:
-            self._con.execute("CREATE UNIQUE INDEX IF NOT EXISTS "
-                              "key_index ON data(key);")
-        except _IntegrityError, err:
-            raise KeyError("Duplicate key? %s" % err)
-        self._con.commit()
+            self._con = con
     
     def __contains__(self, key) :
         return bool(self._con.execute("SELECT key FROM data WHERE key=?;",(key,)).fetchone())
         
     def __setitem__(self, key, offset):
-        """
-        try:
-            self._con.execute("INSERT INTO data (key,offset) VALUES (?,?);",
-                              (key, offset))
-        except _IntegrityError: #column key is not unique
-            assert key in self
-            raise ValueError("Duplicate key %s (offset %i)" \
-                             % (repr(key), offset))
-        """
-        self._pending.append((key, offset))
-        if len(self._pending) >= 1000000:
-            self._flush()
+        """A dictionary method which we don't implement."""
+        raise NotImplementedError()
 
     def __getitem__(self, key) :
         row = self._con.execute("SELECT offset FROM data WHERE key=?;",(key,)).fetchone()
@@ -405,16 +369,11 @@ class SffDict(_IndexedSeqFileDict) :
             #There is an index provided, try this the fast way:
             try :
                 for name, offset in SeqIO.SffIO._sff_read_roche_index(handle) :
-                    self._record_key(name, offset)
-                self._flush()
-                assert len(self) == number_of_reads, \
-                       "Indexed %i records, expected %i" \
-                       % (len(self), number_of_reads)
+                    yield name, offset
                 return
             except ValueError, err :
                 import warnings
                 warnings.warn("Could not parse the SFF index: %s" % err)
-                assert len(self)==0
                 handle.seek(0)
         else :
             #TODO - Remove this debug warning?
@@ -422,11 +381,7 @@ class SffDict(_IndexedSeqFileDict) :
             warnings.warn("No SFF index, doing it the slow way")
         #Fall back on the slow way!
         for name, offset in SeqIO.SffIO._sff_do_slow_index(handle) :
-            #print "%s -> %i" % (name, offset)
-            self._record_key(name, offset)
-        self._flush()
-        assert len(self) == number_of_reads, \
-               "Indexed %i records, expected %i" % (len(self), number_of_reads)
+            yield name, offset
         
     def __getitem__(self, key) :
         handle = self._handle
@@ -479,8 +434,7 @@ class SequentialSeqFileDict(_IndexedSeqFileDict):
             if marker_re.match(line):
                 #Here we can assume the record.id is the first word after the
                 #marker. This is generally fine... but not for GenBank, EMBL, Swiss
-                self._record_key(line[marker_offset:].strip().split(None, 1)[0], \
-                                 offset)
+                yield line[marker_offset:].strip().split(None, 1)[0], offset
 
     def get_raw(self, key):
         """Similar to the get method, but returns the record as a raw string."""
@@ -541,7 +495,7 @@ class GenBankDict(SequentialSeqFileDict):
                         break
                 if not key:
                     raise ValueError("Did not find ACCESSION/VERSION lines")
-                self._record_key(key, offset)
+                yield key, offset
 
 class EmblDict(SequentialSeqFileDict):
     """Indexed dictionary like access to an EMBL file."""
@@ -586,7 +540,7 @@ class EmblDict(SequentialSeqFileDict):
                     or marker_re.match(line) \
                     or not line:
                         break
-                self._record_key(key, offset)
+                yield key, offset
 
 class SwissDict(SequentialSeqFileDict):
     """Indexed dictionary like access to a SwissProt file."""
@@ -608,7 +562,7 @@ class SwissDict(SequentialSeqFileDict):
                 line = handle.readline()
                 assert line.startswith("AC ")
                 key = line[3:].strip().split(";")[0].strip()
-                self._record_key(key, offset)
+                yield key, offset
 
 class IntelliGeneticsDict(SequentialSeqFileDict):
     """Indexed dictionary like access to a IntelliGenetics file."""
@@ -632,7 +586,7 @@ class IntelliGeneticsDict(SequentialSeqFileDict):
                         raise ValueError("Premature end of file?")
                     if line[0] != ";" and line.strip():
                         key = line.split()[0]
-                        self._record_key(key, offset)
+                        yield key, offset
                         break
 
 class TabDict(_IndexedSeqFileDict):
@@ -652,7 +606,7 @@ class TabDict(_IndexedSeqFileDict):
                 else:
                     raise err
             else:
-                self._record_key(key, offset)
+                yield key, offset
 
     def get_raw(self, key):
         """Like the get method, but returns the record as a raw string."""
@@ -678,7 +632,7 @@ class FastqDict(_IndexedSeqFileDict):
         while line:
             #assert line[0]=="@"
             #This record seems OK (so far)
-            self._record_key(line[1:].rstrip().split(None, 1)[0], pos)
+            yield line[1:].rstrip().split(None, 1)[0], pos
             #Find the seq line(s)
             seq_len = 0
             while line:
