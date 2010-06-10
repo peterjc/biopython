@@ -252,11 +252,13 @@ class _SqliteOffsetDict(UserDict.DictMixin):
         else :
             #Create the index
             con = _sqlite.connect(index_filename)
+            # Sqlite PRAGMA settings for speed
+            con.execute("PRAGMA syncronous='OFF'")
+            con.execute("PRAGMA locking_mode=EXCLUSIVE")
             #Don't index the key column until the end (faster)
             #con.execute("CREATE TABLE data (key TEXT PRIMARY KEY, "
             #                  "offset INTEGER);")
             con.execute("CREATE TABLE data (key TEXT, offset INTEGER);")
-            #self._con.execute("PRAGMA synchronous = off;")
             con.executemany("INSERT INTO data (key,offset) VALUES (?,?);",
                             offsets)
             con.commit()
@@ -265,6 +267,7 @@ class _SqliteOffsetDict(UserDict.DictMixin):
                             "key_index ON data(key);")
             except _IntegrityError, err:
                 raise KeyError("Duplicate key? %s" % err)
+            con.execute("PRAGMA locking_mode=NORMAL")
             self._con = con
     
     def __contains__(self, key) :
