@@ -74,7 +74,7 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
             offsets = {}
             for key, offset in offset_iter:
                 if key in offsets:
-                    raise KeyError("Duplicate key %s" % repr(key))
+                    raise ValueError("Duplicate key %s" % repr(key))
                 else:
                     offsets[key] = offset
             self._offsets = offsets
@@ -115,7 +115,7 @@ class _IndexedSeqFileDict(UserDict.DictMixin):
         Returns an iterator giving tuples of record names and their offsets.
         """
         pass
-    
+
     def __repr__(self):
         return "SeqIO.index('%s', '%s', alphabet=%s, key_function=%s, mode=%s, index_filename=%s)" \
                % (self._handle.name, self._format,
@@ -266,7 +266,7 @@ class _SqliteOffsetDict(UserDict.DictMixin):
                 con.execute("CREATE UNIQUE INDEX IF NOT EXISTS "
                             "key_index ON data(key);")
             except _IntegrityError, err:
-                raise KeyError("Duplicate key? %s" % err)
+                raise ValueError("Duplicate key? %s" % err)
             con.execute("PRAGMA locking_mode=NORMAL")
             self._con = con
     
@@ -383,7 +383,7 @@ class SffDict(_IndexedSeqFileDict) :
         #Fall back on the slow way!
         for name, offset in SeqIO.SffIO._sff_do_slow_index(handle) :
             yield name, offset
-        
+
     def __getitem__(self, key) :
         handle = self._handle
         handle.seek(self._get_offset(key))
