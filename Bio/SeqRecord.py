@@ -1016,7 +1016,12 @@ class SeqRecord(object):
            ...
         ValueError: Proteins do not have complements!
         """
-        answer = SeqRecord(self.seq.reverse_complement())
+        from Bio.Seq import MutableSeq #Lazy to avoid circular imports
+        if isinstance(self.seq, MutableSeq):
+            #Currently the MutableSeq reverse complement is in situ
+            answer = SeqRecord(self.seq.toseq().reverse_complement())
+        else:
+            answer = SeqRecord(self.seq.reverse_complement())
         if isinstance(id, basestring) :
             answer.id = id
         elif id :
