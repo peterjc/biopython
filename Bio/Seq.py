@@ -1,6 +1,6 @@
 # Copyright 2000-2002 Brad Chapman.
 # Copyright 2004-2005 by M de Hoon.
-# Copyright 2007-2009 by Peter Cock.
+# Copyright 2007-2010 by Peter Cock.
 # All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
@@ -1697,12 +1697,16 @@ class MutableSeq(object):
         """
         self.data.reverse()
 
-    def complement(self):
-        """Modify the mutable sequence to take on its complement.
+    def complement(self, in_place=None):
+        """DNA or RNA complement (in place modification or new MutableSeq).
 
         Trying to complement a protein sequence raises an exception.
 
-        No return value.
+        Default (for backwards compatibility) is in place modification, with
+        no return value. This will change in a future release to default to
+        returning a new MutableSeq object with the original unchanged (in order
+        to match the behaviour of the Seq object). You can choose the desired
+        behaviour explicitly with in_place=True or in_place=False.
         """
         if isinstance(Alphabet._get_base_alphabet(self.alphabet),
                       Alphabet.ProteinAlphabet):
@@ -1720,18 +1724,39 @@ class MutableSeq(object):
             d = ambiguous_dna_complement
         c = dict([(x.lower(), y.lower()) for x,y in d.iteritems()])
         d.update(c)
-        self.data = map(lambda c: d[c], self.data)
-        self.data = array.array('c', self.data)
         
-    def reverse_complement(self):
-        """Modify the mutable sequence to take on its reverse complement.
-
+        data = array.array('c', map(lambda c: d[c], self.data))
+        if in_place is None:
+            import warnings
+            warnings.warn("MutableSeq's (reverse) complement methods will in "
+                          "a future release of Biopython no longer act in "
+                          "place, but return a modified MutableSeq object "
+                          "(to be consistent with the Seq object). For now "
+                          "set the new optional argument in_place=True or "
+                          "in_place=False control this and avoid this warning.",
+                          FutureWarning)
+            in_place = True #Change this in a release or two
+        if in_place:
+            self.data = data
+        else:
+            return MutableSeq(data, self.alphabet)
+        
+    def reverse_complement(self, in_place=None):
+        """Reverse complement (in place modification or new MutableSeq).
+        
         Trying to reverse complement a protein sequence raises an exception.
 
-        No return value.
+        Default (for backwards compatibility) is in place modification, with
+        no return value. This will change in a future release to default to
+        returning a new MutableSeq object with the original unchanged. See the
+        complement method for more details.
         """
-        self.complement()
-        self.data.reverse()
+        #Let the complement method handle any warnings
+        if in_place:
+            self.complement()
+            self.data.reverse()
+        else:
+            return self.complement(in_place=False)[::-1]
 
     ## Sorting a sequence makes no sense.
     # def sort(self, *args): self.data.sort(*args)
@@ -2001,8 +2026,8 @@ def translate(sequence, table="Standard", stop_symbol="*", to_stop=False,
 def reverse_complement(sequence):
     """Returns the reverse complement sequence of a nucleotide string.
 
-    If given a string, returns a new string object.
-    Given a Seq or a MutableSeq, returns a new Seq object with the same alphabet.
+    If given a string, returns a new string object. If given a Seq or a
+    MutableSeq, returns a new Seq or MutableSeq object with the same alphabet.
 
     Supports unambiguous and ambiguous nucleotide sequences.
 
@@ -2015,9 +2040,8 @@ def reverse_complement(sequence):
         #Return a Seq
         return sequence.reverse_complement()
     elif isinstance(sequence, MutableSeq):
-        #Return a Seq
-        #Don't use the MutableSeq reverse_complement method as it is 'in place'.
-        return sequence.toseq().reverse_complement()
+        #Have to be explicit that we don't want this to act in situ.
+        return sequence.reverse_complement(in_place=False)
 
     #Assume its a string.
     #In order to avoid some code duplication, the old code would turn the string

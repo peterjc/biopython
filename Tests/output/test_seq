@@ -243,9 +243,9 @@ Seq('ATGAAACTG', NucleotideAlphabet())
 Seq('AUGAAACTG', NucleotideAlphabet())
 -> Mixed RNA/DNA found
 MutableSeq('ATGAAACTG', DNAAlphabet())
--> Seq('CAGTTTCAT', DNAAlphabet())
+-> MutableSeq('CAGTTTCAT', DNAAlphabet())
 MutableSeq('AUGaaaCUG', IUPACUnambiguousRNA())
--> Seq('CAGuuuCAU', IUPACUnambiguousRNA())
+-> MutableSeq('CAGuuuCAU', IUPACUnambiguousRNA())
 Seq('ACTGTCGTCT', ProteinAlphabet())
 -> Proteins do not have complements!
 
