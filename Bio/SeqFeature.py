@@ -244,6 +244,82 @@ class SeqFeature(object):
                 f_seq = reverse_complement(f_seq)
         return f_seq
         
+    def __contains__(self, value):
+        """Check if an integer position is within the feature.
+        
+        >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
+        >>> f = SeqFeature(FeatureLocation(5,10), type="domain", strand=-1)
+        >>> for position in range(15):
+        ...      print position, position in f
+        0 False
+        1 False
+        2 False
+        3 False
+        4 False
+        5 True
+        6 True
+        7 True
+        8 True
+        9 True
+        10 True
+        11 False
+        12 False
+        13 False
+        14 False
+        
+        For example, to see which features include a SNP position, you could
+        use this:
+        
+        >>> from Bio import SeqIO
+        >>> record = SeqIO.read("GenBank/NC_000932.gb", "gb")
+        >>> for f in record.features:
+        ...     if 1750 in f:
+        ...         print f.type, f.strand, f.location
+        source 1 [0:154478]
+        gene -1 [1716:4347]
+        tRNA -1 [1716:4347]
+        
+        Note that for a gene or CDS feature defined as a join of several
+        subfeatures (i.e. the union of several exons) the gaps are not checked
+        (i.e. the introns). In this example, the tRNA location is defined in
+        the GenBank file as complement(join(1717..1751,4311..4347)), so that
+        position 1760 falls in the gap:
+
+        >>> for f in record.features:
+        ...     if 1760 in f:
+        ...         print f.type, f.strand, f.location
+        source 1 [0:154478]
+        gene -1 [1716:4347]
+
+        Note that additional care may be required with fuzzy locations, for
+        example just before a BeforePosition:
+
+        >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
+        >>> from Bio.SeqFeature import BeforePosition
+        >>> f = SeqFeature(FeatureLocation(BeforePosition(4),8), type="domain")
+        >>> for position in range(10):
+        ...      print position, position in f
+        0 False
+        1 False
+        2 False
+        3 False
+        4 True
+        5 True
+        6 True
+        7 True
+        8 True
+        9 False
+        """
+        if not isinstance(value, int):
+            raise ValueError("Currently we only support checking for integer "
+                             "positions being within a SeqFeature.")
+        if self.sub_features:
+            for f in self.sub_features:
+                if value in f:
+                    return True
+            return False
+        else:
+            return value in self.location
 
 # --- References
 
@@ -362,6 +438,17 @@ class FeatureLocation(object):
         """A string representation of the location for debugging."""
         return "%s(%s,%s)" \
                % (self.__class__.__name__, repr(self.start), repr(self.end))
+
+    def __contains__(self, value):
+        """Check if an integer position is within the FeatureLocation."""
+        if not isinstance(value, int):
+            raise ValueError("Currently we only support checking for integer "
+                             "positions being within a FeatureLocation.")
+        if value < self._start.position \
+        or value > self._end.position + self._end.extension:
+            return False
+        else:
+            return True
 
     def _shift(self, offset):
         """Returns a copy of the location shifted by the offset (PRIVATE)."""
@@ -614,11 +701,30 @@ class PositionGap(object):
         return out
 
 def _test():
-    """Run the Bio.SeqFeature module's doctests."""
-    print "Runing doctests..."
+    """Run the Bio.SeqFeature module's doctests (PRIVATE).
+
+    This will try and locate the unit tests directory, and run the doctests
+    from there in order that the relative paths used in the examples work.
+    """
     import doctest
-    doctest.testmod()
-    print "Done"
+    import os
+    if os.path.isdir(os.path.join("..","Tests")):
+        print "Runing doctests..."
+        cur_dir = os.path.abspath(os.curdir)
+        os.chdir(os.path.join("..","Tests"))
+        doctest.testmod()
+        os.chdir(cur_dir)
+        del cur_dir
+        print "Done"
+    elif os.path.isdir(os.path.join("Tests")) :
+        print "Runing doctests..."
+        cur_dir = os.path.abspath(os.curdir)
+        os.chdir(os.path.join("Tests"))
+        doctest.testmod()
+        os.chdir(cur_dir)
+        del cur_dir
+        print "Done"
+
 
 if __name__ == "__main__":
     _test()
