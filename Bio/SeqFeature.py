@@ -284,6 +284,192 @@ class SeqFeature(object):
             return sum(len(f) for f in self.sub_features)
         else:
             return len(self.location)
+    
+    def get_parent_coord(self, local_coordinate):
+        """Give the parental coordinate for a local coordinate.
+        
+        Input value is an integer (from 0 to the length of the feature), which
+        will be converted to the parental sequence's coordindate system.
+        
+        This is not intended to help you slice the parent sequence (due to the
+        complications discussed below) but rather for accessing individual
+        letters from the parent sequence such as SNPs.
+
+        For a simple feature on the forward strand, this just adds the start
+        position of the feature:
+
+        >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
+        >>> f = SeqFeature(FeatureLocation(8,98), type="CDS", strand=+1)
+        >>> len(f)
+        90
+        >>> f.get_parent_coord(0)
+        8
+        >>> f.get_parent_coord(89)
+        97
+        
+        For a simple feature on the reverse strand, this value is calculated
+        relative to the end position (which is the biological start):
+
+        >>> from Bio.Seq import Seq
+        >>> from Bio.Alphabet import generic_protein
+        >>> f = SeqFeature(FeatureLocation(8,98), type="CDS", strand=-1)
+        >>> len(f)
+        90
+        >>> f.get_parent_coord(0)
+        97
+        >>> f.get_parent_coord(1)
+        96
+        
+        Let's look at a complicated CDS feature with a GenBank location string
+        join(3462..3615,3698..3978,4077..4307,4408..4797,4876..5028,5141..5332)
+
+        >>> from Bio import SeqIO
+        >>> record = SeqIO.read("GenBank/arab1.gb", "gb")
+        >>> f = record.features[1]
+        >>> print f.type, f.strand, len(f.sub_features)
+        CDS 1 6
+        >>> for sf in f.sub_features:
+        ...    print sf.location, len(sf)
+        [3461:3615] 154
+        [3697:3978] 281
+        [4076:4307] 231
+        [4407:4797] 390
+        [4875:5028] 153
+        [5140:5332] 192
+        >>> print f.location, len(f)
+        [3461:5332] 1401
+        
+        Recall you can get the sequence of the feature with the extract method:
+
+        >>> feature_seq = f.extract(record.seq)
+        >>> len(feature_seq)
+        1401
+
+        In the feature's local coordinate system the first letter is 0, and the
+        last letter is 1400 (the feature is 1401 letters long). The first exon
+        runs from letter 0 to letter 153 (and has length 154):
+
+        >>> exon0_seq = f.sub_features[0].extract(record.seq)
+        >>> len(exon0_seq)
+        154
+        >>> str(exon0_seq) == str(feature_seq[0:154])
+        True
+        
+        Now 154 is the first letter of the second exon, and 434 is its last
+        letter. If you wanted to extract this exon from the feature's sequence
+        you would use [154:435] like so:
+
+        >>> exon1_seq = f.sub_features[1].extract(record.seq)
+        >>> len(exon1_seq)
+        281
+        >>> str(exon1_seq) == str(feature_seq[154:435])
+        True
+
+        First let's try some position within the first exon (0 to 153),
+        
+        >>> f.get_parent_coord(0)
+        3461
+        >>> f.get_parent_coord(153)
+        3614
+
+        Now what happens with a local coordindate within the second exon? i.e.
+        Letters 154 to 434 of the feature's sequence:
+
+        >>> f.get_parent_coord(154)
+        3697
+        >>> f.get_parent_coord(434)
+        3977
+
+        To demonstrate this is working just as expected for single letters:
+        
+        >>> for x in range(len(f)):
+        ...     assert feature_seq[x] == record.seq[f.get_parent_coord(x)]
+
+        Note that the exon end points make slicing the parent directly hard!
+        In the feature coordindates 154 is used as the end slice for the first
+        exon, and the start slice point of the following exon. However, in
+        the parent sequence you need 3615 and 3697 in these cases!
+
+        >>> str(exon0_seq) == str(feature_seq[0:154]) == str(record.seq[3461:3615])
+        True
+        >>> str(exon1_seq) == str(feature_seq[154:435]) == str(record.seq[3697:3978])
+        True
+
+        To try to explain, notice:
+
+        >>> f.get_parent_coord(154-1)+1
+        3615
+        >>> f.get_parent_coord(154)
+        3697
+        
+        Sadley given the way that Python slicing works, this annoyance seems
+        unavoidable. So, if you do want to get the sequence of just the exon
+        the first two methods are preferable.
+
+        Now a similar example of a join on the reverse strand,        
+
+        >>> f = record.features[2]
+        >>> print f.type, f.strand, len(f.sub_features)
+        CDS -1 6
+        >>> for sf in f.sub_features:
+        ...    print sf.location, len(sf)
+        [6616:6953] 337
+        [7265:7351] 86
+        [7463:7603] 140
+        [7915:7998] 83
+        [8086:8166] 80
+        [8272:8368] 96
+        >>> print f.location, len(f)
+        [6616:8368] 822
+        >>> feature_seq = f.extract(record.seq)
+        >>> len(feature_seq)
+        822
+        >>> f.get_parent_coord(0)
+        8367
+        >>> f.get_parent_coord(95)
+        8272
+        >>> f.get_parent_coord(821)
+        6616
+        
+        And a more indepth check - notice that we have to (reverse) complement
+        each letter because the feature and the parent are on opposite strands:
+        
+        >>> from Bio.Seq import reverse_complement as rc
+        >>> for x in range(len(f)):
+        ...     assert feature_seq[x] == rc(record.seq[f.get_parent_coord(x)])
+        """
+        if local_coordinate < 0 or local_coordinate > len(self):
+            #TODO - Can we handle this case nicely to mean upstream/downstream
+            #of the feature? What if this would go outside the parent sequence
+            #(or should be wrapped for a circular parent)?
+            raise ValueError("Local co-ordinate should be within the feature")
+        if self.sub_features:
+            if self.strand == -1:
+                #Reverse strand
+                x = local_coordinate
+                for f in self.sub_features[::-1]:
+                    assert f.strand == -1
+                    l = len(f)
+                    if x < l:
+                        return f.get_parent_coord(x)
+                    #Not in this subfeature, try the next
+                    x -= l
+                assert False, "Problem getting co-ordinate via sub-features"
+            else:
+                #Forward strand (or mixed strand)
+                x = local_coordinate
+                for f in self.sub_features:
+                    l = len(f)
+                    if x < l:
+                        return f.get_parent_coord(x)
+                    #Not in this subfeature, try the next
+                    x -= l
+                assert False, "Problem getting co-ordinate via sub-features"
+        elif self.strand == -1:
+            return self.location.end.position + self.location.end.extension \
+                   - local_coordinate - 1
+        else:
+            return self.location.start.position + local_coordinate
         
     def __contains__(self, value):
         """Check if an integer position is within the feature.
