@@ -243,6 +243,47 @@ class SeqFeature(object):
                 assert isinstance(f_seq, str)
                 f_seq = reverse_complement(f_seq)
         return f_seq
+    
+    def __nonzero__(self):
+        """Returns True regardless of the length of the feature.
+
+        This behaviour is for backwards compatibility, since until the
+        __len__ method was added, a SeqFeature always evaluated as True.
+
+        Note that in comparison, Seq objects, strings, lists, etc, will all
+        evaluate to False if they have length zero.
+
+        WARNING: The SeqFeature may in future evaluate to False when its
+        length is zero (in order to better match normal python behaviour)!
+        """
+        return True
+
+    def __len__(self):
+        """Returns the length of the region described by a feature.
+        
+        >>> from Bio.Seq import Seq
+        >>> from Bio.Alphabet import generic_protein
+        >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
+        >>> seq = Seq("MKQHKAMIVALIVICITAVVAAL", generic_protein)
+        >>> f = SeqFeature(FeatureLocation(8,15), type="domain")
+        >>> len(f)
+        7
+        >>> f.extract(seq)
+        Seq('VALIVIC', ProteinAlphabet())
+        >>> len(f.extract(seq))
+        7
+
+        For simple features without subfeatures this is the same as the region
+        spanned (end position minus start position). However, for a feature
+        defined by combining several subfeatures (e.g. a CDS as the join of
+        several exons) the gaps are not counted (e.g. introns). This ensures
+        that len(f) == len(f.extract(parent_seq)), and also makes sure things
+        work properly with features wrapping the origin etc.
+        """
+        if self.sub_features:
+            return sum(len(f) for f in self.sub_features)
+        else:
+            return len(self.location)
         
     def __contains__(self, value):
         """Check if an integer position is within the feature.
@@ -279,11 +320,11 @@ class SeqFeature(object):
         gene -1 [1716:4347]
         tRNA -1 [1716:4347]
         
-        Note that for a gene or CDS feature defined as a join of several
-        subfeatures (i.e. the union of several exons) the gaps are not checked
-        (i.e. the introns). In this example, the tRNA location is defined in
-        the GenBank file as complement(join(1717..1751,4311..4347)), so that
-        position 1760 falls in the gap:
+        Note that for a feature defined as a join of several subfeatures (e.g.
+        the union of several exons) the gaps are not checked (e.g. introns).
+        In this example, the tRNA location is defined in the GenBank file as
+        complement(join(1717..1751,4311..4347)), so that position 1760 falls
+        in the gap:
 
         >>> for f in record.features:
         ...     if 1760 in f:
@@ -439,8 +480,56 @@ class FeatureLocation(object):
         return "%s(%s,%s)" \
                % (self.__class__.__name__, repr(self.start), repr(self.end))
 
+    def __nonzero__(self):
+        """Returns True regardless of the length of the feature.
+
+        This behaviour is for backwards compatibility, since until the
+        __len__ method was added, a FeatureLocation always evaluated as True.
+
+        Note that in comparison, Seq objects, strings, lists, etc, will all
+        evaluate to False if they have length zero.
+
+        WARNING: The FeatureLocation may in future evaluate to False when its
+        length is zero (in order to better match normal python behaviour)!
+        """
+        return True
+
+    def __len__(self):
+        """Returns the length of the region described by the FeatureLocation.
+        
+        Note that extra care may be needed for fuzzy locations, e.g.
+
+        >>> from Bio.SeqFeature import FeatureLocation
+        >>> from Bio.SeqFeature import BeforePosition, AfterPosition
+        >>> loc = FeatureLocation(BeforePosition(5),AfterPosition(10))
+        >>> len(loc)
+        5
+        """
+        return self._end.position + self._end.extension - self._start.position
+
     def __contains__(self, value):
-        """Check if an integer position is within the FeatureLocation."""
+        """Check if an integer position is within the FeatureLocation.
+
+        Note that extra care may be needed for fuzzy locations, e.g.
+
+        >>> from Bio.SeqFeature import FeatureLocation
+        >>> from Bio.SeqFeature import BeforePosition, AfterPosition
+        >>> loc = FeatureLocation(BeforePosition(5),AfterPosition(10))
+        >>> for i in range(12):
+        ...     print i, i in loc
+        0 False
+        1 False
+        2 False
+        3 False
+        4 False
+        5 True
+        6 True
+        7 True
+        8 True
+        9 True
+        10 True
+        11 False
+        """
         if not isinstance(value, int):
             raise ValueError("Currently we only support checking for integer "
                              "positions being within a FeatureLocation.")
