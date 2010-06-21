@@ -344,6 +344,52 @@ class SeqFeature(object):
         ...    parent_coord = f.get_parent_coord(local_coord)
         ...    assert local_coord == f.get_local_coord(parent_coord)
 
+        Now, there are some special cases to worry about. The mapping from
+        parent coordinates to local coordinates isn't always unique, and in
+        this case the lowest local coordindate is returned. Consider a
+        ribosomal slippage where a base ends up coding for two amino acids.
+        This base is in the CDS feature twice! For example,
+
+        >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
+        >>> f1 = SeqFeature(FeatureLocation(10,20), type="CDS", strand=+1)
+        >>> f2 = SeqFeature(FeatureLocation(19,30), type="CDS", strand=+1)
+        >>> f = SeqFeature(sub_features=[f1,f2], type="CDS", strand=+1)
+        >>> print len(f1), len(f2), len(f)
+        10 11 21
+        >>> for local in range(len(f)):
+        ...     print local, f.get_parent_coord(local)
+        0 10
+        1 11
+        2 12
+        3 13
+        4 14
+        5 15
+        6 16
+        7 17
+        8 18
+        9 19
+        10 19
+        11 20
+        12 21
+        13 22
+        14 23
+        15 24
+        16 25
+        17 26
+        18 27
+        19 28
+        20 29
+
+        Notice that letter 19 of the parent sequence appears twice in this
+        feature (at the end of f1, and at the start of f2), with local coords
+        of 9 and 10. In this situation the first value, 9, is returned:
+
+        >>> f.get_local_coord(18)
+        8
+        >>> f.get_local_coord(19)
+        9
+        >>> f.get_local_coord(20)
+        11
         """
         if parent_coordinate < 0:
             #TODO - Can we handle this case nicely to mean counting from the
@@ -351,20 +397,27 @@ class SeqFeature(object):
             #parent sequence.
             raise ValueError("Parent co-ordinate should be at least zero")
         if self.sub_features:
+            x = 0
+            #TODO? - Spot multiple mappings and raise an exception?
             if self.strand == -1:
                 #Reverse strand
                 for f in self.sub_features[::-1]:
                     try:
-                        local = f.get_local_coordinate(parent_coordinate)
+                        return x + f.get_local_coord(parent_coordinate)
                     except IndexError:
+                        assert parent_coordinate not in f
+                        x += len(f)
                         pass
             else:
                 for f in self.sub_features:
                     try:
-                        local = f.get_local_coordinate(parent_coordinate)
+                        return x + f.get_local_coord(parent_coordinate)
                     except IndexError:
+                        assert parent_coordinate not in f
+                        x += len(f)
                         pass
-            assert False, "Problem getting co-ordinate via sub-features"
+            assert parent_coordinate not in self
+            raise IndexError("Position %i not in feature" % parent_coordinate)
         elif parent_coordinate not in self.location:
             raise IndexError("Position %i not in feature" % parent_coordinate)
         elif self.strand == -1:
