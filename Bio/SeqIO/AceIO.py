@@ -13,6 +13,7 @@ the contig consensus sequences in an ACE file as SeqRecord objects.
 
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
+from Bio.SeqFeature import SeqFeature, FeatureLocation
 from Bio.Alphabet import generic_nucleotide, generic_dna, generic_rna, Gapped
 from Bio.Sequencing import Ace
 
@@ -82,12 +83,44 @@ def AceIterator(handle):
         #phrap has chosen to be the consensus at a particular position.
         #Perhaps as SeqFeature objects?
 
-        #TODO - Supporting reads (RD lines, plus perhaps QA and DS lines)
-        #Perhaps as SeqFeature objects?
+        #Create a SeqFeature object for each read
+        features = []
+        len_record = len(consensus_seq_str)
+        assert len(ace_contig.af) == len(ace_contig.reads)
+        for af, read in zip(ace_contig.af, ace_contig.reads):
+            assert af.name == read.rd.name
+            
+            #Roche GS Assembler "Newbler" v2.0 and MIRA 3 both put the same
+            #values in the QA line for the quality and alignment trimming.
+            #CONSED does not, see consed_sample.ace
+            #Should we look at the qual clipping start/end as well?
+            left_crop = read.qa.align_clipping_start - 1
+            right_crop = read.qa.align_clipping_end
+            assert 0 <= left_crop < right_crop <= len(read.rd.sequence)
+            length = right_crop - left_crop
+            #I think a negative padded start means before the consensus starts
+            start = af.padded_start + left_crop - 1
+            end = start + length
+            assert 0 <= start < end <= len_record, \
+                   (length, start, end,
+                    len_record, af.padded_start,
+                    read.qa.align_clipping_start, read.qa.align_clipping_end)
+            if af.coru == "U":
+                strand = +1
+            elif af.coru == "C":
+                strand = -1
+            else:
+                raise ValueError("Bad AF line in ACE file, instead of U or C "
+                                 "found %s" % repr(af.coru))
+            f = SeqFeature(FeatureLocation(start, end),
+                           strand=strand, type="read", id=af.name)
+            features.append(f)
             
         seq_record = SeqRecord(consensus_seq,
                                id = ace_contig.name,
-                               name = ace_contig.name)
+                               name = ace_contig.name,
+                               description = "",
+                               features = features)
 
         #Consensus base quality (BQ lines).  Note that any gaps (originally
         #as * characters) in the consensus do not get a quality entry, so
