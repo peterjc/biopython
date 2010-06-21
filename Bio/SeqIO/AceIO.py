@@ -114,6 +114,11 @@ def AceIterator(handle):
                                  "found %s" % repr(af.coru))
             f = SeqFeature(FeatureLocation(start, end),
                            strand=strand, type="read", id=af.name)
+            notes = []
+            for rt in read.rt:
+                notes.extend(rt.comment)
+            if notes:
+                f.qualifiers["note"] = notes
             features.append(f)
             
         seq_record = SeqRecord(consensus_seq,
