@@ -290,23 +290,10 @@ class SeqFeature(object):
         
         >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
         >>> f = SeqFeature(FeatureLocation(5,10), type="domain", strand=-1)
-        >>> for position in range(15):
-        ...      print position, position in f
-        0 False
-        1 False
-        2 False
-        3 False
-        4 False
-        5 True
-        6 True
-        7 True
-        8 True
-        9 True
-        10 True
-        11 False
-        12 False
-        13 False
-        14 False
+        >>> len(f)
+        5
+        >>> [i for i in range(15) if i in f]
+        [5, 6, 7, 8, 9]
         
         For example, to see which features include a SNP position, you could
         use this:
@@ -337,19 +324,11 @@ class SeqFeature(object):
 
         >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
         >>> from Bio.SeqFeature import BeforePosition
-        >>> f = SeqFeature(FeatureLocation(BeforePosition(4),8), type="domain")
-        >>> for position in range(10):
-        ...      print position, position in f
-        0 False
-        1 False
-        2 False
-        3 False
-        4 True
-        5 True
-        6 True
-        7 True
-        8 True
-        9 False
+        >>> f = SeqFeature(FeatureLocation(BeforePosition(3),8), type="domain")
+        >>> len(f)
+        5
+        >>> [i for i in range(10) if i in f]
+        [3, 4, 5, 6, 7]
         """
         if not isinstance(value, int):
             raise ValueError("Currently we only support checking for integer "
@@ -515,26 +494,16 @@ class FeatureLocation(object):
         >>> from Bio.SeqFeature import FeatureLocation
         >>> from Bio.SeqFeature import BeforePosition, AfterPosition
         >>> loc = FeatureLocation(BeforePosition(5),AfterPosition(10))
-        >>> for i in range(12):
-        ...     print i, i in loc
-        0 False
-        1 False
-        2 False
-        3 False
-        4 False
-        5 True
-        6 True
-        7 True
-        8 True
-        9 True
-        10 True
-        11 False
+        >>> len(loc)
+        5
+        >>> [i for i in range(15) if i in loc]
+        [5, 6, 7, 8, 9]
         """
         if not isinstance(value, int):
             raise ValueError("Currently we only support checking for integer "
                              "positions being within a FeatureLocation.")
         if value < self._start.position \
-        or value > self._end.position + self._end.extension:
+        or value >= self._end.position + self._end.extension:
             return False
         else:
             return True
