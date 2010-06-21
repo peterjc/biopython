@@ -333,8 +333,6 @@ class SeqFeature(object):
         99
         >>> 100 in f
         False
-        >>> 100 in f.location
-        False
         >>> f.get_local_coord(100)
         Traceback (most recent call last):
             ...
