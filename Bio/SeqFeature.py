@@ -285,11 +285,102 @@ class SeqFeature(object):
         else:
             return len(self.location)
     
+    def get_local_coord(self, parent_coordinate):
+        """Give the local coordinate for a parent coordinate.
+        
+        Input value is an integer (from 0 to the length of the parent), which
+        will be converted to the features's coordindate system (giving an
+        integer from 0 to the length of the feature). For the reverse mapping
+        use the get_parent_coord method.
+        
+        See also the "in" functionality, a local coordinate can only be found
+        if the position is in the feature:
+
+        >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
+        >>> f = SeqFeature(FeatureLocation(8,98), type="CDS", strand=+1)
+        >>> len(f)
+        90
+        >>> 10 in f
+        True
+        >>> f.get_local_coord(10)
+        2
+        >>> f.get_parent_coord(2)
+        10
+        >>> 5 in f
+        False
+        >>> f.get_local_coord(5)
+        Traceback (most recent call last):
+            ...
+        IndexError: Position 5 not in feature
+
+        To demonstrate the two coordindate systems:
+
+        >>> for local_coord in range(len(f)):
+        ...    parent_coord = f.get_parent_coord(local_coord)
+        ...    assert local_coord == f.get_local_coord(parent_coord)
+
+        Here is an example on the reverse stand:
+
+        >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
+        >>> f = SeqFeature(FeatureLocation(10,100), type="CDS", strand=-1)
+        >>> len(f)
+        90
+        >>> 99 in f
+        True
+        >>> f.get_local_coord(99)
+        0
+        >>> f.get_parent_coord(0)
+        99
+        >>> 100 in f
+        False
+        >>> 100 in f.location
+        False
+        >>> f.get_local_coord(100)
+        Traceback (most recent call last):
+            ...
+        IndexError: Position 100 not in feature
+
+        And again, to demonstrate the two coordindate systems:
+
+        >>> for local_coord in range(len(f)):
+        ...    parent_coord = f.get_parent_coord(local_coord)
+        ...    assert local_coord == f.get_local_coord(parent_coord)
+
+        """
+        if parent_coordinate < 0:
+            #TODO - Can we handle this case nicely to mean counting from the
+            #end of the parent sequence? We'd need to know the length of the
+            #parent sequence.
+            raise ValueError("Parent co-ordinate should be at least zero")
+        if self.sub_features:
+            if self.strand == -1:
+                #Reverse strand
+                for f in self.sub_features[::-1]:
+                    try:
+                        local = f.get_local_coordinate(parent_coordinate)
+                    except IndexError:
+                        pass
+            else:
+                for f in self.sub_features:
+                    try:
+                        local = f.get_local_coordinate(parent_coordinate)
+                    except IndexError:
+                        pass
+            assert False, "Problem getting co-ordinate via sub-features"
+        elif parent_coordinate not in self.location:
+            raise IndexError("Position %i not in feature" % parent_coordinate)
+        elif self.strand == -1:
+            return self.location.end.position + self.location.end.extension \
+                   - parent_coordinate - 1
+        else:
+            return parent_coordinate - self.location.start.position
+        
     def get_parent_coord(self, local_coordinate):
         """Give the parental coordinate for a local coordinate.
         
         Input value is an integer (from 0 to the length of the feature), which
-        will be converted to the parental sequence's coordindate system.
+        will be converted to the parental sequence's coordindate system. For
+        the reverse mapping use the get_local_coord method.
         
         This is not intended to help you slice the parent sequence (due to the
         complications discussed below) but rather for accessing individual
