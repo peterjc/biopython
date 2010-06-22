@@ -445,35 +445,19 @@ class AbstractPosition(object):
     def _start_map(self, mapping):
         #We want this to maintain the subclass when called from a subclass
         old = self.position
-        try:
+        new = mapping[old]
+        while new is None:
+            old += 1
             new = mapping[old]
-        except IndexError, err:
-            assert False, (old, step, len(mapping))
-            raise err
-        try:
-            while new is None:
-                old += 1
-                new = mapping[old]
-        except IndexError, err:
-            assert False, (old, new, step)
-            raise err
         return self.__class__(new, self.extension)
 
     def _end_map(self, mapping):
         #We want this to maintain the subclass when called from a subclass
         old = self.position - 1
-        try:
+        new = mapping[old]
+        while new is None:
+            old -= 1
             new = mapping[old]
-        except IndexError, err:
-            assert False, (old, step, len(mapping))
-            raise err
-        try:
-            while new is None:
-                old -= 1
-                new = mapping[old]
-        except IndexError, err:
-            assert False, (old, new, step)
-            raise err
         return self.__class__(new + 1, self.extension)
 
             
