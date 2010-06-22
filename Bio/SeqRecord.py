@@ -979,7 +979,7 @@ class SeqRecord(object):
         >>> print len(record) - record.seq.count("-")
         1468
         >>> print record[860:880].format("fastq")
-        @Contig1 <unknown description>
+        @Contig1
         CAGCAGAGAAGGGTTTGAAA
         +
         z{{{{yyyyyy{{{{{{{{{
