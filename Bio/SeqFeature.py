@@ -188,6 +188,20 @@ class SeqFeature(object):
                 ref = self.ref,
                 ref_db = self.ref_db)
 
+    def _map(self, mapping):
+        """Returns a copy of the feature with its location adjusted (PRIVATE).
+        
+        The annotation qualifiers are copied."""
+        return SeqFeature(location = self.location._map(mapping),
+                type = self.type,
+                location_operator = self.location_operator,
+                strand = self.strand,
+                id = self.id,
+                qualifiers = dict(self.qualifiers.iteritems()),
+                sub_features = [f._map(mapping) for f in self.sub_features],
+                ref = self.ref,
+                ref_db = self.ref_db)
+
     def extract(self, parent_sequence):
         """Extract feature sequence from the supplied parent sequence.
 
@@ -368,6 +382,11 @@ class FeatureLocation(object):
         return FeatureLocation(start = self._start._shift(offset),
                                end = self._end._shift(offset))
 
+    def _map(self, mapping):
+        """Returns a copy of the location adjusted (PRIVATE)."""
+        return FeatureLocation(start = self._start._start_map(mapping),
+                               end = self._end._end_map(mapping))
+
     start = property(fget= lambda self : self._start,
                  doc="Start location (possibly a fuzzy position, read only).")
 
@@ -422,6 +441,41 @@ class AbstractPosition(object):
     def _shift(self, offset):
         #We want this to maintain the subclass when called from a subclass
         return self.__class__(self.position + offset, self.extension)
+
+    def _start_map(self, mapping):
+        #We want this to maintain the subclass when called from a subclass
+        old = self.position
+        try:
+            new = mapping[old]
+        except IndexError, err:
+            assert False, (old, step, len(mapping))
+            raise err
+        try:
+            while new is None:
+                old += 1
+                new = mapping[old]
+        except IndexError, err:
+            assert False, (old, new, step)
+            raise err
+        return self.__class__(new, self.extension)
+
+    def _end_map(self, mapping):
+        #We want this to maintain the subclass when called from a subclass
+        old = self.position - 1
+        try:
+            new = mapping[old]
+        except IndexError, err:
+            assert False, (old, step, len(mapping))
+            raise err
+        try:
+            while new is None:
+                old -= 1
+                new = mapping[old]
+        except IndexError, err:
+            assert False, (old, new, step)
+            raise err
+        return self.__class__(new + 1, self.extension)
+
             
 class ExactPosition(AbstractPosition):
     """Specify the specific position of a boundary.
@@ -583,6 +637,17 @@ class OneOfPosition(AbstractPosition):
     def _shift(self, offset):
         return self.__class__([position_choice._shift(offset) \
                                for position_choice in self.position_choices])
+
+    def _start_map(self, mapping, step):
+        #We want this to maintain the subclass when called from a subclass
+        return self.__class__([position_choice._start_map(mapping, step) \
+                               for position_choice in self.position_choices])
+
+    def _end_map(self, mapping, step):
+        #We want this to maintain the subclass when called from a subclass
+        return self.__class__([position_choice._end_map(mapping, step) \
+                               for position_choice in self.position_choices])
+        
 
 class PositionGap(object):
     """Simple class to hold information about a gap between positions.
