@@ -285,70 +285,20 @@ class SeqFeature(object):
         else:
             return len(self.location)
     
-    def get_local_coord(self, parent_coordinate):
-        """Give the local coordinate for a parent coordinate.
+    def get_local_coords(self, parent_coordinate):
+        """Give the local coordinate(s) for a parent coordinate.
+        
+        You would normally use the get_local_coord method instead.
         
         Input value is an integer (from 0 to the length of the parent), which
-        will be converted to the features's coordindate system (giving an
-        integer from 0 to the length of the feature). For the reverse mapping
-        use the get_parent_coord method.
+        will be converted to the features's coordindate system (giving one or
+        more integers from 0 to the length of the feature). In most cases you
+        get back a single integer, but with overlapping sub-features a single
+        position on the parent sequence maps to multiple positions within the
+        feature. For the reverse mapping use the get_parent_coord method.
         
-        See also the "in" functionality, a local coordinate can only be found
-        if the position is in the feature:
-
-        >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
-        >>> f = SeqFeature(FeatureLocation(8,98), type="CDS", strand=+1)
-        >>> len(f)
-        90
-        >>> 10 in f
-        True
-        >>> f.get_local_coord(10)
-        2
-        >>> f.get_parent_coord(2)
-        10
-        >>> 5 in f
-        False
-        >>> f.get_local_coord(5)
-        Traceback (most recent call last):
-            ...
-        IndexError: Position 5 not in feature
-
-        To demonstrate the two coordindate systems:
-
-        >>> for local_coord in range(len(f)):
-        ...    parent_coord = f.get_parent_coord(local_coord)
-        ...    assert local_coord == f.get_local_coord(parent_coord)
-
-        Here is an example on the reverse stand:
-
-        >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
-        >>> f = SeqFeature(FeatureLocation(10,100), type="CDS", strand=-1)
-        >>> len(f)
-        90
-        >>> 99 in f
-        True
-        >>> f.get_local_coord(99)
-        0
-        >>> f.get_parent_coord(0)
-        99
-        >>> 100 in f
-        False
-        >>> f.get_local_coord(100)
-        Traceback (most recent call last):
-            ...
-        IndexError: Position 100 not in feature
-
-        And again, to demonstrate the two coordindate systems:
-
-        >>> for local_coord in range(len(f)):
-        ...    parent_coord = f.get_parent_coord(local_coord)
-        ...    assert local_coord == f.get_local_coord(parent_coord)
-
-        Now, there are some special cases to worry about. The mapping from
-        parent coordinates to local coordinates isn't always unique, and in
-        this case the lowest local coordindate is returned. Consider a
-        ribosomal slippage where a base ends up coding for two amino acids.
-        This base is in the CDS feature twice! For example,
+        Consider a ribosomal slippage where a base ends up coding for two
+        amino acids. This base is in the CDS feature twice! For example,
 
         >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
         >>> f1 = SeqFeature(FeatureLocation(10,20), type="CDS", strand=+1)
@@ -356,6 +306,20 @@ class SeqFeature(object):
         >>> f = SeqFeature(sub_features=[f1,f2], type="CDS", strand=+1)
         >>> print len(f1), len(f2), len(f)
         10 11 21
+        
+        
+        First note that if a parent coordindate is not in the feature you get
+        an exception:
+        
+        >>> 5 in f
+        False
+        >>> f.get_local_coords(5)
+        Traceback (most recent call last):
+            ...
+        IndexError: Position 5 not in feature
+
+        Now let's focus on the interesting bit - the overlapping subfeatures:        
+        
         >>> for local in range(len(f)):
         ...     print local, f.get_parent_coord(local)
         0 10
@@ -382,14 +346,21 @@ class SeqFeature(object):
 
         Notice that letter 19 of the parent sequence appears twice in this
         feature (at the end of f1, and at the start of f2), with local coords
-        of 9 and 10. In this situation the first value, 9, is returned:
+        of 9 and 10:
+        
+        >>> f.get_local_coords(18)
+        [8]
+        >>> f.get_local_coords(19)
+        [9, 10]
+        >>> f.get_local_coords(20)
+        [11]
 
-        >>> f.get_local_coord(18)
-        8
-        >>> f.get_local_coord(19)
-        9
-        >>> f.get_local_coord(20)
-        11
+        As a quick check,
+
+        >>> for local_coord in range(len(f)):
+        ...    parent_coord = f.get_parent_coord(local_coord)
+        ...    assert local_coord in f.get_local_coords(parent_coord)
+
         """
         if parent_coordinate < 0:
             #TODO - Can we handle this case nicely to mean counting from the
@@ -398,40 +369,127 @@ class SeqFeature(object):
             raise ValueError("Parent co-ordinate should be at least zero")
         if self.sub_features:
             x = 0
-            #TODO? - Spot multiple mappings and raise an exception?
+            answer = []
             if self.strand == -1:
                 #Reverse strand
                 for f in self.sub_features[::-1]:
                     try:
-                        return x + f.get_local_coord(parent_coordinate)
+                        answer.extend([x+v for v in \
+                                       f.get_local_coords(parent_coordinate)])
                     except IndexError:
                         assert parent_coordinate not in f
-                        x += len(f)
                         pass
+                    x += len(f)
             else:
                 for f in self.sub_features:
                     try:
-                        return x + f.get_local_coord(parent_coordinate)
+                        answer.extend([x+v for v in \
+                                       f.get_local_coords(parent_coordinate)])
                     except IndexError:
                         assert parent_coordinate not in f
-                        x += len(f)
                         pass
-            assert parent_coordinate not in self
-            raise IndexError("Position %i not in feature" % parent_coordinate)
+                    x += len(f)
+            if not answer:
+                assert parent_coordinate not in self
+                raise IndexError("Position %i not in feature" % parent_coordinate)
+            return answer
         elif parent_coordinate not in self.location:
             raise IndexError("Position %i not in feature" % parent_coordinate)
         elif self.strand == -1:
-            return self.location.end.position + self.location.end.extension \
-                   - parent_coordinate - 1
+            return [self.location.end.position + self.location.end.extension \
+                   - parent_coordinate - 1]
         else:
-            return parent_coordinate - self.location.start.position
+            return [parent_coordinate - self.location.start.position]
         
+    def get_local_coord(self, parent_coordinate):
+        """Give the local coordinate for a parent coordinate.
+        
+        Usually any position on the parent sequence which is within a feature
+        is only used once. However this is not the case with overlapping sub-
+        features where it maps to multiple local coordindates.
+        
+        See also the "in" functionality, a local coordinate can only be found
+        if the position is in the feature. This method returns a single integer
+        where the mapping is unique:
+        
+        >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
+        >>> f = SeqFeature(FeatureLocation(8,98), type="CDS", strand=+1)
+        >>> len(f)
+        90
+        >>> 10 in f
+        True
+        >>> f.get_parent_coord(2)
+        10
+        >>> f.get_local_coord(10)
+        2
+        >>> for local_coord in range(len(f)):
+        ...    parent_coord = f.get_parent_coord(local_coord)
+        ...    assert local_coord == f.get_local_coord(parent_coord)
+
+        If the parent coordinate is not in the feature an exception is raised:
+
+        >>> 5 in f
+        False
+        >>> f.get_local_coord(5)
+        Traceback (most recent call last):
+            ...
+        IndexError: Position 5 not in feature
+
+        Here is an example on the reverse stand:
+
+        >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
+        >>> f = SeqFeature(FeatureLocation(10,100), type="CDS", strand=-1)
+        >>> len(f)
+        90
+        >>> 99 in f
+        True
+        >>> f.get_local_coord(99)
+        0
+        >>> f.get_parent_coord(0)
+        99
+        >>> for local_coord in range(len(f)):
+        ...    parent_coord = f.get_parent_coord(local_coord)
+        ...    assert local_coord == f.get_local_coord(parent_coord)
+
+        When the mapping is not unique, a ValueError is raised:
+
+        >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
+        >>> f1 = SeqFeature(FeatureLocation(10,20), type="CDS", strand=+1)
+        >>> f2 = SeqFeature(FeatureLocation(19,30), type="CDS", strand=+1)
+        >>> f = SeqFeature(sub_features=[f1,f2], type="CDS", strand=+1)
+        >>> f.get_local_coord(18)
+        8
+        >>> f.get_local_coord(19)
+        Traceback (most recent call last):
+            ...
+        ValueError: Parent coordindate mapping not unique
+        >>> f.get_local_coord(20)
+        11
+        
+        This example is discussed in more detail for the get_local_coords
+        method (coordinates plural) which returns a list:
+
+        >>> f.get_local_coords(18)
+        [8]
+        >>> f.get_local_coords(19)
+        [9, 10]
+        >>> f.get_local_coords(20)
+        [11]
+        """
+        #TODO? - Would it be worthwhile to handle the no sub-features case
+        #inline to avoid an extra method call? Faster but code duplication.
+        values = self.get_local_coords(parent_coordinate)
+        if len(values)==1:
+            return values[0]
+        else:
+            raise ValueError("Parent coordindate mapping not unique")
+
     def get_parent_coord(self, local_coordinate):
         """Give the parental coordinate for a local coordinate.
         
         Input value is an integer (from 0 to the length of the feature), which
         will be converted to the parental sequence's coordindate system. For
-        the reverse mapping use the get_local_coord method.
+        the reverse mapping use get_local_coord or get_local_coords method.
         
         This is not intended to help you slice the parent sequence (due to the
         complications discussed below) but rather for accessing individual
@@ -584,6 +642,8 @@ class SeqFeature(object):
             #TODO - Can we handle this case nicely to mean upstream/downstream
             #of the feature? What if this would go outside the parent sequence
             #(or should be wrapped for a circular parent)?
+            #Or, should we interpret negative positions like Python (counting
+            #back from the end of the feature?
             raise ValueError("Local co-ordinate should be within the feature")
         if self.sub_features:
             if self.strand == -1:
