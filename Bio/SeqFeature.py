@@ -491,6 +491,8 @@ class SeqFeature(object):
         will be converted to the parental sequence's coordindate system. For
         the reverse mapping use get_local_coord or get_local_coords method.
         
+        See also the SeqFeature iteration support.
+        
         This is not intended to help you slice the parent sequence (due to the
         complications discussed below) but rather for accessing individual
         letters from the parent sequence such as SNPs.
@@ -672,7 +674,49 @@ class SeqFeature(object):
                    - local_coordinate - 1
         else:
             return self.location.start.position + local_coordinate
+
+    def __iter__(self):
+        """Iterate over the parent positions within the feature.
+
+        The iteration order is strand aware, and can be thought of as moving
+        along the feature coordindates converting to the parent coordinate:
         
+        >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
+        >>> f = SeqFeature(FeatureLocation(5,10), type="domain", strand=-1)
+        >>> len(f)
+        5
+        >>> [f.get_parent_coord(i) for i in range(len(f))]
+        [9, 8, 7, 6, 5]
+
+        Using the iteration support instead,
+
+        >>> for i in f: print i
+        9
+        8
+        7
+        6
+        5
+        >>> list(f)
+        [9, 8, 7, 6, 5]
+        """
+        if self.sub_features:
+            if self.strand == -1:
+                for f in self.sub_features[::-1]:
+                    for i in f.location:
+                        yield i
+            else:
+                for f in self.sub_features:
+                    for i in f.location:
+                        yield i
+        elif self.strand == -1:
+            for i in range(self.location.nofuzzy_end-1,
+                           self.location.nofuzzy_start-1, -1):
+                yield i
+        else:
+            for i in range(self.location.nofuzzy_start,
+                           self.location.nofuzzy_end):
+                yield i
+
     def __contains__(self, value):
         """Check if an integer position is within the feature.
         
@@ -872,6 +916,7 @@ class FeatureLocation(object):
         >>> len(loc)
         5
         """
+        #TODO - Should we use nofuzzy_start and nofuzzy_end here?
         return self._end.position + self._end.extension - self._start.position
 
     def __contains__(self, value):
@@ -890,11 +935,36 @@ class FeatureLocation(object):
         if not isinstance(value, int):
             raise ValueError("Currently we only support checking for integer "
                              "positions being within a FeatureLocation.")
+        #TODO - Should we use nofuzzy_start and nofuzzy_end here?
         if value < self._start.position \
         or value >= self._end.position + self._end.extension:
             return False
         else:
             return True
+
+    def __iter__(self):
+        """Iterate over the parent positions within the FeatureLocation.
+
+        >>> from Bio.SeqFeature import FeatureLocation
+        >>> from Bio.SeqFeature import BeforePosition, AfterPosition
+        >>> loc = FeatureLocation(BeforePosition(5),AfterPosition(10))
+        >>> len(loc)
+        5
+        >>> for i in loc: print i
+        5
+        6
+        7
+        8
+        9
+        >>> list(loc)
+        [5, 6, 7, 8, 9]
+        >>> [i for i in range(15) if i in loc]
+        [5, 6, 7, 8, 9]
+        """
+        #TODO - Should we use nofuzzy_start and nofuzzy_end here?
+        for i in range(self._start.position,
+                       self._end.position + self._end.extension):
+            yield i
 
     def _shift(self, offset):
         """Returns a copy of the location shifted by the offset (PRIVATE)."""
