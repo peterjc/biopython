@@ -49,13 +49,20 @@ def AceIterator(handle):
     ...     print record.id, "..." + record.seq[85:95]+"..."
     ...     print record.letter_annotations["phred_quality"][85:95]
     ...     print max(record.letter_annotations["phred_quality"])
+    ...     print record.letter_annotations["coverage"][85:95]
+    ...     print max(record.letter_annotations["coverage"])
     Contig1 ...AGAGG-ATGC...
     [57, 57, 54, 57, 57, None, 57, 72, 72, 72]
     90
+    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+    2
     Contig2 ...GAATTACTAT...
     [68, 68, 68, 68, 68, 68, 68, 68, 68, 68]
     90
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    8
 
+    Note the parser also computes the coverage.
     """
     for ace_contig in Ace.parse(handle):
         #Convert the ACE contig record into a SeqRecord...
@@ -82,6 +89,9 @@ def AceIterator(handle):
         #TODO? - Base segments (BS lines) which indicates which read
         #phrap has chosen to be the consensus at a particular position.
         #Perhaps as SeqFeature objects?
+        
+        #Compute the coverage
+        coverage = [0]*len(consensus_seq)
 
         #Create a SeqFeature object for each read
         features = []
@@ -121,12 +131,14 @@ def AceIterator(handle):
             if notes:
                 f.qualifiers["note"] = notes
             features.append(f)
-            
+            for i in range(start, end):
+                coverage[i] += 1
         seq_record = SeqRecord(consensus_seq,
                                id = ace_contig.name,
                                name = ace_contig.name,
                                description = "",
                                features = features)
+        seq_record.letter_annotations["coverage"]  = coverage
 
         #Consensus base quality (BQ lines).  Note that any gaps (originally
         #as * characters) in the consensus do not get a quality entry, so
