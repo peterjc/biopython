@@ -76,7 +76,7 @@ except AttributeError:
     def register_namespace(prefix, uri):
         ElementTree._namespace_map[uri] = prefix
 
-for prefix, uri in NAMESPACES.iteritems():
+for prefix, uri in NAMESPACES.items():
     register_namespace(prefix, uri)
 
 
@@ -176,7 +176,7 @@ def _get_child_as(parent, tag, construct):
     if child is not None:
         return construct(child)
 
-def _get_child_text(parent, tag, construct=unicode):
+def _get_child_text(parent, tag, construct=str):
     """Find a child node by tag; pass its text through a constructor.
 
     Returns None if no matching child is found.
@@ -193,7 +193,7 @@ def _get_children_as(parent, tag, construct):
     return [construct(child) for child in 
             parent.findall(_ns(tag))]
 
-def _get_children_text(parent, tag, construct=unicode):
+def _get_children_text(parent, tag, construct=str):
     """Find child nodes by tag; pass each node's text through a constructor.
 
     Returns an empty list if no matching child is found.
@@ -294,14 +294,14 @@ class Parser(object):
     def __init__(self, file):
         # Get an iterable context for XML parsing events
         context = iter(ElementTree.iterparse(file, events=('start', 'end')))
-        event, root = context.next()
+        event, root = next(context)
         self.root = root
         self.context = context
 
     def read(self):
         """Parse the phyloXML file and create a single Phyloxml object."""
         phyloxml = PX.Phyloxml(dict((_local(key), val)
-                                for key, val in self.root.items()))
+                                for key, val in list(self.root.items())))
         other_depth = 0
         for event, elem in self.context:
             namespace, localtag = _split_namespace(elem.tag)
@@ -384,7 +384,7 @@ class Parser(object):
             'reference':    'references',
             'property':     'properties',
             }
-    _clade_tracked_tags = set(_clade_complex_types + _clade_list_types.keys()
+    _clade_tracked_tags = set(_clade_complex_types + list(_clade_list_types.keys())
                               + ['branch_length', 'name', 'node_id', 'width'])
 
     def _parse_clade(self, parent):
@@ -624,10 +624,10 @@ class Parser(object):
 def _serialize(value):
     """Convert a Python primitive to a phyloXML-compatible Unicode string."""
     if isinstance(value, float):
-        return unicode(value).upper()
+        return str(value).upper()
     elif isinstance(value, bool):
-        return unicode(value).lower()
-    return unicode(value)
+        return str(value).lower()
+    return str(value)
 
 
 def _clean_attrib(obj, attrs):
@@ -644,7 +644,7 @@ def _handle_complex(tag, attribs, subnodes, has_text=False):
     def wrapped(self, obj):
         elem = ElementTree.Element(tag, _clean_attrib(obj, attribs))
         for subn in subnodes:
-            if isinstance(subn, basestring):
+            if isinstance(subn, str):
                 # singular object: method and attribute names are the same
                 if getattr(obj, subn) is not None:
                     elem.append(getattr(self, subn)(getattr(obj, subn)))

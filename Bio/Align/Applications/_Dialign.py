@@ -79,7 +79,7 @@ class DialignCommandline(AbstractCommandline):
                     "as with the '-lgs' option). Therefore faster than " + \
                     "-lgs but not very sensitive for non-coding regions."),
             _Option(["-lmax", "lmax"], ["input"],
-                    lambda x: isinstance(x, types.IntType),
+                    lambda x: isinstance(x, int),
                     0,
                     "Maximum fragment length = x  (default: x = 40 or " + \
                     "x = 120 for `translated' fragments). Shorter x " + \
@@ -158,7 +158,7 @@ class DialignCommandline(AbstractCommandline):
                     "suppression of textual alignments in special " + \
                     "options, e.g. -lgs)"),
             _Option(["-thr", "thr"], ["input"],
-                    lambda x: isinstance(x, types.IntType),
+                    lambda x: isinstance(x, int),
                     0,
                     "Threshold T = x.",
                     0),

@@ -297,16 +297,16 @@ from Bio.Align import MultipleSeqAlignment
 from Bio.Align.Generic import Alignment
 from Bio.Alphabet import Alphabet, AlphabetEncoder, _get_base_alphabet
 
-import AceIO
-import FastaIO
-import IgIO #IntelliGenetics or MASE format
-import InsdcIO #EMBL and GenBank
-import PhdIO
-import PirIO
-import SffIO
-import SwissIO
-import TabIO
-import QualityIO #FastQ and qual files
+from . import AceIO
+from . import FastaIO
+from . import IgIO #IntelliGenetics or MASE format
+from . import InsdcIO #EMBL and GenBank
+from . import PhdIO
+from . import PirIO
+from . import SffIO
+from . import SwissIO
+from . import TabIO
+from . import QualityIO #FastQ and qual files
 
 
 #Convention for format names is "mainname-subtype" in lower case.
@@ -372,7 +372,7 @@ def write(sequences, handle, format):
     from Bio import AlignIO
 
     #Try and give helpful error messages:
-    if not isinstance(format, basestring):
+    if not isinstance(format, str):
         raise TypeError("Need a string for the file format (lower case)")
     if not format:
         raise ValueError("Format required (lower case string)")
@@ -383,7 +383,7 @@ def write(sequences, handle, format):
         #This raised an exception in order version of Biopython
         sequences = [sequences]
 
-    if isinstance(handle, basestring):
+    if isinstance(handle, str):
         if format in _BinaryFormats :
             handle = open(handle, "wb")
         else :
@@ -475,7 +475,7 @@ def parse(handle, format, alphabet=None):
     #string mode (see the leading r before the opening quote).
     from Bio import AlignIO
 
-    if isinstance(handle, basestring):
+    if isinstance(handle, str):
         #Hack for SFF, will need to make this more general in future
         if format in _BinaryFormats :
             handle = open(handle, "rb")
@@ -484,7 +484,7 @@ def parse(handle, format, alphabet=None):
         #TODO - On Python 2.5+ use with statement to close handle
 
     #Try and give helpful error messages:
-    if not isinstance(format, basestring):
+    if not isinstance(format, str):
         raise TypeError("Need a string for the file format (lower case)")
     if not format:
         raise ValueError("Format required (lower case string)")
@@ -578,13 +578,13 @@ def read(handle, format, alphabet=None):
     """
     iterator = parse(handle, format, alphabet)
     try:
-        first = iterator.next()
+        first = next(iterator)
     except StopIteration:
         first = None
     if first is None:
         raise ValueError("No records found in handle")
     try:
-        second = iterator.next()
+        second = next(iterator)
     except StopIteration:
         second = None
     if second is not None:
@@ -745,9 +745,9 @@ def index(filename, format, alphabet=None, key_function=None):
     usually avoided.
     """
     #Try and give helpful error messages:
-    if not isinstance(filename, basestring):
+    if not isinstance(filename, str):
         raise TypeError("Need a filename (not a handle)")
-    if not isinstance(format, basestring):
+    if not isinstance(format, str):
         raise TypeError("Need a string for the file format (lower case)")
     if not format:
         raise ValueError("Format required (lower case string)")
@@ -758,7 +758,7 @@ def index(filename, format, alphabet=None, key_function=None):
         raise ValueError("Invalid alphabet, %s" % repr(alphabet))
 
     #Map the file format to a sequence iterator:    
-    import _index #Lazy import
+    from . import _index #Lazy import
     try:
         indexer = _index._FormatToIndexedDict[format]
     except KeyError:
@@ -818,7 +818,7 @@ def convert(in_file, in_format, out_file, out_format, alphabet=None):
     GTTGCTTCTGGCGTGGGTGGGGGGG
     <BLANKLINE>
     """
-    if isinstance(in_file, basestring):
+    if isinstance(in_file, str):
         #Hack for SFF, will need to make this more general in future
         if in_format in _BinaryFormats :
             in_handle = open(in_file, "rb")
@@ -829,7 +829,7 @@ def convert(in_file, in_format, out_file, out_format, alphabet=None):
         in_handle = in_file
         in_close = False
     #Don't open the output file until we've checked the input is OK?
-    if isinstance(out_file, basestring):
+    if isinstance(out_file, str):
         if out_format in ["sff", "sff_trim"] :
             out_handle = open(out_file, "wb")
         else :
@@ -840,7 +840,7 @@ def convert(in_file, in_format, out_file, out_format, alphabet=None):
         out_close = False
     #This will check the arguments and issue error messages,
     #after we have opened the file which is a shame.
-    from _convert import _handle_convert #Lazy import
+    from ._convert import _handle_convert #Lazy import
     count = _handle_convert(in_handle, in_format,
                             out_handle, out_format,
                             alphabet)
@@ -860,21 +860,21 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..", "..", "Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..", "..", "Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
     elif os.path.isdir(os.path.join("Tests", "Fasta")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
 
 if __name__ == "__main__":
     #Run the doctests

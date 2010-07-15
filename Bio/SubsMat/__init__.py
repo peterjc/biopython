@@ -139,10 +139,10 @@ class SeqMat(dict):
    def _alphabet_from_matrix(self):
       ab_dict = {}
       s = ''
-      for i in self.keys():
+      for i in list(self.keys()):
          ab_dict[i[0]] = 1
          ab_dict[i[1]] = 1
-      letters_list = ab_dict.keys()
+      letters_list = list(ab_dict.keys())
       letters_list.sort()
       for i in letters_list:
          s = s + i
@@ -178,7 +178,7 @@ class SeqMat(dict):
           try:
               self.update(data)
           except ValueError:
-              raise ValueError, "Failed to store data in a dictionary"
+              raise ValueError("Failed to store data in a dictionary")
       if alphabet == None:
          alphabet = Alphabet.Alphabet()
       assert Alphabet.generic_alphabet.contains(alphabet)
@@ -208,7 +208,7 @@ class SeqMat(dict):
       self.relative_entropy = 0
 
    def _correct_matrix(self):
-      keylist = self.keys()
+      keylist = list(self.keys())
       for key in keylist:
          if key[0] > key[1]:
             self[(key[1],key[0])] = self[key]
@@ -243,10 +243,10 @@ class SeqMat(dict):
       # This method should be removed once the usage of mat_type is removed.
       ent = 0.
       if self.mat_type == LO:
-         for i in self.keys():
+         for i in list(self.keys()):
             ent += obs_freq_mat[i]*self[i]/log(2)
       elif self.mat_type == SUBS:
-         for i in self.keys():
+         for i in list(self.keys()):
             if self[i] > EPSILON:
                ent += obs_freq_mat[i]*log(self[i])/log(2)
       else:
@@ -255,7 +255,7 @@ class SeqMat(dict):
    #
    def make_entropy(self):
       self.entropy = 0
-      for i in self.keys():
+      for i in list(self.keys()):
          if self[i] > EPSILON:
             self.entropy += self[i]*log(self[i])/log(2)
       self.entropy = -self.entropy
@@ -264,7 +264,7 @@ class SeqMat(dict):
       warnings.warn("SeqMat.letter_sum is deprecated; please use SeqMat.sum instead", DeprecationWarning)
       assert letter in self.alphabet.letters
       sum = 0.
-      for i in self.keys():
+      for i in list(self.keys()):
          if letter in i:
             if i[0] == i[1]:
                sum += self[i]
@@ -282,7 +282,7 @@ class SeqMat(dict):
       result = {}
       for letter in self.alphabet.letters:
           result[letter] = 0.0
-      for pair, value in self.iteritems():
+      for pair, value in self.items():
           i1, i2 = pair
           if i1==i2:
               result[i1] += value
@@ -383,7 +383,7 @@ class SeqMat(dict):
    def __sub__(self,other):
       """ returns a number which is the subtraction product of the two matrices"""
       mat_diff = 0
-      for i in self.keys():
+      for i in list(self.keys()):
          mat_diff += (self[i] - other[i])
       return mat_diff
 
@@ -391,13 +391,13 @@ class SeqMat(dict):
       """ returns a matrix for which each entry is the multiplication product of the
       two matrices passed"""
       new_mat = copy.copy(self)
-      for i in self.keys():
+      for i in list(self.keys()):
          new_mat[i] *= other[i]
       return new_mat
 
    def __add__(self, other):
       new_mat = copy.copy(self)
-      for i in self.keys():
+      for i in list(self.keys()):
          new_mat[i] += other[i]
       return new_mat
 
@@ -418,7 +418,7 @@ class SubstitutionMatrix(SeqMat):
         """Calculate and return the relative entropy with respect to an
         observed frequency matrix"""
         relative_entropy = 0.
-        for key, value in self.iteritems():
+        for key, value in self.items():
             if value > EPSILON:
                 relative_entropy += obs_freq_mat[key]*log(value)
         relative_entropy /= log(2)
@@ -432,7 +432,7 @@ class LogOddsMatrix(SeqMat):
         """Calculate and return the relative entropy with respect to an
         observed frequency matrix"""
         relative_entropy = 0.
-        for key, value in self.iteritems():
+        for key, value in self.items():
             relative_entropy += obs_freq_mat[key]*value/log(2)
         return relative_entropy
 
@@ -455,7 +455,7 @@ def _exp_freq_table_from_obs_freq(obs_freq_mat):
    exp_freq_table = {}
    for i in obs_freq_mat.alphabet.letters:
       exp_freq_table[i] = 0.
-   for i in obs_freq_mat.keys():
+   for i in list(obs_freq_mat.keys()):
       if i[0] == i[1]:
          exp_freq_table[i[0]] += obs_freq_mat[i]
       else:
@@ -501,14 +501,14 @@ def _build_log_odds_mat(subs_mat,logbase=2,factor=10.0,round_digit=0,keep_nd=0):
    minimum log-odds value of the matrix in entries containing -999
    """
    lo_mat = LogOddsMatrix(subs_mat)
-   for key, value in subs_mat.iteritems():
+   for key, value in subs_mat.items():
       if value < EPSILON:
          lo_mat[key] = -999
       else:
          lo_mat[key] = round(factor*log(value)/log(logbase),round_digit)
    mat_min = min(lo_mat.values())
    if not keep_nd:
-      for i in lo_mat.keys():
+      for i in list(lo_mat.keys()):
          if lo_mat[i] <= -999:
             lo_mat[i] = mat_min
    return lo_mat
@@ -567,7 +567,7 @@ def read_text_matrix(data_file,mat_type=NOTYPE):
          i += 1
       j += 1
    # delete entries with an asterisk
-   for i in matrix.keys():
+   for i in list(matrix.keys()):
       if '*' in i: del(matrix[i])
    ret_mat = SeqMat(matrix,mat_type=mat_type)
    return ret_mat
@@ -578,7 +578,7 @@ diagALL = 3
 
 def two_mat_relative_entropy(mat_1,mat_2,logbase=2,diag=diagALL):
    rel_ent = 0.
-   key_list_1 = mat_1.keys(); key_list_2 = mat_2.keys()
+   key_list_1 = list(mat_1.keys()); key_list_2 = list(mat_2.keys())
    key_list_1.sort(); key_list_2.sort()
    key_list = []
    sum_ent_1 = 0.; sum_ent_2 = 0.
@@ -616,14 +616,14 @@ def two_mat_correlation(mat_1, mat_2):
     try:
         import numpy
     except ImportError:
-        raise ImportError, "Please install Numerical Python (numpy) if you want to use this function"
+        raise ImportError("Please install Numerical Python (numpy) if you want to use this function")
     values = []
     assert mat_1.ab_list == mat_2.ab_list
     for ab_pair in mat_1:
        try:
           values.append((mat_1[ab_pair], mat_2[ab_pair]))
        except KeyError:
-          raise ValueError, "%s is not a common key" % ab_pair
+          raise ValueError("%s is not a common key" % ab_pair)
     correlation_matrix = numpy.corrcoef(values, rowvar=0)
     correlation = correlation_matrix[0,1]
     return correlation
@@ -636,7 +636,7 @@ def two_mat_DJS(mat_1,mat_2,pi_1=0.5,pi_2=0.5):
    assert not (pi_1 + pi_2 - 1.0 > EPSILON)
    sum_mat = SeqMat(build_later=1)
    sum_mat.ab_list = mat_1.ab_list
-   for i in mat_1.keys():
+   for i in list(mat_1.keys()):
       sum_mat[i] = pi_1 * mat_1[i] + pi_2 * mat_2[i]
    sum_mat.make_entropy()
    mat_1.make_entropy()

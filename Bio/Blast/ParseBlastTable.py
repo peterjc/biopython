@@ -49,7 +49,7 @@ class BlastTableReader:
       self._lookahead = inline
       self._n = 0
       self._in_header = 1
-   def next(self):
+   def __next__(self):
       self.table_record = BlastTableRec()
       self._n += 1
       inline = self._lookahead
@@ -74,7 +74,7 @@ class BlastTableReader:
       current_entry = BlastTableEntry(inline)
       self.table_record.add_entry(current_entry)
    def _consume_header(self, inline):
-      for keyword in reader_keywords.keys():
+      for keyword in list(reader_keywords.keys()):
          if inline.find(keyword) > -1:
             in_header = self._Parse('_parse_%s' % reader_keywords[keyword],inline)
             break

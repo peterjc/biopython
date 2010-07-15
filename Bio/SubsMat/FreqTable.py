@@ -50,14 +50,14 @@ class FreqTable(dict):
     
     def _freq_from_count(self):
         sum = 0.
-        for i in self.count.values():
+        for i in list(self.count.values()):
             sum = sum + i
-        for i in self.count.keys():
+        for i in list(self.count.keys()):
             self[i] = self.count[i] / sum
 
     def _alphabet_from_input(self):
         s = ''
-        letters_list = self.keys()
+        letters_list = list(self.keys())
         letters_list.sort()
         for i in letters_list:
             s = s + i

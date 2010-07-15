@@ -49,10 +49,10 @@ _open         -- Internally used function.
 from types import *
 import os
 
-import Des
-import Cla
-import Hie
-from Residues import *
+from . import Des
+from . import Cla
+from . import Hie
+from .Residues import *
 from Bio import SeqIO
 from Bio.Seq import Seq
 
@@ -229,7 +229,7 @@ class Scop:
                 records = Hie.parse(hie_handle)
                 for record in records:
                     if record.sunid not in sunidDict:
-                        print record.sunid
+                        print(record.sunid)
                         
                     n = sunidDict[record.sunid]
     
@@ -308,7 +308,7 @@ class Scop:
 
     def write_hie(self, handle):
         """Build an HIE SCOP parsable file from this object"""
-        nodes = self._sunidDict.values()
+        nodes = list(self._sunidDict.values())
         # We order nodes to ease comparison with original file
         nodes.sort(key = lambda n: n.sunid)
         for n in nodes:
@@ -317,7 +317,7 @@ class Scop:
 
     def write_des(self, handle):
         """Build a DES SCOP parsable file from this object""" 
-        nodes = self._sunidDict.values()
+        nodes = list(self._sunidDict.values())
         # Origional SCOP file is not ordered?
         nodes.sort(key = lambda n: n.sunid)
         for n in nodes:
@@ -327,7 +327,7 @@ class Scop:
 
     def write_cla(self, handle):
         """Build a CLA SCOP parsable file from this object"""                
-        nodes = self._sidDict.values()
+        nodes = list(self._sidDict.values())
         # We order nodes to ease comparison with original file
         nodes.sort(key = lambda n: n.sunid)
         for n in nodes:
@@ -476,7 +476,7 @@ class Scop:
         cur.execute("CREATE TABLE hie (parent INT, child INT, PRIMARY KEY (child),\
         INDEX (parent) )")
 
-        for p in self._sunidDict.values():
+        for p in list(self._sunidDict.values()):
             for c in p.children:
                 cur.execute("INSERT INTO hie VALUES (%s,%s)" % (p.sunid, c.sunid))
 
@@ -490,7 +490,7 @@ class Scop:
         residues VARCHAR(50), sccs CHAR(10), cl INT, cf INT, sf INT, fa INT,\
         dm INT, sp INT, px INT, PRIMARY KEY (sunid), INDEX (SID) )")
 
-        for n in self._sidDict.values():
+        for n in list(self._sidDict.values()):
             c = n.toClaRecord()
             cur.execute( "INSERT INTO cla VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                          (n.sunid, n.sid, c.residues.pdbid, c.residues, n.sccs,
@@ -509,7 +509,7 @@ class Scop:
         description VARCHAR(255),\
         PRIMARY KEY (sunid) )")
         
-        for n in self._sunidDict.values():
+        for n in list(self._sunidDict.values()):
             cur.execute( "INSERT INTO des VALUES (%s,%s,%s,%s)",
                          ( n.sunid, n.type, n.sccs, n.description ) )                        
         
@@ -579,7 +579,7 @@ class Node:
         if self.scop is None:
             return self.children
         else:
-            return map ( self.scop.getNodeBySunid, self.children )
+            return list(map ( self.scop.getNodeBySunid, self.children ))
 
     def getParent(self):
         """Return the parent of this Node"""
@@ -788,8 +788,8 @@ class Astral:
         if filename:
             file_handle.close()
 
-        doms = filter( lambda a: a[0]=='d', doms )
-        doms = map( self.scop.getDomainBySid, doms )
+        doms = [a for a in doms if a[0]=='d']
+        doms = list(map( self.scop.getDomainBySid, doms ))
         return doms
 
     def getAstralDomainsFromSQL(self, column):
@@ -798,7 +798,7 @@ class Astral:
         cur = self.db_handle.cursor()
         cur.execute("SELECT sid FROM astral WHERE "+column+"=1")
         data = cur.fetchall()
-        data = map( lambda x: self.scop.getDomainBySid(x[0]), data)
+        data = [self.scop.getDomainBySid(x[0]) for x in data]
         
         return data
     
@@ -851,7 +851,7 @@ class Astral:
         cur.execute("DROP TABLE IF EXISTS astral")
         cur.execute("CREATE TABLE astral (sid CHAR(8), seq TEXT, PRIMARY KEY (sid))")
 
-        for dom in self.fasta_dict.keys():
+        for dom in list(self.fasta_dict.keys()):
             cur.execute( "INSERT INTO astral (sid,seq) values (%s,%s)",
                          (dom, self.fasta_dict[dom].seq.data))
         
@@ -886,7 +886,7 @@ def search(pdb=None, key=None, sid=None, disp=None, dir=None, loc=None,
     params = {'pdb' : pdb, 'key' : key, 'sid' : sid, 'disp' : disp,
               'dir' : dir, 'loc' : loc}
     variables = {}
-    for k in params.keys():
+    for k in list(params.keys()):
         if params[k] is not None:
             variables[k] = params[k]
     variables.update(keywds)
@@ -901,17 +901,17 @@ def _open(cgi, params={}, get=1):
     simple error checking, and will raise an IOError if it encounters one.
 
     """
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
     from Bio import File
     # Open a handle to SCOP.
-    options = urllib.urlencode(params)
+    options = urllib.parse.urlencode(params)
     if get:  # do a GET
         fullcgi = cgi
         if options:
             fullcgi = "%s?%s" % (cgi, options)
-        handle = urllib.urlopen(fullcgi)
+        handle = urllib.request.urlopen(fullcgi)
     else:    # do a POST
-        handle = urllib.urlopen(cgi, options)
+        handle = urllib.request.urlopen(cgi, options)
 
     # Wrap the handle inside an UndoHandle.
     uhandle = File.UndoHandle(handle)

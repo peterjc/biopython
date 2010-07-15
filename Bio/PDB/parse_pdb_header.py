@@ -113,7 +113,7 @@ def parse_pdb_header(infile):
     """
     header = []
     do_close = False
-    if isinstance(infile, basestring):
+    if isinstance(infile, str):
         f = open(infile,'r')
         do_close = True
     else:
@@ -262,7 +262,7 @@ if __name__=='__main__':
     dict = parse_pdb_header(file)
 
     # print the dictionary
-    for d in dict.keys():
-        print "-"*40
-        print d
-        print dict[d]
+    for d in list(dict.keys()):
+        print("-"*40)
+        print(d)
+        print(dict[d])

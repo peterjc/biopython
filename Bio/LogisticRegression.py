@@ -107,7 +107,7 @@ def train(xs, ys, update_fn=None, typecode=None):
         raise RuntimeError("Didn't converge.")
 
     lr = LogisticRegression()
-    lr.beta = map(float, beta)   # Convert back to regular array.
+    lr.beta = list(map(float, beta))   # Convert back to regular array.
     return lr
 
 def calculate(lr, x):

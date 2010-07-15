@@ -1,5 +1,5 @@
 import math
-from CodonUsageIndices import SharpEcoliIndex
+from .CodonUsageIndices import SharpEcoliIndex
 from Bio import SeqIO # To parse a FASTA file
 
 CodonsDict = {'TTT':0, 'TTC':0, 'TTA':0, 'TTG':0, 'CTT':0, 
@@ -83,7 +83,7 @@ class CodonAdaptationIndex:
     
         # now to calculate the index we first need to sum the number of times
         # synonymous codons were used all together.
-        for AA in SynonymousCodons.keys():
+        for AA in list(SynonymousCodons.keys()):
             Sum=0.0
             RCSU=[] # RCSU values are equal to CodonCount/((1/num of synonymous codons) * sum of all synonymous codons)
             
@@ -146,8 +146,8 @@ class CodonAdaptationIndex:
     # this just gives the index when the objects is printed.
     def print_index (self):
         """This method prints out the index you used."""
-        X=self.index.keys()
+        X=list(self.index.keys())
         X.sort()
         for i in X:
-            print "%s\t%.3f" %(i, self.index[i])
+            print("%s\t%.3f" %(i, self.index[i]))
         

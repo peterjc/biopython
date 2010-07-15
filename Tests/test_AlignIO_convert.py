@@ -5,7 +5,7 @@
 
 """Unit tests for Bio.SeqIO.convert(...) function."""
 import unittest
-from StringIO import StringIO
+from io import StringIO
 
 from Bio import AlignIO
 from Bio.Alphabet import generic_protein, generic_nucleotide, generic_dna

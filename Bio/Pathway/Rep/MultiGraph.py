@@ -5,6 +5,7 @@
 
 # get set abstraction for graph representation
 from Bio.Pathway.Rep.HashSet import *
+from functools import reduce
 
 class MultiGraph:
     """A directed multigraph abstraction with labeled edges."""
@@ -29,7 +30,7 @@ class MultiGraph:
     def __repr__(self):
         """Returns an unique string representation of this graph."""
         s = "<MultiGraph: "
-        keys = self.__adjacency_list.keys()
+        keys = list(list(self.__adjacency_list.keys()))
         keys.sort()
         for key in keys:
             values = self.__adjacency_list[key].list()
@@ -39,10 +40,10 @@ class MultiGraph:
 
     def __str__(self):
         """Returns a concise string description of this graph."""
-        nodenum = len(self.__adjacency_list.keys())
+        nodenum = len(list(list(self.__adjacency_list.keys())))
         edgenum = reduce(lambda x,y: x+y,
-                         map(len, self.__adjacency_list.values()))
-        labelnum = len(self.__label_map.keys())
+                         list(list(map(len, list(list(self.__adjacency_list.values()))))))
+        labelnum = len(list(list(self.__label_map.keys())))
         return "<MultiGraph: " + \
                str(nodenum) + " node(s), " + \
                str(edgenum) + " edge(s), " + \
@@ -84,18 +85,18 @@ class MultiGraph:
 
     def labels(self):
         """Returns a list of all the edge labels in this graph."""
-        return self.__label_map.keys()
+        return list(list(self.__label_map.keys()))
 
     def nodes(self):
         """Returns a list of the nodes in this graph."""
-        return self.__adjacency_list.keys()
+        return list(list(self.__adjacency_list.keys()))
 
     def parent_edges(self, child):
         """Returns a list of (parent, label) pairs for child."""
         if child not in self.__adjacency_list:
             raise ValueError("Unknown <child> node: " + str(child))
         parents = []
-        for parent in self.__adjacency_list.keys():
+        for parent in list(list(self.__adjacency_list.keys())):
             children = self.__adjacency_list[parent]
             for x in children.list():
                 if x[0] is child:
@@ -114,14 +115,14 @@ class MultiGraph:
         # remove node (and all out-edges) from adjacency list
         del self.__adjacency_list[node]
         # remove all in-edges from adjacency list
-        for n in self.__adjacency_list.keys():
-            self.__adjacency_list[n] = HashSet(filter(lambda x,node=node: x[0] is not node,
-                                                      self.__adjacency_list[n].list()))
+        for n in list(list(self.__adjacency_list.keys())):
+            self.__adjacency_list[n] = HashSet(list(list(filter(lambda x,node=node: x[0] is not node,
+                                                      self.__adjacency_list[n].list()))))
         # remove all refering pairs in label map
-        for label in self.__label_map.keys():
-            lm = HashSet(filter(lambda x,node=node: \
+        for label in list(list(self.__label_map.keys())):
+            lm = HashSet(list(list(filter(lambda x,node=node: \
                                 (x[0] is not node) and (x[1] is not node),
-                                self.__label_map[label].list()))
+                                self.__label_map[label].list()))))
             # remove the entry completely if the label is now unused
             if lm.empty():
                 del self.__label_map[label]

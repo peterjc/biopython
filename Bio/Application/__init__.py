@@ -23,7 +23,7 @@ This module also includes some deprecated functionality (function generic_run
 and class ApplicationResult) which should not be used anymore.
 """
 import os, sys
-import StringIO
+import io
 import subprocess
 import re
 
@@ -87,8 +87,8 @@ def generic_run(commandline):
     # capture error code:
     error_code = child.returncode
     return ApplicationResult(commandline, error_code), \
-           File.UndoHandle(StringIO.StringIO(r_out)), \
-           File.UndoHandle(StringIO.StringIO(e_out))
+           File.UndoHandle(io.StringIO(r_out)), \
+           File.UndoHandle(io.StringIO(e_out))
 
 class ApplicationResult:
     """Make results of a program available through a standard interface (DEPRECATED).
@@ -132,7 +132,7 @@ class ApplicationResult:
         """
         try:
             return self._results[output_name]
-        except KeyError, err:
+        except KeyError as err:
             #Try the aliases...
             for parameter in self._cl.parameters:
                 if output_name in parameter.names:
@@ -143,7 +143,7 @@ class ApplicationResult:
     def available_results(self):
         """Retrieve a list of all available results.
         """
-        result_names = self._results.keys()
+        result_names = list(self._results.keys())
         result_names.sort()
         return result_names
 
@@ -263,7 +263,7 @@ class AbstractCommandline(object):
                        "argument value required." % p.names[0]
             prop = property(getter(name), setter(name), deleter(name), doc)
             setattr(self.__class__, name, prop) #magic!
-        for key, value in kwargs.iteritems():
+        for key, value in kwargs.items():
             self.set_parameter(key, value)
     
     def _validate(self):

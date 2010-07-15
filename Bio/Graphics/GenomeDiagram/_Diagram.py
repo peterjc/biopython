@@ -38,9 +38,9 @@ except ImportError:
 from reportlab.lib import pagesizes
 
 # GenomeDiagram
-from _LinearDrawer import LinearDrawer
-from _CircularDrawer import CircularDrawer
-from _Track import Track
+from ._LinearDrawer import LinearDrawer
+from ._CircularDrawer import CircularDrawer
+from ._Track import Track
 
 # Builtins
 import sys
@@ -240,7 +240,7 @@ class Diagram(object):
             Set the passed attribute of all tracks in the set to the
             passed value
         """
-        for track in self.tracks.values():
+        for track in list(self.tracks.values()):
             if hasattr(track, attr):          # If the feature has the attribute
                 if getattr(track, attr) != value:
                     setattr(track, attr, value)   # set it to the passed value     
@@ -320,7 +320,7 @@ class Diagram(object):
         #just uses a cStringIO or StringIO handle with the drawToFile method.
         #In order to put all our complicated file format specific code in one
         #place we'll just use a StringIO handle here:
-        from StringIO import StringIO
+        from io import StringIO
         handle = StringIO()
         self.write(handle, output, dpi)
         return handle.getvalue()
@@ -392,7 +392,7 @@ class Diagram(object):
 
             Returns a list of the tracks contained in the diagram
         """
-        return self.tracks.values()
+        return list(self.tracks.values())
 
 
     def move_track(self, from_level, to_level):
@@ -435,7 +435,7 @@ class Diagram(object):
 
             Return a sorted list of levels occupied by tracks in the diagram
         """
-        levels = self.tracks.keys()
+        levels = list(self.tracks.keys())
         levels.sort()
         return levels
 
@@ -446,7 +446,7 @@ class Diagram(object):
             Return a sorted list of levels occupied by tracks that are not
             explicitly hidden
         """
-        drawn_levels = [key for key in self.tracks.keys() if \
+        drawn_levels = [key for key in list(self.tracks.keys()) if \
                         not self.tracks[key].hide] # get list of shown levels
         drawn_levels.sort()
         return drawn_levels
@@ -459,7 +459,7 @@ class Diagram(object):
             track features as a tuple
         """
         lows, highs = [], []
-        for track in self.tracks.values(): # Get ranges for each track
+        for track in list(self.tracks.values()): # Get ranges for each track
             low, high = track.range()
             lows.append(low)
             highs.append(high)

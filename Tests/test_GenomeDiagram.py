@@ -218,7 +218,7 @@ class GraphTest(unittest.TestCase):
         for data_values, name, color in zip([data1,data2,data3],
                                             ["sin", "cos", "2sin2"],
                                             ["red","green","blue"]):
-            data = zip(range(points), data_values)
+            data = list(zip(list(range(points)), data_values))
             gds_data.new_graph(data, "", style="line",
                                color = color, altcolor = color,
                                center = 0)
@@ -230,7 +230,7 @@ class GraphTest(unittest.TestCase):
                  start=0, end=points)
         gdd.write(os.path.join('Graphics', "line_graph.pdf"), "pdf")
         #Circular diagram - move tracks to make an empty space in the middle
-        for track_number in gdd.tracks.keys():
+        for track_number in list(gdd.tracks.keys()):
             gdd.move_track(track_number,track_number+1)
         gdd.draw(tracklines=False,
                  pagesize=(15*cm,15*cm),
@@ -274,7 +274,7 @@ class LabelTest(unittest.TestCase):
         #self.gdd.write(os.path.join('Graphics', name+".png"), "png")
         if circular:
             #Circular diagram - move tracks to make an empty space in the middle
-            for track_number in self.gdd.tracks.keys():
+            for track_number in list(self.gdd.tracks.keys()):
                 self.gdd.move_track(track_number,track_number+1)
             self.gdd.draw(tracklines=False,
                           pagesize=(15*cm,15*cm),
@@ -350,7 +350,7 @@ class SigilsTest(unittest.TestCase):
         #self.gdd.write(os.path.join('Graphics', name+".png"), "png")
         if circular:
             #Circular diagram - move tracks to make an empty space in the middle
-            for track_number in self.gdd.tracks.keys():
+            for track_number in list(self.gdd.tracks.keys()):
                 self.gdd.move_track(track_number,track_number+1)
             self.gdd.draw(tracklines=False,
                           pagesize=(15*cm,15*cm),
@@ -484,14 +484,14 @@ class DiagramTest(unittest.TestCase):
                 gdd.write(filename, output)
                 assert False, \
                        "Should have rejected %s as an output format" % output
-            except ValueError, e:
+            except ValueError as e:
                 #Good!
                 pass
             try:
                 gdd.write_to_string(output)
                 assert False, \
                        "Should have rejected %s as an output format" % output
-            except ValueError, e:
+            except ValueError as e:
                 #Good!
                 pass
 

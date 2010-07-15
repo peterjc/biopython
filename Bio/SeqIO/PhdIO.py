@@ -153,14 +153,14 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..", "..", "Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..", "..", "Tests"))
         assert os.path.isfile("Phd/phd1")
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
         
 if __name__ == "__main__":
     _test()

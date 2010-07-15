@@ -19,7 +19,7 @@
 
 import string
 import operator
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import sgmllib
 import UserDict
 import Bio.File
@@ -41,7 +41,7 @@ class UniGeneParser( sgmllib.SGMLParser ):
     def parse( self, handle ):
         self.reset()
         self.feed( handle )
-        for key in self.queue.keys():
+        for key in list(self.queue.keys()):
             if( self.queue[ key ] == {} ):
                 if( key[ :15 ] == 'UniGene Cluster' ):
                     self.queue[ 'UniGene Cluster' ] = key[ 16: ]
@@ -193,20 +193,20 @@ class UniGeneParser( sgmllib.SGMLParser ):
             indent = indent + '    '
         if( type( item ) == type( '' ) ):
             if( item != '' ):
-                print '%s%s' % ( indent, item )
+                print('%s%s' % ( indent, item ))
         elif( type( item ) == type([])):
             for subitem in item:
                 self.print_item( subitem, level + 1 )
         elif( isinstance( item, UserDict.UserDict ) ):
-            for subitem in item.keys():
-                print '%skey is %s' % ( indent, subitem )
+            for subitem in list(item.keys()):
+                print('%skey is %s' % ( indent, subitem ))
                 self.print_item( item[ subitem ], level + 1 )
         else:
-            print item
+            print(item)
 
     def print_tags( self ):
-        for key in self.queue.keys():
-            print 'key %s' % key
+        for key in list(self.queue.keys()):
+            print('key %s' % key)
             self.print_item( self.queue[ key ] )
 
 

@@ -24,6 +24,7 @@ read                Returns a single Blast record. Uses the BlastParser internal
 from Bio.Blast import Record
 import xml.sax
 from xml.sax.handler import ContentHandler
+from functools import reduce
 
 class _XMLparser(ContentHandler):
     """Generic SAX Parser
@@ -69,12 +70,12 @@ class _XMLparser(ContentHandler):
         if hasattr(self, method):
             eval("self.%s()" % method)
             if self._debug > 4:
-                print "NCBIXML: Parsed:  " + method
+                print("NCBIXML: Parsed:  " + method)
         else:
             # Doesn't exist (yet)
             if method not in self._debug_ignore_list:
                 if self._debug > 3:
-                    print "NCBIXML: Ignored: " + method
+                    print("NCBIXML: Ignored: " + method)
                 self._debug_ignore_list.append(method)
 
         #We don't care about white space in parent tags like Hsp,
@@ -105,12 +106,12 @@ class _XMLparser(ContentHandler):
         if hasattr(self, method):
             eval("self.%s()" % method)
             if self._debug > 2:
-                print "NCBIXML: Parsed:  " + method, self._value
+                print("NCBIXML: Parsed:  " + method, self._value)
         else:
             # Doesn't exist (yet)
             if method not in self._debug_ignore_list:
                 if self._debug > 1:
-                    print "NCBIXML: Ignored: " + method, self._value
+                    print("NCBIXML: Ignored: " + method, self._value)
                 self._debug_ignore_list.append(method)
         
         # Reset character buffer
@@ -573,13 +574,13 @@ def read(handle, debug=0):
    """
    iterator = parse(handle, debug)
    try:
-       first = iterator.next()
+       first = next(iterator)
    except StopIteration:
        first = None
    if first is None:
        raise ValueError("No records found in handle")
    try:
-       second = iterator.next()
+       second = next(iterator)
    except StopIteration:
        second = None
    if second is not None:
@@ -692,23 +693,23 @@ if __name__ == '__main__':
 
     for r in r_list:
         # Small test
-        print 'Blast of', r.query
-        print 'Found %s alignments with a total of %s HSPs' % (len(r.alignments),
+        print('Blast of', r.query)
+        print('Found %s alignments with a total of %s HSPs' % (len(r.alignments),
                   reduce(lambda a,b: a+b,
-                         [len(a.hsps) for a in r.alignments]))
+                         [len(a.hsps) for a in r.alignments])))
 
         for al in r.alignments:
-            print al.title[:50], al.length, 'bp', len(al.hsps), 'HSPs'
+            print(al.title[:50], al.length, 'bp', len(al.hsps), 'HSPs')
 
         # Cookbook example
         E_VALUE_THRESH = 0.04
         for alignment in r.alignments:
             for hsp in alignment.hsps:
                 if hsp.expect < E_VALUE_THRESH:
-                    print '*****'
-                    print 'sequence', alignment.title
-                    print 'length', alignment.length
-                    print 'e value', hsp.expect
-                    print hsp.query[:75] + '...'
-                    print hsp.match[:75] + '...'
-                    print hsp.sbjct[:75] + '...'
+                    print('*****')
+                    print('sequence', alignment.title)
+                    print('length', alignment.length)
+                    print('e value', hsp.expect)
+                    print(hsp.query[:75] + '...')
+                    print(hsp.match[:75] + '...')
+                    print(hsp.sbjct[:75] + '...')

@@ -28,7 +28,7 @@ http://www.ddbj.nig.ac.jp/
 from Bio.Seq import UnknownSeq
 from Bio.GenBank.Scanner import GenBankScanner, EmblScanner
 from Bio import Alphabet
-from Interfaces import SequentialSequenceWriter
+from .Interfaces import SequentialSequenceWriter
 from Bio import SeqFeature
 
 # NOTE
@@ -204,7 +204,7 @@ class _InsdcWriter(SequentialSequenceWriter):
         #self.handle.write('%s/%s="%s"\n' % (self.QUALIFIER_INDENT_STR, key, value))
         if quote is None:
             #Try to mimic unwritten rules about when quotes can be left out:
-            if isinstance(value, int) or isinstance(value, long):
+            if isinstance(value, int) or isinstance(value, int):
                 quote = False
             else:
                 quote = True
@@ -253,7 +253,7 @@ class _InsdcWriter(SequentialSequenceWriter):
                + self._wrap_location(location) + "\n"
         self.handle.write(line)
         #Now the qualifiers...
-        for key, values in feature.qualifiers.iteritems():
+        for key, values in feature.qualifiers.items():
             if isinstance(values, list) or isinstance(values, tuple):
                 for value in values:
                     self._write_feature_qualifier(key, value)
@@ -585,7 +585,7 @@ class GenBankWriter(_InsdcWriter):
         #A single (long) string is perhaps the most natural of all.
         #This means we may need to deal with line wrapping.
         comment = record.annotations["comment"]
-        if isinstance(comment, basestring):
+        if isinstance(comment, str):
             lines = comment.split("\n")
         elif isinstance(comment, list) or isinstance(comment, tuple):
             lines = comment
@@ -925,7 +925,7 @@ class EmblWriter(_InsdcWriter):
         #A single (long) string is perhaps the most natural of all.
         #This means we may need to deal with line wrapping.
         comment = record.annotations["comment"]
-        if isinstance(comment, basestring):
+        if isinstance(comment, str):
             lines = comment.split("\n")
         elif isinstance(comment, list) or isinstance(comment, tuple):
             lines = comment
@@ -983,9 +983,9 @@ class EmblWriter(_InsdcWriter):
 
 
 if __name__ == "__main__":
-    print "Quick self test"
+    print("Quick self test")
     import os
-    from StringIO import StringIO
+    from io import StringIO
 
     def compare_record(old, new):
         if old.id != new.id and old.name != new.name:
@@ -1045,7 +1045,7 @@ if __name__ == "__main__":
         #This only checks key shared qualifiers
         #Would a white list be easier?
         #for key in ["name", "gene", "translation", "codon_table", "codon_start", "locus_tag"]:
-        for key in set(old.qualifiers.keys()).intersection(new.qualifiers.keys()):
+        for key in set(old.qualifiers.keys()).intersection(list(new.qualifiers.keys())):
             if key in ["db_xref", "protein_id", "product", "note"]:
                 #EMBL and GenBank files are use different references/notes/etc
                 continue
@@ -1076,8 +1076,8 @@ if __name__ == "__main__":
         handle = StringIO()
         try:
             EmblWriter(handle).write_file(records)
-        except ValueError, err:
-            print err
+        except ValueError as err:
+            print(err)
             return
         handle.seek(0)
 
@@ -1087,7 +1087,7 @@ if __name__ == "__main__":
     for filename in os.listdir("../../Tests/GenBank"):
         if not filename.endswith(".gbk") and not filename.endswith(".gb"):
             continue
-        print filename
+        print(filename)
         
         handle = open("../../Tests/GenBank/%s" % filename)
         records = list(GenBankIterator(handle))
@@ -1099,7 +1099,7 @@ if __name__ == "__main__":
     for filename in os.listdir("../../Tests/EMBL"):
         if not filename.endswith(".embl"):
             continue
-        print filename
+        print(filename)
         
         handle = open("../../Tests/EMBL/%s" % filename)
         records = list(EmblIterator(handle))
@@ -1112,7 +1112,7 @@ if __name__ == "__main__":
     for filename in os.listdir("../../Tests/SwissProt"):
         if not filename.startswith("sp"):
             continue
-        print filename
+        print(filename)
         
         handle = open("../../Tests/SwissProt/%s" % filename)
         records = list(SeqIO.parse(handle, "swiss"))
