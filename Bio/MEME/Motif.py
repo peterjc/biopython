@@ -10,6 +10,7 @@ from Bio import Seq
 from Bio.Alphabet import IUPAC
 from math import sqrt
 import sys
+from functools import reduce
 
 class Motif:
     """A generic motif class (DEPRECATED).
@@ -115,8 +116,8 @@ class Motif:
             moieties = 'ACDEFGHIKLMNPQRSTVWY'
         for position in self.pssm:
             this_position = null_character
-            vals = zip(position,moieties)
-            good_values = filter(lambda x: x[0] >= minimum_frequency, vals)
+            vals = list(zip(position,moieties))
+            good_values = [x for x in vals if x[0] >= minimum_frequency]
             if good_values:
                 letters = [str(x[1]) for x in good_values]            
                 my_letter = '/'.join(letters)

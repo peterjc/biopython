@@ -78,10 +78,10 @@ def page_sizes(size):
     try:
         return sizes[size]
     except:
-        raise ValueError, "%s not in list of page sizes" % size
+        raise ValueError("%s not in list of page sizes" % size)
 
 
-def draw_box((x1, y1), (x2, y2),
+def draw_box(xxx_todo_changeme, xxx_todo_changeme1,
              color=colors.lightgreen, border=None, colour=None,
              **kwargs):
     """ draw_box(self, (x1, y1), (x2, y2), (x3, y3), (x4, y4),
@@ -97,7 +97,8 @@ def draw_box((x1, y1), (x2, y2),
         Returns a closed path object, beginning at (x1,y1) going round
         the four points in order, and filling with the passed color.            
     """
-    #Let the UK spelling (colour) override the USA spelling (color)
+    (x1, y1) = xxx_todo_changeme
+    (x2, y2) = xxx_todo_changeme1
     if colour is not None:
         color = colour
         del colour
@@ -159,7 +160,7 @@ def draw_polygon(list_of_points,
                    **kwargs)
 
 
-def draw_arrow((x1, y1), (x2, y2), color=colors.lightgreen, border=None,
+def draw_arrow(xxx_todo_changeme2, xxx_todo_changeme3, color=colors.lightgreen, border=None,
                shaft_height_ratio=0.4, head_length_ratio=0.5, orientation='right',
                colour=None, **kwargs):
     """ Returns a closed path object representing an arrow enclosed by the
@@ -168,6 +169,8 @@ def draw_arrow((x1, y1), (x2, y2), color=colors.lightgreen, border=None,
         given by head_length_ratio (also relative to box height), and
         an orientation that may be 'left' or 'right'.
     """
+    (x1, y1) = xxx_todo_changeme2
+    (x2, y2) = xxx_todo_changeme3
     if shaft_height_ratio < 0 or 1 < shaft_height_ratio:
         raise ValueError("Arrow shaft height ratio should be in range 0 to 1")
     if head_length_ratio < 0:
@@ -260,7 +263,7 @@ def intermediate_points(start, end, graph_data):
     newdata.append((start, graph_data[0][0]+(graph_data[1][0]-graph_data[0][0])/2.,
                     graph_data[0][1]))
     # add middle set
-    for index in xrange(1, len(graph_data)-1):
+    for index in range(1, len(graph_data)-1):
         lastxval, lastyval = graph_data[index-1]
         xval, yval = graph_data[index]
         nextxval, nextyval = graph_data[index+1]
@@ -411,12 +414,12 @@ class AbstractDrawer:
         elif type(pagesize) == type((1,2)): # A tuple, so don't translate
             pagesize = pagesize
         else:
-            raise ValueError, "Page size %s not recognised" % pagesize        
+            raise ValueError("Page size %s not recognised" % pagesize)        
         shortside, longside = min(pagesize), max(pagesize)
 
         orientation = orientation.lower()
         if orientation not in ('landscape', 'portrait'):
-            raise ValueError, "Orientation %s not recognised" % orientation
+            raise ValueError("Orientation %s not recognised" % orientation)
         if orientation == 'landscape':
             self.pagesize = (longside, shortside)
         else:

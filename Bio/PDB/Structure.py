@@ -5,7 +5,7 @@
 
 """The structure class, representing a macromolecular structure."""
 
-from Entity import Entity
+from .Entity import Entity
 
 
 class Structure(Entity):

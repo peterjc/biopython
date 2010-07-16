@@ -100,7 +100,7 @@ ambiguous_rna_complement = {
 
 def _make_ranges(mydict):
     d = {}
-    for key, value in mydict.iteritems():
+    for key, value in mydict.items():
         d[key] = (value, value)
     return d
 
@@ -124,10 +124,10 @@ unambiguous_rna_weight_ranges = _make_ranges(unambiguous_rna_weights)
 def _make_ambiguous_ranges(mydict, weight_table):
     range_d = {}
     avg_d = {}
-    for letter, values in mydict.iteritems():
+    for letter, values in mydict.items():
         #Following line is a quick hack to skip undefined weights for U and O
         if len(values)==1 and values[0] not in weight_table : continue
-        weights = map(weight_table.get, values)
+        weights = list(map(weight_table.get, values))
         range_d[letter] = (min(weights), max(weights))
         total_w = 0.0
         for w in weights:

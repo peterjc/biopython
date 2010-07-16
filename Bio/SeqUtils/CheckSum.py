@@ -29,9 +29,9 @@ def _init_table_h():
         for j in range(8):
             rflag = l & 1
             l >>= 1
-            if part_h & 1: l |= (1L << 31)
-            part_h >>= 1L
-            if rflag: part_h ^= 0xd8000000L
+            if part_h & 1: l |= (1 << 31)
+            part_h >>= 1
+            if rflag: part_h ^= 0xd8000000
         _table_h.append(part_h)
     return _table_h
 
@@ -117,7 +117,7 @@ def seguid(seq):
         return base64.encodestring(m.digest()).replace("\n","").rstrip("=")
 
 if __name__ == "__main__":
-    print "Quick self test"
+    print("Quick self test")
 
     str_light_chain_one = "QSALTQPASVSGSPGQSITISCTGTSSDVGSYNLVSWYQQHPGK" \
                     + "APKLMIYEGSKRPSGVSNRFSGSKSGNTASLTISGLQAEDEADY" \
@@ -133,4 +133,4 @@ if __name__ == "__main__":
     assert 'BpBeDdcNUYNsdk46JoJdw7Pd3BI' == seguid(str_light_chain_one)
     assert 'X5XEaayob1nZLOc7eVT9qyczarY' == seguid(str_light_chain_two)
     
-    print "Done"
+    print("Done")

@@ -35,8 +35,8 @@ if sys.platform=="win32":
                 break
         if prank_exe : break
 else:
-    import commands
-    output = commands.getoutput("prank")
+    import subprocess
+    output = subprocess.getoutput("prank")
     if "not found" not in output and "prank" in output.lower():
         prank_exe = "prank"
 if not prank_exe:

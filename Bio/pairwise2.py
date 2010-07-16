@@ -70,7 +70,7 @@ Some examples:
 To see a description of the parameters for a function, please look at
 the docstring for the function.
 
->>> print newalign.align.localds.__doc__
+>>> print(newalign.align.localds.__doc__)
 localds(sequenceA, sequenceB, match_dict, open, extend) -> alignments
 
 """
@@ -152,11 +152,11 @@ should return a gap penalty."""),
                         name[:-2], name[-2], name[-1]
             try:
                 match_args, match_doc = self.match2args[match_type]
-            except KeyError, x:
+            except KeyError as x:
                 raise AttributeError("unknown match type %r" % match_type)
             try:
                 penalty_args, penalty_doc = self.penalty2args[penalty_type]
-            except KeyError, x:
+            except KeyError as x:
                 raise AttributeError("unknown penalty type %r" % penalty_type)
 
             # Now get the names of the parameters to this function.
@@ -776,12 +776,12 @@ def print_matrix(matrix):
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
             matrixT[j].append(len(str(matrix[i][j])))
-    ndigits = map(max, matrixT)
+    ndigits = list(map(max, matrixT))
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
             n = ndigits[j]
-            print "%*s " % (n, matrix[i][j]),
-        print
+            print("%*s " % (n, matrix[i][j]), end=' ')
+        print()
 
 def format_alignment(align1, align2, score, begin, end):
     """format_alignment(align1, align2, score, begin, end) -> string
@@ -806,7 +806,8 @@ except ImportError:
 else:
     import sys
     this_module = sys.modules[__name__]
-    for name in cpairwise2.__dict__.keys():
+    for name in list(cpairwise2.__dict__.keys()):
         if not name.startswith("__"):
             this_module.__dict__[name] = cpairwise2.__dict__[name]
+
 
