@@ -16,7 +16,7 @@ time and space complexity. BMC Bioinformatics 5(1): 113.
 
 Last checked against version: 3.7
 """
-import types
+
 from Bio.Application import _Option, _Switch, AbstractCommandline
 
 class MuscleCommandline(AbstractCommandline):

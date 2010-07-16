@@ -14,8 +14,8 @@ Valentin F, Wallace IM, Wilm A, Lopez R, Thompson JD, Gibson TJ, Higgins DG.
 
 Last checked against versions: 1.83 and 2.0.10
 """
+
 import os
-import types
 from Bio.Application import _Option, _Switch, AbstractCommandline
 
 class ClustalwCommandline(AbstractCommandline):

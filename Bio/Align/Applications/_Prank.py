@@ -17,7 +17,7 @@ errors in sequence alignment and evolutionary analysis. Science, 320: 1632.
 
 Last checked agains version: 081202
 """
-import types
+
 from Bio.Application import _Option, _Switch, AbstractCommandline
 
 class PrankCommandline(AbstractCommandline):

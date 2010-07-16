@@ -12,7 +12,6 @@ Notredame, Higgins, Heringa, JMB,302(205-217) 2000
 Last checked against: Version_6.92
 """
 
-import types
 from Bio.Application import _Option, _Switch, _Argument, AbstractCommandline
 
 class TCoffeeCommandline(AbstractCommandline):

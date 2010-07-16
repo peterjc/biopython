@@ -50,7 +50,7 @@ class AbstractLayer:
         If weights are not explicitly set, they will be initialized to
         random values to start with.
         """
-        if not((this_node, next_node) in self.weights):
+        if (this_node, next_node) not in self.weights:
             raise ValueError("Invalid node values passed.")
         
         self.weights[(this_node, next_node)] = value

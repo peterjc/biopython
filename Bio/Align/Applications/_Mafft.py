@@ -25,8 +25,8 @@ Miyata (Nucleic Acids Res. 30:3059-3066, 2002)
 
 Last checked against version: 6.626b (2009/03/16)
 """
+
 import os
-import types
 from Bio.Application import _Option, _Switch, _Argument, AbstractCommandline
 
 class MafftCommandline(AbstractCommandline):

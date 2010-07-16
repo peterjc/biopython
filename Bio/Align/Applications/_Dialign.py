@@ -15,8 +15,7 @@ at BiBiServ. Nucleic Acids Research 32, W33-W36.
 
 Last checked against version: 2.2
 """
-import os
-import types
+
 from Bio import Application
 from Bio.Application import _Option, _Argument, _Switch, AbstractCommandline
 
