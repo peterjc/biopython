@@ -5,11 +5,11 @@
 # File: xbb_blastbg.py
 
 import posixpath, posix
-import os, sys, commands
+import os, sys, subprocess
 sys.path.insert(0, '.')
-import Queue, threading
+import queue, threading
 import tempfile
-from Tkinter import *
+from tkinter import *
 from xbb_utils import NotePad
 
 class BlastDisplayer:
@@ -63,12 +63,12 @@ class BlastWorker(threading.Thread):
   
     def __init__(self, command):
         self.com = command
-        queue = Queue.Queue(0)
+        queue = queue.Queue(0)
         self.queue = queue
         threading.Thread.__init__(self)
         self.finished = 0
-        print dir(queue)
-        print queue.queue
+        print(dir(queue))
+        print(queue.queue)
 
     def shutdown(self):
         # GRRRR How do I explicitely kill a thread ???????
@@ -76,7 +76,7 @@ class BlastWorker(threading.Thread):
         del self.queue
         
     def run(self):
-        print 'running', self.com
+        print('running', self.com)
         os.system(self.com)
         self.finished = 1
 
