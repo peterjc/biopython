@@ -452,7 +452,7 @@ class HiddenMarkovModel:
         # --- traceback
         traceback_seq = MutableSeq('', state_alphabet)
         
-        loop_seq = range(0, len(sequence))
+        loop_seq = list(range(0, len(sequence)))
         loop_seq.reverse()
 
         cur_state = last_state

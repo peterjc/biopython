@@ -5,7 +5,7 @@
 
 __version__ = "$Revision: 1.11 $"
 
-import cStringIO
+import io
 import doctest, unittest
 import sys
 
@@ -18,7 +18,7 @@ from Bio import Wise
 class TestWiseDryRun(unittest.TestCase):
     def setUp(self):
         self.old_stdout = sys.stdout
-        sys.stdout = cStringIO.StringIO()
+        sys.stdout = io.StringIO()
         
     def test_dnal(self):
         """Call dnal, and do a trivial check on its output."""

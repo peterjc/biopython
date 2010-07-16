@@ -33,6 +33,7 @@ Note: This module should be regarded as a prototype only. API changes are likely
 
 from Bio.Pathway.Rep.HashSet import *
 from Bio.Pathway.Rep.MultiGraph import *
+from functools import reduce
 
 
 class Reaction:
@@ -73,7 +74,7 @@ class Reaction:
         """Initializes a new Reaction object."""
         # enforce invariants on reactants:
         self.reactants = reactants.copy()
-        for r in self.reactants.keys():
+        for r in list(self.reactants.keys()):
             if self.reactants[r] == 0:
                 del self.reactants[r]
         self.catalysts  = HashSet(catalysts).list()
@@ -109,7 +110,7 @@ class Reaction:
         """Returns a string representation of self."""
         substrates = ""
         products   = ""
-        all_species = self.reactants.keys()
+        all_species = list(self.reactants.keys())
         all_species.sort()
         for species in all_species:
             stoch = self.reactants[species]
@@ -137,14 +138,14 @@ class Reaction:
     def reverse(self):
         """Returns a new Reaction that is the reverse of self."""
         reactants = {}
-        for r in self.reactants.keys():
+        for r in list(self.reactants.keys()):
             reactants[r] = - self.reactants[r]
         return Reaction(reactants, self.catalysts,
                         self.reversible, self.data)
 
     def species(self):
         """Returns a list of all Species involved in self."""
-        return self.reactants.keys()
+        return list(self.reactants.keys())
 
 
 class System:

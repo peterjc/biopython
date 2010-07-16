@@ -8,7 +8,7 @@ import sys
 import os
 import unittest
 import subprocess
-from cStringIO import StringIO
+from io import StringIO
 from Bio import AlignIO, SeqIO, MissingExternalDependencyError
 from Bio.Align.Applications import TCoffeeCommandline
 
@@ -17,8 +17,8 @@ if sys.platform=="win32":
     raise MissingExternalDependencyError(\
         "Testing TCOFFEE on Windows not supported yet")
 else:
-    import commands
-    output = commands.getoutput("t_coffee -version")
+    import subprocess
+    output = subprocess.getoutput("t_coffee -version")
     if "not found" not in output \
     and ("t_coffee" in output.lower() or "t-coffee" in output.lower()):
         t_coffee_exe = "t_coffee"

@@ -26,14 +26,14 @@ import os
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 4):
-    print "Biopython requires Python 2.4 or better (but not Python 3 " \
-          + "yet).  Python %d.%d detected" % sys.version_info[:2]
+    print("Biopython requires Python 2.4 or better (but not Python 3 " \
+          + "yet).  Python %d.%d detected" % sys.version_info[:2])
     sys.exit(-1)
 elif sys.version_info[:2] == (2,4):
-    print "Warning - we are phasing out support for Python 2.4"
+    print("Warning - we are phasing out support for Python 2.4")
 elif sys.version_info[0] == 3:
-    print "Biopython does not yet officially support Python 3, but you"
-    print "can try it by first using the 2to3 script on our source code."
+    print("Biopython does not yet officially support Python 3, but you")
+    print("can try it by first using the 2to3 script on our source code.")
     
 from distutils.core import setup
 from distutils.core import Command
@@ -51,13 +51,13 @@ def get_yes_or_no(question, default):
         default_str = 'n'
 
     while True:
-        print "%s %s " % (question, option_str),
-        response = raw_input().lower()
+        print("%s %s " % (question, option_str), end=' ')
+        response = input().lower()
         if not response:
             response = default_str
         if response[0] in ['y', 'n']:
             break
-        print "Please answer y or n."
+        print("Please answer y or n.")
     return response[0] == 'y'
 
 _CHECKED = None
@@ -85,7 +85,7 @@ def check_dependencies():
     if os.name=='java':
         return True #NumPy is not avaliable for Jython (for now)
 
-    print """
+    print("""
 Numerical Python (NumPy) is not installed.
 
 This package is required for many Biopython features.  Please install
@@ -94,7 +94,7 @@ anything dependent on NumPy will not work. If you do this, and later
 install NumPy, you should then re-install Biopython.
 
 You can find NumPy at http://numpy.scipy.org
-"""
+""")
     # exit automatically if running as part of some script
     # (e.g. PyPM, ActiveState's Python Package Manager)
     if not sys.stdout.isatty() :
