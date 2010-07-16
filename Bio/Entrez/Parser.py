@@ -45,7 +45,7 @@ class IntegerElement(int): pass
 
 class StringElement(str): pass
 
-class UnicodeElement(unicode): pass
+class UnicodeElement(str): pass
 
 class ListElement(list): pass
 

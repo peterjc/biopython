@@ -17,7 +17,7 @@ from Bio.Seq import Seq
 from Bio.SCOP.Raf import to_one_letter_code
 from Bio.PDB.PDBExceptions import PDBException
 from Bio.PDB.Residue import Residue, DisorderedResidue
-from Vector import calc_dihedral, calc_angle
+from .Vector import calc_dihedral, calc_angle
 
 
 standard_aa_names=["ALA", "CYS", "ASP", "GLU", "PHE", "GLY", "HIS", "ILE", "LYS", 
@@ -96,7 +96,7 @@ def is_aa(residue, standard=0):
     @param standard: flag to check for the 20 AA (default false) 
     @type standard: boolean
     """
-    if not isinstance(residue, basestring):
+    if not isinstance(residue, str):
         residue=residue.get_resname()
     residue=residue.upper()
     if standard:
@@ -280,7 +280,7 @@ class _PPBuilder:
         pp_list=[]
         for chain in chain_list:
             chain_it=iter(chain)
-            prev=chain_it.next()
+            prev=next(chain_it)
             pp=None
             for next in chain_it:
                 if aa_only and not accept(prev):
@@ -389,27 +389,27 @@ if __name__=="__main__":
 
     ppb=PPBuilder()
 
-    print "C-N"
+    print("C-N")
     for pp in ppb.build_peptides(s):
-        print pp.get_sequence()
+        print(pp.get_sequence())
     for pp in ppb.build_peptides(s[0]):
-        print pp.get_sequence()
+        print(pp.get_sequence())
     for pp in ppb.build_peptides(s[0]["A"]):
-        print pp.get_sequence()
+        print(pp.get_sequence())
 
     for pp in ppb.build_peptides(s):
         for phi, psi in pp.get_phi_psi_list():
-            print phi, psi
+            print(phi, psi)
 
     ppb=CaPPBuilder()
 
-    print "CA-CA"
+    print("CA-CA")
     for pp in ppb.build_peptides(s):
-        print pp.get_sequence()
+        print(pp.get_sequence())
     for pp in ppb.build_peptides(s[0]):
-        print pp.get_sequence()
+        print(pp.get_sequence())
     for pp in ppb.build_peptides(s[0]["A"]):
-        print pp.get_sequence()
+        print(pp.get_sequence())
 
 
 

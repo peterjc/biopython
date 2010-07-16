@@ -12,9 +12,9 @@
 This provides interfaces for loading biological objects from a relational
 database, and is compatible with the BioSQL standards.
 """
-import BioSeq
-import Loader
-import DBUtils
+from . import BioSeq
+from . import Loader
+from . import DBUtils
 
 _POSTGRES_RULES_PRESENT = False # Hack for BioSQL Bug 2839
 
@@ -73,7 +73,7 @@ def open_database(driver = "MySQLdb", **kwargs):
             elif "db" in kw:
                 kw["dbname"] = kw["db"]
                 del kw["db"]
-            dsn = ' '.join(['='.join(i) for i in kw.items()])
+            dsn = ' '.join(['='.join(i) for i in list(kw.items())])
             conn = connect(dsn)
 
     server = DBServer(conn, module)
@@ -122,9 +122,9 @@ class DBServer:
     def keys(self):
         return self.adaptor.list_biodatabase_names()
     def values(self):
-        return [self[key] for key in self.keys()]
+        return [self[key] for key in list(self.keys())]
     def items(self):
-        return [(key, self[key]) for key in self.keys()]
+        return [(key, self[key]) for key in list(self.keys())]
 
     def remove_database(self, db_name):
         """Try to remove all references to items in a database.
@@ -435,17 +435,17 @@ class BioSeqDatabase:
     def keys(self):
         return self.get_all_primary_ids()
     def values(self):
-        return [self[key] for key in self.keys()]
+        return [self[key] for key in list(self.keys())]
     def items(self):
-        return [(key, self[key]) for key in self.keys()]
+        return [(key, self[key]) for key in list(self.keys())]
 
     def lookup(self, **kwargs):
         if len(kwargs) != 1:
             raise TypeError("single key/value parameter expected")
-        k, v = kwargs.items()[0]
+        k, v = list(kwargs.items())[0]
         if k not in _allowed_lookups:
             raise TypeError("lookup() expects one of %s, not %r" % \
-                            (repr(_allowed_lookups.keys())[1:-1], repr(k)))
+                            (repr(list(_allowed_lookups.keys()))[1:-1], repr(k)))
         lookup_name = _allowed_lookups[k]
         lookup_func = getattr(self.adaptor, lookup_name)
         seqid = lookup_func(self.dbid, v)

@@ -24,7 +24,7 @@ from time import strftime, clock
 if sys.version_info[0] == 3:
     maxint = sys.maxsize
 else:
-    maxint = sys.maxint
+    maxint = sys.maxsize
 
 class FDistController:
     def __init__(self, fdist_dir = '', ext = None):
@@ -218,7 +218,7 @@ class FDistController:
         try:
             while l!='':
                 conf_lines.append(
-                    tuple(map(lambda x : float(x), l.rstrip().split(' ')))
+                    tuple([float(x) for x in l.rstrip().split(' ')])
                 )
                 l = f.readline()
         except ValueError:
@@ -242,8 +242,7 @@ class FDistController:
         os.system('cd ' + data_dir + ' && ' +
                 self._get_path('pv') + ' < ' + in_name + ' > ' + out_name)
         pvf = open(data_dir + os.sep + out_file, 'r')
-        result = map(lambda x: tuple(map(lambda y: float(y), x.rstrip().split(' '))),
-            pvf.readlines())
+        result = [tuple([float(y) for y in x.rstrip().split(' ')]) for x in pvf.readlines()]
         pvf.close()
         os.remove(data_dir + os.sep + in_name)
         os.remove(data_dir + os.sep + out_name)

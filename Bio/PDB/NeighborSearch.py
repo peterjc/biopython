@@ -9,8 +9,8 @@ import numpy
 
 from Bio.KDTree import KDTree
 
-from PDBExceptions import PDBException
-from Selection import unfold_entities, entity_levels, uniqueify
+from .PDBExceptions import PDBException
+from .Selection import unfold_entities, entity_levels, uniqueify
 
 
 class NeighborSearch:
@@ -136,5 +136,5 @@ if __name__=="__main__":
 
         ns=NeighborSearch(al)
 
-        print "Found ", len(ns.search_all(5.0))
+        print("Found ", len(ns.search_all(5.0)))
 

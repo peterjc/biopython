@@ -36,7 +36,7 @@ class _RestrictedDict(dict):
         dict.__setitem__(self, key, value)
     def update(self, new_dict):
         #Force this to go via our strict __setitem__ method
-        for (key, value) in new_dict.iteritems():
+        for (key, value) in new_dict.items():
             self[key] = value
 
 class SeqRecord(object):
@@ -131,12 +131,12 @@ class SeqRecord(object):
         You can create a 'blank' SeqRecord object, and then populate the
         attributes later.  
         """
-        if id is not None and not isinstance(id, basestring):
+        if id is not None and not isinstance(id, str):
             #Lots of existing code uses id=None... this may be a bad idea.
             raise TypeError("id argument should be a string")
-        if not isinstance(name, basestring):
+        if not isinstance(name, str):
             raise TypeError("name argument should be a string")
-        if not isinstance(description, basestring):
+        if not isinstance(description, str):
             raise TypeError("description argument should be a string")
         self._seq = seq
         self.id = id
@@ -404,8 +404,7 @@ class SeqRecord(object):
                 else:
                     stop = index.stop
                 if (start < 0 or stop < 0) and parent_length == 0:
-                    raise ValueError, \
-                          "Cannot support negative indices without the sequence length"
+                    raise ValueError("Cannot support negative indices without the sequence length")
                 if start < 0:
                     start = parent_length + start
                 if stop < 0:
@@ -425,11 +424,11 @@ class SeqRecord(object):
 
             #Slice all the values to match the sliced sequence
             #(this should also work with strides, even negative strides):
-            for key, value in self.letter_annotations.iteritems():
+            for key, value in self.letter_annotations.items():
                 answer._per_letter_annotations[key] = value[index]
 
             return answer
-        raise ValueError, "Invalid index"
+        raise ValueError("Invalid index")
 
     def __iter__(self):
         """Iterate over the letters in the sequence.
@@ -562,7 +561,7 @@ class SeqRecord(object):
             lines.append("/%s=%s" % (a, str(self.annotations[a])))
         if self.letter_annotations:
             lines.append("Per letter annotation for: " \
-                         + ", ".join(self.letter_annotations.keys()))
+                         + ", ".join(list(self.letter_annotations.keys())))
         #Don't want to include the entire sequence,
         #and showing the alphabet is useful:
         lines.append(repr(self.seq))
@@ -656,10 +655,10 @@ class SeqRecord(object):
                 handle = BytesIO()
             except ImportError:
                 #Must be on Python 2.5 or older
-                from StringIO import StringIO
+                from io import StringIO
                 handle = StringIO()
         else:
-            from StringIO import StringIO
+            from io import StringIO
             handle = StringIO()
         SeqIO.write(self, handle, format_spec)
         return handle.getvalue()
@@ -678,7 +677,7 @@ class SeqRecord(object):
         """
         return len(self.seq)
 
-    def __nonzero__(self):
+    def __bool__(self):
         """Returns True regardless of the length of the sequence.
 
         This behaviour is for backwards compatibility, since until the
@@ -794,11 +793,11 @@ class SeqRecord(object):
             answer.name = self.name
         if self.description == other.description:
             answer.description = self.description
-        for k,v in self.annotations.iteritems():
+        for k,v in self.annotations.items():
             if k in other.annotations and other.annotations[k] == v:
                 answer.annotations[k] = v
         #Can append matching per-letter-annotation
-        for k,v in self.letter_annotations.iteritems():
+        for k,v in self.letter_annotations.items():
             if k in other.letter_annotations:
                 answer.letter_annotations[k] = v + other.letter_annotations[k]
         return answer
@@ -922,21 +921,21 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..","Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..","Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
     elif os.path.isdir(os.path.join("Tests")) :
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
 
 if __name__ == "__main__":
     _test()

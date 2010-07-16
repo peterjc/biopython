@@ -162,7 +162,7 @@ class SeqFeature(object):
             out += "ref: %s:%s\n" % (self.ref, self.ref_db)
         out += "strand: %s\n" % self.strand
         out += "qualifiers: \n"
-        qualifier_keys = self.qualifiers.keys()
+        qualifier_keys = list(self.qualifiers.keys())
         qualifier_keys.sort()
         for qual_key in qualifier_keys:
             out += "    Key: %s, Value: %s\n" % (qual_key,
@@ -183,7 +183,7 @@ class SeqFeature(object):
                 location_operator = self.location_operator,
                 strand = self.strand,
                 id = self.id,
-                qualifiers = dict(self.qualifiers.iteritems()),
+                qualifiers = dict(iter(self.qualifiers.items())),
                 sub_features = [f._shift(offset) for f in self.sub_features],
                 ref = self.ref,
                 ref_db = self.ref_db)
@@ -661,10 +661,10 @@ class PositionGap(object):
 
 def _test():
     """Run the Bio.SeqFeature module's doctests."""
-    print "Runing doctests..."
+    print("Runing doctests...")
     import doctest
     doctest.testmod()
-    print "Done"
+    print("Done")
 
 if __name__ == "__main__":
     _test()

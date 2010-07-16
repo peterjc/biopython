@@ -50,24 +50,24 @@ from Bio.ParserSupport import *
 # The parse(), read() functions can probably be simplified if we don't
 # use the "parser = RecordParser(); parser.parse(handle)" approach.
 def parse(handle):
-    from SProt import RecordParser
-    import cStringIO
+    from .SProt import RecordParser
+    import io
     parser = RecordParser()
     text = ""
     for line in handle:
         text += line
         if line[:2]=='//':
-            handle = cStringIO.StringIO(text)
+            handle = io.StringIO(text)
             record = parser.parse(handle)
             text = ""
             yield record
 
 def read(handle):
-    from SProt import RecordParser
+    from .SProt import RecordParser
     parser = RecordParser()
     try:
         record = parser.parse(handle)
-    except ValueError, error:
+    except ValueError as error:
         if error.message.startswith("Line does not start with 'ID':"): 
             raise ValueError("No SwissProt record found")
         else:
@@ -202,7 +202,7 @@ class Dictionary:
 
     def keys(self):
         # I only want to expose the keys for SwissProt.
-        k = self._index.keys()
+        k = list(self._index.keys())
         k.remove(self.__filename_key)
         return k
 
@@ -280,7 +280,7 @@ class _Scanner:
             # In Release 38, ID N33_HUMAN has a DR buried within comments.
             # Check for this and do more comments, if necessary.
             # XXX handle this better
-            if fn is self._scan_dr.im_func:
+            if fn is self._scan_dr.__func__:
                 self._scan_cc(uhandle, consumer)
                 self._scan_dr(uhandle, consumer)
         consumer.end_record()
@@ -1022,7 +1022,7 @@ class _SequenceConsumer(AbstractConsumer):
         #which stores a list as 'keywords'
         cols = line[5:].rstrip(_CHOMP).split(';')
         cols = [c.strip() for c in cols]
-        cols = filter(None, cols)
+        cols = [_f for _f in cols if _f]
         try:
             #Extend any existing list of keywords
             self.data.annotations['keywords'].extend(cols)
@@ -1208,10 +1208,10 @@ def index_file(filename, indexname, rec2key=None):
     
     handle = open(filename)
     records = parse(handle)
-    end = 0L
+    end = 0
     for record in records:
         start = end
-        end = long(handle.tell())
+        end = int(handle.tell())
         length = end - start
         
         if rec2key is not None:

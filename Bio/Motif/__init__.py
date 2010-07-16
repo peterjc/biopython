@@ -9,10 +9,10 @@ it contains the core Motif class containing various I/O methods
 as well as methods for motif comparisons and motif searching in sequences.
 It also inlcudes functionality for parsing AlignACE and MEME programs
 """
-from _Motif import Motif
-from Parsers.AlignAce import AlignAceParser, CompareAceParser
-from Parsers.MEME import MEMEParser,MASTParser
-from Thresholds import ScoreDistribution
+from ._Motif import Motif
+from .Parsers.AlignAce import AlignAceParser, CompareAceParser
+from .Parsers.MEME import MEMEParser,MASTParser
+from .Thresholds import ScoreDistribution
 
 _parsers={"AlignAce":AlignAceParser,
           "MEME":MEMEParser
@@ -120,13 +120,13 @@ def read(handle,format):
     """
     iterator = parse(handle, format)
     try:
-        first = iterator.next()
+        first = next(iterator)
     except StopIteration:
         first = None
     if first is None:
         raise ValueError("No motifs found in handle")
     try:
-        second = iterator.next()
+        second = next(iterator)
     except StopIteration:
         second = None
     if second is not None:
@@ -143,13 +143,13 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..","..","Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..","..","Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
 
 if __name__ == "__main__":
     #Run the doctests

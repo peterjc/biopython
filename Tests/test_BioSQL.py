@@ -7,7 +7,7 @@
 # standard library
 import os
 import unittest
-from StringIO import StringIO
+from io import StringIO
 
 # local stuff
 from Bio import MissingExternalDependencyError
@@ -40,7 +40,7 @@ try:
                                               user = DBUSER, passwd = DBPASSWD,
                                               host = DBHOST)
     del server
-except Exception, e:
+except Exception as e:
     message = "Connection failed, check settings in Tests/setup_BioSQL.py "\
               "if you plan to use BioSQL: %s" % str(e)
     raise MissingExternalDependencyError(message)
@@ -78,10 +78,10 @@ def _do_db_create():
         sql = r"DROP DATABASE " + TESTDB
         server.adaptor.cursor.execute(sql, ())
     except (server.module.OperationalError,
-            server.module.DatabaseError), e: # the database doesn't exist
+            server.module.DatabaseError) as e: # the database doesn't exist
         pass
     except (server.module.IntegrityError,
-            server.module.ProgrammingError), e: # ditto--perhaps
+            server.module.ProgrammingError) as e: # ditto--perhaps
         if str(e).find('database "%s" does not exist' % TESTDB) == -1:
             raise
     # create a new database
@@ -155,7 +155,7 @@ class ReadTest(unittest.TestCase):
     def test_get_db_items(self):
         """Get a list of all items in the database.
         """
-        items = self.db.values()
+        items = list(self.db.values())
 
     def test_lookup_items(self):
         """Test retrieval of items using various ids.
@@ -341,7 +341,7 @@ class LoaderTest(unittest.TestCase):
 
         # do some simple tests to make sure we actually loaded the right
         # thing. More advanced tests in a different module.
-        items = self.db.values()
+        items = list(self.db.values())
         self.assertEqual(len(items), 6)
         item_names = []
         item_ids = []
@@ -378,7 +378,7 @@ class DupLoadTest(unittest.TestCase):
         record = SeqRecord(Seq("ATGCTATGACTAT", Alphabet.generic_dna),id="Test1")
         try:
             count = self.db.load([record,record])
-        except Exception, err:
+        except Exception as err:
             #Good!
             self.assertEqual("IntegrityError", err.__class__.__name__)
             return
@@ -391,7 +391,7 @@ class DupLoadTest(unittest.TestCase):
         self.assertEqual(count,1)
         try:
             count = self.db.load([record])
-        except Exception, err:
+        except Exception as err:
             #Good!
             self.assertEqual("IntegrityError", err.__class__.__name__)
             return
@@ -403,7 +403,7 @@ class DupLoadTest(unittest.TestCase):
         record2 = SeqRecord(Seq("GGGATGCGACTAT", Alphabet.generic_dna),id="TestA")
         try:
             count = self.db.load([record1,record2])
-        except Exception, err:
+        except Exception as err:
             #Good!
             self.assertEqual("IntegrityError", err.__class__.__name__)
             return
@@ -582,7 +582,7 @@ class InDepthLoadTest(unittest.TestCase):
         """Make sure can't reimport existing records."""
         gb_file = os.path.join(os.getcwd(), "GenBank", "cor6_6.gb")
         gb_handle = open(gb_file, "r")
-        record = SeqIO.parse(gb_handle, "gb").next()
+        record = next(SeqIO.parse(gb_handle, "gb"))
         gb_handle.close()
         #Should be in database already...
         db_record = self.db.lookup(accession = "X55053")
@@ -593,7 +593,7 @@ class InDepthLoadTest(unittest.TestCase):
         #Good... now try reloading it!
         try:
             count = self.db.load([record])
-        except Exception, err:
+        except Exception as err:
             #Good!
             self.assertEqual("IntegrityError", err.__class__.__name__)
             return
@@ -627,7 +627,7 @@ class InDepthLoadTest(unittest.TestCase):
         test_feature = features[0]
         self.assertEqual(test_feature.type, "source")
         self.assertEqual(str(test_feature.location), "[0:206]")
-        self.assertEqual(len(test_feature.qualifiers.keys()), 3)
+        self.assertEqual(len(list(test_feature.qualifiers.keys())), 3)
         self.assertEqual(test_feature.qualifiers["country"], ["Russia:Bashkortostan"])
         self.assertEqual(test_feature.qualifiers["organism"], ["Armoracia rusticana"])
         self.assertEqual(test_feature.qualifiers["db_xref"], ["taxon:3704"])
@@ -643,7 +643,7 @@ class InDepthLoadTest(unittest.TestCase):
         self.assertEqual(str(test_feature.sub_features[1].location), "[142:206]")
         self.assertEqual(test_feature.sub_features[1].type, "CDS")
         self.assertEqual(test_feature.sub_features[1].location_operator, "join")
-        self.assertEqual(len(test_feature.qualifiers.keys()), 6)
+        self.assertEqual(len(list(test_feature.qualifiers.keys())), 6)
         self.assertEqual(test_feature.qualifiers["gene"], ["csp14"])
         self.assertEqual(test_feature.qualifiers["codon_start"], ["2"])
         self.assertEqual(test_feature.qualifiers["product"],

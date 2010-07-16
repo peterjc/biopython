@@ -41,9 +41,9 @@ import tempfile
 
 import numpy
 
-import Selection
-from AbstractPropertyMap import AbstractPropertyMap
-from Polypeptide import is_aa
+from . import Selection
+from .AbstractPropertyMap import AbstractPropertyMap
+from .Polypeptide import is_aa
 
 
 def _read_vertex_array(filename):
@@ -57,7 +57,7 @@ def _read_vertex_array(filename):
         if not len(sl)==9:
             # skip header
             continue
-        vl=map(float, sl[0:3])
+        vl=list(map(float, sl[0:3]))
         vertex_list.append(vl)
     fp.close()
     return numpy.array(vertex_list)
@@ -163,5 +163,5 @@ if __name__=="__main__":
 
 
     for item in rd:
-        print item
+        print(item)
 

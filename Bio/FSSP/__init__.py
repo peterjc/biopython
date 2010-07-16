@@ -11,7 +11,7 @@ tuple of two instances.
 mult_align: returns a Biopython alignment object
 """
 import re
-import fssp_rec
+from . import fssp_rec
 from Bio.Align import Generic
 from Bio import Alphabet
 fff_rec = fssp_rec.fff_rec
@@ -175,7 +175,7 @@ class FSSPAlignDict(dict):
 
    def sequence(self,num):
       s = ''
-      sorted_pos_nums = self.abs_res_dict.keys()
+      sorted_pos_nums = list(self.abs_res_dict.keys())
       sorted_pos_nums.sort()
       for i in sorted_pos_nums:
          s += self.abs(i).pos_align_dict[num].aa
@@ -185,10 +185,10 @@ class FSSPAlignDict(dict):
       mult_align_dict = {}
       for j in self.abs(1).pos_align_dict:
          mult_align_dict[j] = ''
-      for fssp_rec in self.itervalues():
+      for fssp_rec in self.values():
          for j in fssp_rec.pos_align_dict:
             mult_align_dict[j] += fssp_rec.pos_align_dict[j].aa
-      seq_order = mult_align_dict.keys()
+      seq_order = list(mult_align_dict.keys())
       seq_order.sort()
       out_str = ''
       for i in seq_order:
@@ -257,9 +257,9 @@ def read_fssp(fssp_handle):
          align_dict[key].add_align_list(align_list)
          curline = fssp_handle.readline()
          if not curline:
-            print 'EOFEOFEOF'
+            print('EOFEOFEOF')
             raise EOFError
-   for i in align_dict.itervalues():
+   for i in align_dict.values():
       i.pos_align_list2dict()
       del i.PosAlignList
    align_dict.build_resnum_list()

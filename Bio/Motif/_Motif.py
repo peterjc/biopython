@@ -35,7 +35,7 @@ class Motif(object):
         if self.length==None:
             self.length = len
         elif self.length != len:
-            print "len",self.length,self.instances, len
+            print("len",self.length,self.instances, len)
             raise ValueError("You can't change the length of the motif")
 
     def _check_alphabet(self,alphabet):
@@ -90,7 +90,7 @@ class Motif(object):
             return self._pwm
         #we need to compute new pwm
         self._pwm = []
-        for i in xrange(self.length):
+        for i in range(self.length):
             dict = {}
             #filling the dict with 0's
             for letter in self.alphabet.letters:
@@ -121,7 +121,7 @@ class Motif(object):
         #we need to compute new pwm
         self._log_odds = []
         pwm=self.pwm(laplace)
-        for i in xrange(self.length):
+        for i in range(self.length):
             d = {}
             for a in self.alphabet.letters:
                     d[a]=math.log(pwm[i][a]/self.background[a],2)
@@ -168,7 +168,7 @@ class Motif(object):
         """
         if not self.has_instances:
             raise ValueError ("This motif has no instances")
-        for pos in xrange(0,len(sequence)-self.length+1):
+        for pos in range(0,len(sequence)-self.length+1):
             for instance in self.instances:
                 if instance.tostring()==sequence[pos:pos+self.length].tostring():
                     yield(pos,instance)
@@ -180,7 +180,7 @@ class Motif(object):
         """
         lo=self.log_odds()
         score = 0.0
-        for pos in xrange(self.length):
+        for pos in range(self.length):
             a = sequence[position+pos]
             if not masked or self.mask[pos]:
                 try:
@@ -202,7 +202,7 @@ class Motif(object):
             rc = self.reverse_complement()
             
         sequence=sequence.tostring().upper()
-        for pos in xrange(0,len(sequence)-self.length+1):
+        for pos in range(0,len(sequence)-self.length+1):
             score = self.score_hit(sequence,pos,normalized,masked)
             if score > threshold:
                 yield (pos,score)
@@ -276,7 +276,7 @@ class Motif(object):
         for i in range(max(self.length,offset+other.length)):
             f1=self[i]
             f2=other[i-offset]
-            for n,b in self.background.iteritems():
+            for n,b in self.background.items():
                 s+=b*f1[n]*f2[n]
         return s/i
 
@@ -363,7 +363,7 @@ class Motif(object):
             str = str + inst.tostring() + "\n"
 
         if masked:
-            for i in xrange(self.length):
+            for i in range(self.length):
                 if self.mask[i]:
                     str = str + "*"
                 else:
@@ -443,7 +443,7 @@ class Motif(object):
         for i in letters:
             self.counts[i]=[]
         for ln in stream.readlines():
-            rec=map(float,ln.strip().split())
+            rec=list(map(float,ln.strip().split()))
             for k,v in zip(letters,rec):
                 self.counts[k].append(v)
             self.length+=1
@@ -467,9 +467,9 @@ class Motif(object):
                 ln=ln[1:]
             #print ln
             try:
-                self.counts[i]=map(int,ln)
+                self.counts[i]=list(map(int,ln))
             except ValueError: #not integers
-                self.counts[i]=map(float,ln) #map(lambda s: int(100*float(s)),ln)
+                self.counts[i]=list(map(float,ln)) #map(lambda s: int(100*float(s)),ln)
             #print counts[i]
         
         s = sum(self.counts[nuc][0] for nuc in letters)
@@ -492,13 +492,13 @@ class Motif(object):
         col=[]
         self.has_instances=True
         self.instances=[]
-        s = sum(map(lambda nuc: self.counts[nuc][0],self.alphabet.letters))
+        s = sum([self.counts[nuc][0] for nuc in self.alphabet.letters])
         for i in range(self.length):
             col.append("")
             for n in self.alphabet.letters:
                 col[i] = col[i]+ (n*(self.counts[n][i]))
             if len(col[i])<s:
-                print "WARNING, column too short",len(col[i]),s
+                print("WARNING, column too short",len(col[i]),s)
                 col[i]+=(alpha*s)[:(s-len(col[i]))]
             #print i,col[i]
         #iterate over instances
@@ -617,8 +617,8 @@ class Motif(object):
         requires an internet connection.
         The parameters from **kwds are passed directly to the weblogo server.
         """
-        import urllib
-        import urllib2
+        import urllib.request, urllib.parse, urllib.error
+        import urllib.request, urllib.error, urllib.parse
         al= self._to_fasta()
         url = 'http://weblogo.berkeley.edu/logo.cgi'
         values = {'sequence' : al,
@@ -653,12 +653,12 @@ class Motif(object):
                   'color6' : 'orange',
                   'color1' : 'black',
                   }
-        for k,v in kwds.iteritems():
+        for k,v in kwds.items():
             values[k]=str(v)
             
-        data = urllib.urlencode(values)
-        req = urllib2.Request(url, data)
-        response = urllib2.urlopen(req)
+        data = urllib.parse.urlencode(values)
+        req = urllib.request.Request(url, data)
+        response = urllib.request.urlopen(req)
         f=open(fname,"w")
         im=response.read()
         
