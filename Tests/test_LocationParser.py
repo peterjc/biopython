@@ -61,8 +61,8 @@ test_data = (
 
 # test all of the data using Andrew's parser
 for s in test_data:
-    print "--> Trying", s
-    print repr(LocationParser.parse(LocationParser.scan(s)))
+    print("--> Trying", s)
+    print(repr(LocationParser.parse(LocationParser.scan(s))))
 
 
 

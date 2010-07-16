@@ -145,7 +145,7 @@ class FilteredReader:
         filtered_text = ''
         for line in lines:
             for filter in filter_chain:
-                line = filter( *( line, ) )
+                line = list(filter( *( line, ) ))
             filtered_text += line
 
         return filtered_text

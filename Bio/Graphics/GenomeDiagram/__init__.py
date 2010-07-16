@@ -12,10 +12,10 @@
 #Local imports, to make these classes available directly under the
 #Bio.Graphics.GenomeDiagram namespace:
 
-from _Diagram import Diagram
-from _Track import Track
-from _FeatureSet import FeatureSet
-from _GraphSet import GraphSet
+from ._Diagram import Diagram
+from ._Track import Track
+from ._FeatureSet import FeatureSet
+from ._GraphSet import GraphSet
 
 #Not (currently) made public,
 #from _Colors import ColorTranslator

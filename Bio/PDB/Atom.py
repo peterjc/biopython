@@ -7,8 +7,8 @@
 
 import numpy
 
-from Entity import DisorderedEntityWrapper
-from Vector import Vector
+from .Entity import DisorderedEntityWrapper
+from .Vector import Vector
 
 
 class Atom:
@@ -65,11 +65,11 @@ class Atom:
         self.xtra={}
         if not element:
             import warnings
-            from PDBExceptions import PDBConstructionWarning
+            from .PDBExceptions import PDBConstructionWarning
             warnings.warn("Atom object (name=%s) without element" % name,
                           PDBConstructionWarning)
             element = "?"
-            print name, "--> ?"
+            print(name, "--> ?")
         elif len(element)>2 or element != element.upper() or element != element.strip():
             raise ValueError(element)
         self.element=element

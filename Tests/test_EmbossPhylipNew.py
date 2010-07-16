@@ -38,10 +38,10 @@ if sys.platform=="win32":
                 exes[name] = os.path.join(path, name+".exe")
     del path, name
 else:
-    import commands
+    import subprocess
     for name in exes_wanted:
         #This will "just work" if installed on the path as normal on Unix
-        if "not found" not in commands.getoutput("%s -help" % name):
+        if "not found" not in subprocess.getoutput("%s -help" % name):
             exes[name] = name
     del name
 
@@ -191,7 +191,7 @@ class ParsimonyTests(unittest.TestCase):
             raise ValueError("Return code %s from:\n%s" \
                              % (return_code, str(cline)))
         a_taxa = [s.name.replace(" ", "_") for s in
-                  AlignIO.parse(open(filename, "r"), format).next()]
+                  next(AlignIO.parse(open(filename, "r"), format))]
         for tree in parse_trees("test_file"):
             t_taxa = [t.replace(" ", "_") for t in tree.get_taxa()]
             self.assertEqual(sorted(a_taxa), sorted(t_taxa))
@@ -292,7 +292,7 @@ class TreeComparisonTests(unittest.TestCase):
             raise ValueError("Return code %s from:\n%s" \
                              % (return_code, str(cline)))
         #Split the next and get_taxa into two steps to help 2to3 work
-        tree1 = parse_trees("test_file").next()
+        tree1 = next(parse_trees("test_file"))
         taxa1 = tree1.get_taxa()
         for tree in parse_trees("Phylip/horses.tree"):
             taxa2 = tree.get_taxa()

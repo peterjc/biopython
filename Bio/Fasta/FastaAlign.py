@@ -48,11 +48,11 @@ def parse_file(file_name, type = 'DNA'):
     parser = Fasta.RecordParser()
     iterator = Fasta.Iterator(align_file, parser)
 
-    cur_align = iterator.next()
+    cur_align = next(iterator)
     while cur_align:
         fasta_align.add_sequence(cur_align.title, cur_align.sequence)
 
-        cur_align = iterator.next()
+        cur_align = next(iterator)
 
     return fasta_align
 
