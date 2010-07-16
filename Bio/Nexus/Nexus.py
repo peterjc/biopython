@@ -323,10 +323,10 @@ def combine(matrices):
     combined.translate=None
 
     # rename taxon sets and character sets and name them with prefix
-    for cn,cs in list(combined.charsets.items()):
+    for cn,cs in combined.charsets.items():
         combined.charsets['%s.%s' % (name,cn)]=cs
         del combined.charsets[cn]
-    for tn,ts in list(combined.taxsets.items()):
+    for tn,ts in combined.taxsets.items():
         combined.taxsets['%s.%s' % (name,tn)]=ts
         del combined.taxsets[tn]
     # previous partitions usually don't make much sense in combined matrix
@@ -346,18 +346,22 @@ def combine(matrices):
             combined.matrix[t]=Seq(combined.missing*combined.nchar,combined.alphabet)+\
                 Seq(m.matrix[t].tostring().replace(m.gap,combined.gap).replace(m.missing,combined.missing),combined.alphabet)
         combined.taxlabels.extend(m_only)    # new taxon list
-        for cn,cs in list(m.charsets.items()):                # adjust character sets for new matrix
+        for cn,cs in m.charsets.items(): # adjust character sets for new matrix
             combined.charsets['%s.%s' % (n,cn)]=[x+combined.nchar for x in cs]
         if m.taxsets:
             if not combined.taxsets:
                 combined.taxsets={}
-            combined.taxsets.update(dict([('%s.%s' % (n,tn),ts) for tn,ts in list(m.taxsets.items())]))   # update taxon sets
-        combined.charpartitions['combined'][n]=list(range(combined.nchar,combined.nchar+m.nchar))     # update new charpartition
+            # update taxon sets
+            combined.taxsets.update(dict(('%s.%s' % (n,tn),ts) \
+                                         for tn,ts in m.taxsets.items()))
+        # update new charpartition
+        combined.charpartitions['combined'][n]=list(range(combined.nchar,combined.nchar+m.nchar))
         # update charlabels
         if m.charlabels:
             if not combined.charlabels:
                 combined.charlabels={}
-            combined.charlabels.update(dict([(combined.nchar+i,label) for (i,label) in list(m.charlabels.items())]))
+            combined.charlabels.update(dict((combined.nchar+i,label) \
+                                            for (i,label) in m.charlabels.items()))
         combined.nchar+=m.nchar # update nchar and ntax
         combined.ntax+=len(m_only)
         
@@ -709,9 +713,9 @@ class Nexus(object):
                 self.valid_characters=self.valid_characters.lower()+self.valid_characters.upper()
             #we have to sort the reverse ambig coding dict key characters:
             #to be sure that it's 'ACGT':'N' and not 'GTCA':'N'
-            rev=dict([(i[1],i[0]) for i in list(self.ambiguous_values.items()) if i[0]!='X'])
+            rev=dict((i[1],i[0]) for i in self.ambiguous_values.items() if i[0]!='X')
             self.rev_ambiguous_values={}
-            for (k,v) in list(rev.items()):
+            for (k,v) in rev.items():
                 key=[c for c in k]
                 key.sort()
                 self.rev_ambiguous_values[''.join(key)]=v
@@ -1142,7 +1146,7 @@ class Nexus(object):
             try:
                 n=int(identifier)
             except ValueError:
-                if self.charlabels and identifier in list(self.charlabels.values()):
+                if self.charlabels and identifier in iter(self.charlabels.values()):
                     for k in self.charlabels:
                         if self.charlabels[k]==identifier:
                             return k
@@ -1388,15 +1392,15 @@ class Nexus(object):
                 offlist.append(c-offset)
         # now adjust each of the character sets
         if not codons_only:
-            for n,ns in list(self.charsets.items()):
+            for n,ns in self.charsets.items():
                 cset=[offlist[c] for c in ns if c not in exclude]
                 if cset: 
                     setsb.append('charset %s = %s' % (safename(n),_compact4nexus(cset))) 
-            for n,s in list(self.taxsets.items()):
+            for n,s in self.taxsets.items():
                 tset=[safename(t,mrbayes=mrbayes) for t in s if t not in delete]
                 if tset:
                     setsb.append('taxset %s = %s' % (safename(n),' '.join(tset))) 
-        for n,p in list(self.charpartitions.items()):
+        for n,p in self.charpartitions.items():
             if not include_codons and n==CODONPOSITIONS:
                 continue
             elif codons_only and n!=CODONPOSITIONS:
@@ -1418,7 +1422,7 @@ class Nexus(object):
                 setsb.append('%s %s = %s' % (command,safename(n),\
                 ', '.join(['%s: %s' % (sn,_compact4nexus(newpartition[sn])) for sn in names if sn in newpartition])))
         # now write charpartititions, much easier than charpartitions
-        for n,p in list(self.taxpartitions.items()):
+        for n,p in self.taxpartitions.items():
             names=_sort_keys_by_values(p)
             newpartition={}
             for sn in names:
@@ -1656,10 +1660,10 @@ class Nexus(object):
         self.matrix=dict(listed) 
         self.nchar+=n
         # now adjust character sets
-        for i,s in list(self.charsets.items()):
+        for i,s in self.charsets.items():
             self.charsets[i]=_adjust(s,pos,n,leftgreedy=leftgreedy)
         for p in self.charpartitions:
-            for sp,s in list(self.charpartitions[p].items()):
+            for sp,s in self.charpartitions[p].items():
                 self.charpartitions[p][sp]=_adjust(s,pos,n,leftgreedy=leftgreedy)
         # now adjust character state labels
         self.charlabels=self._adjust_charlabels(insert=[pos]*n)

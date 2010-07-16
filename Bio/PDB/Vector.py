@@ -118,7 +118,7 @@ def refmat(p,q):
     Example:
         >>> mirror=refmat(p,q)
         >>> qq=p.left_multiply(mirror)
-        >>> print q, qq # q and qq should be the same
+        >>> print(q, qq) # q and qq should be the same
 
     @type p,q: L{Vector}
     @return: The mirror operation, a 3x3 Numeric array. 
@@ -141,7 +141,7 @@ def rotmat(p,q):
 
     Example:
         >>> r=rotmat(p,q)
-        >>> print q, p.left_multiply(r)
+        >>> print(q, p.left_multiply(r))
 
     @param p: moving vector
     @type p: L{Vector}
@@ -377,3 +377,4 @@ if __name__=="__main__":
         print(angle-cangle)
         print(axis-caxis)
         print()
+

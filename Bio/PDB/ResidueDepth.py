@@ -12,7 +12,7 @@ the solvent accessible surface.
 Residue Depth:
 
     >>> rd = ResidueDepth(model, pdb_file)
-    >>> print rd[(chain_id, res_id)]
+    >>> print(rd[(chain_id, res_id)])
 
 Direct MSMS interface:
 
@@ -164,4 +164,5 @@ if __name__=="__main__":
 
     for item in rd:
         print(item)
+
 

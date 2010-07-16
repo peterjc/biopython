@@ -256,7 +256,7 @@ class TreeMixin(object):
             >>> from Bio.Phylo.IO import PhyloXMIO
             >>> phx = PhyloXMLIO.read('phyloxml_examples.xml')
             >>> matches = phx.phylogenies[5].find_elements(code='OCTVU')
-            >>> matches.next()
+            >>> next(matches)
             Taxonomy(code='OCTVU', scientific_name='Octopus vulgaris')
 
         @param target: 
@@ -775,3 +775,4 @@ class Clade(TreeElement, TreeMixin):
         if self.name:
             return _sugar.trim_str(self.name, maxlen=40)
         return self.__class__.__name__
+

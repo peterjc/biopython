@@ -32,8 +32,8 @@ def AceIterator(handle):
     >>> from Bio import SeqIO
     >>> handle = open("Ace/consed_sample.ace", "rU")
     >>> for record in SeqIO.parse(handle, "ace"):
-    ...     print record.id, record.seq[:10]+"...", len(record)
-    ...     print max(record.letter_annotations["phred_quality"])
+    ...     print(record.id, record.seq[:10]+"...", len(record))
+    ...     print(max(record.letter_annotations["phred_quality"]))
     Contig1 agccccgggc... 1475
     90
 
@@ -45,9 +45,9 @@ def AceIterator(handle):
     >>> from Bio import SeqIO
     >>> handle = open("Ace/contig1.ace", "rU")
     >>> for record in SeqIO.parse(handle, "ace"):
-    ...     print record.id, "..." + record.seq[85:95]+"..."
-    ...     print record.letter_annotations["phred_quality"][85:95]
-    ...     print max(record.letter_annotations["phred_quality"])
+    ...     print(record.id, "..." + record.seq[85:95]+"...")
+    ...     print(record.letter_annotations["phred_quality"][85:95])
+    ...     print(max(record.letter_annotations["phred_quality"]))
     Contig1 ...AGAGG-ATGC...
     [57, 57, 54, 57, 57, None, 57, 72, 72, 72]
     90
@@ -135,3 +135,4 @@ def _test():
         
 if __name__ == "__main__":
     _test()
+

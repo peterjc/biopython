@@ -116,7 +116,7 @@ def all_pairs(singles):
     """
     Generate pairs list for all-against-all alignments
 
-    >>> all_pairs(range(4))
+    >>> all_pairs(list(range(4)))
     [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]
     """
     pairs = []
@@ -139,3 +139,4 @@ if __name__ == "__main__":
     if __debug__:
         _test()
     main()
+

@@ -74,7 +74,8 @@ class Record:
                            [self.entry])
     def _name(self):
         return _write_kegg("NAME",
-                           [_wrap_kegg(l, wrap_rule = name_wrap) for l in self.name])
+                           [_wrap_kegg(l, wrap_rule = name_wrap) \
+                            for l in self.name])
     def _formula(self):
         return _write_kegg("FORMULA",
                            [self.formula])
@@ -125,8 +126,8 @@ def parse(handle):
 
     >>> handle = open("KEGG/compound.sample")
     >>> for record in parse(handle):
-    ...     print record.entry, record.name[0]
-    ...
+    ...     print(record.entry, record.name[0])
+    ... 
     C00023 Iron
     C00017 Protein
     C00099 beta-Alanine
@@ -208,3 +209,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

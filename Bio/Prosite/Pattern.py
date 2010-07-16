@@ -297,9 +297,9 @@ class PrositeMatch:
         >>> m = p.search(Seq.Seq("PAD"))
         >>> mapping = m.mapping()
         >>> mapped = m.mapped_pattern()
-        >>> print str(m[1]), str(p[mapping[1]]), str(mapped[1])
+        >>> print(str(m[1]), str(p[mapping[1]]), str(mapped[1]))
         P [AP](2,3) [AP]
-        >>> print str(mapped)
+        >>> print(str(mapped))
         [AP]-[AP]-D.
         >>> 
 
@@ -491,4 +491,5 @@ def _verify_test(infile):
 #    import os
 #    infile = os.popen("bzcat /home/dalke/ftps/prosite/prosite.dat.bz2 | grep ^PA")
 #    _verify_test(infile)
+
 

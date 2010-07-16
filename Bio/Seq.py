@@ -82,7 +82,7 @@ class Seq(object):
         ...              IUPAC.protein)
         >>> my_seq
         Seq('MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF', IUPACProtein())
-        >>> print my_seq
+        >>> print(my_seq)
         MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF
         """
         # Enforce string storage
@@ -359,13 +359,13 @@ class Seq(object):
 
         >>> from Bio.Seq import Seq
         >>> my_seq = Seq("AAAATGA")
-        >>> print my_seq.count("A")
+        >>> print(my_seq.count("A"))
         5
-        >>> print my_seq.count("ATG")
+        >>> print(my_seq.count("ATG"))
         1
-        >>> print my_seq.count(Seq("AT"))
+        >>> print(my_seq.count(Seq("AT")))
         1
-        >>> print my_seq.count("AT", 2, -1)
+        >>> print(my_seq.count("AT", 2, -1))
         1
 
         HOWEVER, please note because python strings and Seq objects (and
@@ -374,7 +374,7 @@ class Seq(object):
 
         >>> "AAAA".count("AA")
         2
-        >>> print Seq("AAAA").count("AA")
+        >>> print(Seq("AAAA").count("AA"))
         2
 
         A non-overlapping search would give the answer as three!
@@ -1064,7 +1064,7 @@ class UnknownSeq(Seq):
     Seq('NNNNN', Alphabet())
     >>> len(my_seq)
     5
-    >>> print my_seq
+    >>> print(my_seq)
     NNNNN
 
     However, this is rather wasteful of memory (especially for large
@@ -1254,11 +1254,11 @@ class UnknownSeq(Seq):
         >>> my_nuc = UnknownSeq(8)
         >>> my_nuc
         UnknownSeq(8, alphabet = Alphabet(), character = '?')
-        >>> print my_nuc
+        >>> print(my_nuc)
         ????????
         >>> my_nuc.complement()
         UnknownSeq(8, alphabet = Alphabet(), character = '?')
-        >>> print my_nuc.complement()
+        >>> print(my_nuc.complement())
         ????????
         """
         if isinstance(Alphabet._get_base_alphabet(self.alphabet),
@@ -1272,11 +1272,11 @@ class UnknownSeq(Seq):
         >>> my_nuc = UnknownSeq(10)
         >>> my_nuc
         UnknownSeq(10, alphabet = Alphabet(), character = '?')
-        >>> print my_nuc
+        >>> print(my_nuc)
         ??????????
         >>> my_nuc.reverse_complement()
         UnknownSeq(10, alphabet = Alphabet(), character = '?')
-        >>> print my_nuc.reverse_complement()
+        >>> print(my_nuc.reverse_complement())
         ??????????
         """
         if isinstance(Alphabet._get_base_alphabet(self.alphabet),
@@ -1290,12 +1290,12 @@ class UnknownSeq(Seq):
         >>> my_dna = UnknownSeq(10, character="N")
         >>> my_dna
         UnknownSeq(10, alphabet = Alphabet(), character = 'N')
-        >>> print my_dna
+        >>> print(my_dna)
         NNNNNNNNNN
         >>> my_rna = my_dna.transcribe()
         >>> my_rna
         UnknownSeq(10, alphabet = RNAAlphabet(), character = 'N')
-        >>> print my_rna
+        >>> print(my_rna)
         NNNNNNNNNN
         """
         #Offload the alphabet stuff
@@ -1308,12 +1308,12 @@ class UnknownSeq(Seq):
         >>> my_rna = UnknownSeq(20, character="N")
         >>> my_rna
         UnknownSeq(20, alphabet = Alphabet(), character = 'N')
-        >>> print my_rna
+        >>> print(my_rna)
         NNNNNNNNNNNNNNNNNNNN
         >>> my_dna = my_rna.back_transcribe()
         >>> my_dna
         UnknownSeq(20, alphabet = DNAAlphabet(), character = 'N')
-        >>> print my_dna
+        >>> print(my_dna)
         NNNNNNNNNNNNNNNNNNNN
         """
         #Offload the alphabet stuff
@@ -1328,11 +1328,11 @@ class UnknownSeq(Seq):
         >>> my_seq = UnknownSeq(20, generic_dna, character="n")
         >>> my_seq
         UnknownSeq(20, alphabet = DNAAlphabet(), character = 'n')
-        >>> print my_seq
+        >>> print(my_seq)
         nnnnnnnnnnnnnnnnnnnn
         >>> my_seq.upper()
         UnknownSeq(20, alphabet = DNAAlphabet(), character = 'N')
-        >>> print my_seq.upper()
+        >>> print(my_seq.upper())
         NNNNNNNNNNNNNNNNNNNN
 
         This will adjust the alphabet if required. See also the lower method.
@@ -1349,11 +1349,11 @@ class UnknownSeq(Seq):
         >>> my_seq = UnknownSeq(20, IUPAC.extended_protein)
         >>> my_seq
         UnknownSeq(20, alphabet = ExtendedIUPACProtein(), character = 'X')
-        >>> print my_seq
+        >>> print(my_seq)
         XXXXXXXXXXXXXXXXXXXX
         >>> my_seq.lower()
         UnknownSeq(20, alphabet = ProteinAlphabet(), character = 'x')
-        >>> print my_seq.lower()
+        >>> print(my_seq.lower())
         xxxxxxxxxxxxxxxxxxxx
 
         See also the upper method.
@@ -1366,23 +1366,23 @@ class UnknownSeq(Seq):
         e.g.
 
         >>> my_seq = UnknownSeq(11, character="N")
-        >>> print my_seq
+        >>> print(my_seq)
         NNNNNNNNNNN
         >>> my_protein = my_seq.translate()
         >>> my_protein
         UnknownSeq(3, alphabet = ProteinAlphabet(), character = 'X')
-        >>> print my_protein
+        >>> print(my_protein)
         XXX
 
         In comparison, using a normal Seq object:
 
         >>> my_seq = Seq("NNNNNNNNNNN")
-        >>> print my_seq
+        >>> print(my_seq)
         NNNNNNNNNNN
         >>> my_protein = my_seq.translate()
         >>> my_protein
         Seq('XXX', ExtendedIUPACProtein())
-        >>> print my_protein
+        >>> print(my_protein)
         XXX
 
         """
@@ -1661,13 +1661,13 @@ class MutableSeq(object):
         
         >>> from Bio.Seq import MutableSeq
         >>> my_mseq = MutableSeq("AAAATGA")
-        >>> print my_mseq.count("A")
+        >>> print(my_mseq.count("A"))
         5
-        >>> print my_mseq.count("ATG")
+        >>> print(my_mseq.count("ATG"))
         1
-        >>> print my_mseq.count(Seq("AT"))
+        >>> print(my_mseq.count(Seq("AT")))
         1
-        >>> print my_mseq.count("AT", 2, -1)
+        >>> print(my_mseq.count("AT", 2, -1))
         1
         
         HOWEVER, please note because that python strings, Seq objects and
@@ -1676,7 +1676,7 @@ class MutableSeq(object):
 
         >>> "AAAA".count("AA")
         2
-        >>> print MutableSeq("AAAA").count("AA")
+        >>> print(MutableSeq("AAAA").count("AA"))
         2
 
         A non-overlapping search would give the answer as three!
@@ -2057,3 +2057,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

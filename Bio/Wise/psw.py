@@ -72,7 +72,7 @@ class ColumnUnit(object):
 _re_unit = re.compile(r"^Unit +([01])- \[ *(-?\d+)- *(-?\d+)\] \[(\w+)\]$")
 def parse_line(line):
     """
-    >>> print parse_line("Column 0:")
+    >>> print(parse_line("Column 0:"))
     None
     >>> parse_line("Unit  0- [  -1-   0] [SEQUENCE]")
     ColumnUnit(unit=0, column=0, SEQUENCE)
@@ -138,3 +138,4 @@ if __name__ == "__main__":
     if __debug__:
         _test()
     main()
+

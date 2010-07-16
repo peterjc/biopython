@@ -9,7 +9,7 @@ Example:
 
     >>> ppb=PPBuilder()
     >>> for pp in ppb.build_peptides(structure):
-    ...     print pp.get_sequence()
+    ...     print(pp.get_sequence())
 """
 
 from Bio.Alphabet import generic_protein
@@ -410,6 +410,7 @@ if __name__=="__main__":
         print(pp.get_sequence())
     for pp in ppb.build_peptides(s[0]["A"]):
         print(pp.get_sequence())
+
 
 
 

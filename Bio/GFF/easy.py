@@ -56,14 +56,14 @@ class Location(GenericTools.VerboseList):
     >>> location = Location([Location([339]), Location([564])]) # zero-based
     >>> location
     Location(Location(339), Location(564))
-    >>> print location # one-based
+    >>> print(location) # one-based
     340..565
-    >>> print location.five_prime()
+    >>> print(location.five_prime())
     340
     >>> location_rev = Location([Location([339]), Location([564])], 1)
-    >>> print location_rev
+    >>> print(location_rev)
     complement(340..565)
-    >>> print location_rev.five_prime()
+    >>> print(location_rev.five_prime())
     565
     """
     def __init__(self, the_list, complement=0, seqname=None):
@@ -114,7 +114,7 @@ class Location(GenericTools.VerboseList):
         >>> loc1.direction_and_index(-1)
         (-1, -1)
         >>> loc1.reverse()
-        >>> print loc1
+        >>> print(loc1)
         complement(join(1..3,complement(5..6)))
         >>> loc1.direction_and_index(1)
         (-1, -1)
@@ -179,9 +179,9 @@ class Location(GenericTools.VerboseList):
 
         >>> location1 = LocationFromString("1..50")
         >>> location2 = LocationFromString("25..200")
-        >>> print location1.intersection(location2)
+        >>> print(location1.intersection(location2))
         25..50
-        >>> print location1.intersection(location2)
+        >>> print(location1.intersection(location2))
         25..50
         """
         if self.start() >= other.start():
@@ -218,14 +218,14 @@ class Location(GenericTools.VerboseList):
     def sublocation(self, sub_location):
         """
         >>> fwd_location = LocationFromString('X:5830132..5831528')
-        >>> print fwd_location.sublocation(LocationFromString('1..101'))
+        >>> print(fwd_location.sublocation(LocationFromString('1..101')))
         X:5830132..5830232
-        >>> print fwd_location.sublocation(LocationFromString('1267..1286'))
+        >>> print(fwd_location.sublocation(LocationFromString('1267..1286')))
         X:5831398..5831417
         >>> rev_location = LocationFromString('I:complement(8415686..8416216)')
-        >>> print rev_location.sublocation(LocationFromString('1..101'))
+        >>> print(rev_location.sublocation(LocationFromString('1..101')))
         I:complement(8416116..8416216)
-        >>> print rev_location.sublocation(LocationFromString('100..200'))
+        >>> print(rev_location.sublocation(LocationFromString('100..200')))
         I:complement(8416017..8416117)
         """
         
@@ -258,11 +258,11 @@ class Location(GenericTools.VerboseList):
         """
         >>> loc1 = LocationFromString("join(I:complement(1..9000),I:complement(9001..10000))")
         >>> loc1.reorient()
-        >>> print loc1
+        >>> print(loc1)
         complement(join(I:1..9000,I:9001..10000))
         >>> loc2 = LocationFromString("join(I:complement(1..9000),I:9001..10000)")
         >>> loc2.reorient()
-        >>> print loc2
+        >>> print(loc2)
         join(I:complement(1..9000),I:9001..10000)
         """
         if self.join:
@@ -277,13 +277,13 @@ class Location(GenericTools.VerboseList):
 
         >>> LOC = LocationFromString
         >>> l1 = LOC("join(alpha:1..30,alpha:50..70)")
-        >>> print l1.bounding()
+        >>> print(l1.bounding())
         join(alpha:1..70)
         >>> l2 = LOC("join(alpha:1..30,alpha:complement(50..70))")
-        >>> print l2.bounding()
+        >>> print(l2.bounding())
         join(alpha:1..30,alpha:complement(50..70))
         >>> l3 = LOC("join(alpha:1..30,alpha:complement(50..70),beta:6..20,alpha:25..45)")
-        >>> print l3.bounding()
+        >>> print(l3.bounding())
         join(alpha:1..45,alpha:complement(50..70),beta:6..20)
 
         """
@@ -320,12 +320,12 @@ class LocationJoin(Location):
     >>> join = LocationJoin([LocationFromCoords(339, 564, 1), LocationFromString("complement(100..339)")])
     >>> appendloc = LocationFromString("order(complement(66..99),complement(5..55))")
     >>> join.append(appendloc)
-    >>> print join
+    >>> print(join)
     join(complement(340..565),complement(100..339),order(complement(66..99),complement(5..55)))
     >>> join2 = LocationJoin()
     >>> join2.append(LocationFromString("complement(66..99)"))
     >>> join2.append(LocationFromString("complement(5..55)"))
-    >>> print join2
+    >>> print(join2)
     join(complement(66..99),complement(5..55))
     """
     def __init__(self, the_list = [], complement=0, seqname=None):
@@ -337,11 +337,11 @@ class LocationJoin(Location):
 
 class LocationFromCoords(Location):
     """
-    >>> print LocationFromCoords(339, 564)
+    >>> print(LocationFromCoords(339, 564))
     340..565
-    >>> print LocationFromCoords(339, 564, seqname="I")
+    >>> print(LocationFromCoords(339, 564, seqname="I"))
     I:340..565
-    >>> print LocationFromCoords(999, 3234, "-", seqname="NC_343434")
+    >>> print(LocationFromCoords(999, 3234, "-", seqname="NC_343434"))
     NC_343434:complement(1000..3235)
     """
     def __init__(self, start, end, strand=0, seqname=None):
@@ -361,33 +361,33 @@ re_fuzzy = re.compile(r"^([><])(\d+)")
 class LocationFromString(Location):
     """
     >>> # here are some tests from http://www.ncbi.nlm.nih.gov/collab/FT/index.html#location
-    >>> print LocationFromString("467")
+    >>> print(LocationFromString("467"))
     467
-    >>> print LocationFromString("340..565")
+    >>> print(LocationFromString("340..565"))
     340..565
-    >>> print LocationFromString("<345..500")
+    >>> print(LocationFromString("<345..500"))
     <345..500
-    >>> print LocationFromString("<1..888")
+    >>> print(LocationFromString("<1..888"))
     <1..888
     >>> # (102.110) and 123^124 syntax unimplemented
-    >>> print LocationFromString("join(12..78,134..202)")
+    >>> print(LocationFromString("join(12..78,134..202)"))
     join(12..78,134..202)
-    >>> print LocationFromString("complement(join(2691..4571,4918..5163))")
+    >>> print(LocationFromString("complement(join(2691..4571,4918..5163))"))
     complement(join(2691..4571,4918..5163))
-    >>> print LocationFromString("join(complement(4918..5163),complement(2691..4571))")
+    >>> print(LocationFromString("join(complement(4918..5163),complement(2691..4571))"))
     join(complement(4918..5163),complement(2691..4571))
-    >>> print LocationFromString("order(complement(4918..5163),complement(2691..4571))")
+    >>> print(LocationFromString("order(complement(4918..5163),complement(2691..4571))"))
     order(complement(4918..5163),complement(2691..4571))
-    >>> print LocationFromString("NC_001802x.fna:73..78")
+    >>> print(LocationFromString("NC_001802x.fna:73..78"))
     NC_001802x.fna:73..78
-    >>> print LocationFromString("J00194:100..202")
+    >>> print(LocationFromString("J00194:100..202"))
     J00194:100..202
 
-    >>> print LocationFromString("join(117505..118584,1..609)")
+    >>> print(LocationFromString("join(117505..118584,1..609)"))
     join(117505..118584,1..609)
-    >>> print LocationFromString("join(test3:complement(4..6),test3:complement(1..3))")
+    >>> print(LocationFromString("join(test3:complement(4..6),test3:complement(1..3))"))
     join(test3:complement(4..6),test3:complement(1..3))
-    >>> print LocationFromString("test3:join(test1:complement(1..3),4..6)")
+    >>> print(LocationFromString("test3:join(test1:complement(1..3),4..6)"))
     test3:join(test1:complement(1..3),4..6)
     """
     def __init__(self, location_str):
@@ -498,7 +498,7 @@ def genbank_single(filename):
     >>> cds.key
     'CDS'
     >>> location = LocationFromString(cds.location)
-    >>> print location
+    >>> print(location)
     2931..3917
     >>> subseq = record_subseq(record, location)
     >>> subseq[0:20]
@@ -520,11 +520,11 @@ def record_subseq(record, location, *args, **keywds):
     >>> record_subseq(record, LocationFromString("join(complement(1..4),1..4)")) # what an idea!
     Seq('ACTCGAGT', Alphabet())
     >>> loc = LocationFromString("complement(join(complement(5..7),1..4))")
-    >>> print loc
+    >>> print(loc)
     complement(join(complement(5..7),1..4))
     >>> record_subseq(record, loc)
     Seq('ACTCTTT', Alphabet())
-    >>> print loc
+    >>> print(loc)
     complement(join(complement(5..7),1..4))
     >>> loc.reverse()
     >>> record_subseq(record, loc)
@@ -615,3 +615,4 @@ def _test():
 if __name__ == "__main__":
     if __debug__:
         _test()
+

@@ -146,7 +146,7 @@ class Feature(object):
     >>> feature = Feature("NC_001802x.fna", 73, 78) # not having the x will interfere with the RetrieveSequence test
     >>> feature.seq()
     Seq('AATAAA', Alphabet())
-    >>> print feature.location()
+    >>> print(feature.location())
     NC_001802x.fna:73..78
     >>> from Bio import SeqIO
     >>> record = feature.record()
@@ -344,7 +344,7 @@ class FeatureAggregate(list, Feature):
     >>> feature1_1 = Feature(location=easy.LocationFromString("NC_001802x.fna:336..1631"), frame=0) # gag-pol
     >>> feature1_2 = Feature(location=easy.LocationFromString("NC_001802x.fna:1631..4642"), frame=0) # slippage
     >>> aggregate = FeatureAggregate([feature1_1, feature1_2])
-    >>> print aggregate.location()
+    >>> print(aggregate.location())
     join(NC_001802x.fna:336..1631,NC_001802x.fna:1631..4642)
     >>> xlate_str = aggregate.translate().tostring()
     >>> xlate_str[:5], xlate_str[-5:]
@@ -355,19 +355,19 @@ class FeatureAggregate(list, Feature):
     >>> feature2_1 = Feature(location=location1, frame=0)
     >>> feature2_2 = Feature(location=location2, frame=0)
     >>> aggregate2 = FeatureAggregate([feature2_1, feature2_2])
-    >>> print aggregate2.location()
+    >>> print(aggregate2.location())
     complement(join(NC_001802x.fna:1..6,NC_001802x.fna:7..12))
-    >>> print aggregate2.translate()
+    >>> print(aggregate2.translate())
     Seq('TRET', HasStopCodon(IUPACProtein(), '*'))
     >>> location1.reverse()
     >>> location2.reverse()
     >>> aggregate3 = FeatureAggregate([Feature(location=x, frame=0) for x in [location1, location2]])
-    >>> print aggregate3.location()
+    >>> print(aggregate3.location())
     join(NC_001802x.fna:1..6,NC_001802x.fna:7..12)
-    >>> print aggregate3.translate()
+    >>> print(aggregate3.translate())
     Seq('GLSG', HasStopCodon(IUPACProtein(), '*'))
     >>> aggregate3[0].frame = 3
-    >>> print aggregate3.translate()
+    >>> print(aggregate3.translate())
     Seq('LSG', HasStopCodon(IUPACProtein(), '*'))
     
     >>> aggregate4 = FeatureAggregate()
@@ -424,3 +424,4 @@ def _test(*args, **keywds):
 if __name__ == "__main__":
     if __debug__:
         _test()
+

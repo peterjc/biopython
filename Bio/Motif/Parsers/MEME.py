@@ -23,7 +23,7 @@ def read(handle):
     >>> record = MEME.read(f)
     >>> for motif in record.motifs:
     ...     for instance in motif.instances:
-    ...         print instance.motif_name, instance.sequence_name, instance.strand, instance.pvalue
+    ...         print(instance.motif_name, instance.sequence_name, instance.strand, instance.pvalue)
     
     """
     record = MEMERecord()
@@ -969,3 +969,4 @@ class MASTRecord:
             if m.name == name:
                 return m
     
+

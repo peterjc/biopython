@@ -24,7 +24,7 @@ def open_database(driver = "MySQLdb", **kwargs):
     This function is the easiest way to retrieve a connection to a
     database, doing something like:
         
-        >>> from BioSeq import BioSeqDatabase
+        >>> from .BioSeq import BioSeqDatabase
         >>> server = BioSeqDatabase.open_database(user = "root", db="minidb")
 
     the various options are:
@@ -515,3 +515,4 @@ class BioSeqDatabase:
             #End of hack
             db_loader.load_seqrecord(cur_record)
         return num_records
+

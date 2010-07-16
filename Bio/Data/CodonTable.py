@@ -63,8 +63,8 @@ class CodonTable:
 
         e.g.
         >>> import Bio.Data.CodonTable
-        >>> print Bio.Data.CodonTable.standard_dna_table
-        >>> print Bio.Data.CodonTable.generic_by_id[1]
+        >>> print(Bio.Data.CodonTable.standard_dna_table)
+        >>> print(Bio.Data.CodonTable.generic_by_id[1])
         """
 
         if self.id:
@@ -892,3 +892,4 @@ assert generic_by_id[4] == generic_by_name["SGC3"]
 assert generic_by_id[11] == generic_by_name["Bacterial"]
 assert generic_by_id[11] == generic_by_name["Plant Plastid"]
 assert generic_by_id[15] == generic_by_name['Blepharisma Macronuclear']
+

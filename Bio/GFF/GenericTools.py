@@ -102,7 +102,7 @@ def is_nestable(x):
     0
     >>> is_nestable((0,))
     1
-    >>> is_nestable(range(5))
+    >>> is_nestable(list(range(5)))
     1
     """
     return isinstance(x, (tuple, list))
@@ -162,3 +162,4 @@ def _test():
 if __name__ == "__main__":
     if __debug__:
         _test()
+

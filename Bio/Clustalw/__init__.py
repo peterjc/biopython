@@ -59,7 +59,7 @@ def parse_file(file_name, alphabet = IUPAC.unambiguous_dna, debug_level = 0):
     >>> filename = "Clustalw/protein.aln"
     >>> alpha = Alphabet.Gapped(Alphabet.generic_protein)
     >>> align = Clustalw.parse_file(filename, alphabet=alpha)
-    >>> print align.get_alignment_length()
+    >>> print(align.get_alignment_length())
     411
     >>> clustalw_string = str(align)
 
@@ -70,7 +70,7 @@ def parse_file(file_name, alphabet = IUPAC.unambiguous_dna, debug_level = 0):
     >>> filename = "Clustalw/protein.aln"
     >>> alpha = Alphabet.Gapped(Alphabet.generic_protein)
     >>> align = AlignIO.read(open(filename), "clustal", alphabet=alpha)
-    >>> print align.get_alignment_length()
+    >>> print(align.get_alignment_length())
     411
     >>> assert clustalw_string == align.format("clustal")
     """ 
@@ -514,3 +514,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

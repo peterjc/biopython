@@ -70,7 +70,7 @@ Some examples:
 To see a description of the parameters for a function, please look at
 the docstring for the function.
 
->>> print newalign.align.localds.__doc__
+>>> print(newalign.align.localds.__doc__)
 localds(sequenceA, sequenceB, match_dict, open, extend) -> alignments
 
 """
@@ -809,4 +809,5 @@ else:
     for name in list(cpairwise2.__dict__.keys()):
         if not name.startswith("__"):
             this_module.__dict__[name] = cpairwise2.__dict__[name]
+
 
