@@ -13405,7 +13405,7 @@ class TestNCBITextParser(unittest.TestCase):
         handle = open(path)
         records = NCBIStandalone.Iterator(handle, self.parser)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTP")
         self.assertEqual(record.version, '2.2.2')
         self.assertEqual(record.date, "Jan-08-2002")
@@ -13767,7 +13767,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(record.blast_cutoff[0], 59)
         self.assertAlmostEqual(record.blast_cutoff[1], 27.3)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTP")
         self.assertEqual(record.version, '2.2.2')
         self.assertEqual(record.date, "Jan-08-2002")
@@ -13989,7 +13989,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(record.blast_cutoff[0], 58)
         self.assertAlmostEqual(record.blast_cutoff[1], 26.9)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record, None)
 
     def test_bt070(self):
@@ -13999,7 +13999,7 @@ class TestNCBITextParser(unittest.TestCase):
         handle = open(path)
         records = NCBIStandalone.Iterator(handle, self.parser)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTN")
         self.assertEqual(record.version, '2.2.2')
         self.assertEqual(record.date, "Jan-08-2002")
@@ -14023,7 +14023,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertAlmostEqual(record.ka_params_gap[0], 1.370)
         self.assertAlmostEqual(record.ka_params_gap[1], 0.711)
         self.assertAlmostEqual(record.ka_params_gap[2], 1.310)
-        self.assertEqual(None, records.next())
+        self.assertEqual(None, next(records))
 
     def test_bt071(self):
         "Test parsing BLASTN 2.2.2 output with missing error messages (bt071)"
@@ -14032,7 +14032,7 @@ class TestNCBITextParser(unittest.TestCase):
         handle = open(path)
         records = NCBIStandalone.Iterator(handle, self.parser)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTN")
         self.assertEqual(record.version, '2.2.2')
         self.assertEqual(record.date, "Jan-08-2002")
@@ -14056,7 +14056,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertAlmostEqual(record.ka_params_gap[0], 1.370)
         self.assertAlmostEqual(record.ka_params_gap[1], 0.711)
         self.assertAlmostEqual(record.ka_params_gap[2], 1.310)
-        self.assertEqual(None, records.next())
+        self.assertEqual(None, next(records))
 
     def test_bt075(self):
         "Test parsing BLASTP 2.2.8 output (bt075)"
@@ -14144,7 +14144,7 @@ class TestNCBITextParser(unittest.TestCase):
         handle = open(path)
         records = NCBIStandalone.Iterator(handle, self.parser)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.15')
         self.assertEqual(record.date, "Oct-15-2006")
@@ -14155,7 +14155,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(record.database_letters, 1573298872)
         self.assertEqual(len(record.descriptions), 0)
         self.assertEqual(len(record.alignments), 0)
-        self.assertEqual(None, records.next())
+        self.assertEqual(None, next(records))
 
     def test_bt077(self):
         "Test parsing BLASTX 2.2.20 output (bt077)"
@@ -14164,7 +14164,7 @@ class TestNCBITextParser(unittest.TestCase):
         handle = open(path)
         records = NCBIStandalone.Iterator(handle, self.parser)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.20')
         self.assertEqual(record.date, "Feb-08-2009")
@@ -14192,7 +14192,7 @@ class TestNCBITextParser(unittest.TestCase):
             else:
                 self.assertEqual(a.title, ">" + b[0])
 
-        self.assertEqual(None, records.next())
+        self.assertEqual(None, next(records))
 
     def test_bt078(self):
         "Test parsing BLASTX 2.2.20 output with multiple queries (bt078)"
@@ -14201,7 +14201,7 @@ class TestNCBITextParser(unittest.TestCase):
         handle = open(path)
         records = NCBIStandalone.Iterator(handle, self.parser)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.20')
         self.assertEqual(record.date, "Feb-08-2009")
@@ -14213,7 +14213,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.descriptions), 0)
         self.assertEqual(len(record.alignments), 0)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.20')
         self.assertEqual(record.date, "Feb-08-2009")
@@ -14225,7 +14225,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.descriptions), 0)
         self.assertEqual(len(record.alignments), 0)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.20')
         self.assertEqual(record.date, "Feb-08-2009")
@@ -14237,7 +14237,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.descriptions), 0)
         self.assertEqual(len(record.alignments), 0)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.20')
         self.assertEqual(record.date, "Feb-08-2009")
@@ -14269,7 +14269,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(record.alignments[1].hsps[1].align_length, 23)
         self.assertEqual(record.alignments[1].hsps[1].identities, (12,23))
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.20')
         self.assertEqual(record.date, "Feb-08-2009")
@@ -14281,7 +14281,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.descriptions), 0)
         self.assertEqual(len(record.alignments), 0)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.20')
         self.assertEqual(record.date, "Feb-08-2009")
@@ -14293,7 +14293,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.descriptions), 0)
         self.assertEqual(len(record.alignments), 0)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.20')
         self.assertEqual(record.date, "Feb-08-2009")
@@ -14305,7 +14305,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.descriptions), 0)
         self.assertEqual(len(record.alignments), 0)
 
-        self.assertEqual(None, records.next())
+        self.assertEqual(None, next(records))
                 
     def test_bt079(self):
         "Test parsing BLASTP 2.2.21 output with multiple queries (bt079)"
@@ -14314,7 +14314,7 @@ class TestNCBITextParser(unittest.TestCase):
         handle = open(path)
         records = NCBIStandalone.Iterator(handle, self.parser)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTP")
         self.assertEqual(record.version, '2.2.21')
         self.assertEqual(record.date, "Jun-14-2009")
@@ -14327,7 +14327,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.alignments), 1) # I used -b 1
         self.assertEqual(len(record.alignments[0].hsps), 1)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTP")
         self.assertEqual(record.version, '2.2.21')
         self.assertEqual(record.date, "Jun-14-2009")
@@ -14340,7 +14340,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.alignments), 1) # I used -b 1
         self.assertEqual(len(record.alignments[0].hsps), 2)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTP")
         self.assertEqual(record.version, '2.2.21')
         self.assertEqual(record.date, "Jun-14-2009")
@@ -14353,7 +14353,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.alignments), 1) # I used -b 1
         self.assertEqual(len(record.alignments[0].hsps), 1)
 
-        self.assertEqual(None, records.next())
+        self.assertEqual(None, next(records))
 
     def test_bt080(self):
         "Test parsing BLASTX 2.2.22 output with multiple queries (bt080)"
@@ -14362,7 +14362,7 @@ class TestNCBITextParser(unittest.TestCase):
         handle = open(path)
         records = NCBIStandalone.Iterator(handle, self.parser)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.22')
         self.assertEqual(record.date, "Sep-27-2009")
@@ -14375,7 +14375,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.alignments), 1) # I used -b 1
         self.assertEqual(len(record.alignments[0].hsps), 1)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.22')
         self.assertEqual(record.date, "Sep-27-2009")
@@ -14388,7 +14388,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.alignments), 1) # I used -b 1
         self.assertEqual(len(record.alignments[0].hsps), 2)
         
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.22')
         self.assertEqual(record.date, "Sep-27-2009")
@@ -14400,7 +14400,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.descriptions), 0)
         self.assertEqual(len(record.alignments), 0)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.22')
         self.assertEqual(record.date, "Sep-27-2009")
@@ -14413,7 +14413,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.alignments), 1) # I used -b 1
         self.assertEqual(len(record.alignments[0].hsps), 1)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.22')
         self.assertEqual(record.date, "Sep-27-2009")
@@ -14426,7 +14426,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.alignments), 1) # I used -b 1
         self.assertEqual(len(record.alignments[0].hsps), 2)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.22')
         self.assertEqual(record.date, "Sep-27-2009")
@@ -14439,7 +14439,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.alignments), 1) # I used -b 1
         self.assertEqual(len(record.alignments[0].hsps), 1)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.22')
         self.assertEqual(record.date, "Sep-27-2009")
@@ -14452,7 +14452,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.alignments), 1) # I used -b 1
         self.assertEqual(len(record.alignments[0].hsps), 1)
 
-        self.assertEqual(None, records.next())
+        self.assertEqual(None, next(records))
 
     def test_bt081(self):
         "Test parsing BLASTX 2.2.22+ output with multiple queries (bt081)"
@@ -14461,7 +14461,7 @@ class TestNCBITextParser(unittest.TestCase):
         handle = open(path)
         records = NCBIStandalone.Iterator(handle, self.parser)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.22+')
         self.assertEqual(record.date, "")
@@ -14474,7 +14474,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.alignments), 1) # I used -b 1
         self.assertEqual(len(record.alignments[0].hsps), 1)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.22+')
         self.assertEqual(record.date, "")
@@ -14488,7 +14488,7 @@ class TestNCBITextParser(unittest.TestCase):
         #Two short HSPs with 2.2.22 (bt080.txt), but one with 2.2.22+
         self.assertEqual(len(record.alignments[0].hsps), 1)
         
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.22+')
         self.assertEqual(record.date, "")
@@ -14500,7 +14500,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.descriptions), 0)
         self.assertEqual(len(record.alignments), 0)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.22+')
         self.assertEqual(record.date, "")
@@ -14513,7 +14513,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.alignments), 1) # I used -b 1
         self.assertEqual(len(record.alignments[0].hsps), 1)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.22+')
         self.assertEqual(record.date, "")
@@ -14527,7 +14527,7 @@ class TestNCBITextParser(unittest.TestCase):
         #Two short HSPs with 2.2.22 (bt080.txt), but one with 2.2.22+
         self.assertEqual(len(record.alignments[0].hsps), 1)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.22+')
         self.assertEqual(record.date, "")
@@ -14540,7 +14540,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.alignments), 1) # I used -b 1
         self.assertEqual(len(record.alignments[0].hsps), 1)
 
-        record = records.next()
+        record = next(records)
         self.assertEqual(record.application, "BLASTX")
         self.assertEqual(record.version, '2.2.22+')
         self.assertEqual(record.date, "")
@@ -14553,7 +14553,7 @@ class TestNCBITextParser(unittest.TestCase):
         self.assertEqual(len(record.alignments), 1) # I used -b 1
         self.assertEqual(len(record.alignments[0].hsps), 1)
 
-        self.assertEqual(None, records.next())
+        self.assertEqual(None, next(records))
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner(verbosity = 2)

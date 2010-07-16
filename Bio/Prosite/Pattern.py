@@ -471,18 +471,18 @@ def _verify_test(infile):
         pattern = pattern + line[5:-1]
         if line[-2] == ".":
             try:
-                print "*" * 60
-                print pattern
+                print("*" * 60)
+                print(pattern)
                 p = compile(pattern)
-                print prosite_to_re(pattern)
-                print repr(p.re)
-                print prosite_to_grouped_re(pattern)
-                print repr(p.grouped_re)
+                print(prosite_to_re(pattern))
+                print(repr(p.re))
+                print(prosite_to_grouped_re(pattern))
+                print(repr(p.grouped_re))
                 terms = str(p)
                 if terms != pattern:
-                    print "DIFFER", terms, pattern
-            except TypeError, msg:
-                print "PROBLEM", pattern, msg
+                    print("DIFFER", terms, pattern)
+            except TypeError as msg:
+                print("PROBLEM", pattern, msg)
             pattern = ""
 
 # Commented out by jchang 4/13/00.

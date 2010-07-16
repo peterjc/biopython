@@ -9,12 +9,12 @@ This API follows the same semantics as Biopython's SeqIO and AlignIO.
 """
 __docformat__ = "epytext en"
 
-import BaseTree
-import NewickIO
-import NexusIO
+from . import BaseTree
+from . import NewickIO
+from . import NexusIO
 # Python 2.4 doesn't have ElementTree, which PhyloXMLIO needs
 try:
-    import PhyloXMLIO
+    from . import PhyloXMLIO
 except ImportError:
     # TODO: should we issue a warning? the installer will have already whined
     # raise MissingExternalDependencyError(
@@ -46,7 +46,7 @@ def parse(file, format):
         True
     """
     do_close = False
-    if isinstance(file, basestring):
+    if isinstance(file, str):
         file = open(file, 'r')
         do_close = True
     # Py2.4 compatibility: this should be in a try/finally block
@@ -66,11 +66,11 @@ def read(file, format):
     """
     try:
         tree_gen = parse(file, format)
-        tree = tree_gen.next()
+        tree = next(tree_gen)
     except StopIteration:
         raise ValueError("There are no trees in this file.")
     try:
-        tree_gen.next()
+        next(tree_gen)
     except StopIteration:
         return tree
     else:
@@ -86,7 +86,7 @@ def write(trees, file, format, **kwargs):
         # Passed a single tree instead of an iterable -- that's OK
         trees = [trees]
     do_close = False
-    if isinstance(file, basestring):
+    if isinstance(file, str):
         file = open(file, 'w+')
         do_close = True
     try:

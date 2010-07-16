@@ -78,10 +78,10 @@ class ColorTranslator:
             color = colour
         
         if color is None:
-            raise ValueError, "Passed color (or colour) must be a valid color type"
+            raise ValueError("Passed color (or colour) must be a valid color type")
         if type(color) == type(1):
             color = self.scheme_color(color)
-        elif isinstance(color, basestring):
+        elif isinstance(color, str):
             #Assume its a named reportlab color like "red".
             color = colors.toColor(color)
         elif type(color) == type((1., 2., 3.)) and type(color[0]) == type(1.):
@@ -118,7 +118,7 @@ class ColorTranslator:
                 self._colorscheme[label] = (self.int255_color((red, green, blue)),
                                              comment)
             except:
-                raise IOError, "Expected INT \t INT \t INT \t INT \t string input"
+                raise IOError("Expected INT \t INT \t INT \t INT \t string input")
 
     def get_artemis_colorscheme(self):
         """ get_artemis_colorscheme(self)
@@ -141,7 +141,7 @@ class ColorTranslator:
         if value in self._artemis_colorscheme:
             return self._artemis_colorscheme[value][0]
         else:
-            raise ValueError, "Artemis color out of range: %d" % value
+            raise ValueError("Artemis color out of range: %d" % value)
 
 
     def get_colorscheme(self):
@@ -164,7 +164,7 @@ class ColorTranslator:
         if value in self._colorscheme:
             return self._colorscheme[value][0]
         else:
-            raise ValueError, "Scheme color out of range: %d" % value
+            raise ValueError("Scheme color out of range: %d" % value)
 
 
     def int255_color(self, values):
@@ -203,15 +203,15 @@ if __name__ == '__main__':
 
     # Test code
     gdct = ColorTranslator()
-    print gdct.float1_color((0.5, 0.5, 0.5))
-    print gdct.int255_color((1, 75, 240))
-    print gdct.artemis_color(7)
-    print gdct.scheme_color(2)
+    print(gdct.float1_color((0.5, 0.5, 0.5)))
+    print(gdct.int255_color((1, 75, 240)))
+    print(gdct.artemis_color(7))
+    print(gdct.scheme_color(2))
 
-    print gdct.translate((0.5, 0.5, 0.5))
-    print gdct.translate((1, 75, 240))
-    print gdct.translate(7)
-    print gdct.translate(2)
+    print(gdct.translate((0.5, 0.5, 0.5)))
+    print(gdct.translate((1, 75, 240)))
+    print(gdct.translate(7))
+    print(gdct.translate(2))
 
                 
                         

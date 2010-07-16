@@ -134,19 +134,19 @@ __docformat__ = "epytext en" #not just plaintext
 #   http://www.bioperl.org/wiki/MSF_multiple_alignment_format 
 
 #from cStringIO import StringIO
-from StringIO import StringIO
+from io import StringIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
 from Bio.Align.Generic import Alignment
 from Bio.Alphabet import Alphabet, AlphabetEncoder, _get_base_alphabet
 
-import StockholmIO
-import ClustalIO
-import NexusIO
-import PhylipIO
-import EmbossIO
-import FastaIO
+from . import StockholmIO
+from . import ClustalIO
+from . import NexusIO
+from . import PhylipIO
+from . import EmbossIO
+from . import FastaIO
 
 #Convention for format names is "mainname-subtype" in lower case.
 #Please use the same names as BioPerl and EMBOSS where possible.
@@ -186,7 +186,7 @@ def write(alignments, handle, format):
     from Bio import SeqIO
 
     #Try and give helpful error messages:
-    if not isinstance(format, basestring):
+    if not isinstance(format, str):
         raise TypeError("Need a string for the file format (lower case)")
     if not format:
         raise ValueError("Format required (lower case string)")
@@ -197,7 +197,7 @@ def write(alignments, handle, format):
         #This raised an exception in order version of Biopython
         alignments = [alignments]
 
-    if isinstance(handle, basestring):
+    if isinstance(handle, str):
         handle = open(handle, "w")
         handle_close = True
     else:
@@ -329,12 +329,12 @@ def parse(handle, format, seq_count=None, alphabet=None):
     """
     from Bio import SeqIO
 
-    if isinstance(handle, basestring):
+    if isinstance(handle, str):
         handle = open(handle, "rU")
         #TODO - On Python 2.5+ use with statement to close handle
 
     #Try and give helpful error messages:
-    if not isinstance(format, basestring):
+    if not isinstance(format, str):
         raise TypeError("Need a string for the file format (lower case)")
     if not format:
         raise ValueError("Format required (lower case string)")
@@ -416,13 +416,13 @@ def read(handle, format, seq_count=None, alphabet=None):
     """
     iterator = parse(handle, format, seq_count, alphabet)
     try:
-        first = iterator.next()
+        first = next(iterator)
     except StopIteration:
         first = None
     if first is None:
         raise ValueError("No records found in handle")
     try:
-        second = iterator.next()
+        second = next(iterator)
     except StopIteration:
         second = None
     if second is not None:
@@ -446,7 +446,7 @@ def convert(in_file, in_format, out_file, out_format, alphabet=None):
     """
     #TODO - Add optimised versions of important conversions
     #For now just off load the work to SeqIO parse/write    
-    if isinstance(in_file, basestring):
+    if isinstance(in_file, str):
         in_handle = open(in_file, "rU")
         in_close = True
     else:
@@ -455,7 +455,7 @@ def convert(in_file, in_format, out_file, out_format, alphabet=None):
     #This will check the arguments and issue error messages,
     alignments = parse(in_handle, in_format, None, alphabet)
     #Don't open the output file until we've checked the input is OK:
-    if isinstance(out_file, basestring):
+    if isinstance(out_file, str):
         out_handle = open(out_file, "w")
         out_close = True
     else:
@@ -480,21 +480,21 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..", "..", "Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..", "..", "Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
     elif os.path.isdir(os.path.join("Tests", "Fasta")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
 
 if __name__ == "__main__":
     _test()

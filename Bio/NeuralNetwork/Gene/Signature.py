@@ -11,7 +11,7 @@ from Bio import utils
 from Bio.Seq import Seq
 
 # local stuff
-from Pattern import PatternRepository
+from .Pattern import PatternRepository
 
 class SignatureFinder:
     """Find Signatures in a group of sequence records.
@@ -205,7 +205,7 @@ class SignatureCoder:
         # as long as we have some signatures present, normalize them
         # otherwise we'll just return 0 for everything 
         if max_count > 0:
-            for sig in sequence_sigs.keys():
+            for sig in list(sequence_sigs.keys()):
                 sequence_sigs[sig] = (float(sequence_sigs[sig] - min_count)
                                       / float(max_count))
 

@@ -72,7 +72,7 @@ class CodonTable:
         else:
             answer = "Table ID unknown"
         if self.names:
-            answer += " " + ", ".join(filter(None, self.names))
+            answer += " " + ", ".join([_f for _f in self.names if _f])
 
         #Use the main four letters (and the conventional ordering)
         #even for ambiguous tables
@@ -121,7 +121,7 @@ def make_back_table(table, default_stop_codon):
     # Do the sort so changes in the hash implementation won't affect
     # the result when one amino acid is coded by more than one codon.
     back_table = {}
-    keys = table.keys() ; keys.sort()
+    keys = list(table.keys()) ; keys.sort()
     for key in keys:
         back_table[table[key]] = key
     back_table[None] = default_stop_codon
@@ -194,12 +194,12 @@ def list_possible_proteins(codon, forward_table, ambiguous_nucleotide_values):
                         # If tripping over a stop codon
                         stops.append(y1+y2+y3)
         if stops:
-            if possible.keys():
+            if list(possible.keys()):
                 raise TranslationError("ambiguous codon '%s' codes " % codon \
                                        + "for both proteins and stop codons")
             # This is a true stop codon - tell the caller about it
             raise KeyError(codon)
-        return possible.keys()
+        return list(possible.keys())
 
 def list_ambiguous_codons(codons, ambiguous_nucleotide_values):
     """Extends a codon list to include all possible ambigous codons.
@@ -219,13 +219,13 @@ def list_ambiguous_codons(codons, ambiguous_nucleotide_values):
     #This will generate things like 'TRR' from ['TAG', 'TGA'], which
     #we don't want to include:
     c1_list = sorted(letter for (letter, meanings) \
-               in ambiguous_nucleotide_values.iteritems() \
+               in ambiguous_nucleotide_values.items() \
                if set([codon[0] for codon in codons]).issuperset(set(meanings)))
     c2_list = sorted(letter for (letter, meanings) \
-               in ambiguous_nucleotide_values.iteritems() \
+               in ambiguous_nucleotide_values.items() \
                if set([codon[1] for codon in codons]).issuperset(set(meanings)))
     c3_list = sorted(letter for (letter, meanings) \
-               in ambiguous_nucleotide_values.iteritems() \
+               in ambiguous_nucleotide_values.items() \
                if set([codon[2] for codon in codons]).issuperset(set(meanings)))
     #candidates is a list (not a set) to preserve the iteration order
     candidates = []
@@ -282,13 +282,13 @@ class AmbiguousForwardTable:
         self.ambiguous_protein = ambiguous_protein
 
         inverted = {}
-        for name, val in ambiguous_protein.items():
+        for name, val in list(ambiguous_protein.items()):
             for c in val:
                 x = inverted.get(c, {})
                 x[name] = 1
                 inverted[c] = x
-        for name, val in inverted.items():
-            inverted[name] = val.keys()
+        for name, val in list(inverted.items()):
+            inverted[name] = list(val.keys())
         self._inverted = inverted
         
         self._cache = {}
@@ -345,7 +345,7 @@ class AmbiguousForwardTable:
 
         n = len(possible)
         possible = []
-        for amino, val in ambiguous_possible.items():
+        for amino, val in list(ambiguous_possible.items()):
             if val == n:
                 possible.append(amino)
 
@@ -390,7 +390,7 @@ def register_ncbi_table(name, alt_name, id,
     # replace all T's with U's for the RNA tables
     rna_table = {}
     generic_table = {}
-    for codon, val in table.items():
+    for codon, val in list(table.items()):
         generic_table[codon] = val
         codon = codon.replace("T", "U")
         generic_table[codon] = val
@@ -414,7 +414,7 @@ def register_ncbi_table(name, alt_name, id,
                              generic_start_codons, generic_stop_codons)
 
     #The following isn't very elegant, but seems to work nicely.
-    _merged_values = dict(IUPACData.ambiguous_rna_values.iteritems())
+    _merged_values = dict(iter(IUPACData.ambiguous_rna_values.items()))
     _merged_values["T"] = "U"
     ambig_generic = AmbiguousCodonTable(generic,
                                         Alphabet.NucleotideAlphabet(),
@@ -857,13 +857,13 @@ register_ncbi_table(name = 'Thraustochytrium Mitochondrial',
 
 
 #Basic sanity test,
-for key, val in generic_by_name.items():
+for key, val in list(generic_by_name.items()):
     assert key in ambiguous_generic_by_name[key].names
-for key, val in generic_by_id.items():
+for key, val in list(generic_by_id.items()):
     assert ambiguous_generic_by_id[key].id == key
 del key, val
 
-for n in ambiguous_generic_by_id.keys():
+for n in list(ambiguous_generic_by_id.keys()):
     assert ambiguous_rna_by_id[n].forward_table["GUU"] == "V"
     assert ambiguous_rna_by_id[n].forward_table["GUN"] == "V"
     if n != 23 :
@@ -873,7 +873,7 @@ for n in ambiguous_generic_by_id.keys():
     if "UAA" in unambiguous_rna_by_id[n].stop_codons \
     and "UGA" in unambiguous_rna_by_id[n].stop_codons:
         try:
-            print ambiguous_dna_by_id[n].forward_table["TRA"]
+            print(ambiguous_dna_by_id[n].forward_table["TRA"])
             assert False, "Should be a stop only"
         except KeyError:
             pass

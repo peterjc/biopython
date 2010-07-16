@@ -35,7 +35,7 @@ class AbstractLayer:
         else:
             lower_range = 1
 
-        self.nodes = range(lower_range, num_nodes + 1)
+        self.nodes = list(range(lower_range, num_nodes + 1))
 
         self.weights = {}
 
@@ -50,7 +50,7 @@ class AbstractLayer:
         If weights are not explicitly set, they will be initialized to
         random values to start with.
         """
-        if not(self.weights.has_key((this_node, next_node))):
+        if not((this_node, next_node) in self.weights):
             raise ValueError("Invalid node values passed.")
         
         self.weights[(this_node, next_node)] = value
@@ -101,7 +101,7 @@ class InputLayer(AbstractLayer):
         o inputs -- A list of inputs into the network -- this must be
         equal to the number of nodes in the layer.
         """
-        if len(inputs) != len(self.values.keys()) - 1:
+        if len(inputs) != len(list(self.values.keys())) - 1:
             raise ValueError("Inputs do not match input layer nodes.")
 
         # set the node values from the inputs

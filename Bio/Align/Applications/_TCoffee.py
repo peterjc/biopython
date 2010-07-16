@@ -66,13 +66,13 @@ class TCoffeeCommandline(AbstractCommandline):
                     "Default: blosum62mt",
                     0),
            _Option(["-gapopen", "gapopen"], ["input"],
-                    lambda x: isinstance(x, types.IntType),
+                    lambda x: isinstance(x, int),
                     0,
                     "Indicates the penalty applied for opening a gap "
                     "(negative integer)",
                     0),
            _Option(["-gapext", "gapext"], ["input"],
-                    lambda x: isinstance(x, types.IntType),
+                    lambda x: isinstance(x, int),
                     0,
                     "Indicates the penalty applied for extending a "
                     "gap. (negative integer)",
