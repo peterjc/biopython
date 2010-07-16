@@ -135,7 +135,7 @@ __docformat__ = "epytext en" #not just plaintext
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
-from Interfaces import AlignmentIterator, SequentialAlignmentWriter
+from .Interfaces import AlignmentIterator, SequentialAlignmentWriter
 
 class StockholmWriter(SequentialAlignmentWriter):
     """Stockholm/PFAM alignment writer."""
@@ -239,7 +239,7 @@ class StockholmWriter(SequentialAlignmentWriter):
                 % (seq_name, self.clean(xref)))
 
         #GS = other per sequence annotation
-        for key, value in record.annotations.iteritems():
+        for key, value in record.annotations.items():
             if key in self.pfam_gs_mapping:
                 data = self.clean(str(value))
                 if data:
@@ -253,7 +253,7 @@ class StockholmWriter(SequentialAlignmentWriter):
                 pass
 
         #GR = per row per column sequence annotation
-        for key, value in record.letter_annotations.iteritems():
+        for key, value in record.letter_annotations.items():
             if key in self.pfam_gr_mapping and len(str(value))==len(record.seq):
                 data = self.clean(str(value))
                 if data:
@@ -310,7 +310,7 @@ class StockholmIterator(AlignmentIterator):
                        "OC" : "organism_classification",
                        "LO" : "look"}
 
-    def next(self):
+    def __next__(self):
         try:
             line = self._header
             del self._header
@@ -430,7 +430,7 @@ class StockholmIterator(AlignmentIterator):
             #For now, store the annotation a new private property:
             alignment._annotations = gr
 
-            alignment_length = len(seqs.values()[0])
+            alignment_length = len(list(seqs.values())[0])
             for id in ids:
                 seq = seqs[id]
                 if alignment_length != len(seq):
@@ -460,7 +460,7 @@ class StockholmIterator(AlignmentIterator):
         if identifier.find("/")!=-1:
             start_end = identifier.split("/",1)[1]
             if start_end.count("-")==1:
-                start, end = map(int, start_end.split("-"))
+                start, end = list(map(int, start_end.split("-")))
                 name = identifier.split("/",1)[0]
                 return (name, start, end)
         return (identifier, None, None)
@@ -539,14 +539,14 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..","..","Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..","..","Tests"))
         assert os.path.isfile("Stockholm/simple.sth")
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
         
 if __name__ == "__main__":
     _test()

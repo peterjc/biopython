@@ -9,8 +9,8 @@ This module is OBSOLETE; please use Bio.Motif.Parsers.AlignAce instead.
 """
 
 from Bio.ParserSupport import *
-from Scanner import AlignAceScanner,CompareAceScanner
-from Motif import Motif
+from .Scanner import AlignAceScanner,CompareAceScanner
+from .Motif import Motif
 from Bio.Alphabet import IUPAC
 from Bio.Seq import Seq
 

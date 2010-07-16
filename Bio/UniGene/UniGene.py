@@ -19,7 +19,7 @@
 
 import string
 import operator
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import sgmllib
 import UserDict
 import Bio.File
@@ -193,20 +193,20 @@ class UniGeneParser( sgmllib.SGMLParser ):
             indent = indent + '    '
         if( type( item ) == type( '' ) ):
             if( item != '' ):
-                print '%s%s' % ( indent, item )
+                print('%s%s' % ( indent, item ))
         elif( type( item ) == type([])):
             for subitem in item:
                 self.print_item( subitem, level + 1 )
         elif( isinstance( item, UserDict.UserDict ) ):
             for subitem in item:
-                print '%skey is %s' % ( indent, subitem )
+                print('%skey is %s' % ( indent, subitem ))
                 self.print_item( item[ subitem ], level + 1 )
         else:
-            print item
+            print(item)
 
     def print_tags( self ):
         for key in self.queue:
-            print 'key %s' % key
+            print('key %s' % key)
             self.print_item( self.queue[ key ] )
 
 

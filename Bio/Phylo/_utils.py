@@ -152,7 +152,7 @@ def draw_graphviz(tree, label_func=str, prog='twopi', args='',
         labels = dict(get_label_mapping(G, set(kwargs['nodelist'])))
     else:
         labels = dict(get_label_mapping(G, None))
-    kwargs['nodelist'] = labels.keys()
+    kwargs['nodelist'] = list(labels.keys())
     if 'edge_color' not in kwargs:
         kwargs['edge_color'] = [isinstance(e[2], dict) and
                                 e[2].get('color', 'k') or 'k'
@@ -193,14 +193,14 @@ def draw_ascii(tree, file=sys.stdout, column_width=80):
         """Create a mapping of each clade to its column position."""
         depths = tree.depths()
         # If there are no branch lengths, assume unit branch lengths
-        if not max(depths.itervalues()):
+        if not max(depths.values()):
             depths = tree.depths(unit_branch_lengths=True)
         # Potential drawing overflow due to rounding -- 1 char per tree layer
         fudge_margin = int(math.ceil(math.log(len(taxa), 2)))
         cols_per_branch_unit = ((drawing_width - fudge_margin)
-                                / float(max(depths.itervalues())))
+                                / float(max(depths.values())))
         return dict((clade, int(round(blen*cols_per_branch_unit + 0.5)))
-                    for clade, blen in depths.iteritems())
+                    for clade, blen in depths.items())
 
     def get_row_positions(tree):
         positions = dict((taxon, 2*idx) for idx, taxon in enumerate(taxa))

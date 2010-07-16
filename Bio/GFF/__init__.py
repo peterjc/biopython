@@ -24,6 +24,7 @@ Based on documentation for Lincoln Stein's Perl Bio::DB::GFF
 """
 
 import warnings
+from functools import reduce
 warnings.warn("The old Bio.GFF module for access to a MySQL GFF database "
               "created with BioPerl is deprecated, and will be removed (or "
               "possibly just moved) in a future release of Biopython.  If you "
@@ -52,9 +53,9 @@ from Bio import DocSQL
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
-import binning
-import easy
-import GenericTools
+from . import binning
+from . import easy
+from . import GenericTools
 
 
 DEFAULT_ALPHABET = IUPAC.unambiguous_dna
@@ -131,7 +132,7 @@ class RetrieveSeqname(GenericTools.Surrogate, SeqRecord):
             self.__records[seqname] = record
             GenericTools.Surrogate.__init__(self, self.__records[seqname])
             if self._diagnostics:
-                print >>sys.stderr, " Done."
+                print(" Done.", file=sys.stderr)
 
 class Feature(object):
     """
@@ -191,7 +192,7 @@ class Feature(object):
                  frame=None,
                  location=None,
                  alphabet=DEFAULT_ALPHABET):
-        if not isinstance(seqname, (types.StringType, types.NoneType)):
+        if not isinstance(seqname, (bytes, type(None))):
             raise TypeError("seqname needs to be string")
         self.frame = frame
         self.alphabet = alphabet
@@ -229,8 +230,8 @@ class Feature(object):
             return seq.translate() #default table
         except AssertionError:
             # if the feature was pickled then we have problems
-            import cPickle
-            if cPickle.dumps(seq.alphabet) == cPickle.dumps(DEFAULT_ALPHABET):
+            import pickle
+            if pickle.dumps(seq.alphabet) == pickle.dumps(DEFAULT_ALPHABET):
                 seq.alphabet = DEFAULT_ALPHABET
                 return seq.translate()
             else:
@@ -256,7 +257,7 @@ class Feature(object):
         return SeqRecord(self.seq(), self.id(), "", self.location())
 
     def xrange(self):
-        return xrange(self.start, self.end)
+        return range(self.start, self.end)
 
     def __str__(self):
         return "Feature(%s)" % self.location()
@@ -381,15 +382,15 @@ class FeatureAggregate(list, Feature):
         if feature_query is None:
             list.__init__(self, [])
         else:
-            list.__init__(self, map(lambda x: x, feature_query))
+            list.__init__(self, [x for x in feature_query])
 
     def location(self):
-        loc = easy.LocationJoin(map(lambda x: x.location(), self))
+        loc = easy.LocationJoin([x.location() for x in self])
         loc.reorient()
         return loc
 
     def map(self, func):
-        mapped = map(func, self)
+        mapped = list(list(map(func, self)))
         if self.location().complement:
             mapped.reverse()
         return reduce(operator.add, mapped)
