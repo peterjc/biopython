@@ -2,8 +2,8 @@
 # Biopython (http://biopython.org) license applies
 
 import sys
-import ProtParamData, IsoelectricPoint
-from ProtParamData import kd  # Added by Iddo to enable the gravy method
+from . import ProtParamData, IsoelectricPoint
+from .ProtParamData import kd  # Added by Iddo to enable the gravy method
 from Bio.Seq import Seq
 from Bio.Alphabet import IUPAC
 from Bio.Data import IUPACData
