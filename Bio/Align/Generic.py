@@ -164,7 +164,7 @@ class Alignment:
         string supported by Bio.AlignIO as an output file format.
         See also the alignment's format() method."""
         if format_spec:
-            from StringIO import StringIO
+            from io import StringIO
             from Bio import AlignIO
             handle = StringIO()
             AlignIO.write([self], handle, format_spec)
@@ -423,10 +423,10 @@ class Alignment:
 
 def _test():
     """Run the Bio.Align.Generic module's doctests."""
-    print "Running doctests..."
+    print("Running doctests...")
     import doctest
     doctest.testmod()
-    print "Done"
+    print("Done")
 
 if __name__ == "__main__":
     _test()

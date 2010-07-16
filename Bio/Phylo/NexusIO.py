@@ -11,7 +11,7 @@ from itertools import chain
 from Bio.Nexus import Nexus
 from Bio.Phylo import Newick
 
-import NewickIO
+from . import NewickIO
 
 # Structure of a Nexus tree-only file
 NEX_TEMPLATE = """\
@@ -67,7 +67,7 @@ def write(obj, handle, **kwargs):
                    for idx, nwk in enumerate(
                         writer.to_strings(plain=False, plain_newick=True,
                                           **kwargs))]
-    tax_labels = map(str, chain(*(t.get_terminals() for t in trees)))
+    tax_labels = list(map(str, chain(*(t.get_terminals() for t in trees))))
     text = NEX_TEMPLATE % {
             'count':    len(tax_labels),
             'labels':   ' '.join(tax_labels),

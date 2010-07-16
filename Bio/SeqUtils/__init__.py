@@ -121,7 +121,7 @@ from math import pi, sin, cos, log
 def xGC_skew(seq, window = 1000, zoom = 100,
                          r = 300, px = 100, py = 100):
     """Calculates and plots normal and accumulated GC skew (GRAPHICS !!!)."""
-    from Tkinter import Scrollbar, Canvas, BOTTOM, BOTH, ALL, \
+    from tkinter import Scrollbar, Canvas, BOTTOM, BOTH, ALL, \
                         VERTICAL, HORIZONTAL, RIGHT, LEFT, X, Y
     yscroll = Scrollbar(orient = VERTICAL)
     xscroll = Scrollbar(orient = HORIZONTAL)
@@ -332,16 +332,16 @@ def six_frame_translations(seq, genetic_code = 1):
         csubseq = comp[i:i+60]
         p = i/3
         res = res + '%d/%d\n' % (i+1, i/3+1)
-        res = res + '  ' + '  '.join(map(None,frames[3][p:p+20])) + '\n'
-        res = res + ' ' + '  '.join(map(None,frames[2][p:p+20])) + '\n'
-        res = res + '  '.join(map(None,frames[1][p:p+20])) + '\n'
+        res = res + '  ' + '  '.join(list(frames[3][p:p+20])) + '\n'
+        res = res + ' ' + '  '.join(list(frames[2][p:p+20])) + '\n'
+        res = res + '  '.join(list(frames[1][p:p+20])) + '\n'
         # seq
         res = res + subseq.lower() + '%5d %%\n' % int(GC(subseq))
         res = res + csubseq.lower() + '\n'
         # - frames
-        res = res + '  '.join(map(None,frames[-2][p:p+20]))  +' \n'
-        res = res + ' ' + '  '.join(map(None,frames[-1][p:p+20])) + '\n'
-        res = res + '  ' + '  '.join(map(None,frames[-3][p:p+20])) + '\n\n'
+        res = res + '  '.join(list(frames[-2][p:p+20]))  +' \n'
+        res = res + ' ' + '  '.join(list(frames[-1][p:p+20])) + '\n'
+        res = res + '  ' + '  '.join(list(frames[-3][p:p+20])) + '\n\n'
     return res
 
 # }}}
@@ -376,8 +376,8 @@ def fasta_uniqids(file):
             
         dict[name] = seq
 
-    for name, seq in dict.items():
-        print '>%s\n%s' % (name, seq)
+    for name, seq in list(dict.items()):
+        print('>%s\n%s' % (name, seq))
 
 def quick_FASTA_reader(file):
     """Simple FASTA reader, returning a list of string tuples.
@@ -498,11 +498,11 @@ if __name__ == '__main__':
          pass
       elif arg[0] in ['--describe']:
          # get all new functions from this file
-         mol_funcs = [x[0] for x in locals().items() if type(x[1]) == type(GC)]
+         mol_funcs = [x[0] for x in list(locals().items()) if type(x[1]) == type(GC)]
          mol_funcs.sort()
-         print 'available functions:'
-         for f in mol_funcs: print '\t--%s' % f
-         print '\n\ne.g.\n./sequtils.py  --apply_on_multi_fasta GC test.fas'
+         print('available functions:')
+         for f in mol_funcs: print('\t--%s' % f)
+         print('\n\ne.g.\n./sequtils.py  --apply_on_multi_fasta GC test.fas')
 
          sys.exit(0)
       elif arg[0] in ['--apply_on_multi_fasta']:
@@ -526,7 +526,7 @@ if __name__ == '__main__':
          results = quicker_apply_on_multi_fasta(file, function, arguments)
       else:
          results = apply_on_multi_fasta(file, function, arguments)
-      for result in results: print result
+      for result in results: print(result)
       
    elif options.get('uniq_ids'):
       file = args[0]

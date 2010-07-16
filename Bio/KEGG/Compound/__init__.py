@@ -74,9 +74,7 @@ class Record:
                            [self.entry])
     def _name(self):
         return _write_kegg("NAME",
-                           map(lambda l:
-                               _wrap_kegg(l, wrap_rule = name_wrap),
-                               self.name))
+                           [_wrap_kegg(l, wrap_rule = name_wrap) for l in self.name])
     def _formula(self):
         return _write_kegg("FORMULA",
                            [self.formula])
@@ -200,13 +198,13 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..","..","..","Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..","..","..","Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
 
 if __name__ == "__main__":
     _test()

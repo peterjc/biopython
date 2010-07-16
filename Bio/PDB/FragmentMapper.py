@@ -34,10 +34,10 @@ import numpy
 
 from Bio.SVDSuperimposer import SVDSuperimposer
 
-import Selection
-from PDBExceptions import PDBException
-from PDBParser import PDBParser
-from Polypeptide import PPBuilder
+from . import Selection
+from .PDBExceptions import PDBException
+from .PDBParser import PDBParser
+from .Polypeptide import PPBuilder
 
 
 # fragment file (lib_SIZE_z_LENGTH.txt)
@@ -79,7 +79,7 @@ def _read_fragments(size, length, dir="."):
             fid+=1
             continue
         # Add CA coord to Fragment
-        coord=numpy.array(map(float, sl[0:3]))
+        coord=numpy.array(list(map(float, sl[0:3])))
         # XXX= dummy residue name
         f.add_residue("XXX", coord)
     fp.close()
@@ -284,7 +284,7 @@ class FragmentMapper:
                         index=i-self.edge
                         assert(index>=0)
                         fd[res]=mflist[index]
-            except PDBException, why:
+            except PDBException as why:
                 if why == 'CHAINBREAK':
                     # Funny polypeptide - skip
                     pass
@@ -329,9 +329,9 @@ if __name__=="__main__":
 
     for r in Selection.unfold_entities(m, "R"):
 
-        print r,
+        print(r, end=' ')
         if r in fm:
-            print fm[r]
+            print(fm[r])
         else:
-            print
+            print()
 

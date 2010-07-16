@@ -1487,7 +1487,7 @@ class QualPhredWriter(SequentialSequenceWriter):
             #This rounds to the nearest integer.
             #TODO - can we record a float in a qual file?
             qualities_strs = [("%i" % round(q, 0)) for q in qualities]
-        except TypeError, e:
+        except TypeError as e:
             if None in qualities:
                 raise TypeError("A quality value of None was found")
             else:
@@ -1710,11 +1710,11 @@ def PairedFastaQualIterator(fasta_handle, qual_handle, alphabet = single_letter_
     #It would also not catch any extra records found in only one file.
     while True:
         try:
-            f_rec = fasta_iter.next()
+            f_rec = next(fasta_iter)
         except StopIteration:
             f_rec = None
         try:
-            q_rec = qual_iter.next()
+            q_rec = next(qual_iter)
         except StopIteration:
             q_rec = None
         if f_rec is None and q_rec is None:
@@ -1745,7 +1745,7 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..", "..", "Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..", "..", "Tests"))
         assert os.path.isfile("Quality/example.fastq")
@@ -1756,7 +1756,7 @@ def _test():
         doctest.testmod(verbose=0)
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
         
 if __name__ == "__main__":
     _test()

@@ -335,7 +335,7 @@ class _Scanner:
                                   contains='No hits found')
             try:
                 read_and_call_while(uhandle, consumer.noevent, blank=1)
-            except ValueError, err:
+            except ValueError as err:
                 if str(err) != "Unexpected end of stream." : raise err
 
             consumer.end_descriptions()
@@ -500,7 +500,7 @@ class _Scanner:
             read_and_call(uhandle, consumer.sbjct, start='Sbjct')
             try:
                 read_and_call_while(uhandle, consumer.noevent, blank=1)
-            except ValueError, err:
+            except ValueError as err:
                 if str(err) != "Unexpected end of stream." : raise err
                 # End of File (well, it looks like it with recent versions
                 # of BLAST for multiple queries after the Iterator class
@@ -537,7 +537,7 @@ class _Scanner:
     def _eof(self, uhandle):
         try:
             line = safe_peekline(uhandle)
-        except ValueError, err:
+        except ValueError as err:
             if str(err) != "Unexpected end of stream." : raise err
             line = ""
         return not line
@@ -625,7 +625,7 @@ class _Scanner:
         # file.
         try:
             read_and_call_while(uhandle, consumer.noevent, blank=1)
-        except ValueError, x:
+        except ValueError as x:
             if str(x) != "Unexpected end of stream.":
                 raise
         consumer.end_database_report()
@@ -1285,14 +1285,14 @@ class _DatabaseReportConsumer:
 
     def ka_params(self, line):
         x = line.split()
-        self._dr.ka_params = map(_safe_float, x)
+        self._dr.ka_params = list(map(_safe_float, x))
 
     def gapped(self, line):
         self._dr.gapped = 1
 
     def ka_params_gap(self, line):
         x = line.split()
-        self._dr.ka_params_gap = map(_safe_float, x)
+        self._dr.ka_params_gap = list(map(_safe_float, x))
 
     def end_database_report(self):
         pass
@@ -1307,7 +1307,7 @@ class _ParametersConsumer:
     def gap_penalties(self, line):
         x = _get_cols(
             line, (3, 5), ncols=6, expected={2:"Existence:", 4:"Extension:"})
-        self._params.gap_penalties = map(_safe_float, x)
+        self._params.gap_penalties = list(map(_safe_float, x))
 
     def num_hits(self, line):
         if line.find('1st pass') != -1:
@@ -1608,7 +1608,7 @@ class Iterator:
         self._parser = parser
         self._header = []
 
-    def next(self):
+    def __next__(self):
         """next(self) -> object
 
         Return the next Blast record from the file.  If no more records,
@@ -1657,7 +1657,7 @@ class Iterator:
         return data
 
     def __iter__(self):
-        return iter(self.next, None)
+        return iter(self.__next__, None)
 
 def blastall(blastcmd, program, database, infile, align_view='7', **keywds):
     """Execute and retrieve data from standalone BLASTPALL as handles (OBSOLETE).
@@ -1758,13 +1758,13 @@ def blastall(blastcmd, program, database, infile, align_view='7', **keywds):
         'seqalign_file' : '-O',
         'outfile' : '-o',
         }
-    from Applications import BlastallCommandline
+    from .Applications import BlastallCommandline
     cline = BlastallCommandline(blastcmd)
     cline.set_parameter(att2param['program'], program)
     cline.set_parameter(att2param['database'], database)
     cline.set_parameter(att2param['infile'], infile)
     cline.set_parameter(att2param['align_view'], str(align_view))
-    for key, value in keywds.iteritems():
+    for key, value in keywds.items():
         cline.set_parameter(att2param[key], str(value))
     return _invoke_blast(cline)
 
@@ -1888,12 +1888,12 @@ def blastpgp(blastcmd, database, infile, align_view='7', **keywds):
         'matrix_outfile' : '-Q',
         'align_infile' : '-B',
         }
-    from Applications import BlastpgpCommandline
+    from .Applications import BlastpgpCommandline
     cline = BlastpgpCommandline(blastcmd)
     cline.set_parameter(att2param['database'], database)
     cline.set_parameter(att2param['infile'], infile)
     cline.set_parameter(att2param['align_view'], str(align_view))
-    for key, value in keywds.iteritems():
+    for key, value in keywds.items():
         cline.set_parameter(att2param[key], str(value))
     return _invoke_blast(cline)
 
@@ -1991,12 +1991,12 @@ def rpsblast(blastcmd, database, infile, align_view="7", **keywds):
         'align_outfile' : '-o',
         }
 
-    from Applications import RpsBlastCommandline
+    from .Applications import RpsBlastCommandline
     cline = RpsBlastCommandline(blastcmd)
     cline.set_parameter(att2param['database'], database)
     cline.set_parameter(att2param['infile'], infile)
     cline.set_parameter(att2param['align_view'], str(align_view))
-    for key, value in keywds.iteritems():
+    for key, value in keywds.items():
         cline.set_parameter(att2param[key], str(value))
     return _invoke_blast(cline)
 
@@ -2041,7 +2041,7 @@ def _safe_int(str):
         pass
     # If it fails again, maybe it's too long?
     # XXX why converting to float?
-    return long(float(str))
+    return int(float(str))
 
 def _safe_float(str):
     # Thomas Rosleff Soerensen (rosleff@mpiz-koeln.mpg.de) noted that
@@ -2092,7 +2092,7 @@ def _security_check_parameters(param_dict):
     for appending a command line), or ">", "<" or "|" (redirection)
     and if any are found raises an exception.
     """
-    for key, value in param_dict.iteritems():
+    for key, value in param_dict.items():
         str_value = str(value) # Could easily be an int or a float
         for bad_str in [";", "&&", ">", "<", "|"]:
             if bad_str in str_value:
@@ -2148,7 +2148,7 @@ class BlastErrorParser(AbstractParser):
 
         try:
             self._scanner.feed(File.StringHandle(results), self._consumer)
-        except ValueError, msg:
+        except ValueError as msg:
             # if we have a bad_report_file, save the info to it first
             if self._bad_report_handle:
                 # send the info to the error handle

@@ -28,7 +28,7 @@ from Bio.Seq import Seq
 from Bio import SeqIO
 from Bio import SeqUtils
 
-import GenericTools
+from . import GenericTools
 
 class FeatureDict(dict):
     """ JH:  accessing feature.qualifiers as a list is stupid.  Here's a dict that does it"""
@@ -230,7 +230,7 @@ class Location(GenericTools.VerboseList):
         """
         
         absolute_location = copy.deepcopy(self)
-        for i in xrange(2):
+        for i in range(2):
             absolute_location[i] = self.five_prime().add(sub_location[i], self.complement)
         if absolute_location.complement:
             list.reverse(absolute_location)
@@ -406,12 +406,12 @@ class LocationFromString(Location):
         match_join = re_join.match(location_str)
         if match_join:
             self.join = {'join':1, 'order':2}[match_join.group(1)]
-            list.__init__(self, map(lambda x: LocationFromString(x), match_join.group(2).split(",")))
+            list.__init__(self, [LocationFromString(x) for x in match_join.group(2).split(",")])
         else:
             self.join = 0
             match_dotdot = re_dotdot.match(location_str)
             if match_dotdot:
-                list.__init__(self, map(lambda x: LocationFromString(match_dotdot.group(x)), (1, 2)))
+                list.__init__(self, [LocationFromString(match_dotdot.group(x)) for x in (1, 2)])
             else:
                 match_fuzzy = re_fuzzy.match(location_str)
                 if match_fuzzy:
@@ -451,12 +451,12 @@ def fasta_single(filename=None, string=None):
     #Returns the first record in a fasta file as a SeqRecord,
     #or None if there are no records in the file.
     if string:
-        import cStringIO
-        handle = cStringIO.StringIO(string)
+        import io
+        handle = io.StringIO(string)
     else:
         handle = open_file(filename)
     try:
-        record = SeqIO.parse(handle, format="fasta").next()
+        record = next(SeqIO.parse(handle, format="fasta"))
     except StopIteration:
         record = None
     return record
@@ -468,7 +468,7 @@ def fasta_multi(filename=None):
     #the StopIteration exception rather than returning None.
     reader = SeqIO.parse(open_file(filename), format="fasta")
     while True:
-        record = reader.next()
+        record = next(reader)
         if record is None:
             raise StopIteration
         else:
@@ -596,21 +596,21 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..","..","Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..","..","Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
     elif os.path.isdir(os.path.join("Tests")) :
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
 
 if __name__ == "__main__":
     if __debug__:

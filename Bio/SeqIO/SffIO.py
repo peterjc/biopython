@@ -746,7 +746,7 @@ class SffWriter(SequenceWriter):
         #Get the first record in order to find the flow information
         #we will need for the header.
         try:
-            record = records.next()
+            record = next(records)
         except StopIteration:
             record = None
         if record is None:
@@ -982,14 +982,14 @@ class SffWriter(SequenceWriter):
 
 
 if __name__ == "__main__":
-    print "Running quick self test"
+    print("Running quick self test")
     filename = "../../Tests/Roche/E3MFGYR02_random_10_reads.sff"
     metadata = _sff_read_roche_index_xml(open(filename, "rb"))
     index1 = sorted(_sff_read_roche_index(open(filename, "rb")))
     index2 = sorted(_sff_do_slow_index(open(filename, "rb")))
     assert index1 == index2
     assert len(index1) == len(list(SffIterator(open(filename, "rb"))))
-    from StringIO import StringIO
+    from io import StringIO
     try:
         #This is in Python 2.6+, and is essential on Python 3
         from io import BytesIO
@@ -1041,7 +1041,7 @@ if __name__ == "__main__":
     
     sff_trim = list(SffIterator(open(filename, "rb"), trim=True))
 
-    print _sff_read_roche_index_xml(open(filename, "rb"))
+    print(_sff_read_roche_index_xml(open(filename, "rb")))
 
     from Bio import SeqIO
     filename = "../../Tests/Roche/E3MFGYR02_random_10_reads_no_trim.fasta"
@@ -1057,7 +1057,7 @@ if __name__ == "__main__":
     for s, sT, f, q, fT, qT in zip(sff, sff_trim, fasta_no_trim,
                                    qual_no_trim, fasta_trim, qual_trim):
         #print
-        print s.id
+        print(s.id)
         #print s.seq
         #print s.letter_annotations["phred_quality"]
         
@@ -1070,12 +1070,12 @@ if __name__ == "__main__":
         assert sT.letter_annotations["phred_quality"] == qT.letter_annotations["phred_quality"]
 
 
-    print "Writing with a list of SeqRecords..."
+    print("Writing with a list of SeqRecords...")
     handle = StringIO()
     w = SffWriter(handle, xml=metadata)
     w.write_file(sff) #list
     data = handle.getvalue()
-    print "And again with an iterator..."
+    print("And again with an iterator...")
     handle = StringIO()
     w = SffWriter(handle, xml=metadata)
     w.write_file(iter(sff))
@@ -1088,15 +1088,15 @@ if __name__ == "__main__":
     del data
     handle.close()
 
-    print "-"*50
+    print("-"*50)
     filename = "../../Tests/Roche/greek.sff"
     for record in SffIterator(open(filename,"rb")):
-        print record.id
+        print(record.id)
     index1 = sorted(_sff_read_roche_index(open(filename, "rb")))
     index2 = sorted(_sff_do_slow_index(open(filename, "rb")))
     assert index1 == index2
     try:
-        print _sff_read_roche_index_xml(open(filename, "rb"))
+        print(_sff_read_roche_index_xml(open(filename, "rb")))
         assert False, "Should fail!"
     except ValueError:
         pass
@@ -1107,11 +1107,11 @@ if __name__ == "__main__":
         pass
     try:
         for record in SffIterator(handle):
-            print record.id
+            print(record.id)
         assert False, "Should have failed"
-    except ValueError, err:
-        print "Checking what happens on re-reading a handle:"
-        print err
+    except ValueError as err:
+        print("Checking what happens on re-reading a handle:")
+        print(err)
 
 
     """
@@ -1216,4 +1216,4 @@ if __name__ == "__main__":
     k = list(_sff_do_slow_index(open("../../Tests/Roche/E3MFGYR02_alt_index_at_end.sff", "rb")))
     """
 
-    print "Done"
+    print("Done")
