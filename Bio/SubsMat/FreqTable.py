@@ -49,18 +49,14 @@ FREQ = 2
 class FreqTable(dict):
     
     def _freq_from_count(self):
-        sum = 0.
-        for i in list(self.count.values()):
-            sum = sum + i
-        for i in list(self.count.keys()):
-            self[i] = self.count[i] / sum
+        total = float(sum(self.count.values()))
+        for i, v in self.count.items():
+            self[i] = v / total
 
     def _alphabet_from_input(self):
         s = ''
-        letters_list = list(self.keys())
-        letters_list.sort()
-        for i in letters_list:
-            s = s + i
+        for i in sorted(self):
+            s += i
         return s
 
     def __init__(self,in_dict,dict_type,alphabet=None):
