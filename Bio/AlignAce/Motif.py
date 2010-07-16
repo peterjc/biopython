@@ -260,7 +260,7 @@ class Motif(object):
                   'color6' : 'orange',
                   'color1' : 'black',
                   }
-        for k,v in list(kwds.items()):
+        for k,v in kwds.items():
             values[k]=str(v)
             
         data = urllib.parse.urlencode(values)
