@@ -42,7 +42,7 @@ http://is.gd/nNgk
 for more details of this format, and an example.
 Added by Ying Huang & Iddo Friedberg
 """
-import cStringIO
+import io
 import re
 
 # other Biopython stuff
@@ -51,9 +51,9 @@ from Bio.ParserSupport import AbstractConsumer
 from Bio import Entrez
 
 # other Bio.GenBank stuff
-import LocationParser # Obsolete
-from utils import FeatureValueCleaner
-from Scanner import GenBankScanner
+from . import LocationParser # Obsolete
+from .utils import FeatureValueCleaner
+from .Scanner import GenBankScanner
 
 #Constants used to parse GenBank header lines
 GENBANK_INDENT = 12
@@ -307,7 +307,7 @@ class Iterator:
         self.handle = handle
         self._parser = parser
 
-    def next(self):
+    def __next__(self):
         """Return the next GenBank record from the handle.
 
         Will return None if we ran out of records.
@@ -326,7 +326,7 @@ class Iterator:
             return None
 
     def __iter__(self):
-        return iter(self.next, None)
+        return iter(self.__next__, None)
 
 class ParserFailureError(Exception):
     """Failure caused by some kind of problem in the parser.
@@ -476,7 +476,7 @@ class _BaseGenBankConsumer(AbstractConsumer):
         """
         # get rid of excessive spaces
         text_parts = text.split(" ")
-        text_parts = filter(None, text_parts)
+        text_parts = [_f for _f in text_parts if _f]
         return ' '.join(text_parts)
 
     def _remove_spaces(self, text):
@@ -955,9 +955,9 @@ class _FeatureConsumer(_BaseGenBankConsumer):
                     ref = None
                 try:
                     loc = _loc(part, self._expected_size)
-                except ValueError, err:
-                    print location_line
-                    print part
+                except ValueError as err:
+                    print(location_line)
+                    print(part)
                     raise err
                 f = SeqFeature.SeqFeature(location=loc, ref=ref,
                         location_operator=cur_feature.location_operator,
@@ -1394,7 +1394,7 @@ class _RecordConsumer(_BaseGenBankConsumer):
     """
     def __init__(self):
         _BaseGenBankConsumer.__init__(self)
-        import Record
+        from . import Record
         self.data = Record.Record()
 
         self._seq_data = []
@@ -1474,7 +1474,7 @@ class _RecordConsumer(_BaseGenBankConsumer):
         if self._cur_reference is not None:
             self.data.references.append(self._cur_reference)
 
-        import Record
+        from . import Record
         self._cur_reference = Record.Reference()
         self._cur_reference.number = content
 
@@ -1534,7 +1534,7 @@ class _RecordConsumer(_BaseGenBankConsumer):
         # first add on feature information if we've got any
         self._add_feature()
 
-        import Record
+        from . import Record
         self._cur_feature = Record.Feature()
         self._cur_feature.key = content
 
@@ -1564,7 +1564,7 @@ class _RecordConsumer(_BaseGenBankConsumer):
         /pseudo which would be passed in with the next key (since no other
         tags separate them in the file)
         """
-        import Record
+        from . import Record
         for content in content_list:
             # the record parser keeps the /s -- add them if we don't have 'em
             if content.find("/") != 0:
@@ -1622,10 +1622,10 @@ class _RecordConsumer(_BaseGenBankConsumer):
 
 def _test():
     """Run the Bio.GenBank module's doctests."""
-    print "Runing doctests..."
+    print("Runing doctests...")
     import doctest
     doctest.testmod()
-    print "Done"
+    print("Done")
 
 if __name__ == "__main__":
     _test()

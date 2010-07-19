@@ -16,7 +16,7 @@ _InMemoryIndex  An in-memory Index class.
 """
 import os
 import array
-import cPickle
+import pickle
 import shelve
 
 class _ShelveIndex(dict):
@@ -60,7 +60,7 @@ class _ShelveIndex(dict):
                               % (version, self.__version))
             
     def __del__(self):
-        if self.__dict__.has_key('data'):
+        if 'data' in self.__dict__:
             self.data.close()
 
 class _InMemoryIndex(dict):
@@ -115,7 +115,7 @@ class _InMemoryIndex(dict):
         if self.__changed:
             handle = open(self._indexname, 'w')
             handle.write("%s\n" % self._tostr(self.__version))
-            for key, value in self.items():
+            for key, value in list(self.items()):
                 handle.write("%s %s\n" %
                              (self._tostr(key), self._tostr(value)))
             handle.close()
@@ -128,15 +128,15 @@ class _InMemoryIndex(dict):
         # the integers into strings and join them together with commas. 
         # It's not the most efficient way of storing things, but it's
         # relatively fast.
-        s = cPickle.dumps(obj)
+        s = pickle.dumps(obj)
         intlist = array.array('b', s)
-        strlist = map(str, intlist)
+        strlist = list(map(str, intlist))
         return ','.join(strlist)
 
     def _toobj(self, str):
-        intlist = map(int, str.split(','))
+        intlist = list(map(int, str.split(',')))
         intlist = array.array('b', intlist)
-        strlist = map(chr, intlist)
-        return cPickle.loads(''.join(strlist))
+        strlist = list(map(chr, intlist))
+        return pickle.loads(''.join(strlist))
 
 Index = _InMemoryIndex

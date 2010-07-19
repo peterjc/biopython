@@ -75,9 +75,8 @@ class ParserTest(unittest.TestCase):
 
 class FileParserTest(unittest.TestCase):
     def setUp(self):
-        self.files = map(lambda x: os.path.join("PopGen", x),
-             ["c2line.gen", "c3line.gen", "c2space.gen",
-              "c3space.gen", "haplo3.gen", "haplo2.gen"])
+        self.files = [os.path.join("PopGen", x) for x in ["c2line.gen", "c3line.gen", "c2space.gen",
+              "c3space.gen", "haplo3.gen", "haplo2.gen"]]
         self.pops_indivs = [
             (3, [4, 3, 5]),
             (3, [4, 3, 5]),

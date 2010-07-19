@@ -4,7 +4,7 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 
-import StringIO
+import io
 from operator import truth
 
 try:
@@ -29,24 +29,24 @@ trieobj["hej"] = 9
 trieobj["foo"] = "bar"
 trieobj["wor"] = "ld"
 
-print triefind.match("hello world!", trieobj)    # "hello"
+print(triefind.match("hello world!", trieobj))    # "hello"
 k = triefind.match_all("hello world!", trieobj)
 k.sort()
-print k     # ["he", "hello"]
+print(k)     # ["he", "hello"]
 
 k = triefind.find("hello world!", trieobj)
 k.sort()
-print k     # [("he", 0, 2), ("hello", 0, 5), ("wor", 6, 9)]
+print(k)     # [("he", 0, 2), ("hello", 0, 5), ("wor", 6, 9)]
 
 k = triefind.find_words("hello world!", trieobj)
 k.sort()
-print k     # [("hello", 0, 5)]
+print(k)     # [("hello", 0, 5)]
 
 trieobj["world"] = "full"
 k = triefind.find("hello world!", trieobj)
 k.sort()
-print k     # [("he", 0, 2), ("hello", 0, 5), ("wor", 6, 9), ("world", 6, 11)]
+print(k)     # [("he", 0, 2), ("hello", 0, 5), ("wor", 6, 9), ("world", 6, 11)]
 
 k = triefind.find_words("hello world!", trieobj)
 k.sort()
-print k     # [("hello", 0, 5), ("world", 6, 11)]
+print(k)     # [("hello", 0, 5), ("world", 6, 11)]

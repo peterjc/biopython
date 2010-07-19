@@ -65,7 +65,7 @@ class HashSet:
 
     def list(self):
         """Returns the elements of this set in a list."""
-        return self.__elements.keys()
+        return list(self.__elements.keys())
 
     # Information:
 
@@ -81,11 +81,11 @@ class HashSet:
 
     def intersection(self, s):
         """Returns the intersection of this set and s."""
-        return HashSet(filter(lambda e,s=s: e in s, self.list()))
+        return HashSet(list(filter(lambda e,s=s: e in s, self.list())))
 
     def difference(self, s):
         """Returns the difference of this set and s."""
-        return HashSet(filter(lambda e,s=s: e not in s, self.list()))
+        return HashSet(list(filter(lambda e,s=s: e not in s, self.list())))
 
     def cartesian(self,s):
         """Returns the Cartesian product of this set and s."""

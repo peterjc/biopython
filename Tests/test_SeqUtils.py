@@ -27,18 +27,18 @@ seq_records = list(SeqIO.parse(open(dna_fasta_filename),"fasta"))
 assert len(seq_records)==3
 for tuple_record, seq_record in zip(tuple_records, seq_records):
     assert tuple_record == (seq_record.description, seq_record.seq.tostring())
-    print "%s has GC%% of %0.1f" % (seq_record.name, GC(seq_record.seq))
+    print("%s has GC%% of %0.1f" % (seq_record.name, GC(seq_record.seq)))
 
 ##############
 # CodonUsage #
 ##############
 
-print
-print "Codon Adaption Index (CAI)"
+print()
+print("Codon Adaption Index (CAI)")
 CAI = CodonAdaptationIndex()
 # Note - this needs a whole number of codons, and a DNA seq AS A STRING.
-print "Example CAI %0.5f using E. coli (default)" \
-      % CAI.cai_for_gene("ATGCGTATCGATCGCGATACGATTAGGCGGATG")
+print("Example CAI %0.5f using E. coli (default)" \
+      % CAI.cai_for_gene("ATGCGTATCGATCGCGATACGATTAGGCGGATG"))
 
 #We need a FASTA file of CDS sequences to count the codon usage...
 dna_fasta_filename = "fasta.tmp"
@@ -72,16 +72,16 @@ CAI = CodonAdaptationIndex()
 # Note - this needs a FASTA file which containing non-ambiguous DNA coding
 # sequences - which should each be a whole number of codons.
 CAI.generate_index(dna_fasta_filename)
-print "Example CAI %0.5f using %s" \
+print("Example CAI %0.5f using %s" \
       % (CAI.cai_for_gene("ATGCGTATCGATCGCGATACGATTAGGCGGATG"),
-         record.annotations["source"])
+         record.annotations["source"]))
 
 os.remove(dna_fasta_filename)
 del record, records
 del dna_genbank_filename
 del dna_fasta_filename
 
-print
+print()
 
 ###################
 # crc64 collision #
@@ -113,7 +113,7 @@ examples = [str_light_chain_one, str_light_chain_two,
             "ATGCGTATCGATCGCGATACGATTAGGCGGAT"]
 
 for i, seq_str in enumerate(examples):
-    print "Example %i, length %i, %s..." % (i+1, len(seq_str), seq_str[:10])
+    print("Example %i, length %i, %s..." % (i+1, len(seq_str), seq_str[:10]))
 
     #Avoid cross platforms with printing floats by doing conversion explicitly
     def simple_LCC(s):
@@ -125,7 +125,7 @@ for i, seq_str in enumerate(examples):
     for checksum in [crc32, crc64, gcg, seguid, simple_LCC, windowed_LCC]:
         #First using a string:
         value = checksum(seq_str)
-        print " %s = %s" % (checksum.__name__, value)
+        print(" %s = %s" % (checksum.__name__, value))
         #Secondly check it works with a Seq object
         assert value == checksum(Seq(seq_str, single_letter_alphabet))
         #Finally check it works with a MutableSeq object

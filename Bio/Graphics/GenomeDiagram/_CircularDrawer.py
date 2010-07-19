@@ -33,9 +33,9 @@ from reportlab.pdfbase import _fontdata
 from reportlab.graphics.shapes import ArcPath
 
 # GenomeDiagram imports
-from _AbstractDrawer import AbstractDrawer, draw_polygon, intermediate_points
-from _FeatureSet import FeatureSet
-from _GraphSet import GraphSet
+from ._AbstractDrawer import AbstractDrawer, draw_polygon, intermediate_points
+from ._FeatureSet import FeatureSet
+from ._GraphSet import GraphSet
 
 from math import ceil, pi, cos, sin, asin
 
@@ -737,7 +737,7 @@ class CircularDrawer(AbstractDrawer):
             for set in track.get_sets():
                 if set.__class__ is GraphSet:
                     # Y-axis
-                    for n in xrange(7):
+                    for n in range(7):
                         angle = n * 1.0471975511965976
                         ticksin, tickcos = sin(angle), cos(angle)
                         x0, y0 = self.xcenter+btm*ticksin, self.ycenter+btm*tickcos
