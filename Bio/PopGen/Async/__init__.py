@@ -10,7 +10,7 @@ Support for asynchronous execution.
 '''
 
 import os
-import thread
+import _thread
 
 
 class Async:
@@ -32,7 +32,7 @@ class Async:
         self.done = {}
         self.id = 0
         self.hooks = {}
-        self.access_ds = thread.allocate_lock()
+        self.access_ds = _thread.allocate_lock()
 
     def run_program(self, program, parameters, input_files):
         '''Runs a program.

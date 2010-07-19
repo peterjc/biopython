@@ -121,7 +121,7 @@ def classify(knn, x, weight_fn=equal_weight, distance_fn=None):
 
     most_class = None
     most_weight = None
-    for klass, weight in weights.items():
+    for klass, weight in list(weights.items()):
         if most_class is None or weight > most_weight:
             most_class = klass
             most_weight = weight

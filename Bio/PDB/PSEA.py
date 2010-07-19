@@ -7,7 +7,7 @@
 
 import os
 
-from Polypeptide import is_aa
+from .Polypeptide import is_aa
 
 
 def run_psea(fname):

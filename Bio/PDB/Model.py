@@ -5,7 +5,7 @@
 
 """Model class, used in Structure objects."""
 
-from Entity import Entity
+from .Entity import Entity
 
 
 class Model(Entity):
