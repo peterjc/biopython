@@ -9,7 +9,7 @@ import random
 import copy
 
 # local modules
-from Abstract import AbstractSelection
+from .Abstract import AbstractSelection
 
 class RouletteWheelSelection(AbstractSelection):
     """Roulette wheel selection proportional to individuals fitness.
@@ -48,7 +48,7 @@ class RouletteWheelSelection(AbstractSelection):
         # set up the current probabilities for selecting organisms
         # from the population
         prob_wheel = self._set_up_wheel(population)
-        probs = prob_wheel.keys()
+        probs = list(prob_wheel.keys())
         probs.sort()
         
         # now create the new population with the same size as the original

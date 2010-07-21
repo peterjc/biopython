@@ -12,6 +12,7 @@ The NDB web interface is located at http://ndbserver.rutgers.edu/NDB/index.html
 """
 
 import copy
+from functools import reduce
 
 class CrystalError(Exception):
     pass
@@ -70,7 +71,7 @@ class Chain:
             residues = residues.replace('*', ' ')
             residues = residues.strip()
             elements = residues.split()
-            self.data = map(Hetero, elements)
+            self.data = list(list(map(Hetero, elements)))
         elif type(residues) == type([]):
             for element in residues:
                 if not isinstance(element, Hetero):
@@ -104,7 +105,7 @@ class Chain:
     def __eq__(self, other):
         if len(self.data) != len(other.data):
             return 0
-        ok = reduce(lambda x, y: x and y, map(lambda x, y: x == y, self.data, other.data))
+        ok = reduce(lambda x, y: x and y, list(list(map(lambda x, y: x == y, self.data, other.data))))
         return ok
 
     def __ne__(self, other):
@@ -228,7 +229,7 @@ class Crystal:
 
     def __repr__(self):
         output = ''
-        keys = self.data.keys()
+        keys = list(self.data.keys())
         keys.sort()
         for key in keys:
             output = output +  '%s : %s\n' % (key, self.data[ key ])
@@ -236,7 +237,7 @@ class Crystal:
 
     def __str__(self):
         output = ''
-        keys = self.data.keys()
+        keys = list(self.data.keys())
         keys.sort()
         for key in keys:
             output = output +  '%s : %s\n' % (key, self.data[ key ])
@@ -259,9 +260,9 @@ class Crystal:
     def clear(self): self.data.clear()
     def copy(self):
         return copy.copy(self)
-    def keys(self): return self.data.keys()
-    def items(self): return self.data.items()
-    def values(self): return self.data.values()
+    def keys(self): return list(self.data.keys())
+    def items(self): return list(self.data.items())
+    def values(self): return list(self.data.values())
     def __contains__(self, value): return value in self.data
     def has_key(self, key): return key in self.data
     def get(self, key, failobj=None):

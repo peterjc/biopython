@@ -16,7 +16,8 @@ from Bio.Alphabet import IUPAC
 from Bio.Data import IUPACData
 from Bio.Seq import Seq
 
-from Trees import Tree,NodeData
+from .Trees import Tree,NodeData
+from functools import reduce
 
 try:
     import cnexus
@@ -61,7 +62,7 @@ class CharBuffer:
         else:
             return None
                 
-    def next(self):
+    def __next__(self):
         if self.buffer:
             return self.buffer.pop(0)
         else:
@@ -69,7 +70,7 @@ class CharBuffer:
 
     def next_nonwhitespace(self):
         while True:
-            p=self.next()
+            p=next(self)
             if p is None:
                 break
             if p not in WHITESPACE: 
@@ -115,17 +116,17 @@ class CharBuffer:
         while True:             
             c=self.peek()
             if c=="'":                                      # a quote?
-                word.append(self.next())                    # store quote 
+                word.append(next(self))                    # store quote 
                 if self.peek()=="'":                        # double quote
-                    skip=self.next()                        # skip second quote 
+                    skip=next(self)                        # skip second quote 
                 elif quoted:                                # second single quote ends word
                     break
             elif quoted:
-                word.append(self.next())                              # if quoted, then add anything
+                word.append(next(self))                              # if quoted, then add anything
             elif not c or c in PUNCTUATION or c in WHITESPACE:        # if not quoted and special character, stop 
                 break
             else:
-                word.append(self.next())                    # standard character
+                word.append(next(self))                    # standard character
         return ''.join(word)
                 
     def rest(self):
@@ -159,7 +160,7 @@ class StepMatrix:
         self.data[x+y]+=value
 
     def sum(self):
-        return reduce(lambda x,y:x+y,self.data.values()) 
+        return reduce(lambda x,y:x+y,list(self.data.values())) 
 
     def transformation(self):
         total=self.sum()
@@ -245,7 +246,7 @@ def _sort_keys_by_values(p):
     startpos=[(p[pn],pn) for pn in p if p[pn]]
     startpos.sort()
     # parenthisis added because of py3k
-    return (zip(*startpos))[1]
+    return (list(zip(*startpos)))[1]
     
 def _make_unique(l):
     """Check that all values in list are unique and return a pruned and sorted list."""
@@ -322,15 +323,15 @@ def combine(matrices):
     combined.translate=None
 
     # rename taxon sets and character sets and name them with prefix
-    for cn,cs in combined.charsets.iteritems():
+    for cn,cs in combined.charsets.items():
         combined.charsets['%s.%s' % (name,cn)]=cs
         del combined.charsets[cn]
-    for tn,ts in combined.taxsets.iteritems():
+    for tn,ts in combined.taxsets.items():
         combined.taxsets['%s.%s' % (name,tn)]=ts
         del combined.taxsets[tn]
     # previous partitions usually don't make much sense in combined matrix
     # just initiate one new partition parted by single matrices
-    combined.charpartitions={'combined':{name:range(combined.nchar)}}
+    combined.charpartitions={'combined':{name:list(range(combined.nchar))}}
     for n,m in matrices[1:]:    # add all other matrices
         both=[t for t in combined.taxlabels if t in m.taxlabels]
         combined_only=[t for t in combined.taxlabels if t not in both]
@@ -345,22 +346,22 @@ def combine(matrices):
             combined.matrix[t]=Seq(combined.missing*combined.nchar,combined.alphabet)+\
                 Seq(m.matrix[t].tostring().replace(m.gap,combined.gap).replace(m.missing,combined.missing),combined.alphabet)
         combined.taxlabels.extend(m_only)    # new taxon list
-        for cn,cs in m.charsets.iteritems(): # adjust character sets for new matrix
+        for cn,cs in m.charsets.items(): # adjust character sets for new matrix
             combined.charsets['%s.%s' % (n,cn)]=[x+combined.nchar for x in cs]
         if m.taxsets:
             if not combined.taxsets:
                 combined.taxsets={}
             # update taxon sets
             combined.taxsets.update(dict(('%s.%s' % (n,tn),ts) \
-                                         for tn,ts in m.taxsets.iteritems()))
+                                         for tn,ts in m.taxsets.items()))
         # update new charpartition
-        combined.charpartitions['combined'][n]=range(combined.nchar,combined.nchar+m.nchar)
+        combined.charpartitions['combined'][n]=list(range(combined.nchar,combined.nchar+m.nchar))
         # update charlabels
         if m.charlabels:
             if not combined.charlabels:
                 combined.charlabels={}
             combined.charlabels.update(dict((combined.nchar+i,label) \
-                                            for (i,label) in m.charlabels.iteritems()))
+                                            for (i,label) in m.charlabels.items()))
         combined.nchar+=m.nchar # update nchar and ntax
         combined.ntax+=len(m_only)
         
@@ -397,7 +398,7 @@ def _kill_comments_and_break_lines(text):
         #    newline.append(contents.rest)                       # not found, just add the rest
         #    break
         #newline.append(plain)                                   # add intermediate text
-        t=contents.next()                                       # and get special character
+        t=next(contents)                                       # and get special character
         if t is None:
             break
         if t==quotelevel and not (commlevel or speciallevel):            # matching quote ends quotation
@@ -583,7 +584,7 @@ class Nexus(object):
                 else:
                     self.filename='Unknown_nexus_file'
             else:
-                print input.strip()[:50]
+                print(input.strip()[:50])
                 raise NexusError('Unrecognized input: %s ...' % input[:100])
         file_contents=file_contents.strip()
         if file_contents.startswith('#NEXUS'):
@@ -609,7 +610,7 @@ class Nexus(object):
         nexus_block_gen = self._get_nexus_block(commandlines)
         while 1:
             try:
-                title, contents = nexus_block_gen.next()
+                title, contents = next(nexus_block_gen)
             except StopIteration:
                 break
             if title in KNOWN_NEXUS_BLOCKS:
@@ -712,9 +713,9 @@ class Nexus(object):
                 self.valid_characters=self.valid_characters.lower()+self.valid_characters.upper()
             #we have to sort the reverse ambig coding dict key characters:
             #to be sure that it's 'ACGT':'N' and not 'GTCA':'N'
-            rev=dict((i[1],i[0]) for i in self.ambiguous_values.iteritems() if i[0]!='X')
+            rev=dict((i[1],i[0]) for i in self.ambiguous_values.items() if i[0]!='X')
             self.rev_ambiguous_values={}
-            for (k,v) in rev.iteritems():
+            for (k,v) in rev.items():
                 key=[c for c in k]
                 key.sort()
                 self.rev_ambiguous_values[''.join(key)]=v
@@ -827,7 +828,7 @@ class Nexus(object):
         lineiter=iter(lines)
         while 1:
             try:
-                l=lineiter.next()
+                l=next(lineiter)
             except StopIteration:
                 if taxcount<self.ntax:
                     raise NexusError('Not enough taxa in matrix.')
@@ -860,7 +861,7 @@ class Nexus(object):
                 #non-interleaved matrix
                 chars=''.join(l.split())
                 while len(chars)<self.nchar:
-                    l=lineiter.next()
+                    l=next(lineiter)
                     chars+=''.join(l.split())
             iupac_seq=Seq(_replace_parenthesized_ambigs(chars,self.rev_ambiguous_values),self.alphabet)
             #first taxon has the reference sequence if matchhar is used
@@ -881,7 +882,7 @@ class Nexus(object):
             #add sequence to matrix
             if first_matrix_block:
                 self.unaltered_taxlabels.append(id)
-                id=_unique_label(self.matrix.keys(),id)
+                id=_unique_label(list(self.matrix.keys()),id)
                 self.matrix[id]=iupac_seq
                 self.taxlabels.append(id)
             else:
@@ -937,13 +938,13 @@ class Nexus(object):
         weight=1.0
         while opts.peek_nonwhitespace()=='[':
             open=opts.next_nonwhitespace()
-            symbol=opts.next()
+            symbol=next(opts)
             if symbol!='&':
                 raise NexusError('Illegal special comment [%s...] in tree description: %s' \
                                  % (symbol, options[:50]))
-            special=opts.next()
+            special=next(opts)
             value=opts.next_until(']')
-            closing=opts.next()
+            closing=next(opts)
             if special=='R':
                 rooted=True
             elif special=='U':
@@ -988,7 +989,7 @@ class Nexus(object):
         # this is rather unelegant, but we have to avoid double-parsing and potential change of special nexus-words
         sub=''
         while True:
-            w=opts.next()
+            w=next(opts)
             if w is None or (w==',' and not quotelevel):
                 subname,subindices=self._get_indices(sub,set_type=TAXSET,separator=':')
                 taxpartition[subname]=_make_unique(subindices)
@@ -1031,7 +1032,7 @@ class Nexus(object):
         # subpartitons separated by commas - which unfortunately could be part of a quoted identifier...
         sub=''
         while True:
-            w=opts.next()
+            w=next(opts)
             if w is None or (w==',' and not quotelevel):
                 subname,subindices=self._get_indices(sub,set_type=CHARSET,separator=':')
                 charpartition[subname]=_make_unique(subindices)
@@ -1105,7 +1106,7 @@ class Nexus(object):
                             if options_buffer.peek_nonwhitespace()=='\\':                           # followd by \
                                 backslash=options_buffer.next_nonwhitespace()
                                 step=int(options_buffer.next_word())         # get backslash and step
-                            plain_list.extend(range(start,end+1,step)) 
+                            plain_list.extend(list(range(start,end+1,step))) 
                         else:
                             if type(start)==list or type(end)==list:
                                 raise NexusError('Name if character sets not allowed in range definition: %s'\
@@ -1145,7 +1146,7 @@ class Nexus(object):
             try:
                 n=int(identifier)
             except ValueError:
-                if self.charlabels and identifier in self.charlabels.itervalues():
+                if self.charlabels and identifier in iter(self.charlabels.values()):
                     for k in self.charlabels:
                         if self.charlabels[k]==identifier:
                             return k
@@ -1280,7 +1281,7 @@ class Nexus(object):
         nchar_adjusted=len(cropped_matrix[undelete[0]])
         if not undelete or (undelete and undelete[0]==''):
             return
-        if isinstance(filename,basestring):
+        if isinstance(filename,str):
             try:
                 fh=open(filename,'w',encoding="utf-8")
             except IOError:
@@ -1391,15 +1392,15 @@ class Nexus(object):
                 offlist.append(c-offset)
         # now adjust each of the character sets
         if not codons_only:
-            for n,ns in self.charsets.iteritems():
+            for n,ns in self.charsets.items():
                 cset=[offlist[c] for c in ns if c not in exclude]
                 if cset: 
                     setsb.append('charset %s = %s' % (safename(n),_compact4nexus(cset))) 
-            for n,s in self.taxsets.iteritems():
+            for n,s in self.taxsets.items():
                 tset=[safename(t,mrbayes=mrbayes) for t in s if t not in delete]
                 if tset:
                     setsb.append('taxset %s = %s' % (safename(n),' '.join(tset))) 
-        for n,p in self.charpartitions.iteritems():
+        for n,p in self.charpartitions.items():
             if not include_codons and n==CODONPOSITIONS:
                 continue
             elif codons_only and n!=CODONPOSITIONS:
@@ -1421,7 +1422,7 @@ class Nexus(object):
                 setsb.append('%s %s = %s' % (command,safename(n),\
                 ', '.join(['%s: %s' % (sn,_compact4nexus(newpartition[sn])) for sn in names if sn in newpartition])))
         # now write charpartititions, much easier than charpartitions
-        for n,p in self.taxpartitions.iteritems():
+        for n,p in self.taxpartitions.items():
             names=_sort_keys_by_values(p)
             newpartition={}
             for sn in names:
@@ -1557,14 +1558,14 @@ class Nexus(object):
             if not undelete:
                 return {}
             m=[matrix[k].tostring() for k in undelete]
-            zipped_m=zip(*m)
+            zipped_m=list(zip(*m))
             sitesm=[s for i,s in enumerate(zipped_m) if i not in exclude]
             if sitesm==[]:
                 return dict([(t,Seq('',self.alphabet)) for t in undelete])
             else:
-                zipped_sitesm=zip(*sitesm)
+                zipped_sitesm=list(zip(*sitesm))
                 m=[Seq(s,self.alphabet) for s in map(''.join,zipped_sitesm)]
-                return dict(zip(undelete,m))
+                return dict(list(zip(undelete,m)))
         else:
             return dict([(t,matrix[t]) for t in self.taxlabels if t in matrix and t not in delete])
            
@@ -1572,23 +1573,23 @@ class Nexus(object):
         """Return a bootstrapped matrix."""
         if not matrix:
             matrix=self.matrix
-        seqobjects=isinstance(matrix[matrix.keys()[0]],Seq)         # remember if Seq objects
+        seqobjects=isinstance(matrix[list(matrix.keys())[0]],Seq)         # remember if Seq objects
         cm=self.crop_matrix(delete=delete,exclude=exclude)          # crop data out
         if not cm:                                                  # everything deleted?
             return {}
-        elif len(cm[cm.keys()[0]])==0:                              # everything excluded?
+        elif len(cm[list(cm.keys())[0]])==0:                              # everything excluded?
             return cm
         undelete=[t for t in self.taxlabels if t in cm]  
         if seqobjects:
-            sitesm=zip(*[cm[t].tostring() for t in undelete])
-            alphabet=matrix[matrix.keys()[0]].alphabet
+            sitesm=list(zip(*[cm[t].tostring() for t in undelete]))
+            alphabet=matrix[list(matrix.keys())[0]].alphabet
         else:
-            sitesm=zip(*[cm[t] for t in undelete])
+            sitesm=list(zip(*[cm[t] for t in undelete]))
         bootstrapsitesm=[sitesm[random.randint(0,len(sitesm)-1)] for i in range(len(sitesm))]
-        bootstrapseqs=map(''.join,zip(*bootstrapsitesm))
+        bootstrapseqs=list(map(''.join,list(zip(*bootstrapsitesm))))
         if seqobjects:
             bootstrapseqs=[Seq(s,alphabet) for s in bootstrapseqs]
-        return dict(zip(undelete,bootstrapseqs)) 
+        return dict(list(zip(undelete,bootstrapseqs))) 
 
     def add_sequence(self,name,sequence):
         """Adds a sequence (string) to the matrix."""
@@ -1638,7 +1639,7 @@ class Nexus(object):
                     if leftgreedy or (i>0 and set[i-1]==c-1):  
                         addpos=i
             if addpos>0:
-                set[addpos:addpos]=range(x,x+d)
+                set[addpos:addpos]=list(range(x,x+d))
             return set
 
         if pos<0 or pos>self.nchar:
@@ -1647,22 +1648,22 @@ class Nexus(object):
             return
         if self.taxlabels:
             #python 2.3 does not support zip(*[])
-            sitesm=zip(*[self.matrix[t].tostring() for t in self.taxlabels])
+            sitesm=list(zip(*[self.matrix[t].tostring() for t in self.taxlabels]))
         else:
             sitesm=[]
         sitesm[pos:pos]=[['-']*len(self.taxlabels)]*n
         # #self.matrix=dict([(taxon,Seq(map(''.join,zip(*sitesm))[i],self.alphabet)) for\
         #        i,taxon in enumerate(self.taxlabels)])
-        zipped=zip(*sitesm)
-        mapped=map(''.join,zipped)
+        zipped=list(zip(*sitesm))
+        mapped=list(map(''.join,zipped))
         listed=[(taxon,Seq(mapped[i],self.alphabet)) for i,taxon in enumerate(self.taxlabels)]
         self.matrix=dict(listed) 
         self.nchar+=n
         # now adjust character sets
-        for i,s in self.charsets.iteritems():
+        for i,s in self.charsets.items():
             self.charsets[i]=_adjust(s,pos,n,leftgreedy=leftgreedy)
         for p in self.charpartitions:
-            for sp,s in self.charpartitions[p].iteritems():
+            for sp,s in self.charpartitions[p].items():
                 self.charpartitions[p][sp]=_adjust(s,pos,n,leftgreedy=leftgreedy)
         # now adjust character state labels
         self.charlabels=self._adjust_charlabels(insert=[pos]*n)
@@ -1678,7 +1679,7 @@ class Nexus(object):
         newcharlabels={}
         if exclude:
             exclude.sort()
-            exclude.append(sys.maxint)
+            exclude.append(sys.maxsize)
             excount=0
             for c in labels:
                 if not c in exclude:
@@ -1687,7 +1688,7 @@ class Nexus(object):
                     newcharlabels[c-excount]=self.charlabels[c]
         elif insert:
             insert.sort()
-            insert.append(sys.maxint)
+            insert.append(sys.maxsize)
             icount=0
             for c in labels:
                 while c>=insert[icount]:
@@ -1706,7 +1707,7 @@ class Nexus(object):
         gap=set(self.gap)
         if include_missing:
             gap.add(self.missing)
-        sitesm=zip(*[self.matrix[t].tostring() for t in self.taxlabels])
+        sitesm=list(zip(*[self.matrix[t].tostring() for t in self.taxlabels]))
         gaponly=[i for i,site in enumerate(sitesm) if set(site).issubset(gap)]
         return gaponly 
         

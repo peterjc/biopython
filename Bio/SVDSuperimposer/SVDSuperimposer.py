@@ -153,8 +153,8 @@ if __name__=="__main__":
     # same thing
     y_on_x2=sup.get_transformed()
 
-    print y_on_x1
-    print
-    print y_on_x2
-    print
-    print "%.2f" % rms
+    print(y_on_x1)
+    print()
+    print(y_on_x2)
+    print()
+    print("%.2f" % rms)

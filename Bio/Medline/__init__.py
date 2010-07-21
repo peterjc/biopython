@@ -190,7 +190,7 @@ def parse(handle):
                 record[key] = []
             record[key].append(line[6:])
         try:
-            line = handle.next()
+            line = next(handle)
         except StopIteration:
             finished = True
         else:
@@ -220,4 +220,4 @@ def read(handle):
 
     """
     records = parse(handle)
-    return records.next()
+    return next(records)

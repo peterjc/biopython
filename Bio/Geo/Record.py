@@ -38,7 +38,7 @@ class Record:
         output = ''
         output = output + 'GEO Type: %s\n' % self.entity_type
         output = output + 'GEO Id: %s\n' % self.entity_id
-        att_keys = self.entity_attributes.keys()
+        att_keys = list(self.entity_attributes.keys())
         att_keys.sort()
         for key in att_keys:
             contents = self.entity_attributes[ key ]
@@ -53,10 +53,10 @@ class Record:
                 output = output + '%s: %s\n' % ( key, contents[ :40 ] )
                 output = output + out_block( contents[ 40: ] )
             else:
-                print contents
+                print(contents)
                 output = output + '%s: %s\n' % ( key, val[ :40 ] )
                 output = output + out_block( val[ 40: ] )
-        col_keys = self.col_defs.keys()
+        col_keys = list(self.col_defs.keys())
         col_keys.sort()
         output = output + 'Column Header Definitions\n'
         for key in col_keys:

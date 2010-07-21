@@ -12,24 +12,24 @@ except ImportError:
 from Bio import MarkovModel
 
 def print_mm(markov_model):
-    print "STATES: %s" % ' '.join(markov_model.states)
-    print "ALPHABET: %s" % ' '.join(markov_model.alphabet)
-    print "INITIAL:"
+    print("STATES: %s" % ' '.join(markov_model.states))
+    print("ALPHABET: %s" % ' '.join(markov_model.alphabet))
+    print("INITIAL:")
     for i in range(len(markov_model.p_initial)):
-        print "  %s: %.2f" % (
-            markov_model.states[i], markov_model.p_initial[i])
-    print "TRANSITION:"
+        print("  %s: %.2f" % (
+            markov_model.states[i], markov_model.p_initial[i]))
+    print("TRANSITION:")
     for i in range(len(markov_model.p_transition)):
         x = ["%.2f" % x for x in markov_model.p_transition[i]]
-        print "  %s: %s" % (markov_model.states[i], ' '.join(x))
-    print "EMISSION:"
+        print("  %s: %s" % (markov_model.states[i], ' '.join(x)))
+    print("EMISSION:")
     for i in range(len(markov_model.p_emission)):
         x = ["%.2f" % x for x in markov_model.p_emission[i]]
-        print "  %s: %s" % (markov_model.states[i], ' '.join(x))
+        print("  %s: %s" % (markov_model.states[i], ' '.join(x)))
 
 
 
-print "TESTING train_visible"
+print("TESTING train_visible")
 states = ["0", "1", "2", "3"]
 alphabet = ["A", "C", "G", "T"]
 training_data = [
@@ -38,9 +38,9 @@ training_data = [
     ("ACGGGTTTTTT", "01222333333"),
     ("ACCGTTTTTTTT", "011233333333"),
     ]
-print "Training HMM"
+print("Training HMM")
 mm = MarkovModel.train_visible(states, alphabet, training_data)
-print "Classifying"
+print("Classifying")
 
 #print MarkovModel.find_states(mm, "AACGTT")
 #Don't just print this, as the float may have different
@@ -48,19 +48,19 @@ print "Classifying"
 #containing a tuple containing a list (fine), and a float.
 states = MarkovModel.find_states(mm, "AACGTT")
 for state_list, state_float in states:
-    print "State %s, %0.10f" % (repr(state_list), state_float)
+    print("State %s, %0.10f" % (repr(state_list), state_float))
 print_mm(mm)
 
 
 
 
-print "TESTING baum welch"
+print("TESTING baum welch")
 states = ["CP", "IP"]
 alphabet = ["cola", "ice_t", "lem"]
 outputs = [
     (2, 1, 0)
     ]
-print "Training HMM"
+print("Training HMM")
 p_initial = [1.0, 0.0000001]
 p_transition = [[0.7, 0.3],
                 [0.5, 0.5]]
@@ -162,31 +162,31 @@ ds = DNAStrand()
 
 
 # NNNN
-print ds.mostLikely([30, 20, 30, 20, 10],
+print(ds.mostLikely([30, 20, 30, 20, 10],
                     [10, 40, 10, 40, 20],
                     "TGCC"
-                    )
+                    ))
 
 # NNNRRRNNRRNRRN
-print ds.mostLikely([4, 14, 62, 20, 44],
+print(ds.mostLikely([4, 14, 62, 20, 44],
                     [39, 15, 4, 42, 25],
                     "CCTGAGTTAGTCGT"
-                    )
+                    ))
 
 # NRRRRRRRRRRRNNNNRRRRRRRRR
-print ds.mostLikely([45, 36, 6, 13, 25],
+print(ds.mostLikely([45, 36, 6, 13, 25],
                     [24, 18, 12, 46, 25],
                     "CCGTACTTACCCAGGACCGCAGTCC"
-                    )
+                    ))
 
 # NRRRRRRRRRR
-print ds.mostLikely([75,3,1,21,45],
+print(ds.mostLikely([75,3,1,21,45],
                     [34,11,39,16,15],
                     "TTAGCAGTGCG"
-                    )
+                    ))
 
 # N
-print ds.mostLikely([26,37,8,29,16],
+print(ds.mostLikely([26,37,8,29,16],
                     [31,13,33,23,25],
                     "T"
-                    )
+                    ))
