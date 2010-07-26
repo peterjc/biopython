@@ -71,7 +71,7 @@ import unittest
 import doctest
 import distutils.util
 
-
+system_lang = os.environ.get('LANG', 'C') #Cache this
 
 def main(argv):
     # insert our paths in sys.path:
@@ -89,10 +89,12 @@ def main(argv):
     if os.access(build_path, os.F_OK):
         sys.path.insert(1, build_path)
 
-    # Use "export LANG=C" (which should work on Linux and similar) to
-    # try to avoid problems detecting optional command line tools on
-    # non-English OS (we may want 'command not found' in English)
-    os.environ['LANG']='C'
+    # Using "export LANG=C" (which should work on Linux and similar) can
+    # avoid problems detecting optional command line tools on
+    # non-English OS (we may want 'command not found' in English).
+    # HOWEVER, we do not want to change the default encoding which is
+    # rather important on Python 3 with unicode.
+    #lang = os.environ['LANG']
     
     # get the command line options
     try:
@@ -264,6 +266,10 @@ class TestRunner(unittest.TextTestRunner):
         from Bio import MissingExternalDependencyError
         result = self._makeResult()
         output = io.StringIO()
+        # Restore the language and thus default encoding (in case a prior
+        # test changed this, e.g. to help with detecting command line tools)
+        global system_lang
+        os.environ['LANG']=system_lang
         # Run the actual test inside a try/except to catch import errors.
         # Have to do a nested try because try/except/except/finally requires
         # python 2.5+
