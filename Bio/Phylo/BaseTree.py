@@ -179,13 +179,12 @@ class TreeElement(object):
             if isinstance(val, str):
                 return "%s='%s'" % (key, _sugar.trim_str(str(val)))
             return "%s=%s" % (key, val)
-        s = '%s(%s)' % (self.__class__.__name__,
-                        ', '.join(pair_as_kwarg_string(key, val)
+        return '%s(%s)' % (self.__class__.__name__,
+                            ', '.join(pair_as_kwarg_string(key, val)
                                   for key, val in self.__dict__.items()
                                   if val is not None and
                                   type(val) in (str, int, float, bool, str)
                                   ))
-        return s.encode('utf-8')
 
     __str__ = __repr__
 

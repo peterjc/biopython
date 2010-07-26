@@ -572,8 +572,7 @@ class BranchColor(PhyloElement):
     def __repr__(self):
         """Preserve the standard RGB order when representing this object."""
         return ('%s(red=%d, green=%d, blue=%d)'
-                % (self.__class__.__name__, self.red, self.green, self.blue)
-                ).encode('utf-8')
+                % (self.__class__.__name__, self.red, self.green, self.blue))
 
     def __str__(self):
         """Show the color's RGB values."""
