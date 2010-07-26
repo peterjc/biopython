@@ -25,7 +25,7 @@ warnings.warn("Bio.EZRetrieve is deprecated, and will be removed in a future"\
 
 def retrieve_single(id, from_, to, retrieve_by=None, organism=None,
                     parse_results=1):
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
     
     CGI = "http://siriusb.umdnj.edu:18080/EZRetrieve/single_r_run.jsp"
     org2value = {"Hs" : "0", "Mm" : "1", "Rn" : 2}
@@ -44,8 +44,8 @@ def retrieve_single(id, from_, to, retrieve_by=None, organism=None,
         "org" : org2value[organism],
         "AccType" : acctype2value[retrieve_by],
         }
-    options = urllib.urlencode(params)
-    handle = urllib.urlopen(CGI, options)
+    options = urllib.parse.urlencode(params)
+    handle = urllib.request.urlopen(CGI, options)
     if parse_results:
         results = parse_single(handle)
     else:
