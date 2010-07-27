@@ -15,11 +15,11 @@ Functions:
 qblast        Do a BLAST search using the QBLAST API.
 """
 
+import sys
 try:
-    import io as StringIO
+    from io import StringIO
 except ImportError:
-    import io
-
+    from io import StringIO
 
 
 def qblast(program, database, sequence,
@@ -152,6 +152,10 @@ def qblast(program, database, sequence,
                                   {"User-Agent":"BiopythonClient"})
         handle = urllib.request.urlopen(request)
         results = handle.read()
+        if sys.version_info[0] >= 3:
+            #On Python 3, want to go from bytes to unicode
+            results = results.decode()
+
         # Can see an "\n\n" page while results are in progress,
         # if so just wait a bit longer...
         if results=="\n\n":
@@ -165,7 +169,7 @@ def qblast(program, database, sequence,
         if status.upper() == "READY":
             break
 
-    return io.StringIO(results)
+    return StringIO(results)
 
 def _parse_qblast_ref_page(handle):
     """Extract a tuple of RID, RTOE from the 'please wait' page (PRIVATE).
@@ -174,6 +178,9 @@ def _parse_qblast_ref_page(handle):
     'Request Time of Execution' and RID would be 'Request Identifier'.
     """
     s = handle.read()
+    if sys.version_info[0] >= 3:
+        #On Python 3, want to go from bytes to unicode
+        s = s.decode()
     i = s.find("RID =")
     if i == -1:
         rid = None
