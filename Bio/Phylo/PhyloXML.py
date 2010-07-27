@@ -60,7 +60,7 @@ class Phyloxml(PhyloElement):
         """Get a phylogeny by index or name."""
         if isinstance(index, int) or isinstance(index, slice):
             return self.phylogenies[index]
-        if not isinstance(index, basestring):
+        if not isinstance(index, str):
             raise KeyError("can't use %s as an index" % type(index))
         for tree in self.phylogenies:
             if tree.name == index:
@@ -192,7 +192,7 @@ class Phylogeny(PhyloElement, BaseTree.Tree):
             return False
         seqs = self._filter_search(is_aligned_seq, 'preorder', True)
         try:
-            first_seq = seqs.next()
+            first_seq = next(seqs)
         except StopIteration:
             # No aligned sequences were found --> empty MSA
             return MultipleSeqAlignment([])
@@ -368,7 +368,7 @@ class Clade(PhyloElement, BaseTree.Clade):
     def _set_color(self, arg):
         if arg is None or isinstance(arg, BranchColor):
             self._color = arg
-        elif isinstance(arg, basestring):
+        elif isinstance(arg, str):
             if arg in BranchColor.color_names:
                 # Known color name
                 self._color = BranchColor.from_name(arg)
@@ -527,14 +527,14 @@ class BranchColor(PhyloElement):
         The string format is the same style used in HTML and CSS, such as
         '#FF8000' for an RGB value of (255, 128, 0).
         """
-        assert (isinstance(hexstr, basestring) and
+        assert (isinstance(hexstr, str) and
                 hexstr.startswith('#') and
                 len(hexstr) == 7
                 ), "need a 24-bit hexadecimal string, e.g. #000000"
         def unpack(cc):
             return int('0x'+cc, base=16)
         RGB = hexstr[1:3], hexstr[3:5], hexstr[5:]
-        return cls(*map(unpack, RGB))
+        return cls(*list(map(unpack, RGB)))
 
     @classmethod
     def from_name(cls, colorname):
@@ -571,7 +571,7 @@ class BranchColor(PhyloElement):
 
     def __repr__(self):
         """Preserve the standard RGB order when representing this object."""
-        return (u'%s(red=%d, green=%d, blue=%d)'
+        return ('%s(red=%d, green=%d, blue=%d)'
                 % (self.__class__.__name__, self.red, self.green, self.blue))
 
     def __str__(self):
@@ -697,32 +697,32 @@ class Events(PhyloElement):
         self.confidence = confidence
 
     def items(self):
-        return [(k, v) for k, v in self.__dict__.iteritems() if v is not None]
+        return [(k, v) for k, v in self.__dict__.items() if v is not None]
 
     def keys(self):
-        return [k for k, v in self.__dict__.iteritems() if v is not None]
+        return [k for k, v in self.__dict__.items() if v is not None]
 
     def values(self):
-        return [v for v in self.__dict__.itervalues() if v is not None]
+        return [v for v in self.__dict__.values() if v is not None]
 
     # XXX Backwards compatibility shims -- remove in Biopython 1.56
     def iteritems(self):
         warnings.warn("use items() instead.""",
                 DeprecationWarning, stacklevel=2)
-        return iter(self.items())
+        return iter(list(self.items()))
 
     def iterkeys(self):
         warnings.warn("use keys() instead.""",
                 DeprecationWarning, stacklevel=2)
-        return iter(self.keys())
+        return iter(list(self.keys()))
 
     def itervalues(self):
         warnings.warn("use values() instead.""",
                 DeprecationWarning, stacklevel=2)
-        return iter(self.values())
+        return iter(list(self.values()))
 
     def __len__(self):
-        return len(self.values())
+        return len(list(self.values()))
 
     def __getitem__(self, key):
         if not hasattr(self, key):
@@ -739,7 +739,7 @@ class Events(PhyloElement):
         setattr(self, key, None)
 
     def __iter__(self):
-        return iter(self.keys())
+        return iter(list(self.keys()))
 
     def __contains__(self, key):
         return (hasattr(self, key) and getattr(self, key) is not None)
@@ -794,7 +794,7 @@ class Point(PhyloElement):
     def __init__(self, geodetic_datum, lat, long, alt=None, alt_unit=None):
         self.geodetic_datum = geodetic_datum
         self.lat = lat
-        self.long = long
+        self.long = int
         self.alt = alt
         self.alt_unit = alt_unit
 
@@ -1045,7 +1045,7 @@ class Sequence(PhyloElement):
         """
         def clean_dict(dct):
             """Remove None-valued items from a dictionary."""
-            return dict((key, val) for key, val in dct.iteritems()
+            return dict((key, val) for key, val in dct.items()
                         if val is not None)
 
         seqrec = SeqRecord(Seq(self.mol_seq.value, self.get_alphabet()),

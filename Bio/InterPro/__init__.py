@@ -30,7 +30,7 @@ from Bio.SeqFeature import Reference
 class Record( dict ):
 
     def __str__( self ):
-        keys = self.keys()
+        keys = list(self.keys())
         keys.sort()
         out = ''
         for key in keys:
@@ -254,8 +254,8 @@ class InterProParser(  sgmllib.SGMLParser ):
 
 def get_interpro_entry( id ):
     """get specified interpro entry"""
-    import urllib
-    handle = urllib.urlopen("http://www.ebi.ac.uk/interpro/IEntry?ac=" + id )
+    import urllib.request, urllib.parse, urllib.error
+    handle = urllib.request.urlopen("http://www.ebi.ac.uk/interpro/IEntry?ac=" + id )
 
     # XXX need to check to see if the entry exists!
     return handle
@@ -266,4 +266,4 @@ if __name__ == '__main__':
     undo_handle = Bio.File.UndoHandle( handle )
     interpro_parser = InterProParser()
     record = interpro_parser.parse( handle )
-    print str( record )
+    print(str( record ))
