@@ -2,7 +2,7 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 
-import cPickle
+import pickle
 import sys
 import os
 from Bio import SubsMat
@@ -20,7 +20,7 @@ for i in ftab_prot.alphabet.letters:
 
 pickle_file = os.path.join('SubsMat', 'acc_rep_mat.pik')
 #Don't want to use text mode on Python 3,
-acc_rep_mat = cPickle.load(open(pickle_file, 'rb'))
+acc_rep_mat = pickle.load(open(pickle_file, 'rb'))
 acc_rep_mat = SubsMat.AcceptedReplacementsMatrix(acc_rep_mat)
 obs_freq_mat = SubsMat._build_obs_freq_mat(acc_rep_mat)
 ftab_prot2 = SubsMat._exp_freq_table_from_obs_freq(obs_freq_mat)
@@ -28,7 +28,7 @@ obs_freq_mat.print_mat(f=f,format=" %4.3f")
 
 
 f.write("Diff between supplied and matrix-derived frequencies, should be small\n")
-ks = ftab_prot.keys()
+ks = list(ftab_prot.keys())
 ks.sort()
 for i in ks:
     f.write("%s %.2f\n" % (i,abs(ftab_prot[i] - ftab_prot2[i])))
@@ -36,7 +36,7 @@ for i in ks:
 s = 0.
 f.write("Calculating sum of letters for an observed frequency matrix\n")
 counts = obs_freq_mat.sum()
-keys = counts.keys()
+keys = list(counts.keys())
 keys.sort()
 for key in keys:
     f.write("%s\t%.2f\n" % (key, counts[key]))

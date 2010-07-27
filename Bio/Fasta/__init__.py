@@ -112,13 +112,13 @@ class Iterator:
             line = handle.readline()
             if not line or line[0] == ">":
                 break
-            if debug : print "Skipping: " + line
+            if debug : print("Skipping: " + line)
         self._lookahead = line
 
     def __iter__(self):
-        return iter(self.next, None)
+        return iter(self.__next__, None)
 
-    def next(self):
+    def __next__(self):
         """Return the next record in the file"""
         line = self._lookahead
         if not line:
@@ -130,14 +130,14 @@ class Iterator:
             if line[0] == ">": break
             if line[0] == "#":
                 if self._debug:
-                    print "Ignoring comment line"
+                    print("Ignoring comment line")
                 pass
             else:
                 lines.append(line.rstrip())
             line = self.handle.readline()
         self._lookahead = line
         if self._debug:
-            print "Debug: '%s'" % "".join(lines)
+            print("Debug: '%s'" % "".join(lines))
         if self._parser is None:
             return "\n".join(lines)
         else:

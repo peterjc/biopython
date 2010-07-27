@@ -8,7 +8,7 @@ import sys
 import time
 
 sys.path.insert(0, '.')
-from Tkinter import *
+from tkinter import *
 
 from Bio.Seq import reverse_complement, translate
 from Bio.SeqUtils import GC
@@ -66,7 +66,7 @@ class xbb_translations:
             subseq = seq[i:i+60]
             p = i/3
             res += '%d/%d\n' % (i+1, i/3+1)
-            res += '  '.join(map(None,protein[p:p+20])) + '\n'
+            res += '  '.join(list(protein[p:p+20])) + '\n'
             # seq
             res += subseq.lower() + '%5d %%\n' % int(self.gc(subseq))
 
@@ -94,16 +94,16 @@ class xbb_translations:
             p = i/3
             # + frames
             res += '%d/%d\n' % (i+1, i/3+1)
-            res += '  ' + '  '.join(map(None,frames[3][p:p+20])) + '\n'
-            res += ' ' + '  '.join(map(None,frames[2][p:p+20])) + '\n'
-            res += '  '.join(map(None,frames[1][p:p+20])) + '\n'
+            res += '  ' + '  '.join(list(frames[3][p:p+20])) + '\n'
+            res += ' ' + '  '.join(list(frames[2][p:p+20])) + '\n'
+            res += '  '.join(list(frames[1][p:p+20])) + '\n'
             # seq
             res += subseq.lower() + '%5d %%\n' % int(self.gc(subseq))
             res += csubseq.lower() + '\n'
             # - frames
-            res += '  '.join(map(None,frames[-2][p:p+20]))  +' \n'
-            res += ' ' + '  '.join(map(None,frames[-1][p:p+20])) + '\n'
-            res += '  ' + '  '.join(map(None,frames[-3][p:p+20])) + '\n\n'
+            res += '  '.join(list(frames[-2][p:p+20]))  +' \n'
+            res += ' ' + '  '.join(list(frames[-1][p:p+20])) + '\n'
+            res += '  ' + '  '.join(list(frames[-3][p:p+20])) + '\n\n'
             
             
         return res
@@ -117,8 +117,8 @@ if __name__ == '__main__':
 #         print test.frame1(s[i:])
     #print s
     #print test.complement(s)
-    print '============================================================'
-    print test.gcframe(s)
+    print('============================================================')
+    print(test.gcframe(s))
     
 #     for i in Translate.unambiguous_dna_by_id.keys():
 #         print Translate.unambiguous_dna_by_id[i].table.names[0]
