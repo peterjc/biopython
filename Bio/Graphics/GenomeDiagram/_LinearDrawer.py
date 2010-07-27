@@ -31,10 +31,10 @@ from reportlab.graphics.shapes import *
 from reportlab.lib import colors
 
 # GenomeDiagram imports
-from _AbstractDrawer import AbstractDrawer, draw_box, draw_arrow
-from _AbstractDrawer import intermediate_points, angle2trig
-from _FeatureSet import FeatureSet
-from _GraphSet import GraphSet
+from ._AbstractDrawer import AbstractDrawer, draw_box, draw_arrow
+from ._AbstractDrawer import intermediate_points, angle2trig
+from ._FeatureSet import FeatureSet
+from ._GraphSet import GraphSet
 
 from math import ceil
 
@@ -371,7 +371,7 @@ class LinearDrawer(AbstractDrawer):
             and blue ones indicating tracks to be drawn.
         """
         # Add lines for each fragment
-        for fbtm, ftop in self.fragment_lines.values():
+        for fbtm, ftop in list(self.fragment_lines.values()):
             self.drawing.add(Line(self.x0, ftop, self.xlim, ftop,
                                   strokeColor=colors.red))  # top line
             self.drawing.add(Line(self.x0, fbtm, self.xlim, fbtm,
@@ -697,7 +697,7 @@ class LinearDrawer(AbstractDrawer):
         # several parts, and one or more of those parts may end up being
         # drawn on a non-existent fragment.  So we check that the start and
         # end fragments do actually exist in terms of the drawing
-        allowed_fragments = self.fragment_limits.keys()
+        allowed_fragments = list(self.fragment_limits.keys())
         if start_fragment in allowed_fragments and end_fragment in allowed_fragments:
             
             #print feature.name, feature.start, feature.end, start_offset, end_offset
@@ -759,14 +759,14 @@ class LinearDrawer(AbstractDrawer):
             ctr += self.fragment_lines[fragment][0]
             top += self.fragment_lines[fragment][0]
         except:     # Only called if the method screws up big time
-            print "We've got a screw-up"
-            print self.start, self.end
-            print self.fragment_bases
-            print x0, x1
+            print("We've got a screw-up")
+            print(self.start, self.end)
+            print(self.fragment_bases)
+            print(x0, x1)
             for locstart, locend in feature.locations:
-                print self.canvas_location(locstart)
-                print self.canvas_location(locend)
-            print 'FEATURE\n', feature
+                print(self.canvas_location(locstart))
+                print(self.canvas_location(locend))
+            print('FEATURE\n', feature)
             1/0
 
         # Distribution dictionary for various ways of drawing the feature

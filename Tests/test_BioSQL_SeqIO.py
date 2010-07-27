@@ -15,7 +15,7 @@ import os
 from Bio import MissingExternalDependencyError
 from Bio import SeqIO
 from Bio.Seq import UnknownSeq
-from StringIO import StringIO
+from io import StringIO
 
 from BioSQL import BioSeqDatabase
 from BioSQL import BioSeq
@@ -120,29 +120,29 @@ test_files = [ \
 #from setup_BioSQL import create_database
 #create_database()
 
-print "Connecting to database"
+print("Connecting to database")
 try:
     server = BioSeqDatabase.open_database(driver = DBDRIVER,
                                       user = DBUSER, passwd = DBPASSWD,
                                       host = DBHOST, db = TESTDB)
-except Exception, e:
+except Exception as e:
     message = "Connection failed, check settings in Tests/setup_BioSQL.py "\
               "if you plan to use BioSQL: %s" % str(e)
     raise MissingExternalDependencyError(message)
 
-print "Removing existing sub-database '%s' (if exists)" % db_name
-if db_name in server.keys():
+print("Removing existing sub-database '%s' (if exists)" % db_name)
+if db_name in list(server.keys()):
     #Might exist from a failed test run...
     #db = server[db_name]
     server.remove_database(db_name)
     server.commit()
 
-print "(Re)creating empty sub-database '%s'" % db_name
+print("(Re)creating empty sub-database '%s'" % db_name)
 db = server.new_database(db_name)
 
 db_count = 0
 for (t_format, t_alignment, t_filename, t_count) in test_files:
-    print "Testing loading from %s format file %s" % (t_format, t_filename)
+    print("Testing loading from %s format file %s" % (t_format, t_filename))
     assert os.path.isfile(t_filename), t_filename
 
     iterator = SeqIO.parse(handle=open(t_filename,"r"), format=t_format)
@@ -155,60 +155,60 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
     
     iterator = SeqIO.parse(handle=open(t_filename,"r"), format=t_format)
     for record in iterator:
-        print " - %s, %s" % (checksum_summary(record), record.id)
+        print(" - %s, %s" % (checksum_summary(record), record.id))
 
         key = record.name
-        print " - Retrieving by name/display_id '%s'," % key,
+        print(" - Retrieving by name/display_id '%s'," % key, end=' ')
         db_rec = db.lookup(name=key)
         compare_record(record, db_rec)
         db_rec = db.lookup(display_id=key)
         compare_record(record, db_rec)
-        print "OK"
+        print("OK")
 
         key = record.id
         if key.count(".")==1 and key.split(".")[1].isdigit():
-            print " - Retrieving by version '%s'," % key,
+            print(" - Retrieving by version '%s'," % key, end=' ')
             db_rec = db.lookup(version=key)
             compare_record(record, db_rec)
-            print "OK"
+            print("OK")
         
         if "accessions" in record.annotations:
             accs = set(record.annotations["accessions"])
             for key in accs:
                 assert key, "Blank accession in annotation %s" % repr(accs)
                 try:
-                    print " - Retrieving by accession '%s'," % key,
+                    print(" - Retrieving by accession '%s'," % key, end=' ')
                     db_rec = db.lookup(accession=key)
                     compare_record(record, db_rec)
-                    print "OK"
+                    print("OK")
                 except IndexError:
-                    print "Failed"
+                    print("Failed")
                     pass
 
         if "gi" in record.annotations:
             key = record.annotations['gi']
             if key != record.id:
-                print " - Retrieving by GI '%s'," % key,
+                print(" - Retrieving by GI '%s'," % key, end=' ')
                 db_rec = db.lookup(primary_id=key)
                 compare_record(record, db_rec)
-                print "OK"
+                print("OK")
 
     assert db_count == len(db), "%i vs %i" % (count, len(db))
-    assert db_count == len(db.keys())
-    assert db_count == len(db.values())
-    assert db_count == len(db.items())
+    assert db_count == len(list(db.keys()))
+    assert db_count == len(list(db.values()))
+    assert db_count == len(list(db.items()))
 
-for db_rec in db.itervalues():
+for db_rec in db.values():
     assert isinstance(db_rec, BioSeq.DBSeqRecord)
-for key, db_rec in db.iteritems():
+for key, db_rec in db.items():
     assert isinstance(db_rec, BioSeq.DBSeqRecord)
     compare_record(db_rec, db[key])
 
-print "Removing (deleting) '%s'" % db_name
+print("Removing (deleting) '%s'" % db_name)
 server.remove_database(db_name)
 
-print "Committing remaining changes"
+print("Committing remaining changes")
 server.commit()
 
-print "Closing connection"
+print("Closing connection")
 server.close()

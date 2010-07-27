@@ -49,8 +49,8 @@ def items(l):
 
     """
     try:
-        return asdict(l).keys()
-    except TypeError, x:
+        return list(asdict(l).keys())
+    except TypeError as x:
         if str(x).find("unhashable") == -1:
             raise
     # asdict failed because l is unhashable.  Back up to a naive
@@ -87,7 +87,7 @@ def contents(items):
     counts = count(items)
     l = float(len(items))
     contents = {}
-    for i, c in counts.iteritems():
+    for i, c in counts.items():
         contents[i] = c / l
     return contents
 
@@ -101,7 +101,7 @@ def intersection(l1, l2):
     inter = []
     words1 = count(l1)
     for w in l2:
-        if words1.has_key(w):
+        if w in words1:
             inter.append(w)
             del words1[w]  # don't add the same word twice
     return inter
@@ -116,7 +116,7 @@ def difference(l1, l2):
     diff = []
     words2 = count(l2)
     for w in l1:
-        if not words2.has_key(w):
+        if w not in words2:
             diff.append(w)
             words2[w] = 1   # don't add the same word twice
     return diff
@@ -131,7 +131,7 @@ def itemindex(l):
     """
     dict = {}
     for i in range(len(l)):
-        if not dict.has_key(l[i]):
+        if l[i] not in dict:
             dict[l[i]] = i
     return dict
 

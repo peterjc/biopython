@@ -37,7 +37,7 @@
 
 import os
 import shutil
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 
 class PDBList:
@@ -97,7 +97,7 @@ class PDBList:
         Typical contents of the list files parsed by this method is now
         very simply one PDB name per line.
         """
-        handle = urllib.urlopen(url)
+        handle = urllib.request.urlopen(url)
         answer = []
         for line in handle:
             pdb = line.strip()
@@ -123,7 +123,7 @@ class PDBList:
 
 
         """     
-        url = urllib.urlopen(self.pdb_server+'/pub/pdb/data/status/')
+        url = urllib.request.urlopen(self.pdb_server+'/pub/pdb/data/status/')
 
         # added by S.Lee
         # recent = filter(lambda x: x.isdigit(), \
@@ -143,8 +143,8 @@ class PDBList:
         PDB entries and some annotation to them. 
         Returns a list of PDB codes in the index file.
         """
-        print "retrieving index file. Takes about 5 MB."
-        url = urllib.urlopen(self.pdb_server+'/pub/pdb/derived_data/index/entries.idx')
+        print("retrieving index file. Takes about 5 MB.")
+        url = urllib.request.urlopen(self.pdb_server+'/pub/pdb/derived_data/index/entries.idx')
         # extract four-letter-codes
         # entries = map(lambda x: x[:4], \
         #               filter(lambda x: len(x)>4, url.readlines()[2:]))
@@ -173,7 +173,7 @@ class PDBList:
         ...
 
         """
-        handle = urllib.urlopen(self.pdb_server+'/pub/pdb/data/status/obsolete.dat')
+        handle = urllib.request.urlopen(self.pdb_server+'/pub/pdb/data/status/obsolete.dat')
         # extract pdb codes. Could use a list comprehension, but I want
         # to include an assert to check for mis-reading the data.
         obsolete = []
@@ -241,12 +241,12 @@ class PDBList:
         # check whether the file exists
         if not self.overwrite:
             if os.path.exists(final_file):
-                print "file exists, not retrieved %s" % final_file
+                print("file exists, not retrieved %s" % final_file)
                 return final_file
 
         # Retrieve the file
-        print 'retrieving %s' % url
-        lines=urllib.urlopen(url).read()
+        print('retrieving %s' % url)
+        lines=urllib.request.urlopen(url).read()
         open(filename,'wb').write(lines)
         # uncompress the file
         os.system("%s %s" % (uncompress, filename))
@@ -271,7 +271,7 @@ class PDBList:
                 #print 'retrieving %s' % pdb_code
                 self.retrieve_pdb_file(pdb_code)
             except Exception:
-                print 'error %s\n' % pdb_code
+                print('error %s\n' % pdb_code)
                 # you can insert here some more log notes that
                 # something has gone wrong.            
 
@@ -292,11 +292,11 @@ class PDBList:
                 try:
                     shutil.move(old_file, new_file)
                 except Exception:
-                    print "Could not move %s to obsolete folder" % old_file
+                    print("Could not move %s to obsolete folder" % old_file)
             elif os.path.isfile(new_file):
-                print "Obsolete file %s already moved" % old_file
+                print("Obsolete file %s already moved" % old_file)
             else:
-                print "Obsolete file %s is missing" % old_file
+                print("Obsolete file %s is missing" % old_file)
 
 
     def download_entire_pdb(self, listfile=None):
@@ -339,8 +339,8 @@ class PDBList:
         """Retrieves a (big) file containing all the sequences of PDB entries
         and writes it to a file.
         """
-        print "retrieving sequence file. Takes about 15 MB."
-        url = urllib.urlopen(self.pdb_server + 
+        print("retrieving sequence file. Takes about 15 MB.")
+        url = urllib.request.urlopen(self.pdb_server + 
                 '/pub/pdb/derived_data/pdb_seqres.txt')
         lines = url.readlines()
         outfile = open(savefile, 'w')
@@ -368,7 +368,7 @@ if __name__ == '__main__':
        -d   A single directory will be used as <pdb_path>, not a tree.
        -o   Overwrite existing structure files.
     """
-    print doc
+    print(doc)
 
     if len(sys.argv)>2:
         pdb_path = sys.argv[2]
@@ -386,7 +386,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:   
         if sys.argv[1] == 'update':
             # update PDB
-            print "updating local PDB at "+pdb_path 
+            print("updating local PDB at "+pdb_path) 
             pl.update_pdb()
 
         elif sys.argv[1] == 'all':

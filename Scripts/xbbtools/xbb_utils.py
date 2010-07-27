@@ -6,8 +6,8 @@
 
 import sys
 sys.path.insert(0, '.')
-from Tkinter import *
-from FileDialog import SaveFileDialog
+from tkinter import *
+from tkinter.filedialog import SaveFileDialog
 
 class NotePad(Toplevel):
     def __init__(self, master= None):
