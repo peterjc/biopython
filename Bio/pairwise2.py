@@ -773,10 +773,9 @@ def print_matrix(matrix):
             matrixT[j].append(len(str(matrix[i][j])))
     ndigits = list(map(max, matrixT))
     for i in range(len(matrix)):
-        for j in range(len(matrix[i])):
-            n = ndigits[j]
-            print("%*s " % (n, matrix[i][j]), end=' ')
-        print()
+        #Using string formatting trick to add leading spaces,
+        print(" ".join("%*s " % (ndigits[j], matrix[i][j]) \
+                       for j in range(len(matrix[i]))))
 
 def format_alignment(align1, align2, score, begin, end):
     """format_alignment(align1, align2, score, begin, end) -> string
@@ -804,5 +803,4 @@ else:
     for name in list(cpairwise2.__dict__.keys()):
         if not name.startswith("__"):
             this_module.__dict__[name] = cpairwise2.__dict__[name]
-
 
