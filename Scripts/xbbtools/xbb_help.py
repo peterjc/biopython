@@ -4,8 +4,8 @@
 # thomas@cbs.dtu.dk, http://www.cbs.dtu.dk/thomas
 # File: xbb_help.py
 
-from Tkinter import *
-from ScrolledText import ScrolledText
+from tkinter import *
+from tkinter.scrolledtext import ScrolledText
 
 class xbbtools_help(Toplevel):
     def __init__(self, *args):

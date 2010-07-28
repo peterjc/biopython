@@ -114,30 +114,30 @@ class Translator:
                        self.table.nucleotide_alphabet)
 
 unambiguous_dna_by_name = {}
-for key, value in CodonTable.unambiguous_dna_by_name.items():
+for key, value in list(CodonTable.unambiguous_dna_by_name.items()):
     unambiguous_dna_by_name[key] = Translator(value)
 unambiguous_dna_by_id = {}
-for key, value in CodonTable.unambiguous_dna_by_id.items():
+for key, value in list(CodonTable.unambiguous_dna_by_id.items()):
     unambiguous_dna_by_id[key] = Translator(value)
 
 unambiguous_rna_by_name = {}
-for key, value in CodonTable.unambiguous_rna_by_name.items():
+for key, value in list(CodonTable.unambiguous_rna_by_name.items()):
     unambiguous_rna_by_name[key] = Translator(value)
 unambiguous_rna_by_id = {}
-for key, value in CodonTable.unambiguous_rna_by_id.items():
+for key, value in list(CodonTable.unambiguous_rna_by_id.items()):
     unambiguous_rna_by_id[key] = Translator(value)
 
 # XXX Ambiguous - can be done the same except for stop codons!
 ambiguous_dna_by_name = {}
-for key, value in CodonTable.ambiguous_dna_by_name.items():
+for key, value in list(CodonTable.ambiguous_dna_by_name.items()):
     ambiguous_dna_by_name[key] = Translator(value)
 ambiguous_dna_by_id = {}
-for key, value in CodonTable.ambiguous_dna_by_id.items():
+for key, value in list(CodonTable.ambiguous_dna_by_id.items()):
     ambiguous_dna_by_id[key] = Translator(value)
 
 ambiguous_rna_by_name = {}
-for key, value in CodonTable.ambiguous_rna_by_name.items():
+for key, value in list(CodonTable.ambiguous_rna_by_name.items()):
     ambiguous_rna_by_name[key] = Translator(value)
 ambiguous_rna_by_id = {}
-for key, value in CodonTable.ambiguous_rna_by_id.items():
+for key, value in list(CodonTable.ambiguous_rna_by_id.items()):
     ambiguous_rna_by_id[key] = Translator(value)
