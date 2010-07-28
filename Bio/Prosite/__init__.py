@@ -75,13 +75,13 @@ from Bio.ParserSupport import *
 # if we don't use the "parser = RecordParser(); parser.parse(handle)"
 # approach. Leaving that for the next revision of Bio.Prosite.
 def parse(handle):
-    import cStringIO
+    import io
     parser = RecordParser()
     text = ""
     for line in handle:
         text += line
         if line[:2]=='//':
-            handle = cStringIO.StringIO(text)
+            handle = io.StringIO(text)
             record = parser.parse(handle)
             text = ""
             if not record: # Then this was the copyright notice
@@ -92,7 +92,7 @@ def read(handle):
     parser = RecordParser()
     try:
         record = parser.parse(handle)
-    except ValueError, error:
+    except ValueError as error:
         if error.message=="There doesn't appear to be a record":
             raise ValueError("No Prosite record found")
         else:
@@ -326,7 +326,7 @@ class _Scanner:
             # the 3D lines, instead of the other way around.
             # Thus, I'll give the 3D lines another chance after the DO lines
             # are finished.
-            if fn is self._scan_do.im_func:
+            if fn is self._scan_do.__func__:
                 self._scan_3d(uhandle, consumer)
         consumer.end_record()
 
@@ -727,10 +727,10 @@ def index_file(filename, indexname, rec2key=None):
     
     handle = open(filename)
     records = parse(handle)
-    end = 0L
+    end = 0
     for record in records:
         start = end
-        end = long(handle.tell())
+        end = int(handle.tell())
         length = end - start
         
         if rec2key is not None:

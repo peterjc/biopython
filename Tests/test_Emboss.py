@@ -42,12 +42,12 @@ if sys.platform=="win32":
                 exes[name] = os.path.join(path, name+".exe")
     del path, name
 else:
-    import commands
+    import subprocess
     for name in exes_wanted:
         #This will "just work" if installed on the path as normal on Unix
         #Note this will not spot error messages in other languages
         #such as Japanese... see the version check
-        if "not found" not in commands.getoutput("%s -help" % name):
+        if "not found" not in subprocess.getoutput("%s -help" % name):
             exes[name] = name
     del name
 
@@ -218,7 +218,7 @@ class SeqRetSeqIOTests(unittest.TestCase):
             new_records = list(emboss_piped_SeqIO_convert(records, temp_format, "fasta"))
             try:
                 self.assertTrue(compare_records(records, new_records))
-            except ValueError, err:
+            except ValueError as err:
                 raise ValueError("Disagree on file %s %s in %s format: %s" \
                                  % (in_format, in_filename, temp_format, err))
             
@@ -235,7 +235,7 @@ class SeqRetSeqIOTests(unittest.TestCase):
             new_records = list(SeqIO.parse(handle, new_format))
             try:
                 self.assertTrue(compare_records(old_records, new_records))
-            except ValueError, err:
+            except ValueError as err:
                 raise ValueError("Disagree on %s file %s in %s format: %s" \
                                  % (old_format, filename, new_format, err))
 
@@ -312,7 +312,7 @@ class SeqRetAlignIOTests(unittest.TestCase):
                                  % (old_format, filename, new_format))
             try:
                 self.assertTrue(compare_alignments(old_aligns, new_aligns))
-            except ValueError, err:
+            except ValueError as err:
                 raise ValueError("Disagree on %s file %s in %s format: %s" \
                                  % (old_format, filename, new_format, err))
 
@@ -337,13 +337,13 @@ class SeqRetAlignIOTests(unittest.TestCase):
                 new_aligns = list(emboss_piped_AlignIO_convert(old_aligns,
                                                                temp_format,
                                                                "phylip"))
-            except ValueError, e:
+            except ValueError as e:
                 #e.g. ValueError: Need a DNA, RNA or Protein alphabet
                 #from writing Nexus files...
                 continue
             try:
                 self.assertTrue(compare_alignments(old_aligns, new_aligns))
-            except ValueError, err:
+            except ValueError as err:
                 raise ValueError("Disagree on file %s %s in %s format: %s" \
                                  % (in_format, in_filename, temp_format, err))
 
@@ -419,7 +419,7 @@ class PairwiseAlignmentTests(unittest.TestCase):
                                  shell=(sys.platform!="win32"))
         #Check it worked,
         return_code = child.wait()
-        if return_code != 0 : print >> sys.stderr, "\n%s"%cline
+        if return_code != 0 : print("\n%s"%cline, file=sys.stderr)
         self.assertEqual(return_code, 0)
         errors = child.stderr.read().strip()
         self.assertTrue(errors.startswith("Smith-Waterman local alignment"),
@@ -507,7 +507,7 @@ class PairwiseAlignmentTests(unittest.TestCase):
         errors = err.strip()
         self.assertTrue(err.strip().startswith("Needleman-Wunsch global alignment"), errors)
         self.assertEqual(out.strip(), "")
-        if return_code != 0 : print >> sys.stderr, "\n%s"%cline
+        if return_code != 0 : print("\n%s"%cline, file=sys.stderr)
         self.assertEqual(return_code, 0)
         filename = cline.outfile
         self.assertTrue(os.path.isfile(filename))

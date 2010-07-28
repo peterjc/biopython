@@ -22,7 +22,7 @@ def iterlen(items):
 
 def trim_str(text, maxlen=60):
     """Truncate a string to maxlen characters, including ellipsis."""
-    assert isinstance(text, basestring), \
+    assert isinstance(text, str), \
             "%s should be a string, not a %s" % (text, type(text))
     if len(text) > maxlen:
         return text[:maxlen-3] + '...'

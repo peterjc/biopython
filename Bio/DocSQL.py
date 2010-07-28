@@ -116,7 +116,7 @@ class Query(object):
 
     def dump(self):
         for item in self:
-            print item
+            print(item)
 
 class QueryGeneric(Query):
     def __init__(self, statement, *args, **keywds):
@@ -130,11 +130,11 @@ class IterationCursor(object):
         self.cursor = connection.cursor()
         self.row_class = query.row_class
         if query.diagnostics:
-            print >>sys.stderr, query.statement
-            print >>sys.stderr, query.params
+            print(query.statement, file=sys.stderr)
+            print(query.params, file=sys.stderr)
         self.cursor.execute(query.statement, query.params)
 
-    def next(self):
+    def __next__(self):
         return self.row_class(self.cursor)
 
 class QuerySingle(Query, QueryRow):
@@ -156,7 +156,7 @@ class QuerySingle(Query, QueryRow):
 class QueryAll(list, Query):
     def __init__(self, *args, **keywds):
         Query.__init__(self, *args, **keywds)
-        list.__init__(self, map(self.process_row, self.cursor().fetchall()))
+        list.__init__(self, list(map(self.process_row, self.cursor().fetchall())))
 
     def process_row(self, row):
         return row
@@ -181,7 +181,7 @@ class Insert(Create):
     def __init__(self, *args, **keywds):
         try:
             Create.__init__(self, *args, **keywds)
-        except MySQLdb.IntegrityError, error_data:
+        except MySQLdb.IntegrityError as error_data:
             self.error_message += self.MSG_INTEGRITY_ERROR % error_data[1]
             try:
                 self.total_count
