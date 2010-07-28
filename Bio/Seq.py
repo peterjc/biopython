@@ -59,6 +59,12 @@ class Seq(object):
     The Seq object provides a number of string like methods (such as count,
     find, split and strip), which are alphabet aware where appropriate.
 
+    In addition to the string like sequence, the Seq object has an alphabet
+    property. This is an instance of an Alphabet class from Bio.Alphabet,
+    for example generic DNA, or IUPAC DNA. This describes the type of molecule
+    (e.g. RNA, DNA, protein) and may also indicate the expected symbols
+    (letters).
+
     The Seq object also provides some biological methods, such as complement,
     reverse_complement, transcribe, back_transcribe and translate (which are
     not applicable to sequences with a protein alphabet).
@@ -84,6 +90,9 @@ class Seq(object):
         Seq('MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF', IUPACProtein())
         >>> print(my_seq)
         MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF
+        >>> my_seq.alphabet
+        IUPACProtein()
+
         """
         # Enforce string storage
         if not isinstance(data, str):
@@ -910,7 +919,7 @@ class Seq(object):
         >>> coding_dna.translate(table=1, cds=True)
         Traceback (most recent call last):
             ...
-        Bio.Data.CodonTable.TranslationError: First codon 'GTG' is not a start codon
+        TranslationError: First codon 'GTG' is not a start codon
 
         If the sequence has no in-frame stop codon, then the to_stop argument
         has no effect:
@@ -1878,17 +1887,17 @@ def _translate_str(sequence, table, stop_symbol="*", to_stop=False,
     >>> _translate_str("TA?", table)
     Traceback (most recent call last):
        ...
-    Bio.Data.CodonTable.TranslationError: Codon 'TA?' is invalid
+    TranslationError: Codon 'TA?' is invalid
     >>> _translate_str("ATGCCCTAG", table, cds=True)
     'MP'
     >>> _translate_str("AAACCCTAG", table, cds=True)
     Traceback (most recent call last):
        ...
-    Bio.Data.CodonTable.TranslationError: First codon 'AAA' is not a start codon
+    TranslationError: First codon 'AAA' is not a start codon
     >>> _translate_str("ATGCCCTAGCCCTAG", table, cds=True)
     Traceback (most recent call last):
        ...
-    Bio.Data.CodonTable.TranslationError: Extra in frame stop codon found.
+    TranslationError: Extra in frame stop codon found.
     """
     sequence = sequence.upper()
     amino_acids = []
@@ -2051,10 +2060,14 @@ def reverse_complement(sequence):
 
 def _test():
     """Run the Bio.Seq module's doctests (PRIVATE)."""
-    print("Runing doctests...")
-    import doctest
-    doctest.testmod()
-    print("Done")
+    if sys.version_info[0:2] == (3,1):
+        print("Not running Bio.Seq doctest on Python 3.1")
+        print("See http://bugs.python.org/issue7490")
+    else:
+        print("Runing doctests...")
+        import doctest
+        doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)
+        print("Done")
 
 if __name__ == "__main__":
     _test()
