@@ -47,7 +47,7 @@ read         Parses the XML results returned by any of the above functions.
 _open        Internally used function.
 
 """
-import urllib, time, warnings
+import urllib.request, urllib.parse, urllib.error, time, warnings
 import os.path
 from Bio import File
 
@@ -256,14 +256,14 @@ def read(handle):
     (if any) of each element in a dictionary my_element.attributes, and
     the tag name in my_element.tag.
     """
-    from Parser import DataHandler
+    from .Parser import DataHandler
     DTDs = os.path.join(str(__path__[0]), "DTDs")
     handler = DataHandler(DTDs)
     record = handler.read(handle)
     return record
 
 def parse(handle):
-    from Parser import DataHandler
+    from .Parser import DataHandler
     DTDs = os.path.join(str(__path__[0]), "DTDs")
     handler = DataHandler(DTDs)
     records = handler.parse(handle)
@@ -290,7 +290,7 @@ def _open(cgi, params={}, post=False):
     else:
         _open.previous = current
     # Remove None values from the parameters
-    for key, value in params.items():
+    for key, value in list(params.items()):
         if value is None:
             del params[key]
     # Tell Entrez that we are using Biopython (or whatever the user has
@@ -315,14 +315,14 @@ In case of excessive usage of the E-utilities, NCBI will attempt to contact
 a user at the email address provided before blocking access to the
 E-utilities.""", UserWarning)
     # Open a handle to Entrez.
-    options = urllib.urlencode(params, doseq=True)
+    options = urllib.parse.urlencode(params, doseq=True)
     if post:
         #HTTP POST
-        handle = urllib.urlopen(cgi, data=options)
+        handle = urllib.request.urlopen(cgi, data=options)
     else:
         #HTTP GET
         cgi += "?" + options
-        handle = urllib.urlopen(cgi)
+        handle = urllib.request.urlopen(cgi)
 
     # Wrap the handle inside an UndoHandle.
     uhandle = File.UndoHandle(handle)

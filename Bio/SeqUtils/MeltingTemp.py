@@ -150,7 +150,7 @@ def Tm_staluc(s,dnac=50,saltc=50,rna=0):
     return tm
 
 if __name__ == "__main__":
-    print "Quick self test"
+    print("Quick self test")
     assert Tm_staluc('CAGTCAGTACGTACGTGTACTGCCGTA') == 59.865612727457972
     assert Tm_staluc('CAGTCAGTACGTACGTGTACTGCCGTA',rna=1) == 68.141611264576682
-    print "Done"
+    print("Done")

@@ -12,7 +12,7 @@
 import os
 import unittest
 import warnings
-from StringIO import StringIO
+from io import StringIO
 
 try:
     from numpy.random import random
@@ -109,7 +109,7 @@ class HeaderTests(unittest.TestCase):
                 'release_date': '1998-10-14',
                 'structure_method': 'x-ray diffraction',
                 }
-        for key, expect in known_strings.iteritems():
+        for key, expect in known_strings.items():
             self.assertEqual(struct.header[key].lower(), expect.lower())
 
     def test_fibril(self):
@@ -127,7 +127,7 @@ class HeaderTests(unittest.TestCase):
                 'release_date': '2005-11-22',
                 'structure_method': 'solution nmr',
                 }
-        for key, expect in known_strings.iteritems():
+        for key, expect in known_strings.items():
             self.assertEqual(struct.header[key].lower(), expect.lower())
 
 

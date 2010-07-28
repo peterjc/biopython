@@ -13,7 +13,7 @@ nodes).
 """
 
 import sys, random, copy
-import Nodes
+from . import Nodes
 
 PRECISION_BRANCHLENGTH=6
 PRECISION_SUPPORT=6
@@ -217,7 +217,7 @@ class Tree(Nodes.Chain):
         
         node_id = search_taxon(self,taxon)
         """
-        for id,node in self.chain.iteritems():
+        for id,node in self.chain.items():
             if node.data.taxon==taxon:
                 return id
         return None
@@ -354,11 +354,11 @@ class Tree(Nodes.Chain):
             try:
                 return frozenset([self.set_subtree(n) for n in self.node(node).succ])
             except:
-                print node
-                print self.node(node).succ
+                print(node)
+                print(self.node(node).succ)
                 for n in self.node(node).succ:
-                    print n, self.set_subtree(n)
-                print [self.set_subtree(n) for n in self.node(node).succ]
+                    print(n, self.set_subtree(n))
+                print([self.set_subtree(n) for n in self.node(node).succ])
                 raise
             
     def is_identical(self,tree2):
@@ -379,9 +379,9 @@ class Tree(Nodes.Chain):
         missing1=set(tree2.get_taxa())-set(self.get_taxa())
         if strict and (missing1 or missing2):
             if missing1: 
-                print 'Taxon/taxa %s is/are missing in tree %s' % (','.join(missing1) , self.name)
+                print('Taxon/taxa %s is/are missing in tree %s' % (','.join(missing1) , self.name))
             if missing2:
-                print 'Taxon/taxa %s is/are missing in tree %s' % (','.join(missing2) , tree2.name)
+                print('Taxon/taxa %s is/are missing in tree %s' % (','.join(missing2) , tree2.name))
             raise TreeError('Can\'t compare trees with different taxon compositions.')
         t1=[(set(self.get_taxa(n)),self.node(n).data.support) for n in self.all_ids() if \
             self.node(n).succ and\
@@ -545,8 +545,8 @@ class Tree(Nodes.Chain):
                 if comment is None:
                     comment='-'
                 table.append((str(i),tx,str(n.prev),str(n.succ),blength,sum_blength,support,comment))
-        print '\n'.join(['%3s %32s %15s %15s %8s %10s %8s %20s' % l for l in table])
-        print '\nRoot: ',self.root
+        print('\n'.join(['%3s %32s %15s %15s %8s %10s %8s %20s' % l for l in table]))
+        print('\nRoot: ',self.root)
 
     def to_string(self,support_as_branchlengths=False,branchlengths_only=False,plain=True,plain_newick=False,ladderize=None):
         """Return a paup compatible tree line.
@@ -805,13 +805,13 @@ def consensus(trees, threshold=0.5,outgroup=None):
             #else:
             #    countclades[subclade_taxa]=t.weight
     # weed out clades below threshold
-    for c, p in clades.iteritems():
+    for c, p in clades.items():
         if p<threshold:
             del clades[c]
     # create a tree with a root node
     consensus=Tree(name='consensus_%2.1f' % float(threshold),data=dataclass)
     # each clade needs a node in the new tree, add them as isolated nodes
-    for c, s in clades.iteritems():
+    for c, s in clades.items():
         node=Nodes.Node(data=dataclass())
         node.data.support=s
         node.data.taxon=set(eval(c))

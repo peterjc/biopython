@@ -11,7 +11,7 @@ Supports multicore architectures.
 
 from Bio.PopGen.Async import Async, FileRetriever
 
-import thread
+import _thread
 
 class Local(Async):
     '''Execution on Local machine.
@@ -40,7 +40,7 @@ class Local(Async):
         self.waiting.append((id, hook, parameters, input_files))
         if self.cores_used < self.num_cores:
             self.cores_used += 1
-            thread.start_new_thread(self.start_work, ())
+            _thread.start_new_thread(self.start_work, ())
         self.access_ds.release()
 
     def start_work(self):
