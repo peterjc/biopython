@@ -102,7 +102,7 @@ class BasicNetwork:
         # update the predicted values for these inputs
         self._input.update(inputs)
 
-        output_keys = self._output.values.keys()
+        output_keys = list(self._output.values.keys())
         output_keys.sort()
 
         outputs = []

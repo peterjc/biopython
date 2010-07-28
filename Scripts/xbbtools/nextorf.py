@@ -11,7 +11,7 @@
 # File: nextorf.py
 
 import re
-import os, sys, commands
+import os, sys, subprocess
 import getopt
 
 from Bio import SeqIO
@@ -189,36 +189,36 @@ class NextOrf:
                 
             if out == 'aa':
                 orf = subs.translate(table=self.genetic_code)
-                print self.ToFasta(head, orf.data)
+                print(self.ToFasta(head, orf.data))
             elif out == 'nt':
-                print self.ToFasta(head, subs.data)
+                print(self.ToFasta(head, subs.data))
             elif out == 'pos':
-                print head
+                print(head)
                 
         
     
 def help():
     global options
-    print 'Usage:', sys.argv[0], '(<options>) <FASTA file>'
+    print('Usage:', sys.argv[0], '(<options>) <FASTA file>')
     
-    print 'Options:                                                       default'
-    print '--start       Start position in sequence                             0'
-    print '--stop        Stop position in sequence            (end of seqence)'
-    print '--minlength   Minimum length of orf in bp                          100'
-    print '--maxlength   Maximum length of orf in bp, default           100000000'
-    print '--strand      Strand to analyse [both, plus, minus]               both'
-    print '--frame       Frame to analyse [1 2 3]                             all'
-    print '--noframe     Ignore start codons [0 1]                              0'  
-    print '--output      Output to generate [aa nt pos]                        aa'
-    print '--gc          Creates GC statistics of ORF [0 1]                     0'
-    print '--table       Genetic code to use (see below)                        1'
+    print('Options:                                                       default')
+    print('--start       Start position in sequence                             0')
+    print('--stop        Stop position in sequence            (end of seqence)')
+    print('--minlength   Minimum length of orf in bp                          100')
+    print('--maxlength   Maximum length of orf in bp, default           100000000')
+    print('--strand      Strand to analyse [both, plus, minus]               both')
+    print('--frame       Frame to analyse [1 2 3]                             all')
+    print('--noframe     Ignore start codons [0 1]                              0')  
+    print('--output      Output to generate [aa nt pos]                        aa')
+    print('--gc          Creates GC statistics of ORF [0 1]                     0')
+    print('--table       Genetic code to use (see below)                        1')
     
 #    for a,b in options.items(): print '\t', a,b
 #    print ''
-    print "\nNCBI's Codon Tables:"
-    for key, table in CodonTable.ambiguous_dna_by_id.items():
-        print '\t',key, table._codon_table.names[0]
-    print '\ne.g.\n./nextorf.py --minlength 5 --strand plus --output nt --gc 1 testjan.fas'
+    print("\nNCBI's Codon Tables:")
+    for key, table in list(CodonTable.ambiguous_dna_by_id.items()):
+        print('\t',key, table._codon_table.names[0])
+    print('\ne.g.\n./nextorf.py --minlength 5 --strand plus --output nt --gc 1 testjan.fas')
     sys.exit(0)
     
 
@@ -240,7 +240,7 @@ if __name__ == '__main__':
     show_help = len(sys.argv)<=1
 
     shorts = 'hv'
-    longs = map(lambda x: x +'=', options.keys()) + ['help']
+    longs = [x +'=' for x in list(options.keys())] + ['help']
 
     optlist, args = getopt.getopt(args,shorts, longs)
     if show_help: help()
@@ -249,12 +249,12 @@ if __name__ == '__main__':
         if arg[0] == '-h' or arg[0] == '--help':
             help()
             sys.exit(0)
-        for key in options.keys():
+        for key in list(options.keys()):
             if arg[1].lower() == 'no': arg[1] = 0
             elif arg[1].lower() == 'yes': arg[1] = 1
             if arg[0][2:] == key: options[key] = arg[1]
             
-        if arg[0] == '-v':print 'OPTIONS', options
+        if arg[0] == '-v':print('OPTIONS', options)
 
     file = args[0]
     nextorf = NextOrf(file, options)

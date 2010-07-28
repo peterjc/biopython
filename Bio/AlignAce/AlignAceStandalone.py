@@ -31,7 +31,7 @@ ApplicationResult object
 
 import os
 
-from Applications import AlignAceCommandline
+from .Applications import AlignAceCommandline
 
 
 
@@ -63,7 +63,7 @@ def AlignAce(infile, cmd="AlignACE", **keywds):
 
     AlignCmd.set_parameter("input",infile)
     
-    for (par,val) in keywds.iteritems():
+    for (par,val) in keywds.items():
         AlignCmd.set_parameter(par,val)
 
     return AlignCmd.run()
