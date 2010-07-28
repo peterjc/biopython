@@ -14,7 +14,7 @@ example from the alignret, water and needle tools.
 """
 
 from Bio.Align import MultipleSeqAlignment
-from Interfaces import AlignmentIterator, SequentialAlignmentWriter
+from .Interfaces import AlignmentIterator, SequentialAlignmentWriter
 
 class EmbossWriter(SequentialAlignmentWriter):
     """Emboss alignment writer (WORK IN PROGRESS).
@@ -62,7 +62,7 @@ class EmbossIterator(AlignmentIterator):
     call the "pairs" and "simple" formats.
     """
     
-    def next(self):
+    def __next__(self):
 
         handle = self.handle
 
@@ -185,7 +185,7 @@ class EmbossIterator(AlignmentIterator):
                 #Just a spacer?
                 pass
             else:
-                print line
+                print(line)
                 assert False
 
             line = handle.readline()
@@ -216,7 +216,7 @@ class EmbossIterator(AlignmentIterator):
         return alignment
     
 if __name__ == "__main__":
-    print "Running a quick self-test"
+    print("Running a quick self-test")
 
     #http://emboss.sourceforge.net/docs/themes/alnformats/align.simple
     simple_example = \
@@ -574,7 +574,7 @@ asis             311 -----------------    311
 #---------------------------------------
 #---------------------------------------"""
 
-    from StringIO import StringIO
+    from io import StringIO
 
     alignments = list(EmbossIterator(StringIO(pair_example)))
     assert len(alignments) == 1
@@ -612,4 +612,4 @@ asis             311 -----------------    311
     assert [r.id for r in alignments[0]] \
            == ["asis","asis"]
 
-    print "Done"
+    print("Done")
