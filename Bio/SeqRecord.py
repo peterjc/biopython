@@ -913,6 +913,174 @@ class SeqRecord(object):
                          annotations = self.annotations.copy(),
                          letter_annotations=self.letter_annotations.copy())
 
+    def ungap(self, gap=None):
+        """Return a SeqRecord without the gap character(s) in the sequence.
+
+        The gap character can be specified in two ways - either as an explicit
+        argument, or via the sequence's alphabet. For example:
+
+        >>> from Bio.SeqRecord import SeqRecord
+        >>> from Bio.Seq import Seq
+        >>> from Bio.Alphabet import generic_dna
+        >>> my_dna = SeqRecord(Seq("-ATA--TGAAAT-TTGAAAA-", generic_dna), id="X")
+        >>> my_dna.seq
+        Seq('-ATA--TGAAAT-TTGAAAA-', DNAAlphabet())
+        >>> my_dna.ungap("-").seq
+        Seq('ATATGAAATTTGAAAA', DNAAlphabet())
+
+        If the gap character is not given as an argument, it will be taken from
+        the sequence's alphabet (if defined). For more details, see the Seq
+        object's ungap method.
+        
+        Any per-letter-annotation is sliced to match how the sequence gets
+        sliced to remove the gaps. Other annotations is retained as is.
+        SeqFeature locations are adjusted to use the new coordinates:
+
+        >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
+        >>> my_dna.features.append(SeqFeature(FeatureLocation(0,4)))
+        >>> my_dna.features.append(SeqFeature(FeatureLocation(0,5)))
+        >>> my_dna.features.append(SeqFeature(FeatureLocation(1,4)))
+        >>> my_dna.features.append(SeqFeature(FeatureLocation(1,12)))
+        >>> my_dna.features.append(SeqFeature(FeatureLocation(4,13)))
+        >>> my_dna.features.append(SeqFeature(FeatureLocation(5,13)))
+        >>> my_dna.features.append(SeqFeature(FeatureLocation(6,13)))
+        >>> my_dna.features.append(SeqFeature(FeatureLocation(12,20)))
+        >>> my_dna.features.append(SeqFeature(FeatureLocation(12,21)))
+        >>> for f in my_dna.features:
+        ...     print f.location, f.extract(my_dna.seq)
+        [0:4] -ATA
+        [0:5] -ATA-
+        [1:4] ATA
+        [1:12] ATA--TGAAAT
+        [4:13] --TGAAAT-
+        [5:13] -TGAAAT-
+        [6:13] TGAAAT-
+        [12:20] -TTGAAAA
+        [12:21] -TTGAAAA-
+
+        Notice most of these examples deliberately have the features ending on
+        a gap character. The start and end positions are adjusted to ensure the
+        feature describes the equivalent ungapped sequence:
+        
+        >>> ungapped = my_dna.ungap("-")
+        >>> for f in ungapped.features:
+        ...     print f.location, f.extract(ungapped.seq)
+        [0:3] ATA
+        [0:3] ATA
+        [0:3] ATA
+        [0:9] ATATGAAAT
+        [3:9] TGAAAT
+        [3:9] TGAAAT
+        [3:9] TGAAAT
+        [9:16] TTGAAAA
+        [9:16] TTGAAAA
+        
+        For example with per-letter-annotation, we'll use Bio.SeqIO to load an
+        Ace assembly which includes quality scores but the sequence will be
+        padded with any gap characters (for which there is no quality score
+        available). You may want to get the ungapped sequence with its quality
+        scores (e.g. to output as FASTQ):
+        
+        >>> from Bio import SeqIO
+        >>> record = SeqIO.read("Ace/consed_sample.ace", "ace")
+        >>> print len(record)
+        1475
+        >>> print len(record) - record.seq.count("-")
+        1468
+        >>> print record[860:880].format("fastq")
+        @Contig1 <unknown description>
+        CAGCAGAGAAGGGTTTGAAA
+        +
+        z{{{{yyyyyy{{{{{{{{{
+        <BLANKLINE>
+
+        In the above example we've selected a subsection of the record to show
+        in FASTQ format. Now lets remove the gaps:
+        
+        >>> ungapped = record.ungap()
+        >>> print len(ungapped)
+        1468
+        
+        Notice below how the coordinates for the region [860:880] have shifted
+        by two since there are two gaps before it in the original record:
+
+        >>> record.seq[0:860].count("-")
+        2
+        >>> record[860:880].format("fastq") == ungapped[858:878].format("fastq")
+        True
+
+        So, using this method we can take the gapped consensus records from any
+        ACE file and save them as ungapped records in FASTQ, FASTA, QUAL, etc:
+
+        records = (rec.ungap() for rec in SeqIO.parse(in_file, "ace"))
+        count = SeqIO.write(records, out_file, "fastq")
+        """
+        new_seq = self.seq.ungap(gap)
+        if str(new_seq) == str(self.seq):
+            #Unchanged, not even the alphabet - don't need to alter annotation
+            return self
+        if not gap:
+            gap = self.seq.alphabet.gap_char
+        
+        if not(self.features or self.letter_annotations):
+            return SeqRecord(new_seq, id=self.id, name=self.name,
+                             description=self.description,
+                             dbxrefs=self.dbxrefs[:],
+                             annotations=self.annotations.copy())
+            
+        slices = []
+        new_index = -1
+        if self.seq[0]==gap:
+            start = None
+            in_gap = True
+        else:
+            start = 0
+            in_gap = False
+        mapping = []
+        for old_index, letter in enumerate(self):
+            if letter == gap:
+                mapping.append(None)
+                if in_gap:
+                    pass
+                else:
+                    in_gap = True
+                    if start is not None:
+                        slices.append((start, old_index))
+                        start = None
+            else:
+                new_index += 1
+                assert letter == new_seq[new_index]
+                mapping.append(new_index)
+                if in_gap:
+                    in_gap = False
+                    assert start is None
+                    start = old_index
+        if not in_gap:
+            slices.append((start, len(self)))
+        assert len(mapping) == len(self)
+        mapping.append(len(new_seq))
+        if str(new_seq) != "".join(str(self.seq[s:e]) for s,e in slices):
+            msg = "%s\n%s\n" % (repr(slices), self.seq)
+            for s,e in slices:
+                msg += " "*s + self.seq[s:e] + "\n"
+            assert False, msg
+        
+        answer = SeqRecord(new_seq, id=self.id, name=self.name,
+                           description=self.description,
+                           dbxrefs=self.dbxrefs[:],
+                           annotations=self.annotations.copy())
+        #Apply the slices to the per letter annotation
+        for key, value in self.letter_annotations.iteritems():
+            s, e = slices[0]
+            new = value[s:e]
+            for s, e in slices[1:]:
+                new += value[s:e]
+            answer.letter_annotations[key] = new
+        #Apply the mapping to the feature coordinates
+        for f in self.features:
+            answer.features.append(f._map(mapping))
+        return answer
+
 def _test():
     """Run the Bio.SeqRecord module's doctests (PRIVATE).
 
