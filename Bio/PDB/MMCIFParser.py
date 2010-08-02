@@ -3,17 +3,14 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 
-#Python stuff
+"""mmCIF parser (partly implemented in C)."""
+
 from string import letters
 
 import numpy
 
-# My stuff
-from MMCIF2Dict import MMCIF2Dict
-from StructureBuilder import StructureBuilder
-
-
-__doc__="mmCIF parser (partly implemented in C)." 
+from Bio.PDB.MMCIF2Dict import MMCIF2Dict
+from Bio.PDB.StructureBuilder import StructureBuilder
 
 
 class MMCIFParser:
@@ -49,7 +46,7 @@ class MMCIFParser:
             aniso_flag=0
         # if auth_seq_id is present, we use this.
         # Otherwise label_seq_id is used.
-        if mmcif_dict.has_key("_atom_site.auth_seq_id"):
+        if "_atom_site.auth_seq_id" in mmcif_dict:
             seq_id_list=mmcif_dict["_atom_site.auth_seq_id"]
         else:
             seq_id_list=mmcif_dict["_atom_site.label_seq_id"]

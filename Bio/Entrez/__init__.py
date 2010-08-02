@@ -257,14 +257,14 @@ def read(handle):
     the tag name in my_element.tag.
     """
     from Parser import DataHandler
-    DTDs = os.path.join(__path__[0], "DTDs")
+    DTDs = os.path.join(str(__path__[0]), "DTDs")
     handler = DataHandler(DTDs)
     record = handler.read(handle)
     return record
 
 def parse(handle):
     from Parser import DataHandler
-    DTDs = os.path.join(__path__[0], "DTDs")
+    DTDs = os.path.join(str(__path__[0]), "DTDs")
     handler = DataHandler(DTDs)
     records = handler.parse(handle)
     return records
@@ -334,7 +334,14 @@ E-utilities.""", UserWarning)
         lines.append(uhandle.readline())
     for i in range(6, -1, -1):
         uhandle.saveline(lines[i])
-    data = ''.join(lines)
+
+    try:
+        data = ''.join(lines)
+    except TypeError:
+        #On Python 3 the lines will be bytes not unicode strings...
+        data = ''.join(x.decode() for x in lines)
+        #Note that this doesn't alter the nature of the UndoHandle this
+        #function will return to the caller (it will still be using bytes)
                    
     if "500 Proxy Error" in data:
         # Sometimes Entrez returns a Proxy Error instead of results

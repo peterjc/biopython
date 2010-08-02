@@ -3,24 +3,24 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 
-from types import StringType
+"""Polypeptide-related classes (construction and representation).
+
+Example:
+
+    >>> ppb=PPBuilder()
+    >>> for pp in ppb.build_peptides(structure):
+    ...     print pp.get_sequence()
+"""
+
+import warnings
 
 from Bio.Alphabet import generic_protein
 from Bio.Seq import Seq
 from Bio.SCOP.Raf import to_one_letter_code
 from Bio.PDB.PDBExceptions import PDBException
 from Bio.PDB.Residue import Residue, DisorderedResidue
-from Vector import calc_dihedral, calc_angle
+from Bio.PDB.Vector import calc_dihedral, calc_angle
 
-__doc__="""
-Polypeptide related classes (construction and representation).
-
-Example:
-
-    >>> ppb=PPBuilder()
-    >>> for pp in ppb.build_peptides(structure):
-    >>>     print pp.get_sequence()
-"""
 
 standard_aa_names=["ALA", "CYS", "ASP", "GLU", "PHE", "GLY", "HIS", "ILE", "LYS", 
                    "LEU", "MET", "ASN", "PRO", "GLN", "ARG", "SER", "THR", "VAL",
@@ -98,13 +98,13 @@ def is_aa(residue, standard=0):
     @param standard: flag to check for the 20 AA (default false) 
     @type standard: boolean
     """
-    if not type(residue)==StringType:
+    if not isinstance(residue, basestring):
         residue=residue.get_resname()
     residue=residue.upper()
     if standard:
-        return d3_to_index.has_key(residue)
+        return residue in d3_to_index
     else:
-        return to_one_letter_code.has_key(residue)
+        return residue in to_one_letter_code
 
 
 class Polypeptide(list):
@@ -177,9 +177,8 @@ class Polypeptide(list):
         ca_list=self.get_ca_list()
         tau_list=[]
         for i in range(0, len(ca_list)-3):
-            atom_list=[ca_list[i], ca_list[i+1], ca_list[i+2], ca_list[i+3]]
-            vector_list=map(lambda a: a.get_vector(), atom_list)
-            v1, v2, v3, v4=vector_list
+            atom_list = (ca_list[i], ca_list[i+1], ca_list[i+2], ca_list[i+3])
+            v1, v2, v3, v4 = [a.get_vector() for a in atom_list]
             tau=calc_dihedral(v1, v2, v3, v4)
             tau_list.append(tau)
             # Put tau in xtra dict of residue
@@ -195,9 +194,8 @@ class Polypeptide(list):
         theta_list=[]
         ca_list=self.get_ca_list()
         for i in range(0, len(ca_list)-2):
-            atom_list=[ca_list[i], ca_list[i+1], ca_list[i+2]]
-            vector_list=map(lambda a: a.get_vector(), atom_list)
-            v1, v2, v3=vector_list
+            atom_list = (ca_list[i], ca_list[i+1], ca_list[i+2])
+            v1, v2, v3 = [a.get_vector() for a in atom_list]
             theta=calc_angle(v1, v2, v3)
             theta_list.append(theta)
             # Put tau in xtra dict of residue
@@ -214,12 +212,7 @@ class Polypeptide(list):
         """
         s=""
         for res in self:
-            resname=res.get_resname()
-            if to_one_letter_code.has_key(resname):
-                resname=to_one_letter_code[resname]
-            else:
-                resname='X'
-            s=s+resname
+            s += to_one_letter_code.get(res.get_resname(), 'X')
         seq=Seq(s, generic_protein)
         return seq
 
@@ -256,7 +249,6 @@ class _PPBuilder:
                 #It has an alpha carbon...
                 #We probably need to update the hard coded list of
                 #non-standard residues, see function is_aa for details.
-                import warnings
                 warnings.warn("Assuming residue %s is an unknown modified "
                               "amino acid" % residue.get_resname())
                 return 1

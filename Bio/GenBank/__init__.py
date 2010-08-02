@@ -43,6 +43,7 @@ for more details of this format, and an example.
 Added by Ying Huang & Iddo Friedberg
 """
 import cStringIO
+import re
 
 # other Biopython stuff
 from Bio import SeqFeature
@@ -50,7 +51,7 @@ from Bio.ParserSupport import AbstractConsumer
 from Bio import Entrez
 
 # other Bio.GenBank stuff
-import LocationParser
+import LocationParser # Obsolete
 from utils import FeatureValueCleaner
 from Scanner import GenBankScanner
 
@@ -63,6 +64,234 @@ FEATURE_KEY_INDENT = 5
 FEATURE_QUALIFIER_INDENT = 21
 FEATURE_KEY_SPACER = " " * FEATURE_KEY_INDENT
 FEATURE_QUALIFIER_SPACER = " " * FEATURE_QUALIFIER_INDENT
+
+#Regular expresions for location parsing
+_solo_location = r"[<>]?\d+"
+_pair_location = r"[<>]?\d+\.\.[<>]?\d+"
+_between_location = r"\d+\^\d+"
+
+_within_position = r"\(\d+\.\d+\)"
+_re_within_position = re.compile(_within_position)
+_within_location = r"([<>]?\d+|%s)\.\.([<>]?\d+|%s)" \
+                   % (_within_position,_within_position)
+assert _re_within_position.match("(3.9)")
+assert re.compile(_within_location).match("(3.9)..10")
+assert re.compile(_within_location).match("26..(30.33)")
+assert re.compile(_within_location).match("(13.19)..(20.28)")
+
+_oneof_position = r"one\-of\(\d+(,\d+)+\)"
+_re_oneof_position = re.compile(_oneof_position)
+_oneof_location = r"([<>]?\d+|%s)\.\.([<>]?\d+|%s)" \
+                   % (_oneof_position,_oneof_position)
+assert _re_oneof_position.match("one-of(6,9)")
+assert re.compile(_oneof_location).match("one-of(6,9)..101")
+assert re.compile(_oneof_location).match("one-of(6,9)..one-of(101,104)")
+assert re.compile(_oneof_location).match("6..one-of(101,104)")
+
+assert not _re_oneof_position.match("one-of(3)")
+assert _re_oneof_position.match("one-of(3,6)")
+assert _re_oneof_position.match("one-of(3,6,9)")
+
+
+_simple_location = r"\d+\.\.\d+"
+_re_simple_location = re.compile(_simple_location)
+_re_simple_compound = re.compile(r"^(join|order|bond)\(%s(,%s)*\)$" \
+                                 % (_simple_location, _simple_location))
+_complex_location = r"([a-zA-z][a-zA-Z0-9]*(\.[a-zA-Z0-9]+)?\:)?(%s|%s|%s|%s|%s)" \
+                    % (_pair_location, _solo_location, _between_location,
+                       _within_location, _oneof_location)
+_re_complex_location = re.compile(r"^%s$" % _complex_location)
+_possibly_complemented_complex_location = r"(%s|complement\(%s\))" \
+                                          % (_complex_location, _complex_location)
+_re_complex_compound = re.compile(r"^(join|order|bond)\(%s(,%s)*\)$" \
+                                 % (_possibly_complemented_complex_location,
+                                    _possibly_complemented_complex_location))
+
+assert _re_simple_location.match("104..160")
+assert not _re_simple_location.match("<104..>160")
+assert not _re_simple_location.match("104")
+assert not _re_simple_location.match("<1")
+assert not _re_simple_location.match(">99999")
+assert not _re_simple_location.match("join(104..160,320..390,504..579)")
+assert not _re_simple_compound.match("bond(12,63)")
+assert _re_simple_compound.match("join(104..160,320..390,504..579)")
+assert _re_simple_compound.match("order(1..69,1308..1465)")
+assert not _re_simple_compound.match("order(1..69,1308..1465,1524)")
+assert not _re_simple_compound.match("join(<1..442,992..1228,1524..>1983)")
+assert not _re_simple_compound.match("join(<1..181,254..336,422..497,574..>590)")
+assert not _re_simple_compound.match("join(1475..1577,2841..2986,3074..3193,3314..3481,4126..>4215)")
+assert not _re_simple_compound.match("test(1..69,1308..1465)")
+assert not _re_simple_compound.match("complement(1..69)")
+assert not _re_simple_compound.match("(1..69)")
+assert _re_complex_location.match("(3.9)..10")
+assert _re_complex_location.match("26..(30.33)")
+assert _re_complex_location.match("(13.19)..(20.28)")
+assert _re_complex_location.match("41^42") #between
+assert _re_complex_location.match("AL121804:41^42")
+assert _re_complex_location.match("AL121804:41..610")
+assert _re_complex_location.match("AL121804.2:41..610")
+assert _re_complex_location.match("one-of(3,6)..101")
+assert _re_complex_compound.match("join(153490..154269,AL121804.2:41..610,AL121804.2:672..1487)")
+assert not _re_simple_compound.match("join(153490..154269,AL121804.2:41..610,AL121804.2:672..1487)")
+assert _re_complex_compound.match("join(complement(69611..69724),139856..140650)")
+
+def _pos(pos_str, offset=0):
+    """Build a Position object (PRIVATE).
+    
+    For an end position, leave offset as zero (default):
+
+    >>> _pos("5")
+    ExactPosition(5)
+
+    For a start position, set offset to minus one (for Python counting):
+
+    >>> _pos("5", -1)
+    ExactPosition(4)
+
+    This also covers fuzzy positions:
+
+    >>> _pos("<5")
+    BeforePosition(5)
+    >>> _pos(">5")
+    AfterPosition(5)
+    >>> _pos("one-of(5,8,11)")
+    OneOfPosition([ExactPosition(5), ExactPosition(8), ExactPosition(11)])
+    >>> _pos("(8.10)")
+    WithinPosition(8,2)
+    """
+    if pos_str.startswith("<"):
+        return SeqFeature.BeforePosition(int(pos_str[1:])+offset)
+    elif pos_str.startswith(">"):
+        return SeqFeature.AfterPosition(int(pos_str[1:])+offset)
+    elif _re_within_position.match(pos_str):
+        s,e = pos_str[1:-1].split(".")
+        return SeqFeature.WithinPosition(int(s)+offset, int(e)-int(s))
+    elif _re_oneof_position.match(pos_str):
+        assert pos_str.startswith("one-of(")
+        assert pos_str[-1]==")"
+        parts = [SeqFeature.ExactPosition(int(pos)+offset) \
+                 for pos in pos_str[7:-1].split(",")]
+        return SeqFeature.OneOfPosition(parts)
+    else:
+        return SeqFeature.ExactPosition(int(pos_str)+offset)
+
+def _loc(loc_str, expected_seq_length):
+    """FeatureLocation from non-compound non-complement location (PRIVATE).
+    
+    Simple examples,
+
+    >>> _loc("123..456", 1000)
+    FeatureLocation(ExactPosition(122),ExactPosition(456))
+    >>> _loc("<123..>456", 1000)
+    FeatureLocation(BeforePosition(122),AfterPosition(456))
+
+    A more complex location using within positions,
+
+    >>> _loc("(9.10)..(20.25)", 1000)
+    FeatureLocation(WithinPosition(8,1),WithinPosition(20,5))
+
+    Zero length between feature,
+
+    >>> _loc("123^124", 1000)
+    FeatureLocation(ExactPosition(123),ExactPosition(123))
+    
+    The expected sequence length is needed for a special case, a between
+    position at the start/end of a circular genome:
+
+    >>> _loc("1000^1", 1000)
+    FeatureLocation(ExactPosition(1000),ExactPosition(1000))
+    
+    Apart from this special case, between positions P^Q must have P+1==Q,
+
+    >>> _loc("123^456", 1000)
+    Traceback (most recent call last):
+       ...
+    ValueError: Invalid between location '123^456'
+    """
+    try:
+        s, e = loc_str.split("..")
+    except ValueError:
+        assert ".." not in loc_str
+        if "^" in loc_str:
+            #A between location like "67^68" (one based counting) is a
+            #special case (note it has zero length). In python slice
+            #notation this is 67:67, a zero length slice.  See Bug 2622
+            #Further more, on a circular genome of length N you can have
+            #a location N^1 meaning the junction at the origin. See Bug 3098.
+            #NOTE - We can imagine between locations like "2^4", but this
+            #is just "3".  Similarly, "2^5" is just "3..4"
+            s, e = loc_str.split("^")
+            if int(s)+1==int(e):
+                pos = _pos(s)
+            elif int(s)==expected_seq_length and e=="1":
+                pos = _pos(s)
+            else:
+                raise ValueError("Invalid between location %s" % repr(loc_str))
+            return SeqFeature.FeatureLocation(pos, pos)
+        else:
+            #e.g. "123"
+            s = loc_str
+            e = loc_str
+    return SeqFeature.FeatureLocation(_pos(s,-1), _pos(e))
+
+def _split_compound_loc(compound_loc):
+    """Split a tricky compound location string (PRIVATE).
+    
+    >>> list(_split_compound_loc("123..145"))
+    ['123..145']
+    >>> list(_split_compound_loc("123..145,200..209"))
+    ['123..145', '200..209']
+    >>> list(_split_compound_loc("one-of(200,203)..300"))
+    ['one-of(200,203)..300']
+    >>> list(_split_compound_loc("complement(123..145),200..209"))
+    ['complement(123..145)', '200..209']
+    >>> list(_split_compound_loc("123..145,one-of(200,203)..209"))
+    ['123..145', 'one-of(200,203)..209']
+    >>> list(_split_compound_loc("123..145,one-of(200,203)..one-of(209,211),300"))
+    ['123..145', 'one-of(200,203)..one-of(209,211)', '300']
+    >>> list(_split_compound_loc("123..145,complement(one-of(200,203)..one-of(209,211)),300"))
+    ['123..145', 'complement(one-of(200,203)..one-of(209,211))', '300']
+    >>> list(_split_compound_loc("123..145,200..one-of(209,211),300"))
+    ['123..145', '200..one-of(209,211)', '300']
+    >>> list(_split_compound_loc("123..145,200..one-of(209,211)"))
+    ['123..145', '200..one-of(209,211)']
+    """
+    if "one-of(" in compound_loc:
+        #Hard case
+        while "," in compound_loc:
+            assert compound_loc[0] != ","
+            assert compound_loc[0:2] != ".."
+            i = compound_loc.find(",")
+            part = compound_loc[:i]
+            compound_loc = compound_loc[i:] #includes the comma
+            while part.count("(") > part.count(")"):
+                assert "one-of(" in part, (part, compound_loc)
+                i = compound_loc.find(")")
+                part += compound_loc[:i+1]
+                compound_loc = compound_loc[i+1:]
+            if compound_loc.startswith(".."):
+                i = compound_loc.find(",")
+                if i==-1:
+                    part += compound_loc
+                    compound_loc = ""
+                else:
+                    part += compound_loc[:i]
+                    compound_loc = compound_loc[i:] #includes the comma
+            while part.count("(") > part.count(")"):
+                assert part.count("one-of(") == 2
+                i = compound_loc.find(")")
+                part += compound_loc[:i+1]
+                compound_loc = compound_loc[i+1:]
+            if compound_loc.startswith(","):
+                compound_loc = compound_loc[1:]
+            assert part
+            yield part
+        if compound_loc:
+            yield compound_loc
+    else:
+        #Easy case
+        for part in compound_loc.split(","):
+            yield part
 
 class Iterator:
     """Iterator interface to move over a file of GenBank entries one at a time.
@@ -666,7 +895,95 @@ class _FeatureConsumer(_BaseGenBankConsumer):
         if location_line.find('replace') != -1:
             comma_pos = location_line.find(',')
             location_line = location_line[8:comma_pos]
+        
+        cur_feature = self._cur_feature
 
+        #Handle top level complement here for speed        
+        if location_line.startswith("complement("):
+            assert location_line.endswith(")")
+            location_line = location_line[11:-1]
+            cur_feature.strand = -1
+            #And continue...
+            
+
+        #Special case handling of the most common cases for speed
+        if _re_simple_location.match(location_line):
+            #e.g. "123..456"
+            s, e = location_line.split("..")
+            cur_feature.location = SeqFeature.FeatureLocation(int(s)-1,
+                                                              int(e))
+            return
+        if _re_simple_compound.match(location_line):
+            #e.g. join(<123..456,480..>500)
+            i = location_line.find("(")
+            cur_feature.location_operator = location_line[:i]
+            #we can split on the comma because these are simple locations
+            for part in location_line[i+1:-1].split(","):
+                s, e = part.split("..")
+                f = SeqFeature.SeqFeature(SeqFeature.FeatureLocation(int(s)-1,
+                                                                     int(e)),
+                        location_operator=cur_feature.location_operator,
+                        strand=cur_feature.strand, type=cur_feature.type)
+                cur_feature.sub_features.append(f)
+            s = cur_feature.sub_features[0].location.start
+            e = cur_feature.sub_features[-1].location.end
+            cur_feature.location = SeqFeature.FeatureLocation(s,e)
+            return
+        
+        #Handle the general case with more complex regular expressions
+        if _re_complex_location.match(location_line):
+            #e.g. "AL121804.2:41..610"
+            if ":" in location_line:
+                cur_feature.ref, location_line = location_line.split(":")
+            cur_feature.location = _loc(location_line, self._expected_size)
+            return
+        if _re_complex_compound.match(location_line):
+            i = location_line.find("(")
+            cur_feature.location_operator = location_line[:i]
+            #Can't split on the comma because of ositions like one-of(1,2,3)
+            for part in _split_compound_loc(location_line[i+1:-1]):
+                if part.startswith("complement("):
+                    assert part[-1]==")"
+                    part = part[11:-1]
+                    assert cur_feature.strand != -1, "Double complement?"
+                    strand = -1
+                else:
+                    strand = cur_feature.strand
+                if ":" in part:
+                    ref, part = part.split(":")
+                else:
+                    ref = None
+                try:
+                    loc = _loc(part, self._expected_size)
+                except ValueError, err:
+                    print location_line
+                    print part
+                    raise err
+                f = SeqFeature.SeqFeature(location=loc, ref=ref,
+                        location_operator=cur_feature.location_operator,
+                        strand=strand, type=cur_feature.type)
+                cur_feature.sub_features.append(f)
+            # Historically a join on the reverse strand has been represented
+            # in Biopython with both the parent SeqFeature and its children
+            # (the exons for a CDS) all given a strand of -1.  Likewise, for
+            # a join feature on the forward strand they all have strand +1.
+            # However, we must also consider evil mixed strand examples like
+            # this, join(complement(69611..69724),139856..140087,140625..140650)
+            strands = set(sf.strand for sf in cur_feature.sub_features)
+            if len(strands)==1:
+                cur_feature.strand = cur_feature.sub_features[0].strand
+            else:
+                cur_feature.strand = None # i.e. mixed strands
+            s = cur_feature.sub_features[0].location.start
+            e = cur_feature.sub_features[-1].location.end
+            cur_feature.location = SeqFeature.FeatureLocation(s,e)
+            return
+
+        #TODO - Raise LocationParserError here once the old parser is deprecated
+        import warnings
+        warnings.warn("New parser didn't like %s, trying old parser instead" \
+                      % repr(location_line))
+        
         # feed everything into the scanner and parser
         try:
             parse_info = \
@@ -678,10 +995,10 @@ class _FeatureConsumer(_BaseGenBankConsumer):
         # print "parse_info:", repr(parse_info)
         
         # add the parser information the current feature
-        self._set_location_info(parse_info, self._cur_feature)
+        self._set_location_info(parse_info, cur_feature)
 
     def _set_function(self, function, cur_feature):
-        """Set the location information based on a function.
+        """Set the location information based on a function (OBSOLETE).
 
         This handles all of the location functions like 'join', 'complement'
         and 'order'.
@@ -720,7 +1037,7 @@ class _FeatureConsumer(_BaseGenBankConsumer):
             raise ValueError("Unexpected function name: %s" % function.name)
 
     def _set_ordering_info(self, function, cur_feature):
-        """Parse a join or order and all of the information in it.
+        """Parse a join or order and all of the information in it (OBSOLETE).
 
         This deals with functions that order a bunch of locations,
         specifically 'join' and 'order'. The inner locations are
@@ -770,7 +1087,7 @@ class _FeatureConsumer(_BaseGenBankConsumer):
             cur_feature.strand = None # i.e. mixed strands
 
     def _set_location_info(self, parse_info, cur_feature):
-        """Set the location information for a feature from the parse info.
+        """Set the location information for a feature from the parse info (OBSOLETE).
 
         Arguments:
         o parse_info - The classes generated by the LocationParser.
@@ -793,7 +1110,7 @@ class _FeatureConsumer(_BaseGenBankConsumer):
                              % parse_info)
 
     def _set_location(self, location, cur_feature):
-        """Set the location information for a feature.
+        """Set the location information for a feature (OBSOLETE).
 
         Arguments:
         o location - An AbsoluteLocation object specifying the info
@@ -809,7 +1126,7 @@ class _FeatureConsumer(_BaseGenBankConsumer):
         cur_feature.location = self._get_location(location.local_location)
 
     def _get_location(self, range_info):
-        """Return a (possibly fuzzy) location from a Range object.
+        """Return a (possibly fuzzy) location from a Range object (OBSOLETE).
 
         Arguments:
         o range_info - A location range (ie. something like 67..100). This
@@ -819,11 +1136,16 @@ class _FeatureConsumer(_BaseGenBankConsumer):
         If parser.use_fuzziness is set at one, the positions for the
         end points will possibly be fuzzy.
         """
-        if isinstance(range_info, LocationParser.Between) \
-        and range_info.low.val+1 == range_info.high.val:
+        if isinstance(range_info, LocationParser.Between):
+            if not (range_info.low.val+1 == range_info.high.val \
+            or range_info.low.val==self._expected_size \
+            and range_info.high.val==1):
+                raise ValueError(range_info)
             #A between location like "67^68" (one based counting) is a
             #special case (note it has zero length). In python slice
             #notation this is 67:67, a zero length slice.  See Bug 2622
+            #Further more, on a circular genome of length N you can have
+            #a location N^1 meaning the junction at the origin. See Bug 3098.
             pos = self._get_position(range_info.low)
             return SeqFeature.FeatureLocation(pos, pos)
             #NOTE - We can imagine between locations like "2^4", but this
@@ -855,7 +1177,7 @@ class _FeatureConsumer(_BaseGenBankConsumer):
             return SeqFeature.FeatureLocation(start_pos, end_pos)
 
     def _get_position(self, position):
-        """Return a (possibly fuzzy) position for a single coordinate.
+        """Return a (possibly fuzzy) position for a single coordinate (OBSOLETE).
 
         Arguments:
         o position - This is a LocationParser.* object that specifies
@@ -1034,8 +1356,9 @@ class _FeatureConsumer(_BaseGenBankConsumer):
         if self._expected_size is not None \
         and len(sequence) != 0 \
         and self._expected_size != len(sequence):
-            raise ValueError("Expected sequence length %i, found %i." \
-                             % (self._expected_size, len(sequence)))
+            import warnings
+            warnings.warn("Expected sequence length %i, found %i (%s)." \
+                          % (self._expected_size, len(sequence), self.data.id))
 
         if self._seq_type:
             # mRNA is really also DNA, since it is actually cDNA
@@ -1297,3 +1620,12 @@ class _RecordConsumer(_BaseGenBankConsumer):
         self._add_feature()
 
 
+def _test():
+    """Run the Bio.GenBank module's doctests."""
+    print "Runing doctests..."
+    import doctest
+    doctest.testmod()
+    print "Done"
+
+if __name__ == "__main__":
+    _test()

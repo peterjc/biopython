@@ -18,6 +18,9 @@ from Bio.Align.Applications import ClustalwCommandline #new!
 
 #################################################################
 
+#Try to avoid problems when the OS is in another language
+os.environ['LANG'] = 'C'
+
 clustalw_exe = None
 if sys.platform=="win32":
     #TODO - Check the path?
@@ -58,11 +61,15 @@ else:
     #command, but this does cause them to quit cleanly.  Otherwise they prompt
     #the user for input (causing a lock up).
     output = commands.getoutput("clustalw2 --version")
-    if "not found" not in output and "CLUSTAL" in output.upper():
+    #Since "not found" may be in another language, try and be sure this is
+    #really the clustalw tool's output
+    if "not found" not in output and "CLUSTAL" in output \
+    and "Multiple Sequence Alignments" in output:
         clustalw_exe = "clustalw2"
     if not clustalw_exe:
         output = commands.getoutput("clustalw --version")
-        if "not found" not in output and "CLUSTAL" in output.upper():
+        if "not found" not in output and "CLUSTAL" in output \
+        and "Multiple Sequence Alignments" in output:
             clustalw_exe = "clustalw"
 
 if not clustalw_exe:
@@ -226,6 +233,7 @@ for input_file, output_file, newtree_file in [
     child = subprocess.Popen(str(cline),
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE,
+                             universal_newlines=True,
                              shell=(sys.platform!="win32"))
     output, error = child.communicate()
     return_code = child.returncode

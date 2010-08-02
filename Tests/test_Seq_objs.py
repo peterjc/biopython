@@ -5,7 +5,11 @@
 
 """Unittests for the Seq objects."""
 import unittest
-from string import maketrans
+import sys
+if sys.version_info[0] == 3:
+   maketrans = str.maketrans
+else:
+   from string import maketrans
 
 from Bio.Alphabet import generic_protein, generic_nucleotide, \
                          generic_dna, generic_rna
@@ -142,7 +146,7 @@ class StringMethodTests(unittest.TestCase):
         self._test_method("startswith", start_end=True)
 
         try:
-            self.assert_("ABCDE".startswith(("ABE","OBE","ABC")))
+            self.assertTrue("ABCDE".startswith(("ABE","OBE","ABC")))
         except TypeError:
             #Base string only supports this on Python 2.5+, skip this
             return
@@ -170,7 +174,7 @@ class StringMethodTests(unittest.TestCase):
         self._test_method("endswith", start_end=True)
 
         try:
-            self.assert_("ABCDE".endswith(("ABE","OBE","CDE")))
+            self.assertTrue("ABCDE".endswith(("ABE","OBE","CDE")))
         except TypeError:
             #Base string only supports this on Python 2.5+, skip this
             return
@@ -276,7 +280,7 @@ class StringMethodTests(unittest.TestCase):
         for example1 in self._examples:
             if isinstance(example1, MutableSeq) : continue
             mut = example1.tomutable()
-            self.assert_(isinstance(mut, MutableSeq))
+            self.assertTrue(isinstance(mut, MutableSeq))
             self.assertEqual(str(mut), str(example1))
             self.assertEqual(mut.alphabet, example1.alphabet)
 
@@ -286,9 +290,9 @@ class StringMethodTests(unittest.TestCase):
             try :
                 seq = example1.toseq()
             except AttributeError :
-                self.assert_(isinstance(example1, Seq))
+                self.assertTrue(isinstance(example1, Seq))
                 continue
-            self.assert_(isinstance(seq, Seq))
+            self.assertTrue(isinstance(seq, Seq))
             self.assertEqual(str(seq), str(example1))
             self.assertEqual(seq.alphabet, example1.alphabet)
 
@@ -390,7 +394,7 @@ class StringMethodTests(unittest.TestCase):
                 #This is based on the limited example not having stop codons:
                 if tran.alphabet not in [extended_protein, protein, generic_protein]:
                     print tran.alphabet
-                    self.assert_(False)
+                    self.assertTrue(False)
                 #TODO - check the actual translation, and all the optional args
 
     def test_the_translation_of_stops(self):
@@ -434,7 +438,7 @@ class StringMethodTests(unittest.TestCase):
                         Seq(codon, unambiguous_dna)]:
                 try :
                     print nuc.translate()
-                    self.assert_(False, "Transating %s should fail" % codon)
+                    self.assertTrue(False, "Transating %s should fail" % codon)
                 except TranslationError :
                     pass
 
@@ -454,7 +458,7 @@ class StringMethodTests(unittest.TestCase):
                         if t=="*":
                             self.assertEqual(values, set("*"))
                         elif t=="X":
-                            self.assert_(len(values) > 1, \
+                            self.assertTrue(len(values) > 1, \
                                 "translate('%s') = '%s' not '%s'" \
                                 % (c1+c2+c3, t, ",".join(values)))
                         elif t=="Z":
@@ -468,7 +472,12 @@ class StringMethodTests(unittest.TestCase):
                         #TODO - Use the Bio.Data.IUPACData module for the
                         #ambiguous protein mappings?
 
-                    
+    def test_init_typeerror(self):
+        """Check Seq __init__ gives TypeError exceptions."""
+        #Only expect it to take strings and unicode - not Seq objects!
+        self.assertRaises(TypeError, Seq, (1066))
+        self.assertRaises(TypeError, Seq, (Seq("ACGT", generic_dna)))
+
     #TODO - Addition...
 
 if __name__ == "__main__":

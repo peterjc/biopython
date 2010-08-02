@@ -22,8 +22,8 @@ class PhdTestOne(unittest.TestCase):
         self.assertEqual(record.id, "34_222_(80-A03-19).b.ab1")
         self.assertEqual(record.name, "34_222_(80-A03-19).b.ab1")
         self.assertEqual(record.description, "34_222_(80-A03-19).b.ab1")
-        self.assert_(record.seq.startswith("ctccgtcggaacatcatcggatcctatcaca"))
-        self.assert_(record.seq.endswith("ctctcctctccctccctccgactccaaagcgtg"))
+        self.assertTrue(record.seq.startswith("ctccgtcggaacatcatcggatcctatcaca"))
+        self.assertTrue(record.seq.endswith("ctctcctctccctccctccgactccaaagcgtg"))
         self.assertEqual(record.letter_annotations["phred_quality"][:10],
                          [9, 9, 10, 19, 22, 37, 28, 28, 24, 22])
         self.assertEqual(record[:10].format("fasta"),
@@ -76,7 +76,7 @@ class PhdTestOne(unittest.TestCase):
         self.assertEqual(record.comments['trim'][0], 3)
         self.assertEqual(record.comments['trim'][1], 391)
         self.assertAlmostEqual(record.comments['trim'][2], 0.05)
-        center = len(record.sites)/2
+        center = len(record.sites)//2
         self.assertEqual(record.sites[0], ('c', '9', '6'))
         self.assertEqual(record.sites[1], ('t', '9', '18'))
         self.assertEqual(record.sites[2], ('c', '10', '26'))
@@ -113,7 +113,7 @@ class PhdTestOne(unittest.TestCase):
         self.assertEqual(record.seq_trimmed.tostring()[-10:], 'tatttcggag')
         # Record 2
         record = records.next()
-        center = len(record.sites)/2
+        center = len(record.sites)//2
         self.assertEqual(record.file_name, "425_103_(81-A03-19).g.ab1")
         self.assertEqual(record.comments['abi_thumbprint'], 0)
         self.assertEqual(record.comments['call_method'], 'phred')
@@ -165,7 +165,7 @@ class PhdTestOne(unittest.TestCase):
         self.assertEqual(record.seq_trimmed.tostring()[-10:], 'ggggccgcca')
         # Record 3
         record = records.next()
-        center = len(record.sites)/2
+        center = len(record.sites)//2
         self.assertEqual(record.file_name, '425_7_(71-A03-19).b.ab1')
         self.assertEqual(record.comments['abi_thumbprint'], 0)
         self.assertEqual(record.comments['call_method'], 'phred')
@@ -231,8 +231,8 @@ class PhdTestTwo(unittest.TestCase):
         self.assertEqual(record.id, "ML4924R")
         self.assertEqual(record.name, "ML4924R")
         self.assertEqual(record.description, "ML4924R")
-        self.assert_(record.seq.startswith("actttggtcgcctgcaggtaccggtccgnga"))
-        self.assert_(record.seq.endswith("agaagctcgttctcaacatctccgttggtgaga"))
+        self.assertTrue(record.seq.startswith("actttggtcgcctgcaggtaccggtccgnga"))
+        self.assertTrue(record.seq.endswith("agaagctcgttctcaacatctccgttggtgaga"))
         self.assertEqual(record.letter_annotations["phred_quality"][:10],
                          [6, 6, 6, 8, 8, 12, 18, 16, 14, 11])
         self.assertEqual(record[:10].format("fasta"),

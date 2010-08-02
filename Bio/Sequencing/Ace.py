@@ -58,7 +58,10 @@ are needed, the 'read' function rather than the 'parse' function might be more a
 
 
 class rd:
-    """RD (reads), store a read with its name, sequence etc."""
+    """RD (reads), store a read with its name, sequence etc.
+    
+    The location and strand each read is mapped to is held in the AF lines.
+    """
     def __init__(self):
         self.name=''
         self.padded_bases=None
@@ -103,7 +106,12 @@ class ds:
 
     
 class af:
-    """AF lines, define the location of the read within the contig."""
+    """AF lines, define the location of the read within the contig.
+    
+    Note attribute coru is short for complemented (C) or uncomplemented (U),
+    since the strand information is stored in an ACE file using either the
+    C or U character.
+    """
     def __init__(self, line=None):
         self.name=''
         self.coru=None
@@ -135,6 +143,7 @@ class rt:
         self.padded_start=None
         self.padded_end=None
         self.date=''
+        self.comment=[]
         if line:
             header=line.split()
             self.name=header[0]
@@ -373,8 +382,20 @@ def parse(handle):
                         record.reads[-1].rt=[]
                     for line in handle:
                         line=line.strip()
-                        if line=='}': break
-                        record.reads[-1].rt.append(rt(line))
+                        #if line=="COMMENT{":
+                        if line.startswith("COMMENT{"):
+                            if line[8:].strip():
+                                #MIRA 3.0.5 would miss the new line out :(
+                                record.reads[-1].rt[-1].comment.append(line[8:])
+                            for line in handle:
+                                line = line.strip()
+                                if line.endswith("C}"):
+                                    break
+                                record.reads[-1].rt[-1].comment.append(line)
+                        elif line=='}':
+                            break
+                        else:
+                            record.reads[-1].rt.append(rt(line))
                     line = ""
                 elif line.startswith("WR{"):
                     if record.reads[-1].wr is None:
@@ -450,17 +471,20 @@ class ACEFileRecord:
                 self.wa.extend(c.wa)
             if c.ct:
                 newcts=[ct_tag for ct_tag in c.ct if ct_tag.name!=c.name]
-                map(self.contigs[i].ct.remove,newcts)
+                for x in newcts:
+                    self.contigs[i].ct.remove(x)
                 ct.extend(newcts)
             for j in range(len(c.reads)):
                 r = c.reads[j]
                 if r.rt:
                     newrts=[rt_tag for rt_tag in r.rt if rt_tag.name!=r.rd.name]
-                    map(self.contigs[i].reads[j].rt.remove,newrts)
+                    for x in newrts:
+                        self.contigs[i].reads[j].rt.remove(x)
                     rt.extend(newrts)
                 if r.wr:
                     newwrs=[wr_tag for wr_tag in r.wr if wr_tag.name!=r.rd.name]
-                    map(self.contigs[i].reads[j].wr.remove,newwrs)
+                    for x in newwrs:
+                        self.contigs[i].reads[j].wr.remove(x)
                     wr.extend(newwrs)
         # now sort them into their proper place
         for i in range(len(self.contigs)):

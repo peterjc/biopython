@@ -9,6 +9,61 @@ The latest news is at the top.
 
 ===================================================================
 
+In progress: Biopython 1.55 (not yet released).
+
+We are phasing out support for Python 2.4. We will continue to support it
+for at least one further release (Biopython 1.56). This could be delayed
+given feedback from our users (e.g. if this proves to be a problem in
+combination with other libraries or a popular Linux distribution).
+
+The SeqRecord object now has upper and lower methods (like the Seq object and
+Python strings), which return a new SeqRecord with the sequence in upper or
+lower case and a copy of all the annotation unchanged.
+
+Several small issues with Bio.PDB have been resolved, which includes better
+handling of model numbers, and files missing the element column.
+
+Feature location parsing for GenBank and EMBL files has been rewritten,
+making the parser much faster.
+
+Ace parsing by SeqIO now uses zero rather than None for the quality score of
+any gaps (insertions) in the contig sequence.
+
+The BioSQL classes DBServer and BioSeqDatabase now act more like Python
+dictionaries, making it easier to count, delete, iterate over, or check for
+membership of namespaces and records.
+
+The command line tool application wrapper classes are now executable, so you
+can use them to call the tool (using the subprocess module internally) and
+capture the output and any error messages as strings (stdout and stderr).
+This avoids having to worry about the details of how best to use subprocess.
+
+We have also been working on updates to avoid code which has been deprecated
+in Python 2.7 or Python 3, an important step towards Python 3 support.
+
+(At least) 9 people have contributed to this release, including 4 new people:
+
+Carlos Rios Vera (first contribution)
+Claude Paroz (first contribution)
+Eric Talevich
+Frank Kauff
+Joao Rodrigues (first contribution)
+Konstantin Okonechnikov (first contribution)
+Michiel de Hoon
+Peter Cock
+Tiago Antao
+
+===================================================================
+
+May 20, 2010: Biopython 1.54 released.
+
+See the notes below for the Biopython 1.54 beta release for changes since
+Biopython 1.53 was released. Since then there have been some changes to
+the new Bio.Phylo module, more documentation, and a number of smaller
+bug fixes.
+
+===================================================================
+
 April 2, 2010: Biopython 1.54 beta released.
 
 We are phasing out support for Python 2.4. We will continue to support it

@@ -3,9 +3,7 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 
-from types import IntType
-
-__doc__="Class that maps (chain_id, residue_id) to a residue property"
+"""Class that maps (chain_id, residue_id) to a residue property."""
 
 
 class AbstractPropertyMap:
@@ -16,6 +14,22 @@ class AbstractPropertyMap:
 
     def _translate_id(self, entity_id):
         return entity_id
+
+    def __contains__(self, id):
+        """True if the mapping has a property for this residue.
+
+        Example:
+            >>> if (chain_id, res_id) in apmap:
+            ...     res, prop = apmap[(chain_id, res_id)]
+
+        @param chain_id: chain id
+        @type chain_id: char 
+
+        @param res_id: residue id
+        @type res_id: char 
+        """
+        translated_id = self._translate_id(id)
+        return (translated_id in self.property_dict)
 
     def __getitem__(self, key):
         """
@@ -43,12 +57,19 @@ class AbstractPropertyMap:
         return len(self.property_dict)
 
     def has_key(self, id):
-        """
-        Return 1 if the map has a property for this residue, 0 otherwise.
+        """True if the mapping has a property for this residue.
+
+        (Obsolete; use "id in mapping" instead.)
 
         Example:
-            >>> if map.has_key((chain_id, res_id)):
-            >>>     res, property=map[(chain_id, res_id)]
+
+            >>> if apmap.has_key((chain_id, res_id)):
+            ...     res, prop = apmap[(chain_id, res_id)]
+
+        Is equivalent to:
+
+            >>> if (chain_id, res_id) in apmap:
+            ...     res, prop = apmap[(chain_id, res_id)]
 
         @param chain_id: chain id
         @type chain_id: char 
@@ -56,8 +77,7 @@ class AbstractPropertyMap:
         @param res_id: residue id
         @type res_id: char 
         """
-        translated_id=self._translate_id(id)
-        return self.property_dict.has_key(translated_id)
+        return (id in self)
 
     def keys(self):
         """
@@ -75,7 +95,7 @@ class AbstractPropertyMap:
 
         Example:
             >>> for (res, property) in iter(map):
-            >>>     print res, property
+            ...     print res, property
 
         @return: iterator
         """
@@ -90,9 +110,10 @@ class AbstractResiduePropertyMap(AbstractPropertyMap):
 
     def _translate_id(self, ent_id):
         chain_id, res_id=ent_id
-        if type(res_id)==IntType:
+        if isinstance(res_id, int):
             ent_id=(chain_id, (' ', res_id, ' '))
         return ent_id
+
 
 class AbstractAtomPropertyMap(AbstractPropertyMap):
     def __init__(self, property_dict, property_keys, property_list):
@@ -105,9 +126,7 @@ class AbstractAtomPropertyMap(AbstractPropertyMap):
         else:
             chain_id, res_id, atom_name=ent_id
             icode=None
-        if type(res_id)==IntType:
+        if isinstance(res_id, int):
             ent_id=(chain_id, (' ', res_id, ' '), atom_name, icode)
         return ent_id
-
-
 

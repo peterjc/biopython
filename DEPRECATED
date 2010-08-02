@@ -14,6 +14,24 @@ This means we will continue to support Python 2.4 for at least two further
 releases, and at least one year (whichever takes longer), before dropping
 support for Python 2.4. This can be delayed given feedback from our users
 (e.g. if this proves to be a problem in combination with other libraries).
+An explicit warning was added to setup.py for Biopython 1.55.
+
+Bio.InterPro
+============
+This module was a parser for the EBI InterPro webpages, but no longer works
+with their current website. Deprecated in Release 1.55.
+
+Bio.GenBank.LocationParser
+==========================
+This module used to be used for parsing GenBank and EMBL feature locations.
+It has been replaced with faster code using regular expressions, and is no
+longer needed. Declated obsolete in Release 1.55.
+
+Bio.Parsers and Bio.Parsers.spark
+=================================
+This module was a copy of John Aycock's SPARK parser included with Biopython
+soley for use in Bio.GenBank.LocationParser. Declated obsolete in Release
+1.55.
 
 Bio.Restriction.DNAUtils and check_bases
 ========================================
@@ -30,7 +48,7 @@ blastall, blastpgp and rpsblast were declared obsolete in Biopython Release
 subprocess module instead.
 
 The remainder of this module is a parser for the plain text BLAST output,
-which was delclared obsolete in Release 1.54. For some time now, both the NCBI
+which was declared obsolete in Release 1.54. For some time now, both the NCBI
 and Biopython have encouraged people to parse the XML output instead.
 
 Bio.Blast.Applications
@@ -123,7 +141,8 @@ Bio.mathfns, Bio.stringfns and Bio.listfns (and their C code variants)
 ==========================================
 Declared obsolete in Release 1.49. Bio.mathfns and Bio.stringfns were
 deprecated in Release 1.50, Bio.listfns was deprecated in Release 1.53.
-The three C implementations were all removed in Release 1.53.
+The three C implementations were all removed in Release 1.53. Bio.mathfns
+and Bio.stringfns were removed in Release 1.55.
 
 Bio.distance (and Bio.cdistance)
 ================================

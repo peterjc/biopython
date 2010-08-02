@@ -91,8 +91,8 @@ class NexusTest1(unittest.TestCase):
                           't2 the name'],
                                     })
         self.assertEqual(len(n.charpartitions), 2)
-        self.assert_('codons' in n.charpartitions)
-        self.assert_('part' in n.charpartitions)
+        self.assertTrue('codons' in n.charpartitions)
+        self.assertTrue('part' in n.charpartitions)
         self.assertEqual(n.charpartitions['codons'],
             {'a': [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45],
              'b': [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46],
@@ -113,7 +113,7 @@ class NexusTest1(unittest.TestCase):
 
         # now we check excluding characters, deleting taxa,
         # and exporting adjusted sets
-        f1=tempfile.NamedTemporaryFile()
+        f1=tempfile.NamedTemporaryFile("w+")
         n.write_nexus_data(f1,
                            delete=['t1','t7'],
                            exclude=n.invert(n.charsets['big']))
@@ -170,8 +170,8 @@ class NexusTest1(unittest.TestCase):
             'tbyname3': ['t2 the name'],
                                        })
         self.assertEqual(len(nf1.charpartitions), 2)
-        self.assert_('codons' in nf1.charpartitions)
-        self.assert_('part' in nf1.charpartitions)
+        self.assertTrue('codons' in nf1.charpartitions)
+        self.assertTrue('part' in nf1.charpartitions)
         self.assertEqual(nf1.charpartitions['codons'], {'a': [0, 3],
                                                         'b': [2],
                                                         'c': [1]})
@@ -185,7 +185,7 @@ class NexusTest1(unittest.TestCase):
              "goodnames": ['t5', 't6', 't8', 't9'],
             })
 
-        f2=tempfile.NamedTemporaryFile()
+        f2=tempfile.NamedTemporaryFile("w+")
         n.write_nexus_data(f2,
                            delete=['t2_the_name'],
                            exclude=range(3,40,4))
@@ -261,8 +261,8 @@ class NexusTest1(unittest.TestCase):
              "tbyname3":  ['t1',
                            't2 the name']})
         self.assertEqual(len(nf2.charpartitions), 2)
-        self.assert_('codons' in nf2.charpartitions)
-        self.assert_('part' in nf2.charpartitions)
+        self.assertTrue('codons' in nf2.charpartitions)
+        self.assertTrue('part' in nf2.charpartitions)
         self.assertEqual(nf2.charpartitions['codons'],
             {"a": [0, 5, 7, 9, 14, 16, 18, 23, 25, 27, 32, 35],
              "b": [1, 3, 8, 10, 12, 17, 19, 21, 26, 28, 30, 33, 36],
@@ -308,8 +308,11 @@ usertype matrix_test stepmatrix=5
         try:
             sys.stdout = cStringIO.StringIO()
             t3.display()
-            sys.stdout.reset()
-            output = sys.stdout.read()
+            if sys.version_info[0] == 3:
+                output = sys.stdout.getvalue()
+            else:
+                sys.stdout.reset()
+                output = sys.stdout.read()
         finally:
             sys.stdout = stdout 
         self.assertEqual(output, """\

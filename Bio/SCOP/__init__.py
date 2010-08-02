@@ -81,12 +81,24 @@ astralEv_to_sql = { 10: 'e1', 5: 'e0_7', 1: 'e0', 0.5: 'e_0_3', 0.1: 'e_1',
                      1e-4: 'e_4',  1e-5: 'e_5', 1e-10: 'e_10', 1e-15: 'e_15',
                      1e-20: 'e_20', 1e-25: 'e_25', 1e-50: 'e_50' }
 
+try:
+    #See if the cmp function exists (will on Python 2)
+    _cmp = cmp
+except NameError:
+    def _cmp(a,b):
+        """Implementation of cmp(x,y) for Python 3 (PRIVATE).
+
+        Based on Python 3 docs which say if you really need the cmp()
+        functionality, you could use the expression (a > b) -  (a < b)
+        as the equivalent for cmp(a, b)
+        """
+        return (a > b) -  (a < b)
 
 def cmp_sccs(sccs1, sccs2):
     """Order SCOP concise classification strings (sccs).
 
-    a.4.5.1 < a.4.5.11 < b.1.1.1 
-
+    a.4.5.1 < a.4.5.11 < b.1.1.1
+    
     A sccs (e.g. a.4.5.11) compactly represents a domain's classification.
     The letter represents the class, and the numbers are the fold,
     superfamily, and family, respectively.
@@ -96,12 +108,12 @@ def cmp_sccs(sccs1, sccs2):
     s1 = sccs1.split(".")
     s2 = sccs2.split(".")
 
-    if s1[0] != s2[0]: return cmp(s1[0], s2[0])
+    if s1[0] != s2[0]: return _cmp(s1[0], s2[0])
 
-    s1 = map(int, s1[1:])
-    s2 = map(int, s2[1:])
+    s1 = list(map(int, s1[1:]))
+    s2 = list(map(int, s2[1:]))
 
-    return cmp(s1,s2)
+    return _cmp(s1,s2)
 
 
 _domain_re = re.compile(r">?([\w_\.]*)\s+([\w\.]*)\s+\(([^)]*)\) (.*)")
@@ -298,8 +310,7 @@ class Scop:
         """Build an HIE SCOP parsable file from this object"""
         nodes = self._sunidDict.values()
         # We order nodes to ease comparison with original file
-        nodes.sort(lambda n1,n2: cmp(n1.sunid, n2.sunid))
-
+        nodes.sort(key = lambda n: n.sunid)
         for n in nodes:
             handle.write(str(n.toHieRecord()))
 
@@ -308,8 +319,7 @@ class Scop:
         """Build a DES SCOP parsable file from this object""" 
         nodes = self._sunidDict.values()
         # Origional SCOP file is not ordered?
-        nodes.sort(lambda n1,n2: cmp(n1.sunid, n2.sunid))
-
+        nodes.sort(key = lambda n: n.sunid)
         for n in nodes:
             if n != self.root:
                 handle.write(str(n.toDesRecord()))
@@ -319,8 +329,7 @@ class Scop:
         """Build a CLA SCOP parsable file from this object"""                
         nodes = self._sidDict.values()
         # We order nodes to ease comparison with original file
-        nodes.sort(lambda n1,n2: cmp(n1.sunid, n2.sunid))
-
+        nodes.sort(key = lambda n: n.sunid)
         for n in nodes:
             handle.write(str(n.toClaRecord()))
 
@@ -467,7 +476,7 @@ class Scop:
         cur.execute("CREATE TABLE hie (parent INT, child INT, PRIMARY KEY (child),\
         INDEX (parent) )")
 
-        for p in self._sunidDict.values():
+        for p in self._sunidDict.itervalues():
             for c in p.children:
                 cur.execute("INSERT INTO hie VALUES (%s,%s)" % (p.sunid, c.sunid))
 
@@ -481,7 +490,7 @@ class Scop:
         residues VARCHAR(50), sccs CHAR(10), cl INT, cf INT, sf INT, fa INT,\
         dm INT, sp INT, px INT, PRIMARY KEY (sunid), INDEX (SID) )")
 
-        for n in self._sidDict.values():
+        for n in self._sidDict.itervalues():
             c = n.toClaRecord()
             cur.execute( "INSERT INTO cla VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                          (n.sunid, n.sid, c.residues.pdbid, c.residues, n.sccs,
@@ -500,7 +509,7 @@ class Scop:
         description VARCHAR(255),\
         PRIMARY KEY (sunid) )")
         
-        for n in self._sunidDict.values():
+        for n in self._sunidDict.itervalues():
             cur.execute( "INSERT INTO des VALUES (%s,%s,%s,%s)",
                          ( n.sunid, n.type, n.sccs, n.description ) )                        
         
@@ -842,10 +851,9 @@ class Astral:
         cur.execute("DROP TABLE IF EXISTS astral")
         cur.execute("CREATE TABLE astral (sid CHAR(8), seq TEXT, PRIMARY KEY (sid))")
 
-        for dom in self.fasta_dict.keys():
-            cur.execute( "INSERT INTO astral (sid,seq) values (%s,%s)",
-                         (dom, self.fasta_dict[dom].seq.data))
-        
+        for dom in self.fasta_dict:
+            cur.execute("INSERT INTO astral (sid,seq) values (%s,%s)",
+                        (dom, self.fasta_dict[dom].seq.data))
         
         for i in astralBibIds:
             cur.execute("ALTER TABLE astral ADD (id"+str(i)+" TINYINT)")
@@ -877,9 +885,9 @@ def search(pdb=None, key=None, sid=None, disp=None, dir=None, loc=None,
     params = {'pdb' : pdb, 'key' : key, 'sid' : sid, 'disp' : disp,
               'dir' : dir, 'loc' : loc}
     variables = {}
-    for k in params.keys():
-        if params[k] is not None:
-            variables[k] = params[k]
+    for k, v in params.iteritmes():
+        if v is not None:
+            variables[k] = v
     variables.update(keywds)
     return _open(cgi, variables)
 

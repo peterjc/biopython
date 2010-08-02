@@ -400,7 +400,7 @@ class CircularDrawer(AbstractDrawer):
         btm, ctr, top = self.track_radii[self.current_track_level]
         startangle, startcos, startsin = self.canvas_angle(locstart)
         endangle, endcos, endsin = self.canvas_angle(locend)
-        midangle, midcos, midsin = self.canvas_angle(locend+locstart/2)
+        midangle, midcos, midsin = self.canvas_angle(float(locend+locstart)/2)
 
         # Distribution dictionary for various ways of drawing the feature
         # Each method takes the inner and outer radii, the start and end angle
@@ -703,7 +703,7 @@ class CircularDrawer(AbstractDrawer):
             #ones before self.start - but this seems wasteful.
             #Using tickiterval * (self.start/tickiterval) is a shortcut.
             largeticks = [pos for pos \
-                          in range(tickiterval * (self.start/tickiterval),
+                          in range(tickiterval * (self.start//tickiterval),
                                    int(self.end),
                                    tickiterval) \
                           if pos >= self.start]
@@ -718,7 +718,7 @@ class CircularDrawer(AbstractDrawer):
             ticklen = track.scale_smallticks * trackheight
             tickiterval = int(track.scale_smalltick_interval)
             smallticks = [pos for pos \
-                          in range(tickiterval * (self.start/tickiterval),
+                          in range(tickiterval * (self.start//tickiterval),
                                    int(self.end),
                                    tickiterval) \
                           if pos >= self.start]
@@ -811,9 +811,9 @@ class CircularDrawer(AbstractDrawer):
         if draw_label:                          # Put tick position on as label
             if track.scale_format == 'SInt':
                 if tickpos >= 1000000:
-                    tickstring = str(tickpos/1000000) + " Mbp"
+                    tickstring = str(tickpos//1000000) + " Mbp"
                 elif tickpos >= 1000:
-                    tickstring = str(tickpos/1000) + " Kbp"
+                    tickstring = str(tickpos//1000) + " Kbp"
                 else:
                     tickstring = str(tickpos)
             else:
@@ -887,8 +887,8 @@ class CircularDrawer(AbstractDrawer):
         greytrack_bgs.append(bg)
 
         if track.greytrack_labels:  # Labels are required for this track
-            labelstep = self.length/track.greytrack_labels  # label interval
-            for pos in range(self.start, self.end, int(labelstep)):
+            labelstep = self.length//track.greytrack_labels  # label interval
+            for pos in range(self.start, self.end, labelstep):
                 label = String(0, 0, track.name,            # Add a new label at
                            fontName=track.greytrack_font,   # each interval
                            fontSize=track.greytrack_fontsize,
@@ -1010,7 +1010,7 @@ class CircularDrawer(AbstractDrawer):
         #    startangle, endangle = max(startangle, endangle), min(startangle, endangle)
         #else:
         startangle, endangle = min(startangle, endangle), max(startangle, endangle)
-        if orientation <> "left" and orientation <> "right":
+        if orientation != "left" and orientation != "right":
             raise ValueError("Invalid orientation %s, should be 'left' or 'right'" \
                              % repr(orientation))
 

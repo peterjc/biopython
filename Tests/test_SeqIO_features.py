@@ -21,15 +21,16 @@ from StringIO import StringIO
 from Bio.SeqIO.InsdcIO import _insdc_feature_location_string
 
 #Top level function as this makes it easier to use for debugging:
-def write_read(filename, in_format="gb", out_format="gb"):
-    gb_records = list(SeqIO.parse(open(filename),in_format))
-    #Write it out...
-    handle = StringIO()
-    SeqIO.write(gb_records, handle, out_format)
-    handle.seek(0)
-    #Now load it back and check it agrees,
-    gb_records2 = list(SeqIO.parse(handle,out_format))
-    compare_records(gb_records, gb_records2)
+def write_read(filename, in_format="gb", out_formats=["gb", "embl"]):
+    for out_format in out_formats:
+        gb_records = list(SeqIO.parse(open(filename),in_format))
+        #Write it out...
+        handle = StringIO()
+        SeqIO.write(gb_records, handle, out_format)
+        handle.seek(0)
+        #Now load it back and check it agrees,
+        gb_records2 = list(SeqIO.parse(handle,out_format))
+        compare_records(gb_records, gb_records2)
 
 def compare_record(old, new, expect_minor_diffs=False):
     #Note the name matching is a bit fuzzy
@@ -41,7 +42,13 @@ def compare_record(old, new, expect_minor_diffs=False):
                          % (old.id, old.name, new.id, new.name))
     if len(old.seq) != len(new.seq):
         raise ValueError("%i vs %i" % (len(old.seq), len(new.seq)))
-    if str(old.seq).upper() != str(new.seq).upper():
+    if isinstance(old.seq, UnknownSeq) \
+    and isinstance(new.seq, UnknownSeq):
+        #Jython didn't like us comparing the string of very long
+        #UnknownSeq object (out of heap memory error)
+        if old.seq._character.upper() != new.seq._character:
+            raise ValueError("%s vs %s" % (repr(old.seq), repr(new.seq)))
+    elif str(old.seq).upper() != str(new.seq).upper():
         if len(old.seq) < 200:
             raise ValueError("'%s' vs '%s'" % (old.seq, new.seq))
         else:
@@ -56,7 +63,7 @@ def compare_record(old, new, expect_minor_diffs=False):
                          % (repr(old.description), repr(new.description)))
     #This only checks common annotation
     #Would a white list be easier?
-    for key in set(old.annotations.keys()).intersection(new.annotations.keys()):
+    for key in set(old.annotations).intersection(new.annotations):
         if key in ["data_file_division", "accessions"]:
             #TODO - These are not yet supported on output, or
             #have other complications (e.g. different number of accessions
@@ -103,25 +110,27 @@ def compare_records(old_list, new_list, expect_minor_diffs=False):
 def compare_feature(old, new, ignore_sub_features=False):
     """Check two SeqFeatures agree."""
     if old.type != new.type:
-        raise ValueError("Type %s versus %s" % (old.type, new.type))
+        raise ValueError("Type %s versus %s" % (repr(old.type), repr(new.type)))
     if old.location.nofuzzy_start != new.location.nofuzzy_start \
     or old.location.nofuzzy_end != new.location.nofuzzy_end:
         raise ValueError("%s versus %s:\n%s\nvs:\n%s" \
-                         % (old.location, new.location, str(old), str(new)))
+                         % (old.location, new.location, repr(old), repr(new)))
     if old.strand != new.strand:
-        raise ValueError("Different strand:\n%s\nvs:\n%s" % (str(old), str(new)))
+        raise ValueError("Different strand:\n%s\nvs:\n%s" % (repr(old), repr(new)))
     if old.ref != new.ref:
-        raise ValueError("Different ref:\n%s\nvs:\n%s" % (str(old), str(new)))
+        raise ValueError("Different ref:\n%s\nvs:\n%s" % (repr(old), repr(new)))
     if old.ref_db != new.ref_db:
-        raise ValueError("Different ref:\n%s\nvs:\n%s" % (str(old), str(new)))
+        raise ValueError("Different ref_db:\n%s\nvs:\n%s" % (repr(old), repr(new)))
+    if old.location_operator != new.location_operator:
+        raise ValueError("Different location_operator:\n%s\nvs:\n%s" % (repr(old), repr(new)))
     if old.location.start != new.location.start \
     or str(old.location.start) != str(new.location.start):
         raise ValueError("Start %s versus %s:\n%s\nvs:\n%s" \
-                         % (old.location.start, new.location.start, str(old), str(new)))
+                         % (old.location.start, new.location.start, repr(old), repr(new)))
     if old.location.end != new.location.end \
     or str(old.location.end) != str(new.location.end):
         raise ValueError("End %s versus %s:\n%s\nvs:\n%s" \
-                         % (old.location.end, new.location.end, str(old), str(new)))
+                         % (old.location.end, new.location.end, repr(old), repr(new)))
     if not ignore_sub_features:
         if len(old.sub_features) != len(new.sub_features):
             raise ValueError("Different sub features")
@@ -131,7 +140,7 @@ def compare_feature(old, new, ignore_sub_features=False):
     #This only checks key shared qualifiers
     #Would a white list be easier?
     #for key in ["name","gene","translation","codon_table","codon_start","locus_tag"]:
-    for key in set(old.qualifiers.keys()).intersection(new.qualifiers.keys()):
+    for key in set(old.qualifiers).intersection(new.qualifiers):
         if key in ["db_xref","protein_id","product","note"]:
             #EMBL and GenBank files are use different references/notes/etc
             continue
@@ -153,176 +162,227 @@ def compare_features(old_list, new_list, ignore_sub_features=False):
 def make_join_feature(f_list, ftype="misc_feature"):
     #NOTE - Does NOT reorder the sub-features (which you may
     #want to do for reverse strand features...)
-    strands = set(f.strand for f in f_list)
-    if len(strands)==1:
+    if len(set(f.strand for f in f_list))==1:
         strand = f_list[0].strand
     else:
         strand = None
     for f in f_list:
         f.type=ftype
+        f.location_operator="join"
     jf = SeqFeature(FeatureLocation(f_list[0].location.start,
                                     f_list[-1].location.end),
                     type=ftype, strand=strand, location_operator="join")
     jf.sub_features = f_list
     return jf
 
-class SeqFeatureExtraction(unittest.TestCase):
-    """Tests for SeqFeature sequence extract method."""
+#Prepare a single GenBank record with one feature with a %s place holder for
+#the feature location
+gbk_template = open("GenBank/iro.gb", "rU").read()
+gbk_template = gbk_template.replace('     gene            341..756\n'
+                                    '                     /gene="FTCD"\n',
+                                    '     misc_feature    %s\n'
+                                    '                     /note="Test case"\n')
+gbk_template = gbk_template.replace('     exon            341..384\n'
+                                    '                     /gene="FTCD"\n'
+                                    '                     /number=1\n', '')
+gbk_template = gbk_template.replace('     intron          385..617\n'
+                                    '                     /gene="FTCD"\n'
+                                    '                     /number=1\n', '')
+gbk_template = gbk_template.replace('     exon            618..756\n'
+                                    '                     /gene="FTCD"\n'
+                                    '                     /number=2\n', '')
+assert len(gbk_template)==4445
+assert gbk_template.count("%") == 1, gbk_template
 
-    def check(self, parent_seq, feature, answer_str):
+class SeqFeatureExtractionWritingReading(unittest.TestCase):
+    """Tests for SeqFeature sequence extract method, writing, and reading."""
+
+    def check(self, parent_seq, feature, answer_str, location_str):
+        self.assertEqual(location_str,
+            _insdc_feature_location_string(feature,len(parent_seq)))
+
         new = feature.extract(parent_seq)
-        self.assert_(isinstance(new, Seq))
+        self.assertTrue(isinstance(new, Seq))
         self.assertEqual(str(new), answer_str)
 
         new = feature.extract(str(parent_seq))
-        self.assert_(isinstance(new, str))
+        self.assertTrue(isinstance(new, str))
         self.assertEqual(new, answer_str)
 
         new = feature.extract(parent_seq.tomutable())
-        self.assert_(isinstance(new, Seq)) #Not MutableSeq!
+        self.assertTrue(isinstance(new, Seq)) #Not MutableSeq!
         self.assertEqual(str(new), answer_str)
 
         new = feature.extract(UnknownSeq(len(parent_seq), parent_seq.alphabet))
-        self.assert_(isinstance(new, UnknownSeq))
+        self.assertTrue(isinstance(new, UnknownSeq))
         self.assertEqual(len(new), len(answer_str))
+        
+        if _insdc_feature_location_string(feature, 1326) != location_str:
+            #This is to avoid issues with the N^1 between feature which only
+            #makes sense at the end of the sequence
+            return
+        #This template is DNA, but that will still be OK for protein features
+        #as they have no strand information... but see below for strand fun
+        rec = SeqIO.read(StringIO(gbk_template % location_str), "gb")
+        self.assertEqual(1326, len(rec))
+        self.assertEqual(2, len(rec.features))
+        self.assertEqual(rec.features[0].type, "source")
+        self.assertEqual(rec.features[1].type, "misc_feature")
+        new_f = rec.features[1]
+        self.assertEqual(location_str,
+                         _insdc_feature_location_string(new_f,1326))
+
+        #Checking the strand is tricky - on parsing a GenBank file
+        #strand +1 is assumed, but our constructed features for the
+        #unit test have mostly defaulted to strand None.
+        self.assertEqual(len(feature.sub_features), len(new_f.sub_features))
+        for f1, f2 in zip(feature.sub_features, new_f.sub_features):
+            f1.type = "misc_feature" #hack as may not be misc_feature
+            if f1.strand is None:
+                f1.strand = f2.strand #hack as described above
+            self.assertEqual(f1.strand, f2.strand)
+            self.assertTrue(compare_feature(f1,f2))
+        feature.type = "misc_feature" #hack as may not be misc_feature
+        if not feature.strand:
+            feature.strand = new_f.strand #hack as above
+        self.assertEqual(feature.strand, new_f.strand)
+        self.assertTrue(compare_feature(feature, new_f))
+        
 
     def test_simple_rna(self):
-        """Extract feature from RNA (simple, default strand)"""
+        """Feature on RNA (simple, default strand)"""
         s = Seq("GAUCRYWSMKHBVDN", generic_rna)
         f = SeqFeature(FeatureLocation(5,10))
-        self.assertEqual(_insdc_feature_location_string(f), "6..10")
-        self.check(s, f, "YWSMK")
+        self.check(s, f, "YWSMK", "6..10")
 
     def test_simple_dna(self):
-        """Extract feature from DNA (simple, default strand)"""
+        """Feature on DNA (simple, default strand)"""
         s = Seq("GATCRYWSMKHBVDN", generic_dna)
         f = SeqFeature(FeatureLocation(5,10))
-        self.assertEqual(_insdc_feature_location_string(f), "6..10")
-        self.check(s, f, "YWSMK")
+        self.check(s, f, "YWSMK", "6..10")
 
     def test_single_letter_dna(self):
-        """Extract feature from DNA (single letter, default strand)"""
+        """Feature on DNA (single letter, default strand)"""
         s = Seq("GATCRYWSMKHBVDN", generic_dna)
         f = SeqFeature(FeatureLocation(5,6))
-        self.assertEqual(_insdc_feature_location_string(f), "6")
-        self.check(s, f, "Y")
+        self.check(s, f, "Y", "6")
 
     def test_zero_len_dna(self):
-        """Extract feature from DNA (between location, zero length, default strand)"""
+        """Feature on DNA (between location, zero length, default strand)"""
         s = Seq("GATCRYWSMKHBVDN", generic_dna)
         f = SeqFeature(FeatureLocation(5,5))
-        self.assertEqual(_insdc_feature_location_string(f), "5^6")
-        self.check(s, f, "")
+        self.check(s, f, "", "5^6")
+
+    def test_zero_len_dna_end(self):
+        """Feature on DNA (between location at end, zero length, default strand)"""
+        s = Seq("GATCRYWSMKHBVDN", generic_dna)
+        f = SeqFeature(FeatureLocation(15,15))
+        self.check(s, f, "", "15^1")
 
     def test_simple_dna_strand0(self):
-        """Extract feature from DNA (simple, strand 0)"""
+        """Feature on DNA (simple, strand 0)"""
         s = Seq("GATCRYWSMKHBVDN", generic_dna)
         f = SeqFeature(FeatureLocation(5,10), strand=0)
-        self.assertEqual(_insdc_feature_location_string(f), "6..10")
-        self.check(s, f, "YWSMK")
+        self.check(s, f, "YWSMK", "6..10")
 
     def test_simple_dna_strand_none(self):
-        """Extract feature from DNA (simple, strand None)"""
+        """Feature on DNA (simple, strand None)"""
         s = Seq("GATCRYWSMKHBVDN", generic_dna)
         f = SeqFeature(FeatureLocation(5,10), strand=None)
-        self.assertEqual(_insdc_feature_location_string(f), "6..10")
-        self.check(s, f, "YWSMK")
+        self.check(s, f, "YWSMK", "6..10")
 
     def test_simple_dna_strand1(self):
-        """Extract feature from DNA (simple, strand +1)"""
+        """Feature on DNA (simple, strand +1)"""
         s = Seq("GATCRYWSMKHBVDN", generic_dna)
         f = SeqFeature(FeatureLocation(5,10), strand=1)
-        self.assertEqual(_insdc_feature_location_string(f), "6..10")
-        self.check(s, f, "YWSMK")
+        self.check(s, f, "YWSMK", "6..10")
         
     def test_simple_dna_strand_minus(self):
-        """Extract feature from DNA (simple, strand -1)"""
+        """Feature on DNA (simple, strand -1)"""
         s = Seq("GATCRYWSMKHBVDN", generic_dna)
         f = SeqFeature(FeatureLocation(5,10), strand=-1)
-        self.assertEqual(_insdc_feature_location_string(f),
-                         "complement(6..10)")
-        self.check(s, f, "MKSWR")
+        self.check(s, f, "MKSWR", "complement(6..10)")
 
     def test_simple_dna_join(self):
-        """Extract feature from DNA (join, strand +1)"""
+        """Feature on DNA (join, strand +1)"""
         s = Seq("GATCRYWSMKHBVDN", generic_dna)
         f1 = SeqFeature(FeatureLocation(5,10), strand=1)
         f2 = SeqFeature(FeatureLocation(12,15), strand=1)
         f = make_join_feature([f1,f2])
-        self.assertEqual(_insdc_feature_location_string(f),
-                         "join(6..10,13..15)")
-        self.check(s, f, "YWSMKVDN")
+        self.check(s, f, "YWSMKVDN", "join(6..10,13..15)")
 
     def test_simple_dna_join(self):
-        """Extract feature from DNA (join, strand -1)"""
+        """Feature on DNA (join, strand -1)"""
         s = Seq("AAAAACCCCCTTTTTGGGGG", generic_dna)
         f1 = SeqFeature(FeatureLocation(5,10), strand=-1)
         f2 = SeqFeature(FeatureLocation(12,15), strand=-1)
         f = make_join_feature([f1,f2])
-        self.assertEqual(_insdc_feature_location_string(f),
-                         "complement(join(6..10,13..15))")
-        self.check(s, f, reverse_complement("CCCCC"+"TTT"))
+        self.check(s, f, reverse_complement("CCCCC"+"TTT"),
+                   "complement(join(6..10,13..15))")
 
     def test_simple_dna_join(self):
-        """Extract feature from DNA (join, strand -1, before position)"""
+        """Feature on DNA (join, strand -1, before position)"""
         s = Seq("AAAAACCCCCTTTTTGGGGG", generic_dna)
         f1 = SeqFeature(FeatureLocation(BeforePosition(5),10), strand=-1)
         f2 = SeqFeature(FeatureLocation(12,15), strand=-1)
         f = make_join_feature([f1,f2])
-        self.assertEqual(_insdc_feature_location_string(f),
-                         "complement(join(<6..10,13..15))")
-        self.check(s, f, reverse_complement("CCCCC"+"TTT"))
+        self.check(s, f, reverse_complement("CCCCC"+"TTT"),
+                   "complement(join(<6..10,13..15))")
 
     def test_simple_dna_join_after(self):
-        """Extract feature from DNA (join, strand -1, after position)"""
+        """Feature on DNA (join, strand -1, after position)"""
         s = Seq("AAAAACCCCCTTTTTGGGGG", generic_dna)
         f1 = SeqFeature(FeatureLocation(5,10), strand=-1)
         f2 = SeqFeature(FeatureLocation(12,AfterPosition(15)), strand=-1)
         f = make_join_feature([f1,f2])
-        self.assertEqual(_insdc_feature_location_string(f),
-                         "complement(join(6..10,13..>15))")
-        self.check(s, f, reverse_complement("CCCCC"+"TTT"))
+        self.check(s, f, reverse_complement("CCCCC"+"TTT"),
+                   "complement(join(6..10,13..>15))")
 
     def test_mixed_strand_dna_join(self):
-        """Extract feature from DNA (join, mixed strand)"""
+        """Feature on DNA (join, mixed strand)"""
         s = Seq("AAAAACCCCCTTTTTGGGGG", generic_dna)
         f1 = SeqFeature(FeatureLocation(5,10), strand=+1)
         f2 = SeqFeature(FeatureLocation(12,15), strand=-1)
         f = make_join_feature([f1,f2])
-        self.assertEqual(_insdc_feature_location_string(f),
-                         "join(6..10,complement(13..15))")
-        self.check(s, f, "CCCCC"+reverse_complement("TTT"))
+        self.check(s, f, "CCCCC"+reverse_complement("TTT"),
+                   "join(6..10,complement(13..15))")
 
     def test_mixed_strand_dna_multi_join(self):
-        """Extract feature from DNA (multi-join, mixed strand)"""
+        """Feature on DNA (multi-join, mixed strand)"""
         s = Seq("AAAAACCCCCTTTTTGGGGG", generic_dna)
         f1 = SeqFeature(FeatureLocation(5,10), strand=+1)
         f2 = SeqFeature(FeatureLocation(12,15), strand=-1)
         f3 = SeqFeature(FeatureLocation(BeforePosition(0),5), strand=+1)
         f = make_join_feature([f1,f2,f3])
-        self.assertEqual(_insdc_feature_location_string(f),
-                         "join(6..10,complement(13..15),<1..5)")
-        self.check(s, f, "CCCCC"+reverse_complement("TTT")+"AAAAA")
+        self.check(s, f, "CCCCC"+reverse_complement("TTT")+"AAAAA",
+                   "join(6..10,complement(13..15),<1..5)")
 
-    def test_simple_protein(self):
-        """Extract feature from protein (simple)"""
+    def test_protein_simple(self):
+        """Feature on protein (simple)"""
         s = Seq("ABCDEFGHIJKLMNOPQRSTUVWXYZ", generic_protein)
         f = SeqFeature(FeatureLocation(5,10))
-        self.assertEqual(_insdc_feature_location_string(f),"6..10")
-        self.check(s, f, "FGHIJ")
+        self.check(s, f, "FGHIJ", "6..10")
 
-    def test_simple_protein_join(self):
-        """Extract feature from protein (join)"""
+    def test_protein_join(self):
+        """Feature on protein (join)"""
         s = Seq("ABCDEFGHIJKLMNOPQRSTUVWXYZ", generic_protein)
         f1 = SeqFeature(FeatureLocation(5,10))
         f2 = SeqFeature(FeatureLocation(15,20))
         f = make_join_feature([f1,f2])
-        self.assertEqual(_insdc_feature_location_string(f),
-                         "join(6..10,16..20)")
-        self.check(s, f, "FGHIJ"+"PQRST")
+        self.check(s, f, "FGHIJ"+"PQRST", "join(6..10,16..20)")
 
-    def test_simple_protein_multi_join(self):
-        """Extract feature from protein (multi-join)"""
+    def test_protein_join_fuzzy(self):
+        """Feature on protein (fuzzy join)"""
+        s = Seq("ABCDEFGHIJKLMNOPQRSTUVWXYZ", generic_protein)
+        f1 = SeqFeature(FeatureLocation(BeforePosition(5),10))
+        f2 = SeqFeature(FeatureLocation(OneOfPosition((ExactPosition(15),
+                                                       ExactPosition(16))),
+                                        AfterPosition(20)))
+        f = make_join_feature([f1,f2])
+        self.check(s, f, "FGHIJ"+"PQRST", "join(<6..10,one-of(16,17)..>20)")
+
+    def test_protein_multi_join(self):
+        """Feature on protein (multi-join)"""
         s = Seq("ABCDEFGHIJKLMNOPQRSTUVWXYZ", generic_protein)
         f1 = SeqFeature(FeatureLocation(1,2))
         f2 = SeqFeature(FeatureLocation(8,9))
@@ -333,7 +393,26 @@ class SeqFeatureExtraction(unittest.TestCase):
         f7 = SeqFeature(FeatureLocation(14,15))
         f8 = SeqFeature(FeatureLocation(13,14))
         f = make_join_feature([f1,f2,f3,f4,f5,f6,f7,f8])
-        self.check(s, f, "BIOPYTHON")
+        self.check(s, f, "BIOPYTHON", "join(2,9,15..16,25,20,8,15,14)")
+
+    def test_protein_between(self):
+        """Feature on protein (between location, zero length)"""
+        s = Seq("ABCDEFGHIJKLMNOPQRSTUVWXYZ", generic_protein)
+        f = SeqFeature(FeatureLocation(5,5))
+        self.check(s, f, "", "5^6")
+
+    def test_protein_oneof(self):
+        """Feature on protein (one-of positions)"""
+        s = Seq("ABCDEFGHIJKLMNOPQRSTUVWXYZ", generic_protein)
+        start = OneOfPosition((ExactPosition(5),ExactPosition(7)))
+        end = OneOfPosition((ExactPosition(10),ExactPosition(11)))
+        f = SeqFeature(FeatureLocation(start,10))
+        self.check(s, f, "FGHIJ", "one-of(6,8)..10")
+        f = SeqFeature(FeatureLocation(start,end))
+        self.check(s, f, "FGHIJK", "one-of(6,8)..one-of(10,11)")
+        f = SeqFeature(FeatureLocation(5,end))
+        self.check(s, f, "FGHIJK", "6..one-of(10,11)")
+
 
 class SeqFeatureCreation(unittest.TestCase):
     """Test basic creation of SeqFeatures.
@@ -358,79 +437,80 @@ class FeatureWriting(unittest.TestCase):
         handle.seek(0)
         record2 = SeqIO.read(handle, format)
         compare_record(self.record, record2)
+    
+    def write_read_checks(self, formats=["gb", "embl"]):
+        for f in formats:
+            self.write_read_check(f)
 
     def test_exact(self):
-        """Features: write/read simple exact locations."""
+        """GenBank/EMBL write/read simple exact locations."""
         #Note we don't have to explicitly give an ExactPosition object,
-        #and integer will also work:
+        #an integer will also work:
         f = SeqFeature(FeatureLocation(10,20), strand=+1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "11..20")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(30,40), strand=-1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(31..40)")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(ExactPosition(50),ExactPosition(60)), \
                        strand=+1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "51..60")
         self.record.features.append(f)
-        self.write_read_check("gb")
-        self.write_read_check("embl")
+        self.write_read_checks()
 
     def test_between(self):
-        """Features: write/read simple between locations."""
+        """GenBank/EMBL write/read simple between locations."""
         #Note we don't use the BetweenPosition any more!
         f = SeqFeature(FeatureLocation(10,10), strand=+1, type="variation")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "10^11")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(20,20), strand=-1, type="variation")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(20^21)")
         self.record.features.append(f)
-        self.write_read_check("gb")
-        self.write_read_check("embl")
+        self.write_read_checks()
 
     def test_join(self):
-        """Features: write/read simple join locations."""
+        """GenBank/EMBL write/read simple join locations."""
         f1 = SeqFeature(FeatureLocation(10,20), strand=+1)
         f2 = SeqFeature(FeatureLocation(25,40), strand=+1)
         f = make_join_feature([f1,f2])
         self.record.features.append(f)
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,500),
                          "join(11..20,26..40)")
         f1 = SeqFeature(FeatureLocation(110,120), strand=+1)
         f2 = SeqFeature(FeatureLocation(125,140), strand=+1)
         f3 = SeqFeature(FeatureLocation(145,150), strand=+1)
         f = make_join_feature([f1,f2,f3], "CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,500),
                          "join(111..120,126..140,146..150)")
         self.record.features.append(f)
         f1 = SeqFeature(FeatureLocation(210,220), strand=-1)
         f2 = SeqFeature(FeatureLocation(225,240), strand=-1)
         f = make_join_feature([f1,f2], ftype="gene")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,500),
                          "complement(join(211..220,226..240))")
         self.record.features.append(f)
         f1 = SeqFeature(FeatureLocation(310,320), strand=-1)
         f2 = SeqFeature(FeatureLocation(325,340), strand=-1)
         f3 = SeqFeature(FeatureLocation(345,350), strand=-1)
         f = make_join_feature([f1,f2,f3], "CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,500),
                          "complement(join(311..320,326..340,346..350))")
         self.record.features.append(f)
-        self.write_read_check("gb")
-        self.write_read_check("embl")
+        self.write_read_checks()
 
     def test_fuzzy_join(self):
-        """Features: write/read fuzzy join locations."""
+        """GenBank/EMBL write/read fuzzy join locations."""
         f1 = SeqFeature(FeatureLocation(BeforePosition(10),20), strand=+1)
         f2 = SeqFeature(FeatureLocation(25,AfterPosition(40)), strand=+1)
         f = make_join_feature([f1,f2])
         self.record.features.append(f)
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,500),
                          "join(<11..20,26..>40)")
         f1 = SeqFeature(FeatureLocation(OneOfPosition([ExactPosition(107),
                                                        ExactPosition(110)]),120),
@@ -438,13 +518,13 @@ class FeatureWriting(unittest.TestCase):
         f2 = SeqFeature(FeatureLocation(125,140), strand=+1)
         f3 = SeqFeature(FeatureLocation(145,WithinPosition(150,10)), strand=+1)
         f = make_join_feature([f1,f2,f3], "CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,500),
                          "join(one-of(108,111)..120,126..140,146..(150.160))")
         self.record.features.append(f)
         f1 = SeqFeature(FeatureLocation(BeforePosition(210),220), strand=-1)
         f2 = SeqFeature(FeatureLocation(225,WithinPosition(240,4)), strand=-1)
         f = make_join_feature([f1,f2], "gene")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,500),
                          "complement(join(<211..220,226..(240.244)))")
         self.record.features.append(f)
         f1 = SeqFeature(FeatureLocation(AfterPosition(310),320), strand=-1)
@@ -453,155 +533,150 @@ class FeatureWriting(unittest.TestCase):
                         strand=-1)
         f3 = SeqFeature(FeatureLocation(345,WithinPosition(350,5)), strand=-1)
         f = make_join_feature([f1,f2,f3], "CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,500),
                          "complement(join(>311..320,326..one-of(340,337),346..(350.355)))")
         self.record.features.append(f)
-        self.write_read_check("gb")
-        self.write_read_check("embl")
+        self.write_read_checks()
 
     def test_before(self):
-        """Features: write/read simple before locations."""
+        """GenBank/EMBL write/read simple before locations."""
         f = SeqFeature(FeatureLocation(BeforePosition(5),10), \
                        strand=+1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "<6..10")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(BeforePosition(15),BeforePosition(20)), \
                        strand=+1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "<16..<20")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(25,BeforePosition(30)), \
                        strand=+1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "26..<30")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(BeforePosition(35),40), \
                        strand=-1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(<36..40)")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(BeforePosition(45),BeforePosition(50)), \
                        strand=-1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(<46..<50)")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(55,BeforePosition(60)), \
                        strand=-1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(56..<60)")
         self.record.features.append(f)
-        self.write_read_check("gb")
-        self.write_read_check("embl")
+        self.write_read_checks()
         
     def test_after(self):
-        """Features: write/read simple after locations."""
+        """GenBank/EMBL write/read simple after locations."""
         f = SeqFeature(FeatureLocation(AfterPosition(5),10), \
                        strand=+1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          ">6..10")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(AfterPosition(15),AfterPosition(20)), \
                        strand=+1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          ">16..>20")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(25,AfterPosition(30)), \
                        strand=+1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "26..>30")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(AfterPosition(35),40), \
                        strand=-1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(>36..40)")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(AfterPosition(45),AfterPosition(50)), \
                        strand=-1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(>46..>50)")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(55,AfterPosition(60)), \
                        strand=-1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(56..>60)")
         self.record.features.append(f)
-        self.write_read_check("gb")
-        self.write_read_check("embl")
+        self.write_read_checks()
 
     def test_oneof(self):
-        """Features: write/read simple one-of locations."""
+        """GenBank/EMBL write/read simple one-of locations."""
         start = OneOfPosition([ExactPosition(0),ExactPosition(3),ExactPosition(6)])
         f = SeqFeature(FeatureLocation(start,21), strand=+1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "one-of(1,4,7)..21")
         self.record.features.append(f)
         start = OneOfPosition([ExactPosition(x) for x in [10,13,16]])
         end = OneOfPosition([ExactPosition(x) for x in [41,44,50]])
         f = SeqFeature(FeatureLocation(start,end), strand=+1, type="gene")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "one-of(11,14,17)..one-of(41,44,50)")
         self.record.features.append(f)
         end = OneOfPosition([ExactPosition(x) for x in [30,33]])
         f = SeqFeature(FeatureLocation(27,end), strand=+1, type="gene")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "28..one-of(30,33)")
         self.record.features.append(f)
         start = OneOfPosition([ExactPosition(x) for x in [36,40]])
         f = SeqFeature(FeatureLocation(start,46), strand=-1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(one-of(37,41)..46)")
         self.record.features.append(f)
         start = OneOfPosition([ExactPosition(x) for x in [45,60]])
         end = OneOfPosition([ExactPosition(x) for x in [70,90]])
         f = SeqFeature(FeatureLocation(start,end), strand=-1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(one-of(46,61)..one-of(70,90))")
         self.record.features.append(f)
         end = OneOfPosition([ExactPosition(x) for x in [60,63]])
         f = SeqFeature(FeatureLocation(55,end), strand=-1, type="tRNA")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(56..one-of(60,63))")
         self.record.features.append(f)
-        self.write_read_check("gb")
-        self.write_read_check("embl")
+        self.write_read_checks()
 
     def test_within(self):
-        """Features: write/read simple within locations."""
+        """GenBank/EMBL write/read simple within locations."""
         f = SeqFeature(FeatureLocation(WithinPosition(2,6),10), \
                        strand=+1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "(3.9)..10")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(WithinPosition(12,6),
                                        WithinPosition(20,8)), \
                        strand=+1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "(13.19)..(20.28)")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(25,WithinPosition(30,3)), \
                        strand=+1, type="misc_feature")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "26..(30.33)")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(WithinPosition(35,4),40), \
                        strand=-1, type="rRNA")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement((36.40)..40)")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(WithinPosition(45,2),
                                        WithinPosition(50,3)), \
                        strand=-1, type="repeat_region")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement((46.48)..(50.53))")
         self.record.features.append(f)
         f = SeqFeature(FeatureLocation(55,WithinPosition(60,5)), \
                        strand=-1, type="CDS")
-        self.assertEqual(_insdc_feature_location_string(f),
+        self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(56..(60.65))")
         self.record.features.append(f)
-        self.write_read_check("gb")
-        self.write_read_check("embl")
+        self.write_read_checks()
         
 class NC_000932(unittest.TestCase):
     #This includes an evil dual strand gene
@@ -705,116 +780,97 @@ class NC_005816(NC_000932):
 
 class TestWriteRead(unittest.TestCase):
     """Test can write and read back files."""
-
     def test_NC_000932(self):
         """Write and read back NC_000932.gb"""
-        write_read(os.path.join("GenBank", "NC_000932.gb"), "gb", "gb")
-        write_read(os.path.join("GenBank", "NC_000932.gb"), "gb", "embl")
+        write_read(os.path.join("GenBank", "NC_000932.gb"), "gb")
 
     def test_NC_005816(self):
         """Write and read back NC_005816.gb"""
-        write_read(os.path.join("GenBank", "NC_005816.gb"), "gb", "gb")
-        write_read(os.path.join("GenBank", "NC_005816.gb"), "gb", "embl")
+        write_read(os.path.join("GenBank", "NC_005816.gb"), "gb")
 
     def test_gbvrl1_start(self):
         """Write and read back gbvrl1_start.seq"""
-        write_read(os.path.join("GenBank", "gbvrl1_start.seq"), "gb", "gb")
-        write_read(os.path.join("GenBank", "gbvrl1_start.seq"), "gb", "embl")
+        write_read(os.path.join("GenBank", "gbvrl1_start.seq"), "gb")
 
     def test_NT_019265(self):
         """Write and read back NT_019265.gb"""
-        write_read(os.path.join("GenBank", "NT_019265.gb"), "gb", "gb")
-        write_read(os.path.join("GenBank", "NT_019265.gb"), "gb", "embl")
+        write_read(os.path.join("GenBank", "NT_019265.gb"), "gb")
 
     def test_cor6(self):
         """Write and read back cor6_6.gb"""
-        write_read(os.path.join("GenBank", "cor6_6.gb"), "gb", "gb")
-        write_read(os.path.join("GenBank", "cor6_6.gb"), "gb", "embl")
+        write_read(os.path.join("GenBank", "cor6_6.gb"), "gb")
 
     def test_arab1(self):
         """Write and read back arab1.gb"""
-        write_read(os.path.join("GenBank", "arab1.gb"), "gb", "gb")
-        write_read(os.path.join("GenBank", "one_of.gb"), "gb", "embl")
+        write_read(os.path.join("GenBank", "arab1.gb"), "gb")
 
     def test_one_of(self):
         """Write and read back of_one.gb"""
-        write_read(os.path.join("GenBank", "one_of.gb"), "gb", "gb")
-        write_read(os.path.join("GenBank", "one_of.gb"), "gb", "embl")
+        write_read(os.path.join("GenBank", "one_of.gb"), "gb")
 
     def test_pri1(self):
         """Write and read back pri1.gb"""
-        write_read(os.path.join("GenBank", "pri1.gb"), "gb", "gb")
-        write_read(os.path.join("GenBank", "pri1.gb"), "gb", "embl")
+        write_read(os.path.join("GenBank", "pri1.gb"), "gb")
 
     def test_noref(self):
         """Write and read back noref.gb"""
-        write_read(os.path.join("GenBank", "noref.gb"), "gb", "gb")
-        write_read(os.path.join("GenBank", "noref.gb"), "gb", "embl")
+        write_read(os.path.join("GenBank", "noref.gb"), "gb")
 
     def test_origin_line(self):
         """Write and read back origin_line.gb"""
-        write_read(os.path.join("GenBank", "origin_line.gb"), "gb", "gb")
-        write_read(os.path.join("GenBank", "origin_line.gb"), "gb", "embl")
+        write_read(os.path.join("GenBank", "origin_line.gb"), "gb")
 
     def test_dbsource_wrap(self):
         """Write and read back dbsource_wrap.gb"""
-        write_read(os.path.join("GenBank", "dbsource_wrap.gb"), "gb", "gb")
+        write_read(os.path.join("GenBank", "dbsource_wrap.gb"), "gb", ["gb"])
         #Protein so can't convert this to EMBL format
 
     def test_blank_seq(self):
         """Write and read back blank_seq.gb"""
-        write_read(os.path.join("GenBank", "blank_seq.gb"), "gb", "gb")
+        write_read(os.path.join("GenBank", "blank_seq.gb"), "gb", ["gb"])
         #Protein so can't convert this to EMBL format
 
     def test_extra_keywords(self):
         """Write and read back extra_keywords.gb"""
-        write_read(os.path.join("GenBank", "extra_keywords.gb"), "gb", "gb")
-        write_read(os.path.join("GenBank", "extra_keywords.gb"), "gb", "embl")
+        write_read(os.path.join("GenBank", "extra_keywords.gb"), "gb")
 
     def test_protein_refseq(self):
         """Write and read back protein_refseq.gb"""
-        write_read(os.path.join("GenBank", "protein_refseq.gb"), "gb", "gb")
+        write_read(os.path.join("GenBank", "protein_refseq.gb"), "gb", ["gb"])
         #Protein so can't convert this to EMBL format
 
     def test_protein_refseq2(self):
         """Write and read back protein_refseq2.gb"""
-        write_read(os.path.join("GenBank", "protein_refseq2.gb"), "gb", "gb")
+        write_read(os.path.join("GenBank", "protein_refseq2.gb"), "gb", ["gb"])
         #Protein so can't convert this to EMBL format
 
     def test_AAA03323(self):
         """Write and read back AAA03323.embl"""
-        write_read(os.path.join("EMBL", "AAA03323.embl"), "embl", "gb")
-        write_read(os.path.join("EMBL", "AAA03323.embl"), "embl", "embl")
+        write_read(os.path.join("EMBL", "AAA03323.embl"), "embl")
 
     def test_AE017046(self):
         """Write and read back AE017046.embl"""
-        write_read(os.path.join("EMBL", "AE017046.embl"), "embl", "gb")
-        write_read(os.path.join("EMBL", "AE017046.embl"), "embl", "embl")
+        write_read(os.path.join("EMBL", "AE017046.embl"), "embl")
 
     def test_DD231055_edited(self):
         """Write and read back DD231055_edited.embl"""
-        write_read(os.path.join("EMBL", "DD231055_edited.embl"), "embl", "gb")
-        write_read(os.path.join("EMBL", "DD231055_edited.embl"), "embl", "embl")
+        write_read(os.path.join("EMBL", "DD231055_edited.embl"), "embl")
 
     def test_Human_contigs(self):
         """Write and read back Human_contigs.embl"""
-        write_read(os.path.join("EMBL", "Human_contigs.embl"), "embl", "gb")
-        write_read(os.path.join("EMBL", "Human_contigs.embl"), "embl", "embl")
+        write_read(os.path.join("EMBL", "Human_contigs.embl"), "embl")
 
     def test_SC10H5(self):
         """Write and read back SC10H5.embl"""
-        write_read(os.path.join("EMBL", "SC10H5.embl"), "embl", "gb")
-        write_read(os.path.join("EMBL", "SC10H5.embl"), "embl", "embl")
+        write_read(os.path.join("EMBL", "SC10H5.embl"), "embl")
 
     def test_TRBG361(self):
         """Write and read back TRBG361.embl"""
-        write_read(os.path.join("EMBL", "TRBG361.embl"), "embl", "gb")
-        write_read(os.path.join("EMBL", "TRBG361.embl"), "embl", "embl")
+        write_read(os.path.join("EMBL", "TRBG361.embl"), "embl")
 
     def test_U87107(self):
         """Write and read back U87107.embl"""
-        write_read(os.path.join("EMBL", "U87107.embl"), "embl", "gb")
-        write_read(os.path.join("EMBL", "U87107.embl"), "embl", "embl")
+        write_read(os.path.join("EMBL", "U87107.embl"), "embl")
 
 
 if __name__ == "__main__":

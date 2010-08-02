@@ -3,11 +3,10 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 
+"""Vector class, including rotation-related functions."""
+
 import numpy
-import sys
 
-
-__doc__="Vector class, including rotation-related functions."
 
 def m2rotaxis(m):
     """
@@ -203,7 +202,8 @@ class Vector:
         if y is None and z is None:
             # Array, list, tuple...
             if len(x)!=3:
-                raise "Vector: x is not a list/tuple/array of 3 numbers"
+                raise ValueError("Vector: x is not a "
+                                 "list/tuple/array of 3 numbers")
             self._ar=numpy.array(x, 'd')
         else:
             # Three numbers

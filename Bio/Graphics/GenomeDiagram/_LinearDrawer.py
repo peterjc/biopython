@@ -441,9 +441,9 @@ class LinearDrawer(AbstractDrawer):
         if draw_label: # Put tick position on as label
             if track.scale_format == 'SInt':
                 if tickpos >= 1000000:
-                    tickstring = str(tickpos/1000000) + " Mbp"
+                    tickstring = str(tickpos//1000000) + " Mbp"
                 elif tickpos >= 1000:
-                    tickstring = str(tickpos/1000) + " Kbp"
+                    tickstring = str(tickpos//1000) + " Kbp"
                 else:
                     tickstring = str(tickpos)
             else:
@@ -505,9 +505,9 @@ class LinearDrawer(AbstractDrawer):
             #Note that we could just start the list of ticks using
             #range(0,self.end,tickinterval) and the filter out the
             #ones before self.start - but this seems wasteful.
-            #Using tickiterval * (self.start/tickiterval) is a shortcut.
+            #Using tickiterval * (self.start//tickiterval) is a shortcut.
             largeticks = [pos for pos \
-                          in range(tickiterval * (self.start/tickiterval),
+                          in range(tickiterval * (self.start//tickiterval),
                                    int(self.end),
                                    tickiterval) \
                           if pos >= self.start]
@@ -522,7 +522,7 @@ class LinearDrawer(AbstractDrawer):
             ticklen = track.scale_smallticks * trackheight
             tickiterval = int(track.scale_smalltick_interval)
             smallticks = [pos for pos \
-                          in range(tickiterval * (self.start/tickiterval),
+                          in range(tickiterval * (self.start//tickiterval),
                                    int(self.end),
                                    tickiterval) \
                           if pos >= self.start]
@@ -887,13 +887,13 @@ class LinearDrawer(AbstractDrawer):
         pos, val = data[0]
         lastfrag, lastx = self.canvas_location(pos)
         lastx += self.x0        # Start xy co-ords
-        lasty = trackheight*(val-minval)/resolution + \
+        lasty = trackheight*(val-midval)/resolution + \
                 self.fragment_lines[lastfrag][0] + ctr
         lastval = val
         # Add a series of lines linking consecutive data points
         for pos, val in data:   
             frag, x = self.canvas_location(pos)
-            x += self.x0        # next xy co-ords            
+            x += self.x0        # next xy co-ords
             y = trackheight*(val-midval)/resolution + \
                 self.fragment_lines[frag][0] + ctr
             if frag == lastfrag:    # Points on the same fragment: draw the line
@@ -911,7 +911,7 @@ class LinearDrawer(AbstractDrawer):
                         self.fragment_lines[frag][0] + ctr
                 line_elements.append(Line(self.x0, tempy, x, y,
                                           strokeColor = graph.poscolor,
-                                          strokeWidth = graph.linewidth))                
+                                          strokeWidth = graph.linewidth))
             lastfrag, lastx, lasty, lastval = frag, x, y, val
             
         return line_elements

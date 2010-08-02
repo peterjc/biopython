@@ -36,8 +36,15 @@ the allowed range of PHRED scores is 0 to 93 inclusive. The sequences and
 quality are then stored in pairs in a FASTA like format.
 
 Unfortunately there is no official document describing the FASTQ file format,
-and worse, several related but different variants exist.  Reasonable
-documentation exists at: http://maq.sourceforge.net/fastq.shtml
+and worse, several related but different variants exist. For more details,
+please read this open access publication:
+
+    The Sanger FASTQ file format for sequences with quality scores, and the
+    Solexa/Illumina FASTQ variants.
+    P.J.A.Cock (Biopython), C.J.Fields (BioPerl), N.Goto (BioRuby),
+    M.L.Heuer (BioJava) and P.M. Rice (EMBOSS).
+    Nucleic Acids Research 2010 38(6):1767-1771
+    http://dx.doi.org/10.1093/nar/gkp1137
 
 The good news is that Roche 454 sequencers can output files in the QUAL format,
 and sensibly they use PHREP style scores like Sanger.  Converting a pair of
@@ -51,7 +58,7 @@ own scoring system AND their own incompatible versions of the FASTQ format.
 Solexa/Illumina quality scores use Q = - 10 log10 ( Pe / (1-Pe) ), which can
 be negative.  PHRED scores and Solexa scores are NOT interchangeable (but a
 reasonable mapping can be achieved between them, and they are approximately
-equal for high quality reads).
+equal for higher quality reads).
 
 Confusingly early Solexa pipelines produced a FASTQ like file but using their
 own score mapping and an ASCII offset of 64. To make things worse, for the
@@ -353,14 +360,13 @@ approximately equal.
 """
 __docformat__ = "epytext en" #Don't just use plain text in epydoc API pages!
 
-#See also http://blog.malde.org/index.php/2008/09/09/the-fastq-file-format-for-sequences/
-
 from Bio.Alphabet import single_letter_alphabet
 from Bio.Seq import Seq, UnknownSeq
 from Bio.SeqRecord import SeqRecord
-from Interfaces import SequentialSequenceWriter
+from Bio.SeqIO.Interfaces import SequentialSequenceWriter
 from math import log
 import warnings
+
 # define score offsets. See discussion for differences between Sanger and
 # Solexa offsets.
 SANGER_SCORE_OFFSET = 33
@@ -443,17 +449,17 @@ def solexa_quality_from_phred(phred_quality):
     >>> print solexa_quality_from_phred(None)
     None
     """
-    if phred_quality > 0:
+    if phred_quality is None:
+        #Assume None is used as some kind of NULL or NA value; return None
+        #e.g. Bio.SeqIO gives Ace contig gaps a quality of None.
+        return None
+    elif phred_quality > 0:
         #Solexa uses a minimum value of -5, which after rounding matches a
         #random nucleotide base call.
         return max(-5.0, 10*log(10**(phred_quality/10.0) - 1, 10))
     elif phred_quality == 0:
         #Special case, map to -5 as discussed in the docstring
         return -5.0
-    elif phred_quality is None:
-        #Assume None is used as some kind of NULL or NA value; return None
-        #e.g. Bio.SeqIO gives Ace contig gaps a quality of None.
-        return None
     else:
         raise ValueError("PHRED qualities must be positive (or zero), not %s" \
                          % repr(phred_quality))

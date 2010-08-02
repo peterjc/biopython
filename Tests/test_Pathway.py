@@ -36,17 +36,17 @@ class HashSetTestCase(unittest.TestCase):
 
     def testContains(self):
         n = HashSet()
-        self.assert_('a' not in n, "element in empty set")
-        self.assert_(not n.contains('a'), "element in empty set (2)")
+        self.assertTrue('a' not in n, "element in empty set")
+        self.assertTrue(not n.contains('a'), "element in empty set (2)")
         a = HashSet(['a','b','c','d'])
-        self.assert_('a' in a, "contained element not found")
-        self.assert_('d' in a, "contained element not found")
-        self.assert_('e' not in a, "not contained element found")
-        self.assert_(68 not in a, "not contained element found")
-        self.assert_(a.contains('a'), "contained element not found (2)")
-        self.assert_(a.contains('d'), "contained element not found (2)")
-        self.assert_(not a.contains('e'), "not contained element found (2)")
-        self.assert_(not a.contains(68), "not contained element found (2)")
+        self.assertTrue('a' in a, "contained element not found")
+        self.assertTrue('d' in a, "contained element not found")
+        self.assertTrue('e' not in a, "not contained element found")
+        self.assertTrue(68 not in a, "not contained element found")
+        self.assertTrue(a.contains('a'), "contained element not found (2)")
+        self.assertTrue(a.contains('d'), "contained element not found (2)")
+        self.assertTrue(not a.contains('e'), "not contained element found (2)")
+        self.assertTrue(not a.contains(68), "not contained element found (2)")
         
     def testList(self):
         a = HashSet(['a', 'b', 'c', 'd', 'e'])
@@ -54,7 +54,7 @@ class HashSetTestCase(unittest.TestCase):
         l.sort()
         self.assertEqual(l, ['a', 'b', 'c', 'd', 'e'], "incorrect list")
         l = []
-        self.assert_('e' in a, "set rep exposure")
+        self.assertTrue('e' in a, "set rep exposure")
 
     def testSetOps(self):
         n = HashSet()
@@ -221,16 +221,16 @@ class ReactionTestCase(unittest.TestCase):
         self.r_4 = Reaction({"c":-1, "d":-1, "a":1, "e":2})
 
     def testEq(self):
-        self.assertEquals(self.r_1, self.r_1i, "not equal to similar")
+        self.assertEqual(self.r_1, self.r_1i, "not equal to similar")
         self.assertNotEquals(self.r_3, self.r_4, "equal to different")
         
     def testRev(self):
-        self.assertEquals(self.r_empty.reverse(), self.r_empty, "empty reversed not empty")
-        self.assertEquals(self.r_prod.reverse(), self.r_dest,
+        self.assertEqual(self.r_empty.reverse(), self.r_empty, "empty reversed not empty")
+        self.assertEqual(self.r_prod.reverse(), self.r_dest,
                           "reversed reaction not equal to similar")
-        self.assertEquals(self.r_4.reverse(), Reaction({"c":1, "d":1, "a":-1, "e":-2}),
+        self.assertEqual(self.r_4.reverse(), Reaction({"c":1, "d":1, "a":-1, "e":-2}),
                          "reversed reaction not equal to similar")
-        self.assertEquals(self.r_3.reverse().reverse(), self.r_3,
+        self.assertEqual(self.r_3.reverse().reverse(), self.r_3,
                           "double reversal not identity")
     
 

@@ -42,7 +42,8 @@ def compare_reference(old_r, new_r):
     #TODO - assert old_r.comment == new_r.comment
     #Looking at the tables, I *think* the current schema does not
     #allow us to store a reference comment.  Must confirm this.
-    assert old_r.comment == new_r.comment or new_r.comment == ""
+    assert old_r.comment == new_r.comment or new_r.comment == "", \
+                          "%r vs %r" % (old_r.comment, new_r.comment)
 
     #TODO - assert old_r.consrtm == new_r.consrtm
     #Looking at the tables, I *think* the current schema does not
@@ -79,8 +80,7 @@ def compare_feature(old_f, new_f):
         "%s -> %s" % (old_f.ref_db, new_f.ref_db)
 
     #TODO - BioSQL does not store/retrieve feature's id (Bug 2526)   
-    #assert old_f.id == new_f.id
-    assert new_f.id == "<unknown id>"
+    assert old_f.id == new_f.id or new_f.id == "<unknown id>"
 
     #TODO - Work out how the location_qualifier_value table should
     #be used, given BioPerl seems to ignore it (Bug 2766)
@@ -156,8 +156,8 @@ def compare_feature(old_f, new_f):
                                      new_sub.location.nofuzzy_end)
 
     assert len(old_f.qualifiers) == len(new_f.qualifiers)    
-    assert set(old_f.qualifiers.keys()) == set(new_f.qualifiers.keys())
-    for key in old_f.qualifiers.keys():
+    assert set(old_f.qualifiers) == set(new_f.qualifiers)
+    for key in old_f.qualifiers:
         if isinstance(old_f.qualifiers[key], str):
             if isinstance(new_f.qualifiers[key], str):
                 assert old_f.qualifiers[key] == new_f.qualifiers[key]
@@ -185,18 +185,18 @@ def compare_sequence(old, new):
     else:
         assert not isinstance(new, UnknownSeq)
 
-    l = len(old)
+    ln = len(old)
     s = old.tostring()
     assert isinstance(s, str)
 
     #Don't check every single element; for long sequences
     #this takes far far far too long to run!
     #Test both positive and negative indices
-    if l < 50:
-        indices = range(-l,l)
+    if ln < 50:
+        indices = range(-ln,ln)
     else:
         #A selection of end cases, and the mid point
-        indices = [-l,-1+1,-int(l/2),-1,0,1,int(l/2),l-2,l-1]
+        indices = [-ln,-ln+1,-(ln//2),-1,0,1,ln//2,ln-2,ln-1]
 
     #Test element access,    
     for i in indices:
@@ -205,8 +205,8 @@ def compare_sequence(old, new):
         assert expected == new[i]
 
     #Test slices
-    indices.append(l) #check copes with overflows
-    indices.append(l+1000) #check copes with overflows
+    indices.append(ln) #check copes with overflows
+    indices.append(ln+1000) #check copes with overflows
     for i in indices:
         for j in indices:
             expected = s[i:j]
@@ -278,7 +278,7 @@ def compare_record(old, new):
            % ", ".join(missing_keys)
     
     #In the short term, just compare any shared keys:
-    for key in set(old.annotations.keys()).intersection(new.annotations.keys()):
+    for key in set(old.annotations).intersection(new.annotations):
         if key == "references":
             assert len(old.annotations[key]) == len(new.annotations[key])
             for old_r, new_r in zip(old.annotations[key], new.annotations[key]):

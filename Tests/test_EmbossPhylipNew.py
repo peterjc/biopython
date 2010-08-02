@@ -17,6 +17,9 @@ from Bio.Emboss.Applications import FSeqBootCommandline, FProtDistCommandline
 from Bio.Emboss.Applications import FProtParsCommandline, FConsenseCommandline
 from Bio.Emboss.Applications import FTreeDistCommandline, FDNAParsCommandline
 
+#Try to avoid problems when the OS is in another language
+os.environ['LANG'] = 'C'
+
 exes_wanted = ['fdnadist', 'fneighbor', 'fprotdist','fprotpars','fconsense',
                'fseqboot', 'ftreedist', 'fdnapars']
 exes = dict() #Dictionary mapping from names to exe locations
@@ -96,7 +99,7 @@ class DistanceTests(unittest.TestCase):
     
     def distances_from_alignment(self, filename, DNA = True):
         """ check we can make distance matrix from a given alignment """
-        self.assert_(os.path.isfile(filename), "Missing %s" % filename)
+        self.assertTrue(os.path.isfile(filename), "Missing %s" % filename)
         if DNA:
             cline =  FDNADistCommandline(exes["fdnadist"],
                                          method = 'j',
@@ -114,11 +117,11 @@ class DistanceTests(unittest.TestCase):
             raise ValueError("Return code %s from:\n%s" \
                              % (return_code, str(cline)))
         #biopython can't grok distance matrices, so we'll just check it exists
-        self.assert_(os.path.isfile("test_file"))
+        self.assertTrue(os.path.isfile("test_file"))
     
     def tree_from_distances(self, filename):
         """ Check we can estimate a tree from a distance matrix """
-        self.assert_(os.path.isfile(filename), "Missing %s" % filename)
+        self.assertTrue(os.path.isfile(filename), "Missing %s" % filename)
         cline = FNeighborCommandline(exes["fneighbor"],
                                      datafile = filename,
                                      outtreefile = "test_file",
@@ -175,7 +178,7 @@ class ParsimonyTests(unittest.TestCase):
 
     def parsimony_tree(self, filename, format, DNA=True):
         """ estimate a parsimony tree from an alignment """
-        self.assert_(os.path.isfile(filename), "Missing %s" % filename)
+        self.assertTrue(os.path.isfile(filename), "Missing %s" % filename)
         if DNA:
             cline = FDNAParsCommandline(exes["fdnapars"],
                                         sequence = filename,
@@ -236,7 +239,7 @@ class BootstrapTests(unittest.TestCase):
         The align_type type argument is passed to the commandline object to
         set the output format to use (from [D]na,[p]rotein and [r]na )
         """
-        self.assert_(os.path.isfile(filename), "Missing %s" % filename)
+        self.assertTrue(os.path.isfile(filename), "Missing %s" % filename)
         cline = FSeqBootCommandline(exes["fseqboot"],
                                     sequence = filename,
                                     outfile =  "test_file",
@@ -291,7 +294,9 @@ class TreeComparisonTests(unittest.TestCase):
         if return_code != 0:
             raise ValueError("Return code %s from:\n%s" \
                              % (return_code, str(cline)))
-        taxa1 = parse_trees("test_file").next().get_taxa()
+        #Split the next and get_taxa into two steps to help 2to3 work
+        tree1 = parse_trees("test_file").next()
+        taxa1 = tree1.get_taxa()
         for tree in parse_trees("Phylip/horses.tree"):
             taxa2 = tree.get_taxa()
             self.assertEqual(sorted(taxa1),sorted(taxa2))
@@ -306,7 +311,7 @@ class TreeComparisonTests(unittest.TestCase):
         if return_code != 0:
             raise ValueError("Return code %s from:\n%s" \
                              % (return_code, str(cline)))
-        self.assert_(os.path.isfile("test_file"))
+        self.assertTrue(os.path.isfile("test_file"))
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner(verbosity = 2)

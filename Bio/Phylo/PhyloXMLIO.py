@@ -17,31 +17,38 @@ About capitalization:
 """
 __docformat__ = "epytext en"
 
+import sys
 import warnings
 
 from Bio.Phylo import PhyloXML as PX
 
-try:
-    from xml.etree import cElementTree as ElementTree
-except ImportError:
+if (3, 0, 0) <= sys.version_info < (3, 1, 2):
+    # Workaround for cElementTree regression in python 3.0--3.1.1
+    # See http://bugs.python.org/issue9257
+    from xml.etree import ElementTree
+else:
     try:
-        from xml.etree import ElementTree as ElementTree
+        from xml.etree import cElementTree as ElementTree
     except ImportError:
-        # Python 2.4 -- check for 3rd-party implementations
+        # Alternative Python implementation, perhaps?
         try:
-            from lxml.etree import ElementTree
+            from xml.etree import ElementTree as ElementTree
         except ImportError:
+            # Python 2.4 -- check for 3rd-party implementations
             try:
-                import cElementTree as ElementTree
+                from lxml import etree as ElementTree
             except ImportError:
                 try:
-                    from elementtree import ElementTree
+                    import cElementTree as ElementTree
                 except ImportError:
-                    from Bio import MissingExternalDependencyError
-                    raise MissingExternalDependencyError(
-                            "No ElementTree module was found. "
-                            "Use Python 2.5+, lxml or elementtree if you "
-                            "want to use Bio.PhyloXML.")
+                    try:
+                        from elementtree import ElementTree
+                    except ImportError:
+                        from Bio import MissingExternalDependencyError
+                        raise MissingExternalDependencyError(
+                                "No ElementTree module was found. "
+                                "Use Python 2.5+, lxml or elementtree if you "
+                                "want to use Bio.PhyloXML.")
 
 # Keep the standard namespace prefixes when writing
 # See http://effbot.org/zone/element-namespaces.htm
@@ -107,7 +114,7 @@ def parse(file):
     """
     return Parser(file).parse()
 
-def write(obj, file, encoding=None, indent=False):
+def write(obj, file, encoding='utf-8', indent=False):
     """Write a phyloXML file.
 
     The first argument is an instance of Phyloxml, Phylogeny or BaseTree.Tree,
@@ -671,13 +678,10 @@ class Writer(object):
         assert isinstance(phyloxml, PX.Phyloxml), "Not a Phyloxml object"
         self._tree = ElementTree.ElementTree(self.phyloxml(phyloxml))
 
-    def write(self, file, encoding=None, indent=False):
+    def write(self, file, encoding='utf-8', indent=False):
         if indent:
             _indent(self._tree.getroot())
-        if encoding is not None:
-            self._tree.write(file, encoding)
-        else:
-            self._tree.write(file)
+        self._tree.write(file, encoding)
         return len(self._tree.getroot())
 
     # Convert classes to ETree elements

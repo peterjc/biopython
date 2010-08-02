@@ -3,16 +3,16 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.  
 
-# Python stuff
+"""Parser for PDB files."""
+
 import warnings
+
 import numpy
 
-# My stuff
-from StructureBuilder import StructureBuilder
-from PDBExceptions import PDBConstructionException, PDBConstructionWarning
-from parse_pdb_header import _parse_pdb_header_list
-
-__doc__="Parser for PDB files."
+from Bio.PDB.PDBExceptions import \
+        PDBConstructionException, PDBConstructionWarning
+from Bio.PDB.StructureBuilder import StructureBuilder
+from Bio.PDB.parse_pdb_header import _parse_pdb_header_list
 
 
 # If PDB spec says "COLUMNS 18-20" this means line[17:20]
@@ -206,7 +206,13 @@ class PDBParser:
                 anisou_array=(numpy.array(anisou, 'f')/10000.0).astype('f')
                 structure_builder.set_anisou(anisou_array)
             elif(record_type=='MODEL '):
-                structure_builder.init_model(current_model_id)
+                try:
+                    serial_num=int(line[10:14])
+                except:
+                    self._handle_PDB_exception("Invalid or missing model serial number",
+                                               global_line_counter)
+                    serial_num=0
+                structure_builder.init_model(current_model_id,serial_num)
                 current_model_id+=1
                 model_open=1
                 current_chain_id=None

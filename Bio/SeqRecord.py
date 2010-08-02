@@ -295,8 +295,7 @@ class SeqRecord(object):
         ...                     IUPAC.protein),
         ...                 id="1JOY", name="EnvZ",
         ...                 description="Homodimeric domain of EnvZ from E. coli")
-        >>> rec.letter_annotations["secondary_structure"] = \
-            "  S  SSSSSSHHHHHTTTHHHHHHHHHHHHHHHHHHHHHHTHHHHHHHHHHHHHHHHHHHHHTT  "
+        >>> rec.letter_annotations["secondary_structure"] = "  S  SSSSSSHHHHHTTTHHHHHHHHHHHHHHHHHHHHHHTHHHHHHHHHHHHHHHHHHHHHTT  "
         >>> rec.features.append(SeqFeature(FeatureLocation(20,21),
         ...                     type = "Site"))
 
@@ -645,15 +644,25 @@ class SeqRecord(object):
         supported by Bio.SeqIO as an output file format. See also the
         SeqRecord's format() method.
         """
-        if format_spec:
-            from StringIO import StringIO
-            from Bio import SeqIO
-            handle = StringIO()
-            SeqIO.write([self], handle, format_spec)
-            return handle.getvalue()
-        else:
+        if not format_spec:
             #Follow python convention and default to using __str__
             return str(self)    
+        from Bio import SeqIO
+        if format_spec in SeqIO._BinaryFormats:
+            #Return bytes on Python 3
+            try:
+                #This is in Python 2.6+, but we need it on Python 3
+                from io import BytesIO
+                handle = BytesIO()
+            except ImportError:
+                #Must be on Python 2.5 or older
+                from StringIO import StringIO
+                handle = StringIO()
+        else:
+            from StringIO import StringIO
+            handle = StringIO()
+        SeqIO.write(self, handle, format_spec)
+        return handle.getvalue()
 
     def __len__(self):
         """Returns the length of the sequence.
@@ -828,6 +837,81 @@ class SeqRecord(object):
                          features = [f._shift(offset) for f in self.features],
                          annotations = self.annotations.copy(),
                          dbxrefs = self.dbxrefs[:])
+
+    def upper(self):
+        """Returns a copy of the record with an upper case sequence.
+
+        All the annotation is preserved unchanged. e.g.
+
+        >>> from Bio.Alphabet import generic_dna
+        >>> from Bio.Seq import Seq
+        >>> from Bio.SeqRecord import SeqRecord
+        >>> record = SeqRecord(Seq("acgtACGT", generic_dna), id="Test",
+        ...                    description = "Made up for this example")
+        >>> record.letter_annotations["phred_quality"] = [1,2,3,4,5,6,7,8]
+        >>> print record.upper().format("fastq")
+        @Test Made up for this example
+        ACGTACGT
+        +
+        "#$%&'()
+        <BLANKLINE>
+
+        Naturally, there is a matching lower method:
+        
+        >>> print record.lower().format("fastq")
+        @Test Made up for this example
+        acgtacgt
+        +
+        "#$%&'()
+        <BLANKLINE>
+        """
+        return SeqRecord(self.seq.upper(),
+                         id = self.id, name = self.name,
+                         description = self.description,
+                         dbxrefs = self.dbxrefs[:],
+                         features = self.features[:],
+                         annotations = self.annotations.copy(),
+                         letter_annotations=self.letter_annotations.copy())
+
+    def lower(self):
+        """Returns a copy of the record with a lower case sequence.
+
+        All the annotation is preserved unchanged. e.g.
+
+        >>> from Bio import SeqIO
+        >>> record = SeqIO.read("Fasta/aster.pro", "fasta")
+        >>> print record.format("fasta")
+        >gi|3298468|dbj|BAA31520.1| SAMIPF
+        GGHVNPAVTFGAFVGGNITLLRGIVYIIAQLLGSTVACLLLKFVTNDMAVGVFSLSAGVG
+        VTNALVFEIVMTFGLVYTVYATAIDPKKGSLGTIAPIAIGFIVGANI
+        <BLANKLINE>
+        >>> print record.lower().format("fasta")
+        >gi|3298468|dbj|BAA31520.1| SAMIPF
+        gghvnpavtfgafvggnitllrgivyiiaqllgstvaclllkfvtndmavgvfslsagvg
+        vtnalvfeivmtfglvytvyataidpkkgslgtiapiaigfivgani
+        <BLANKLINE>
+
+        To take a more annotation rich example,
+
+        >>> from Bio import SeqIO
+        >>> old = SeqIO.read("EMBL/TRBG361.embl", "embl")
+        >>> len(old.features)
+        3
+        >>> new = old.lower()
+        >>> len(old.features) == len(new.features)
+        True
+        >>> old.annotations["organism"] == new.annotations["organism"]
+        True
+        >>> old.dbxrefs == new.dbxrefs
+        True
+        """
+        return SeqRecord(self.seq.lower(),
+                         id = self.id, name = self.name,
+                         description = self.description,
+                         dbxrefs = self.dbxrefs[:],
+                         features = self.features[:],
+                         annotations = self.annotations.copy(),
+                         letter_annotations=self.letter_annotations.copy())
 
 def _test():
     """Run the Bio.SeqRecord module's doctests (PRIVATE).

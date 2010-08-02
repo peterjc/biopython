@@ -109,8 +109,8 @@ class MotifFinder:
         motif_diffs = {}
 
         # first deal with all of the keys from the first motif
-        for cur_key in first_motifs.keys():
-            if second_motifs.has_key(cur_key):
+        for cur_key in first_motifs:
+            if cur_key in second_motifs:
                 motif_diffs[cur_key] = first_motifs[cur_key] - \
                                        second_motifs[cur_key]
             else:
@@ -118,10 +118,10 @@ class MotifFinder:
 
         # now see if there are any keys from the second motif
         # that we haven't got yet.
-        missing_motifs = second_motifs.keys()[:]
+        missing_motifs = list(second_motifs)
 
         # remove all of the motifs we've already added
-        for added_motif in motif_diffs.keys():
+        for added_motif in motif_diffs:
             if added_motif in missing_motifs:
                 missing_motifs.remove(added_motif)
 
@@ -135,7 +135,7 @@ class MotifFinder:
         """Add a motif to the given dictionary.
         """
         # incrememt the count of the motif if it is already present
-        if motif_dict.has_key(motif_to_add):
+        if motif_to_add in motif_dict:
             motif_dict[motif_to_add] += 1
         # otherwise add it to the dictionary
         else:
@@ -189,7 +189,7 @@ class MotifCoder:
         for start in range(len(sequence) - (self._motif_size - 1)):
             motif = sequence[start:start + self._motif_size].data
 
-            if seq_motifs.has_key(motif):
+            if motif in seq_motifs:
                 seq_motifs[motif] += 1
 
         # normalize the motifs to go between zero and one

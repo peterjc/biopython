@@ -112,36 +112,36 @@ class Chain:
         return not self.__eq__(other)
 
     def __len__(self): return len(self.data)
-    def __getitem__(self, i): return self.data[i]
 
-    def __setitem__(self, i, item):
-        try:
-            self.validate_element(item)
-        except TypeError:
-            item = Hetero(item.lower())
-        self.data[i] = item
-
-    def __delitem__(self, i):
-        del self.data[i]
-
-    def __getslice__(self, i, j):
-        i = max(i, 0); j = max(j, 0)
-        return self.__class__(self.data[i:j])
-
-    def __setslice__(self, i, j, other):
-        i = max(i, 0); j = max(j, 0)
-        if isinstance(other, Chain):
-            self.data[i:j] = other.data
-        elif isinstance(other, type(self.data)):
-            self.data[i:j] = other
-        elif type(other) == type(''):
-            self.data[ i:j ] = Chain(other).data
+    def __getitem__(self, index):
+        if isinstance(index, int):
+            return self.data[index]
+        elif isinstance(index, slice):
+            return self.__class__(self.data[index])
         else:
             raise TypeError
-
-    def __delslice__(self, i, j):
-        i = max(i, 0); j = max(j, 0)
-        del self.data[i:j]
+            
+    def __setitem__(self, index, value):
+        if isinstance(index, int):
+            try:
+                self.validate_element(value)
+            except TypeError:
+                value = Hetero(value.lower())
+            self.data[index] = value
+        elif isinstance(index, slice):
+            if isinstance(value, Chain):
+                self.data[index] = value.data
+            elif isinstance(value, type(self.data)):
+                self.data[index] = value
+            elif isinstance(value, basestring):
+                self.data[index] = Chain(value).data
+            else:
+                raise TypeError
+        else:
+            raise TypeError
+    
+    def __delitem__(self, index):
+        del self.data[index]
 
     def __contains__(self, item):
         try:
@@ -217,12 +217,12 @@ class Crystal:
 
     def fix(self):
         data = self.data
-        for key in data.keys():
-            element = data[ key ]
+        for key in data:
+            element = data[key]
             if isinstance(element, Chain):
                 pass
             elif type(element) == type(''):
-                data[ key ] = Chain(element)
+                data[key] = Chain(element)
             else:
                 raise TypeError
 
@@ -262,9 +262,7 @@ class Crystal:
     def keys(self): return self.data.keys()
     def items(self): return self.data.items()
     def values(self): return self.data.values()
-
-    #TODO - Define the __in__ method?
-
+    def __contains__(self, value): return value in self.data
     def has_key(self, key): return key in self.data
     def get(self, key, failobj=None):
         return self.data.get(key, failobj)

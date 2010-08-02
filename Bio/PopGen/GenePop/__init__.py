@@ -16,12 +16,6 @@ Functions:
 read             Parses a GenePop record (file) into a Record object.
 
 
-Obsolete classes:
-RecordParser     Parses a GenePop record (file) into a Record object.
-
-_Scanner         Scans a GenePop record.
-_RecordConsumer  Consumes GenePop data to a Record object.
-
 Partially inspired on MedLine Code.
 
 """
@@ -29,6 +23,11 @@ from copy import deepcopy
 
 
 def get_indiv(line):
+    def int_no_zero(val):
+        v = int(val)
+        if v == 0:
+            return None
+        return v
     indiv_name, marker_line = line.split(',')
     markers = marker_line.replace('\t', ' ').split(' ')
     markers = [marker for marker in markers if marker!='']
@@ -37,11 +36,11 @@ def get_indiv(line):
     else:
         marker_len = 3
     try:
-        allele_list = [(int(marker[0:marker_len]),
-                       int(marker[marker_len:]))
+        allele_list = [(int_no_zero(marker[0:marker_len]),
+                       int_no_zero(marker[marker_len:]))
                    for marker in markers]
     except ValueError: #Haploid
-        allele_list = [(int(marker[0:marker_len]),)
+        allele_list = [(int_no_zero(marker[0:marker_len]),)
                    for marker in markers]
     return indiv_name, allele_list, marker_len
 
@@ -51,11 +50,11 @@ def read(handle):
        handle is a file-like object that contains a GenePop record.
     """
     record = Record()
-    record.comment_line = handle.next().rstrip()
+    record.comment_line = str(handle.next()).rstrip()
     #We can now have one loci per line or all loci in a single line
     #separated by either space or comma+space...
     #We will remove all commas on loci... that should not be a problem
-    sample_loci_line = handle.next().rstrip().replace(',', '')
+    sample_loci_line = str(handle.next()).rstrip().replace(',', '')
     all_loci = sample_loci_line.split(' ')
     record.loci_list.extend(all_loci)
     for line in handle:

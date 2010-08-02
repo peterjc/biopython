@@ -41,15 +41,50 @@ from xml.parsers import expat
 # The following four classes are used to add a member .attributes to integers,
 # strings, lists, and dictionaries, respectively.
 
-class IntegerElement(int): pass
+class IntegerElement(int):
+    def __repr__(self):
+        text = int.__repr__(self)
+        try:
+            attributes = self.attributes
+        except AttributeError:
+            return text
+        return "IntegerElement(%s, attributes=%s)" % (text, repr(attributes))
 
-class StringElement(str): pass
+class StringElement(str):
+    def __repr__(self):
+        text = str.__repr__(self)
+        try:
+            attributes = self.attributes
+        except AttributeError:
+            return text
+        return "StringElement(%s, attributes=%s)" % (text, repr(attributes))
 
-class UnicodeElement(unicode): pass
+class UnicodeElement(unicode):
+    def __repr__(self):
+        text = unicode.__repr__(self)
+        try:
+            attributes = self.attributes
+        except AttributeError:
+            return text
+        return "UnicodeElement(%s, attributes=%s)" % (text, repr(attributes))
 
-class ListElement(list): pass
+class ListElement(list):
+    def __repr__(self):
+        text = list.__repr__(self)
+        try:
+            attributes = self.attributes
+        except AttributeError:
+            return text
+        return "ListElement(%s, attributes=%s)" % (text, repr(attributes))
 
-class DictionaryElement(dict): pass
+class DictionaryElement(dict):
+    def __repr__(self):
+        text = dict.__repr__(self)
+        try:
+            attributes = self.attributes
+        except AttributeError:
+            return text
+        return "DictElement(%s, attributes=%s)" % (text, repr(attributes))
 
 # A StructureElement is like a dictionary, but some of its keys can have
 # multiple values associated with it. These values are stored in a list
@@ -65,6 +100,13 @@ class StructureElement(dict):
             self[key].append(value)
         else:
             dict.__setitem__(self, key, value)
+    def __repr__(self):
+        text = dict.__repr__(self)
+        try:
+            attributes = self.attributes
+        except AttributeError:
+            return text
+        return "DictElement(%s, attributes=%s)" % (text, repr(attributes))
 
 
 class NotXMLError(ValueError):
@@ -345,9 +387,9 @@ class DataHandler:
         if not self.valid:
             raise NotXMLError
         location, filename = os.path.split(systemId)
-        path = os.path.join(self.dtd_dir, filename)
+        path = os.path.join(str(self.dtd_dir), str(filename))
         try:
-            handle = open(path)
+            handle = open(path, "rb")
         except IOError:
             message = """\
 Unable to load DTD file %s.
@@ -360,7 +402,7 @@ case, you can download the DTD file from NCBI and install it manually.
 Usually, you can find missing DTD files at either
     http://www.ncbi.nlm.nih.gov/dtd/
 or
-    http://eutils.ncbi.nlm.nih.gov/entrez/query/DTD/
+    http://www.ncbi.nlm.nih.gov/corehtml/query/DTD/
 If you cannot find %s there, you may also try to search
 for it with a search engine such as Google.
 
@@ -370,9 +412,10 @@ in order for Bio.Entrez to find it.
 Alternatively, you can save %s in the directory
 Bio/Entrez/DTDs in the Biopython distribution, and reinstall Biopython.
 
-Please also inform the Biopython developers by sending an email to
-biopython-dev@biopython.org to inform us about this missing DTD, so that we
-can include it with the next release of Biopython.
+Please also inform the Biopython developers about this missing DTD, by
+reporting a bug on http://bugzilla.open-bio.org/ or sign up to our mailing
+list and emailing us, so that we can include it with the next release of
+Biopython.
 """ % (filename, filename, filename, self.dtd_dir, filename)
             raise RuntimeError(message)
             

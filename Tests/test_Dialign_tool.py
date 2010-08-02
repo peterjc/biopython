@@ -12,6 +12,9 @@ import subprocess
 from Bio import MissingExternalDependencyError
 from Bio.Align.Applications import DialignCommandline
 
+#Try to avoid problems when the OS is in another language
+os.environ['LANG'] = 'C'
+
 dialign_exe = None
 if sys.platform=="win32":
     raise MissingExternalDependencyError("DIALIGN2-2 not available on Windows")
@@ -59,12 +62,13 @@ class DialignApplication(unittest.TestCase):
         child = subprocess.Popen(str(cmdline),
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
+                                 universal_newlines=True,
                                  shell=(sys.platform!="win32"))
         return_code = child.wait()
         self.assertEqual(return_code, 0)
         self.assertEqual(child.stderr.read(), "")
         self.assertEqual(child.stdout.read(), "")
-        self.assert_(os.path.exists(self.outfile1))
+        self.assertTrue(os.path.exists(self.outfile1))
         del child
 
     def test_Dialign_simple_with_options(self):
@@ -79,12 +83,13 @@ class DialignApplication(unittest.TestCase):
         child = subprocess.Popen(str(cmdline),
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
+                                 universal_newlines=True,
                                  shell=(sys.platform!="win32"))
         return_code = child.wait()
         self.assertEqual(return_code, 0)
         self.assertEqual(child.stderr.read(), "")
         self.assertEqual(child.stdout.read(), "")
-        self.assert_(os.path.exists(self.outfile1))
+        self.assertTrue(os.path.exists(self.outfile1))
         del child
 
     def test_Dialign_simple_with_MSF_output(self):
@@ -98,13 +103,14 @@ class DialignApplication(unittest.TestCase):
         child = subprocess.Popen(str(cmdline),
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
+                                 universal_newlines=True,
                                  shell=(sys.platform!="win32"))
         return_code = child.wait()
         self.assertEqual(return_code, 0)
         self.assertEqual(child.stdout.read(), "")
         self.assertEqual(child.stderr.read(), "")
-        self.assert_(os.path.exists(self.outfile1))
-        self.assert_(os.path.exists(self.outfile2))
+        self.assertTrue(os.path.exists(self.outfile1))
+        self.assertTrue(os.path.exists(self.outfile2))
         del child
 
     def test_Dialign_complex_command_line(self):
@@ -122,12 +128,13 @@ class DialignApplication(unittest.TestCase):
         child = subprocess.Popen(str(cmdline),
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
+                                 universal_newlines=True,
                                  shell=(sys.platform!="win32"))
         return_code = child.wait()
         self.assertEqual(return_code, 0)
         self.assertEqual(child.stderr.read(), "")
-        self.assert_(os.path.exists(self.outfile1))
-        self.assert_(child.stdout.read().startswith(" e_len = 633"))
+        self.assertTrue(os.path.exists(self.outfile1))
+        self.assertTrue(child.stdout.read().startswith(" e_len = 633"))
         del child
 
 if __name__ == "__main__":

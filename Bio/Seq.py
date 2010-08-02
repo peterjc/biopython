@@ -17,10 +17,10 @@ import string #for maketrans only
 import array
 import sys
 
-import Alphabet
-from Alphabet import IUPAC
+from Bio import Alphabet
+from Bio.Alphabet import IUPAC
 from Bio.SeqRecord import SeqRecord
-from Data.IUPACData import ambiguous_dna_complement, ambiguous_rna_complement
+from Bio.Data.IUPACData import ambiguous_dna_complement, ambiguous_rna_complement
 from Bio.Data import CodonTable
 
 def _maketrans(complement_mapping):
@@ -41,7 +41,10 @@ def _maketrans(complement_mapping):
     after  = ''.join(complement_mapping.values())
     before = before + before.lower()
     after  = after + after.lower()
-    return string.maketrans(before, after)
+    if sys.version_info[0] == 3 :
+        return str.maketrans(before, after)
+    else:
+        return string.maketrans(before, after)
 
 _dna_complement_table = _maketrans(ambiguous_dna_complement)
 _rna_complement_table = _maketrans(ambiguous_rna_complement)
@@ -55,6 +58,12 @@ class Seq(object):
 
     The Seq object provides a number of string like methods (such as count,
     find, split and strip), which are alphabet aware where appropriate.
+
+    In addition to the string like sequence, the Seq object has an alphabet
+    property. This is an instance of an Alphabet class from Bio.Alphabet,
+    for example generic DNA, or IUPAC DNA. This describes the type of molecule
+    (e.g. RNA, DNA, protein) and may also indicate the expected symbols
+    (letters).
 
     The Seq object also provides some biological methods, such as complement,
     reverse_complement, transcribe, back_transcribe and translate (which are
@@ -81,10 +90,14 @@ class Seq(object):
         Seq('MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF', IUPACProtein())
         >>> print my_seq
         MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF
+        >>> my_seq.alphabet
+        IUPACProtein()
+
         """
         # Enforce string storage
-        assert (type(data) == type("") or # must use a string
-                type(data) == type(u""))  # but can be a unicode string
+        if not isinstance(data, basestring):
+            raise TypeError("The sequence data given to a Seq object should "
+                            "be a string (not another Seq object etc)")
         self._data = data
         self.alphabet = alphabet  # Seq API requirement
  
@@ -139,6 +152,14 @@ class Seq(object):
         """
         return self._data
 
+
+    def __hash__(self):
+        """Hash for comparison.
+
+        See the __cmp__ documentation - we plan to change this!
+        """
+        return id(self) #Currently use object identity for equality testing
+    
     def __cmp__(self, other):
         """Compare the sequence to another sequence or a string (README).
 
@@ -1446,8 +1467,12 @@ class MutableSeq(object):
     or biological methods as the Seq object.
     """
     def __init__(self, data, alphabet = Alphabet.generic_alphabet):
-        if type(data) == type(""):
-            self.data = array.array("c", data)
+        if sys.version_info[0] == 3:
+            self.array_indicator = "u"
+        else:
+            self.array_indicator = "c"
+        if isinstance(data, str): #TODO - What about unicode?
+            self.data = array.array(self.array_indicator, data)
         else:
             self.data = data   # assumes the input is an array
         self.alphabet = alphabet
@@ -1552,7 +1577,8 @@ class MutableSeq(object):
             elif isinstance(value, type(self.data)):
                 self.data[index] = value
             else:
-                self.data[index] = array.array("c", str(value))
+                self.data[index] = array.array(self.array_indicator,
+                                               str(value))
 
     def __delitem__(self, index):
         #Note since Python 2.0, __delslice__ is deprecated
@@ -1721,7 +1747,7 @@ class MutableSeq(object):
         c = dict([(x.lower(), y.lower()) for x,y in d.iteritems()])
         d.update(c)
         self.data = map(lambda c: d[c], self.data)
-        self.data = array.array('c', self.data)
+        self.data = array.array(self.array_indicator, self.data)
         
     def reverse_complement(self):
         """Modify the mutable sequence to take on its reverse complement.
@@ -1766,8 +1792,8 @@ class MutableSeq(object):
 
         >>> from Bio.Seq import Seq
         >>> from Bio.Alphabet import IUPAC
-        >>> my_mseq = MutableSeq("MKQHKAMIVALIVICITAVVAAL", \
-                                 IUPAC.protein)
+        >>> my_mseq = MutableSeq("MKQHKAMIVALIVICITAVVAAL", 
+        ...                      IUPAC.protein)
         >>> my_mseq
         MutableSeq('MKQHKAMIVALIVICITAVVAAL', IUPACProtein())
         >>> my_mseq.toseq()
@@ -2033,11 +2059,15 @@ def reverse_complement(sequence):
     return sequence.translate(ttable)[::-1]
 
 def _test():
-    """Run the Bio.Seq module's doctests."""
-    print "Runing doctests..."
-    import doctest
-    doctest.testmod()
-    print "Done"
+    """Run the Bio.Seq module's doctests (PRIVATE)."""
+    if sys.version_info[0:2] == (3,1):
+        print "Not running Bio.Seq doctest on Python 3.1"
+        print "See http://bugs.python.org/issue7490"
+    else:
+        print "Runing doctests..."
+        import doctest
+        doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)
+        print "Done"
 
 if __name__ == "__main__":
     _test()

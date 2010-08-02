@@ -2016,7 +2016,7 @@ def _get_cols(line, cols_to_get, ncols=None, expected={}):
                          % (ncols, len(cols), line))
 
     # Check to make sure columns contain the correct data
-    for k in expected.keys():
+    for k in expected:
         if cols[k] != expected[k]:
             raise ValueError("I expected '%s' in column %d in line\n%s" \
                              % (expected[k], k, line))
@@ -2077,6 +2077,7 @@ def _invoke_blast(cline):
                                      stdin=subprocess.PIPE,
                                      stdout=subprocess.PIPE,
                                      stderr=subprocess.PIPE,
+                                     universal_newlines=True,
                                      shell=(sys.platform!="win32"))
     blast_process.stdin.close()
     return blast_process.stdout, blast_process.stderr

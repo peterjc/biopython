@@ -1,4 +1,4 @@
-# Copyright 2009 by Peter Cock.  All rights reserved.
+# Copyright 2009-2010 by Peter Cock.  All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
@@ -7,12 +7,19 @@
 import os
 import unittest
 import warnings
+
+from StringIO import StringIO
+try:
+    #This is in Python 2.6+, but we need it on Python 3
+    from io import BytesIO
+except ImportError:
+    BytesIO = StringIO
+
 from Bio.Alphabet import generic_dna
 from Bio.SeqIO import QualityIO
 from Bio import SeqIO
 from Bio.Seq import Seq, UnknownSeq, MutableSeq
 from Bio.SeqRecord import SeqRecord
-from StringIO import StringIO
 from Bio.Data.IUPACData import ambiguous_dna_letters, ambiguous_rna_letters
 
 BINARY_FORMATS = ["sff", "sff-trim"]
@@ -30,11 +37,14 @@ def truncation_expected(format):
 def write_read(filename, in_format, out_format):
     if in_format in BINARY_FORMATS:
         mode = "rb"
-    else :
+    else:
         mode = "r"
     records = list(SeqIO.parse(open(filename, mode),in_format))
     #Write it out...
-    handle = StringIO()
+    if out_format in BINARY_FORMATS:
+        handle = BytesIO()
+    else :
+        handle = StringIO()
     SeqIO.write(records, handle, out_format)
     handle.seek(0)
     #Now load it back and check it agrees,
@@ -129,7 +139,7 @@ class TestFastqErrors(unittest.TestCase):
             records = SeqIO.parse(handle, format)
             for i in range(good_count):
                 record = records.next() #Make sure no errors!
-                self.assert_(isinstance(record, SeqRecord))
+                self.assertTrue(isinstance(record, SeqRecord))
             self.assertRaises(ValueError, records.next)
             handle.close()
 
@@ -269,7 +279,7 @@ class TestReferenceFastqConversions(unittest.TestCase):
                 warnings.simplefilter('ignore', UserWarning)
             in_filename = "Quality/%s_original_%s.fastq" \
                           % (base_name, in_variant)
-            self.assert_(os.path.isfile(in_filename))
+            self.assertTrue(os.path.isfile(in_filename))
             #Load the reference output...  
             expected = open("Quality/%s_as_%s.fastq" \
                             % (base_name, out_variant),
@@ -313,14 +323,14 @@ class TestQual(unittest.TestCase):
             QualityIO.PairedFastaQualIterator(open("Quality/example.fasta"),
                                               open("Quality/example.qual")))
         records2 = list(SeqIO.parse(open("Quality/example.fastq"),"fastq"))
-        self.assert_(compare_records(records1, records2))
+        self.assertTrue(compare_records(records1, records2))
 
     def test_qual(self):
         """Check FASTQ parsing matches QUAL parsing"""
         records1 = list(SeqIO.parse(open("Quality/example.qual"),"qual"))
         records2 = list(SeqIO.parse(open("Quality/example.fastq"),"fastq"))
         #Will ignore the unknown sequences :)
-        self.assert_(compare_records(records1, records2))
+        self.assertTrue(compare_records(records1, records2))
 
     def test_qual_out(self):
         """Check FASTQ to QUAL output"""
@@ -333,7 +343,7 @@ class TestQual(unittest.TestCase):
         """Check FASTQ parsing matches FASTA parsing"""
         records1 = list(SeqIO.parse(open("Quality/example.fasta"),"fasta"))
         records2 = list(SeqIO.parse(open("Quality/example.fastq"),"fastq"))
-        self.assert_(compare_records(records1, records2))
+        self.assertTrue(compare_records(records1, records2))
 
     def test_fasta_out(self):
         """Check FASTQ to FASTA output"""

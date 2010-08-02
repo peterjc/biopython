@@ -22,6 +22,21 @@ doctest       -- run the docstring tests.
 By default, all tests are run.
 """
 
+# The default verbosity (not verbose)
+VERBOSITY = 0
+
+# standard modules
+import sys
+import cStringIO
+import os
+import re
+import getopt
+import time
+import traceback
+import unittest
+import doctest
+import distutils.util
+
 # This is the list of modules containing docstring tests.
 # If you develop docstring tests for other modules, please add
 # those modules here.
@@ -56,23 +71,11 @@ try:
 except ImportError:
     pass
 
+#Skip Bio.Seq doctest under Python 3.0, see http://bugs.python.org/issue7490
+if sys.version_info[0:2] == (3,1):
+    DOCTEST_MODULES.remove("Bio.Seq")
 
-# The default verbosity (not verbose)
-VERBOSITY = 0
-
-# standard modules
-import sys
-import cStringIO
-import os
-import re
-import getopt
-import time
-import traceback
-import unittest
-import doctest
-import distutils.util
-
-
+system_lang = os.environ.get('LANG', 'C') #Cache this
 
 def main(argv):
     # insert our paths in sys.path:
@@ -90,6 +93,13 @@ def main(argv):
     if os.access(build_path, os.F_OK):
         sys.path.insert(1, build_path)
 
+    # Using "export LANG=C" (which should work on Linux and similar) can
+    # avoid problems detecting optional command line tools on
+    # non-English OS (we may want 'command not found' in English).
+    # HOWEVER, we do not want to change the default encoding which is
+    # rather important on Python 3 with unicode.
+    #lang = os.environ['LANG']
+    
     # get the command line options
     try:
         opts, args = getopt.getopt(argv, 'gv', ["generate", "verbose",
@@ -162,7 +172,12 @@ class ComparisonTestCase(unittest.TestCase):
         outputdir = os.path.join(TestRunner.testdir, "output")
         outputfile = os.path.join(outputdir, self.name)
         try:
-            expected = open(outputfile, 'r')
+            if sys.version_info[0] >= 3:
+                #Python 3 problem: Can't use utf8 on output/test_geo
+                #due to micro (\xb5) and degrees (\xb0) symbols
+                expected = open(outputfile, encoding="latin")
+            else:
+                expected = open(outputfile, 'rU')
         except IOError:
             self.fail("Warning: Can't open %s for test %s" % (outputfile, self.name))
 
@@ -255,6 +270,10 @@ class TestRunner(unittest.TextTestRunner):
         from Bio import MissingExternalDependencyError
         result = self._makeResult()
         output = cStringIO.StringIO()
+        # Restore the language and thus default encoding (in case a prior
+        # test changed this, e.g. to help with detecting command line tools)
+        global system_lang
+        os.environ['LANG']=system_lang
         # Run the actual test inside a try/except to catch import errors.
         # Have to do a nested try because try/except/except/finally requires
         # python 2.5+

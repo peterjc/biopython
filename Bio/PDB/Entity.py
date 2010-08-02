@@ -5,10 +5,10 @@
 
 from copy import copy
 
-from PDBExceptions import PDBConstructionException, PDBException
+from Bio.PDB.PDBExceptions import PDBConstructionException, PDBException
 
-__doc__="""
-Base class for Residue, Chain, Model and Structure classes. 
+"""Base class for Residue, Chain, Model and Structure classes.
+
 It is a simple container class, with list and dictionary like properties.
 """
 
@@ -36,6 +36,10 @@ class Entity:
     def __getitem__(self, id):
         "Return the child with given id."
         return self.child_dict[id]
+
+    def __delitem__(self, id):
+        "Remove a child."
+        return self.detach_child(id)
 
     def __iter__(self):
         "Iterate over children."
@@ -90,8 +94,8 @@ class Entity:
         return copy(self.child_list)
 
     def has_id(self, id):
-        "Return 1 if a child with given id exists, otherwise 0."
-        return self.child_dict.has_key(id)
+        """True if a child with given id exists."""
+        return (id in self.child_dict)
 
     def get_parent(self):
         "Return the parent Entity object."
@@ -172,8 +176,8 @@ class DisorderedEntityWrapper:
         return self.id
 
     def disordered_has_id(self, id):
-        "Return 1 if there is an object present associated with this id."
-        return self.child_dict.has_key(id)
+        """True if there is an object present associated with this id."""
+        return (id in self.child_dict)
 
     def detach_parent(self):
         "Detach the parent"

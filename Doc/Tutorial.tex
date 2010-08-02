@@ -79,8 +79,8 @@ Biopython Tutorial and Cookbook}
 \end{latexonly}
 
 \author{Jeff Chang, Brad Chapman, Iddo Friedberg, Thomas Hamelryck, \\
-Michiel de Hoon, Peter Cock, Tiago Ant\~ao}
-\date{Last Update -- 7 May 2010 (Biopython 1.54 \emph{beta}+)}
+Michiel de Hoon, Peter Cock, Tiago Antao, Eric Talevich}
+\date{Last Update -- 26 July 2010 (Biopython 1.54+)}
 
 %Hack to get the logo at the start of the HTML front page:
 %(hopefully this isn't going to be too wide for most people)
@@ -308,6 +308,9 @@ and HTML formats
   
   \item \emph{Where is the} \verb|MultipleSeqAlignment| \emph{object? The} \verb|Bio.Align| \emph{module imports fine but this class isn't there!} \\
   You need Biopython 1.54 or later. Alternatively, the older \verb|Bio.Align.Generic.Alignment| class supports some of its functionality, but using this is now discouraged.
+
+  \item \emph{Why can't I run command line tools directly from the application wrappers?} \\
+  You need Biopython 1.55 or later. Alternatively, use the Python \verb|subprocess| module directly.
   
   \item \emph{I looked in a directory for code, but I couldn't find the code that does something. Where's it hidden?} \\
   One thing to know is that we put code in \verb|__init__.py| files. If you are not used to looking for code in this file this can be confusing. The reason we do this is to make the imports easier for users. For instance, instead of having to do a ``repetitive'' import like \verb|from Bio.GenBank import GenBank|, you can just use \verb|from Bio import GenBank|.
@@ -1595,7 +1598,7 @@ To show an example of SeqFeatures in action, let's take a look at the following 
                      /gene="F28B23.12"
 \end{verbatim}
 
-To look at the easiest attributes of the \verb|SeqFeature| first, if you got a \verb|SeqFeature| object for this it would have it \verb|type| of 'mRNA', a \verb|strand| of -1 (due to the `complement'), and would have None for the \verb|ref| and \verb|ref_db| since there are no references to external databases. The \verb|qualifiers| for this SeqFeature would be a Python dictionarary that looked like \verb|{'gene' : ['F28B23.12']}|.
+To look at the easiest attributes of the \verb|SeqFeature| first, if you got a \verb|SeqFeature| object for this it would have it \verb|type| of 'mRNA', a \verb|strand| of -1 (due to the `complement'), and would have None for the \verb|ref| and \verb|ref_db| since there are no references to external databases. The \verb|qualifiers| for this SeqFeature would be a Python dictionary that looked like \verb|{'gene' : ['F28B23.12']}|.
 
 Now let's look at the more tricky part, how the `join' in the location
 line is handled. First, the location for the top level \verb|SeqFeature| (the
@@ -3626,7 +3629,7 @@ T
 T
 \end{verbatim}
 
-You can pull out a single column as a \verb|Seq| record like this:
+You can pull out a single column as a string like this:
 
 \begin{verbatim}
 >>> print alignment[:,6]
@@ -3821,7 +3824,8 @@ the full path of the tool. For example:
 >>> from Bio.Align.Applications import ClustalwCommandline
 >>> clustalw_exe = r"C:\Program Files\new clustal\clustalw2.exe"
 >>> assert os.path.isfile(clustalw_exe), "Clustal W executable missing"
->>> cline = ClustalwCommandline(clustalw_exe, infile="opuntia.fasta")
+>>> clustalw_cline = ClustalwCommandline(clustalw_exe, infile="opuntia.fasta")
+>>> stdout, stderr = clustalw_cline()
 \end{verbatim}
 
 \noindent Remember, in Python strings \verb|\n| and \verb|\t| are by default
@@ -3829,9 +3833,11 @@ interpreted as a new line and a tab -- which is why we're put a letter
 ``r'' at the start for a raw string that isn't translated in this way.
 This is generally good practice when specifying a Windows style file name.
 
-You can now run this command line, and in Python the recommended way to
-run another program is to use the \verb|subprocess| module. This replaces
-older options like the \verb|os.system()| and the \verb|os.popen*| functions.
+The last line of the example requires Biopython 1.55 or later to run the
+the command line tool via our wrapper object. Internally this uses the
+\verb|subprocess| module which is now the recommended way to run another
+program in Python. This replaces older options like the \verb|os.system()|
+and the \verb|os.popen*| functions.
 
 Now, at this point it helps to know about how command line tools ``work''.
 When you run a tool at the command line, it will often print text output
@@ -3839,44 +3845,19 @@ directly to screen. This text can be captured or redirected, via
 two ``pipes'', called standard output (the normal results) and standard
 error (for error messages and debug messages). There is also standard
 input, which is any text fed into the tool. These names get shortened
-to stdin, stdout and stderr. When the tool finished, it has a return
+to stdin, stdout and stderr. When the tool finishes, it has a return
 code (an integer), which by convention is zero for success.
 
-Now let's try an example. Unfortunately there are some subtle differences
-depending on your Operating System (e.g. Windows versus Unix) and how you
-are running Python (e.g. at the command line, or in IDLE). You may see a
-second terminal window appear while ClustalW works. You may see the
-ClustalW output appear at your Python prompt.
+When you run the command line tool like this via the Biopython wrapper,
+it will wait for it to finish, and check the return code. If this is
+non zero (indicating an error), an exception is raised. The wrapper
+then returns two strings, stdout and stderr.
 
-\begin{verbatim}
->>> import sys
->>> import subprocess
->>> return_code = subprocess.call(str(cline), shell=(sys.platform!="win32"))
-...
->>> print return_code
-0
-\end{verbatim}
-
-In the case of ClustlW, when run at the command line all the important
-output is written directly to the output files. Everything printed to
+In the case of ClustalW, when run at the command line all the important
+output is written directly to the output files. Everything normally printed to
 screen while you wait (via stdout or stderr) is boring and can be
-ignored (assuming it worked).  You can explicitly tell ClustalW to send
-this output to ``dev null'', a kind of black hole for command line tool output:
+ignored (assuming it worked).
 
-\begin{verbatim}
->>> import os
->>> import sys
->>> import subprocess
->>> return_code = subprocess.call(str(cline),
-...                               stdout = open(os.devnull),
-...                               stderr = open(os.devnull),
-...                               shell=(sys.platform!="win32"))
->>> print return_code
-0
-\end{verbatim}
-
-This time ClustalW should be ``quiet'', because all its terminal output
-has been discarded.
 What we care about are the two output files, the alignment and the guide
 tree. We didn't tell ClustalW what filenames to use, but it defaults to
 picking names based on the input file. In this case the output should be
@@ -3904,7 +3885,7 @@ Newick tree file, and \verb|Bio.Phylo| can parse these:
 
 \begin{verbatim}
 >>> from Bio import Phylo
->>> tree = Phylo.read('opuntia.dnd', 'newick')
+>>> tree = Phylo.read("opuntia.dnd", "newick")
 >>> Phylo.draw_ascii(tree)
                              _______________ gi|6273291|gb|AF191665.1|AF191665
   __________________________|
@@ -4001,17 +3982,43 @@ advantage of this to avoid having a temporary output file! For example:
 
 \begin{verbatim}
 >>> from Bio.Align.Applications import MuscleCommandline
->>> cline = MuscleCommandline(input="opuntia.fasta")
->>> print cline
+>>> muscle_cline = MuscleCommandline(input="opuntia.fasta")
+>>> print muscle_cline
 muscle -in opuntia.fasta
 \end{verbatim}
 
-\noindent Now, let's run this and capture the output as handles.
+If we run this via the wrapper, we get back the output as a string. In order
+to parse this we can use \verb|StringIO| to turn it into a handle.
 Remember that MUSCLE defaults to using FASTA as the output format:
 
 \begin{verbatim}
+>>> from Bio.Align.Applications import MuscleCommandline
+>>> muscle_cline = MuscleCommandline(input="opuntia.fasta")
+>>> stdout, stderr = muscle_cline()
+>>> from StringIO import StringIO
+>>> from Bio import AlignIO
+>>> align = AlignIO.read(StringIO(stdout), "fasta")
+>>> print align
+SingleLetterAlphabet() alignment with 7 rows and 906 columns
+TATACATTAAAGGAGGGGGATGCGGATAAATGGAAAGGCGAAAG...AGA gi|6273289|gb|AF191663.1|AF191663
+TATACATTAAAGGAGGGGGATGCGGATAAATGGAAAGGCGAAAG...AGA gi|6273291|gb|AF191665.1|AF191665
+TATACATTAAAGGAGGGGGATGCGGATAAATGGAAAGGCGAAAG...AGA gi|6273290|gb|AF191664.1|AF191664
+TATACATTAAAGAAGGGGGATGCGGATAAATGGAAAGGCGAAAG...AGA gi|6273287|gb|AF191661.1|AF191661
+TATACATAAAAGAAGGGGGATGCGGATAAATGGAAAGGCGAAAG...AGA gi|6273286|gb|AF191660.1|AF191660
+TATACATTAAAGAAGGGGGATGCGGATAAATGGAAAGGCGAAAG...AGA gi|6273285|gb|AF191659.1|AF191659
+TATACATTAAAGAAGGGGGATGCGGATAAATGGAAAGGCGAAAG...AGA gi|6273284|gb|AF191658.1|AF191658
+\end{verbatim}
+
+The above approach is fairly simple, but if you are dealing with very large output
+text the fact that all of stdout and stderr is loaded into memory as a string can
+be a potential drawback. Using the \verb|subprocess| module we can work directly
+with handles instead:
+
+\begin{verbatim}
 >>> import subprocess
->>> child = subprocess.Popen(str(cline),
+>>> from Bio.Align.Applications import MuscleCommandline
+>>> muscle_cline = MuscleCommandline(input="opuntia.fasta")
+>>> child = subprocess.Popen(str(muscle_cline),
 ...                          stdout=subprocess.PIPE,
 ...                          stderr=subprocess.PIPE,
 ...                          shell=(sys.platform!="win32"))
@@ -4048,8 +4055,8 @@ as for the output.
 
 \begin{verbatim}
 >>> from Bio.Align.Applications import MuscleCommandline
->>> cline = MuscleCommandline(clwstrict=True)
->>> print cline
+>>> muscle_cline = MuscleCommandline(clwstrict=True)
+>>> print muscle_cline
 muscle -clwstrict
 \end{verbatim}
 
@@ -4133,9 +4140,9 @@ Let's start by creating a complete \texttt{needle} command line object in one go
 
 \begin{verbatim}
 >>> from Bio.Emboss.Applications import NeedleCommandline
->>> cline = NeedleCommandline(asequence="alpha.faa", bsequence="beta.faa",
-...                           gapopen=10, gapextend=0.5, outfile="needle.txt")
->>> print cline
+>>> needle_cline = NeedleCommandline(asequence="alpha.faa", bsequence="beta.faa",
+...                                  gapopen=10, gapextend=0.5, outfile="needle.txt")
+>>> print needle_cline
 needle -outfile=needle.txt -asequence=alpha.faa -bsequence=beta.faa -gapopen=10 -gapextend=0.5 
 \end{verbatim}
 
@@ -4151,9 +4158,9 @@ the full path to the tool, for example:
 
 \begin{verbatim}
 >>> from Bio.Emboss.Applications import NeedleCommandline
->>> cline = NeedleCommandline(r"C:\EMBOSS\needle.exe",
-...                           asequence="alpha.faa", bsequence="beta.faa",
-...                           gapopen=10, gapextend=0.5, outfile="needle.txt")
+>>> needle_cline = NeedleCommandline(r"C:\EMBOSS\needle.exe",
+...                                  asequence="alpha.faa", bsequence="beta.faa",
+...                                  gapopen=10, gapextend=0.5, outfile="needle.txt")
 \end{verbatim}
 
 \noindent Remember in Python that for a default string \verb|\n| or \verb|\t| means a
@@ -4173,35 +4180,27 @@ Note that you can also specify (or change or look at) the settings like this:
 
 \begin{verbatim}
 >>> from Bio.Emboss.Applications import NeedleCommandline
->>> cline = NeedleCommandline()
->>> cline.asequence="alpha.faa"
->>> cline.bsequence="beta.faa"
->>> cline.gapopen=10
->>> cline.gapextend=0.5
->>> cline.outfile="needle.txt"
->>> print cline
+>>> needle_cline = NeedleCommandline()
+>>> needle_cline.asequence="alpha.faa"
+>>> needle_cline.bsequence="beta.faa"
+>>> needle_cline.gapopen=10
+>>> needle_cline.gapextend=0.5
+>>> needle_cline.outfile="needle.txt"
+>>> print needle_cline
 needle -outfile=needle.txt -asequence=alpha.faa -bsequence=beta.faa -gapopen=10 -gapextend=0.5 
->>> print cline.outfile
+>>> print needle_cline.outfile
 needle.txt
 \end{verbatim}
 
 Next we want to use Python to run this command for us. As explained above,
 for full control, we recommend you use the built in Python \texttt{subprocess}
-module. For simple usage the \texttt{subprocess.call()} wrapper function
-usually suffices:
+module, but for simple usage the wrapper object usually suffices:
 
 \begin{verbatim}
->>> import subprocess
->>> return_code = subprocess.call(str(cline), shell=(sys.platform!="win32"))
+>>> stdout, stderr = needle_cline()
+>>> print stdout + stderr
 Needleman-Wunsch global alignment of two sequences
->>> print return_code
-0
 \end{verbatim}
-
-In the above, all we really care about is that the return code is zero
-(success). If you want to hide the message EMBOSS prints out, then (as
-in the ClustalW example above) send the stdout and stderr to dev null,
-or just set the EMBOSS \texttt{auto} argument to True.
 
 Next we can load the output file with \verb|Bio.AlignIO| as
 discussed earlier in this chapter, as the \texttt{emboss} format:
@@ -4229,7 +4228,6 @@ Note - Biopython includes its own pairwise alignment code in the \verb|Bio.pairw
 module (written in C for speed, but with a pure Python fallback available too). This
 doesn't work with alignment objects, so we have not covered it within this chapter.
 See the module's docstring (built in help) for details.
-
 
 \chapter{BLAST}
 \label{chapter:blast}
@@ -4390,7 +4388,8 @@ Dealing with proprietary or unpublished sequence data can be another reason to r
 locally.  You may not be allowed to redistribute the sequences, so submitting them to the
 NCBI as a BLAST query would not be an option.
 
-Unfortunately, there are some major drawbacks too -- installing all the bits and getting it setup right takes some effort:
+Unfortunately, there are some major drawbacks too -- installing all the bits and getting
+it setup right takes some effort:
 \begin{itemize}
 \item Local BLAST requires command line tools to be installed.
 \item Local BLAST requires (large) BLAST databases to be setup (and potentially kept up to date).
@@ -4430,8 +4429,7 @@ This section will show briefly how to use these tools from within Python. If you
 already read or tried the alignment tool examples in Section~\ref{sec:alignment-tools}
 this should all seem quite straightforward. First, we construct a command line string
 (as you would type in at the command line prompt if running standalone BLAST by hand).
-Then we can execute this command from within Python, typically using the
-\verb|subprocess| module.
+Then we can execute this command from within Python.
 
 For example, taking a FASTA file of gene nucleotide sequences, you might want to
 run a BLASTX (translation) search against the non-redundant (NR) protein database.
@@ -4448,35 +4446,26 @@ On my computer this takes about six minutes - a good reason to save the output
 to a file so you and repeat any analysis as needed.
 
 From within Biopython we can use the NCBI BLASTX wrapper from the
-\verb|Bio.Blast.Applications| module to build the command line string:
+\verb|Bio.Blast.Applications| module to build the command line string,
+and run it:
 
 \begin{verbatim}
 >>> from Bio.Blast.Applications import NcbiblastxCommandline
 >>> help(NcbiblastxCommandline)
 ...
->>> cline = NcbiblastxCommandline(query="opuntia.fasta", db="nr", evalue=0.001, outfmt=5,
-... out="opuntia.xml")
->>> cline
+>>> blastx_cline = NcbiblastxCommandline(query="opuntia.fasta", db="nr", evalue=0.001,
+...                                      outfmt=5, out="opuntia.xml")
+>>> blastx_cline
 NcbiblastxCommandline(cmd='blastx', query='opuntia.fasta', db='nr', out='opuntia.xml',
 evalue=0.001, outfmt=5)
->>> print cline
+>>> print blastx_cline
 blastx -query opuntia.fasta -db nr -out opuntia.xml -evalue 0.001 -outfmt 5
+>>> stdout, stderr = blastx_cline()
 \end{verbatim}
 
-In this example there shouldn't be any output from BLASTX to the terminal
-(stdout or stderr), so we can call the tool like this:
-
-\begin{verbatim}
->>> import sys
->>> import subprocess
->>> return_code = subprocess.call(str(cline), shell=(sys.platform!="win32"))
-...
->>> print return_code
-0
-\end{verbatim}
-\noindent Here the \ldots means wait for the command to finish. We then check
-the return code, remember that zero usually means no errors. You could also
-check the output file \verb|opuntia.xml| has been created.
+In this example there shouldn't be any output from BLASTX to the terminal,
+so stdout and stderr should be empty. You may want to check the output file
+\verb|opuntia.xml| has been created.
 
 As you may recall from earlier examples in the tutorial, the \verb|opuntia.fasta|
 contains seven sequences, so the BLAST XML output should contain multiple results.
@@ -7865,37 +7854,37 @@ will raise an error if the file contains more than one tree, or no trees.
 
 \begin{verbatim}
 >>> from Bio import Phylo
->>> tree = Phylo.read('example.xml', 'phyloxml')
+>>> tree = Phylo.read("example.xml", "phyloxml")
 >>> print tree
 \end{verbatim}
 
-(Example files are available in the Tests/PhyloXML/ directory of the Biopython distribution.)
+(Example files are available in the \texttt{Tests/PhyloXML/} directory of the Biopython distribution.)
 
 To handle multiple (or an unknown number of) trees, use the \verb|parse| function iterates
 through each of the trees in the given file: 
 
 \begin{verbatim}
->>> trees = Phylo.parse('example.xml', 'phyloxml')
+>>> trees = Phylo.parse("example.xml", "phyloxml")
 \end{verbatim}
 
 Write a tree or iterable of trees back to file with the \verb|write| function:
 
 \begin{verbatim}
->>> trees = list(Phylo.parse('phyloxml_examples.xml', 'phyloxml'))
+>>> trees = list(Phylo.parse("phyloxml_examples.xml", "phyloxml"))
 >>> tree1 = trees[0]
 >>> others = trees[1:]
->>> Phylo.write(tree1, 'tree1.xml', 'phyloxml')
+>>> Phylo.write(tree1, "tree1.xml", "phyloxml")
 1
->>> Phylo.write(others, 'other_trees.xml', 'phyloxml')
+>>> Phylo.write(others, "other_trees.xml", "phyloxml")
 12
 \end{verbatim}
 
 Convert files between any of the supported formats with the \verb|convert| function:
 
 \begin{verbatim}
->>> Phylo.convert('tree1.xml', 'phyloxml', 'tree1.dnd', 'newick')
+>>> Phylo.convert("tree1.xml", "phyloxml", "tree1.dnd", "newick")
 1
->>> Phylo.convert('other_trees.xml', 'phyloxml', 'other_trees.nex', 'nexus')
+>>> Phylo.convert("other_trees.xml", "phyloxml", "other_trees.nex", 'nexus")
 12
 \end{verbatim}
 
@@ -7905,7 +7894,7 @@ Convert files between any of the supported formats with the \verb|convert| funct
 The simplest way to get an overview of a \verb|Tree| object is to \verb|print| it:
 
 \begin{verbatim}
->>> tree = Phylo.read('example.xml', 'phyloxml')
+>>> tree = Phylo.read("example.xml", "phyloxml")
 >>> print tree
 Phylogeny(rooted='True', description='phyloXML allows to use either a "branch_length"
 attribute...', name='example from Prof. Joe Felsenstein's book "Inferring Phyl...')
@@ -7925,7 +7914,7 @@ shown, but it provides a way to quickly view the tree without relying on any ext
 dependencies.
 
 \begin{verbatim}
->>> tree = Phylo.read('example.xml', 'phyloxml')
+>>> tree = Phylo.read("example.xml", "phyloxml")
 >>> Phylo.draw_ascii(tree)
              __________________ A
   __________|
@@ -7940,7 +7929,7 @@ PyDot or PyGraphviz, NetworkX, and matplotlib (or pylab) installed. Using the sa
 above, and the \verb|dot| program included with Graphviz, let's draw a rooted tree:
 
 \begin{verbatim}
->>> tree = Phylo.read('example.xml', 'phyloxml')
+>>> tree = Phylo.read("example.xml", "phyloxml")
 >>> Phylo.draw_graphviz(tree, prog='dot')
 >>> import pylab
 >>> pylab.show()                    # Displays the tree in an interactive viewer
@@ -7969,8 +7958,8 @@ This viewing mode is particularly handy for exploring larger trees, because the 
 viewer can zoom in on a selected region, thinning out a cluttered graphic.
 
 \begin{verbatim}
->>> tree = Phylo.read('apaf.xml', 'phyloxml')
->>> Phylo.draw_graphviz(tree, prog='neato', node_size=0)
+>>> tree = Phylo.read("apaf.xml", "phyloxml")
+>>> Phylo.draw_graphviz(tree, prog="neato", node_size=0)
 \end{verbatim}
 
 \begin{htmlonly}
@@ -8024,36 +8013,224 @@ returns the clade object itself.)
 
 % TODO - use dia to make a class diagram like images/smcra.png
 
+\subsection{Search and traversal methods}
+
+For convenience, we provide a couple of simplified methods that return all external or internal
+nodes directly as a list:
+
+\begin{description}
+  \item[\texttt{get\_terminals}] makes a list of all of this tree's terminal (leaf) nodes.
+  \item[\texttt{get\_nonterminals}] makes a list of all of this tree's nonterminal (internal)
+    nodes.
+\end{description}
+
+These both wrap a method with full control over tree traversal, \verb|find_clades|. Two more
+traversal methods, \verb|find_elements| and \verb|find_any|, rely on the same core
+functionality and accept the same arguments, which we'll call a ``target specification'' for
+lack of a better description. These specify which objects in the tree will be matched and
+returned during iteration. The first argument can be any of the following types:
+
+\begin{itemize}
+  \item A \textbf{TreeElement instance}, which tree elements will match by identity --- so
+    searching with a Clade instance as the target will find that clade in the tree;
+
+  \item A \textbf{class} or \textbf{type}, where every tree element of the same type (or
+    sub-type) will be matched;
+
+  \item A \textbf{dictionary} where keys are tree element attributes and values are matched to the
+    corresponding attribute of each tree element. This one gets even more elaborate:
+
+    \begin{itemize}
+      \item If an \texttt{int} is given, it matches numerically equal attributes, e.g. 1 will
+        match 1 or 1.0
+
+      \item If a boolean is given (True or False), the corresponding attribute value is
+        evaluated as a boolean and checked for the same
+
+      \item \texttt{None} matches \texttt{None}
+
+      \item If a string is given, the value is treated as a regular expression (which must
+        match the whole string in the corresponding element attribute, not just a prefix).  A
+        given string without special regex characters will match string attributes exactly, so
+        if you don't use regexes, don't worry about it.  For example, in a tree with clade
+        names Foo1, Foo2 and Foo3, \verb|tree.find_clades({"name": "Foo1"})| matches Foo1,
+        \verb|{"name": "Foo.*"}| matches all three clades, and \verb|{"name": "Foo"}| doesn't
+        match anything.
+
+    \end{itemize}
+
+    Since floating-point arithmetic can produce some strange behavior, we don't support
+    matching \texttt{float}s directly. Instead, use the boolean \texttt{True} to match every
+    element with a nonzero value in the specified attribute, then filter on that attribute
+    manually with an inequality (or exact number, if you like living dangerously).
+
+    If the dictionary contains multiple entries, a matching element must match each of the
+    given attribute values --- think ``and'', not ``or''.
+
+  \item A \textbf{function} taking a single argument (it will be applied to each element in the
+    tree), returning True or False. For convenience, LookupError, AttributeError and ValueError
+    are silenced, so this provides another safe way to search for floating-point values in the
+    tree, or some more complex characteristic.
+
+\end{itemize}
+
+After the target, there are two optional keyword arguments:
+
+\begin{description}
+  \item[terminal] --- A boolean value to select for or against terminal clades (a.k.a. leaf
+    nodes): True searches for only terminal clades, False for non-terminal (internal) clades,
+    and the default, None, searches both terminal and non-terminal clades, as well as any tree
+    elements lacking the \verb|is_terminal| method.
+
+  \item[order] --- Tree traversal order: \texttt{"preorder"} (default) is depth-first search,
+    \texttt{"postorder"} is DFS with child nodes preceding parents, and \texttt{"level"} is
+    breadth-first search.
+
+\end{description}
+
+Finally, the methods accept arbitrary keyword arguments which are treated the same way as a
+dictionary target specification: keys indicate the name of the element attribute to search for,
+and the argument value (string, integer, None or boolean) is compared to the value of each
+attribute found. If no keyword arguments are given, then any TreeElement types are matched.
+The code for this is generally shorter than passing a dictionary as the target specification:
+\verb|tree.find_clades({"name": "Foo1"})| can be shortened to
+\verb|tree.find_clades(name="Foo1")|.
+
+% TODO -- introduce these / segue and clean up the descriptions
+
+Now that we've mastered target specifications, here are the methods used to traverse a tree:
+
+\begin{description}
+  \item[\texttt{find\_clades}]
+    Find each clade containing a matching element. That is, find each element as with
+    \verb|find_elements|, but return the corresponding clade object. (This is usually what you
+    want.)
+
+    The result is an iterable through all matching objects, searching depth-first by default.
+    This is not necessarily the same order as the elements appear in the Newick, Nexus or XML
+    source file!
+
+  \item[\texttt{find\_elements}]
+    Find all tree elements matching the given attributes, and return the matching elements
+    themselves. Simple Newick trees don't have complex sub-elements, so this behaves the same
+    as \verb|find_clades| on them. PhyloXML trees often do have complex objects attached to
+    clades, so this method is useful for extracting those.
+
+  \item[\texttt{find\_any}]
+    Return the first element found by \verb|find_elements()|, or None. This is also useful for
+    checking whether any matching element exists in the tree, and can be used in a conditional.
+
+\end{description}
+
+Two more methods help navigating between nodes in the tree:
+
+\begin{description}
+  \item[\texttt{get\_path}]
+    List the clades directly between the tree root (or current clade) and the given target.
+    Returns a list of all clade objects along this path, ending with the given target, but
+    excluding the root clade.
+
+  \item[\texttt{trace}]
+    List of all clade object between two targets in this tree. Excluding start, including
+    finish.
+
+\end{description}
+
+\subsection{Information methods}
+
+These methods provide information about the whole tree (or any clade).
+
+\begin{description}
+  \item[\texttt{common\_ancestor}]
+    Find the most recent common ancestor of all the given targets. (This will be a Clade object). 
+    If no target is given, returns the root of the current clade (the one this method is called
+    from); if 1 target is given, this returns the target itself.  However, if any of the
+    specified targets are not found in the current tree (or clade), an exception is raised.
+
+  \item[\texttt{count\_terminals}]
+    Counts the number of terminal (leaf) nodes within the tree.
+
+  \item[\texttt{depths}]
+    Create a mapping of tree clades to depths. The result is a dictionary where the keys are
+    all of the Clade instances in the tree, and the values are the distance from the root to
+    each clade (including terminals). By default the distance is the cumulative branch length
+    leading to the clade, but with the \verb|unit_branch_lengths=True| option, only the number
+    of branches (levels in the tree) is counted.
+
+  \item[\texttt{distance}]
+    Calculate the sum of the branch lengths between two targets.  If only one target is
+    specified, the other is the root of this tree.
+
+  \item[\texttt{total\_branch\_length}]
+    Calculate the sum of all the branch lengths in this tree. This is usually just called the
+    ``length'' of the tree in phylogenetics, but we use a more explicit name to avoid confusion
+    with Python terminology.
+
+\end{description}
+
+The rest of these methods are boolean checks:
+
+\begin{description}
+  \item[\texttt{is\_bifurcating}]
+    True if the tree is strictly bifurcating; i.e. all nodes have either 2 or 0 children
+    (internal or external, respectively). The root may have 3 descendents and still be
+    considered part of a bifurcating tree.
+
+  \item[\texttt{is\_monophyletic}]
+    Test if all of the given targets comprise a complete subclade --- i.e., there
+    exists a clade such that its terminals are the same set as the given targets. The targets
+    should be terminals of the tree. For convenience, this method returns the common ancestor
+    (MCRA) of the targets if they are monophyletic (instead of the value \verb|True|), and
+    \verb|False| otherwise.
+
+  \item[\texttt{is\_parent\_of}] True if target is a descendent of this tree --- not required
+    to be a direct descendent. To check direct descendents of a clade, simply use list
+    membership testing: \verb|if subclade in clade: ...|
+
+  \item[\texttt{is\_preterminal}] True if all direct descendents are terminal; False if any
+    direct descendent is not terminal.
+
+\end{description}
+
+
+\subsection{Modification methods}
+
+These methods modify the tree in-place. If you want to keep the original tree intact, make a
+complete copy of the tree first, using Python's \texttt{copy} module:
+
+\begin{verbatim}
+tree = Phylo.read('example.xml', 'phyloxml')
+import copy
+newtree = copy.deepcopy(tree)
+\end{verbatim}
+
+\begin{description}
+  \item[\texttt{collapse}]
+    Deletes the target from the tree, relinking its children to its parent.
+
+  \item[\texttt{collapse\_all}]
+    Collapse all the descendents of this tree, leaving only terminals. Branch lengths are
+    preserved, i.e. the distance to each terminal stays the same.
+
+  \item[\texttt{ladderize}]
+    Sort clades in-place according to the number of terminal nodes.  Deepest clades are placed
+    last by default. Use \verb|reverse=True| to sort clades deepest-to-shallowest.
+
+  \item[\texttt{prune}]
+    Prunes a terminal clade from the tree.  If taxon is from a bifurcation, the connecting node
+    will be collapsed and its branch length added to remaining terminal node. This might no
+    longer be a meaningful value.
+
+  \item[\texttt{split}]
+    Generate \textit{n} (default 2) new descendants. In a species tree, this is a speciation
+    event.  New clades have the given \verb|branch_length| and the same name as this clade's
+    root plus an integer suffix (counting from 0) --- for example, splitting a clade named
+    ``A'' produces the sub-clades ``A0'' and ``A1''.
+
+\end{description}
+
 See the Phylo page on the Biopython wiki (\url{http://biopython.org/wiki/Phylo}) for
-descriptions of each of the available methods.
-
-% TODO
-% \subsection{Search and traversal methods}
-% \verb|find_all|
-% \verb|find_any|
-% \verb|find_clades|
-% \verb|get_nonterminals|
-% \verb|get_path|
-% \verb|get_terminals|
-% \verb|trace|
-
-% \subsection{Information methods}
-% \verb|common_ancestor|
-% \verb|count_terminals|
-% \verb|depths|
-% \verb|distance|
-% \verb|is_bifurcating|
-% \verb|is_monophyletic|
-% \verb|is_parent_of|
-% \verb|is_preterminal|
-% \verb|total_branch_length|
-
-% \subsection{Modification methods}
-% \verb|collapse|
-% \verb|collapse_all|
-% \verb|ladderize|
-% \verb|prune|
-% \verb|split|
+more examples of using the available methods.
 
 
 \section{Features of PhyloXML trees}
@@ -8097,6 +8274,7 @@ scripts that require a consistent result.
 
 We're open to any suggestions for improving the functionality and usability of this module;
 just let us know on the mailing list or Bugzilla.
+
 
 \chapter{Supervised learning methods}
 
@@ -9308,6 +9486,34 @@ If you are working on partial coding sequences, you may prefer to use
 \verb|nuc_record.seq.translate(to_stop=True)| in the example above, as
 this wouldn't check for a valid start codon etc.
 
+\subsection{Making the sequences in a FASTA file upper case}
+
+Often you'll get data from collaborators as FASTA files, and sometimes the
+sequences can be in a mixture of upper and lower case. In some cases this is
+deliberate (e.g. lower case for poor quality regions), but usually it is not
+important. You may want to edit the file to make everything consistent (e.g.
+all upper case), and you can do this easily using the \verb|upper()| method
+of the \verb|SeqRecord| object (added in Biopython 1.55):
+
+\begin{verbatim}
+from Bio import SeqIO
+records = (rec.upper() for rec in SeqIO.parse("mixed.fas", "fasta"))
+count = SeqIO.write(records, "upper.fas", "fasta")
+print "Converted %i records to upper case" % count
+\end{verbatim}
+
+How does this work? The first line is just importing the \verb|Bio.SeqIO|
+module. The second line is the interesting bit -- this is a Python
+generator expression which gives an upper case version of each record
+parsed from the input file (\texttt{mixed.fas}). In the third line we give
+this generator expression to the \verb|Bio.SeqIO.write()| function and it
+saves the new upper cases records to our output file (\texttt{upper.fas}).
+
+The reason we use a generator expression (rather than a list or list
+comprehension) is this means only one record is kept in memory at a time.
+This can be really important if you are dealing with large files with
+millions of entries.
+
 \subsection{Sorting a sequence file}
 \label{sec:SeqIO-sort}
 
@@ -9383,8 +9589,8 @@ for id in ids:
 handle.close()
 \end{verbatim}
 
-As a bonus, because this never parses the data into \verb|SeqRecord| objects
-it should be faster.
+As a bonus, because doesn't parse the data into \verb|SeqRecord| objects
+a second time it should be faster.
 
 \subsection{Simple quality filtering for FASTQ files}
 \label{sec:FASTQ-filtering-example}
@@ -10001,9 +10207,7 @@ comprehension more pleasing:
 
 \begin{verbatim}
 >>> from Bio import SeqIO
->>> handle = open("ls_orchid.fasta")
->>> sizes = [len(seq_record) for seq_record in SeqIO.parse(handle, "fasta")]
->>> handle.close()
+>>> sizes = [len(rec) for rec in SeqIO.parse("ls_orchid.fasta", "fasta")]
 >>> len(sizes), min(sizes), max(sizes)
 (94, 572, 789)
 >>> sizes
@@ -10015,9 +10219,7 @@ matplotlib histogram function to display it.
 
 \begin{verbatim}
 from Bio import SeqIO
-handle = open("ls_orchid.fasta")
-sizes = [len(seq_record) for seq_record in SeqIO.parse(handle, "fasta")]
-handle.close()
+sizes = [len(rec) for rec in SeqIO.parse("ls_orchid.fasta", "fasta")]
 
 import pylab
 pylab.hist(sizes, bins=20)
@@ -10067,17 +10269,13 @@ investigate any outliers which could have been recently acquired by horizontal g
 transfer.  Again, for this example we'll reuse our orchid FASTA file \href{http://biopython.org/DIST/docs/tutorial/examples/ls_orchid.fasta}{\tt ls\_orchid.fasta}.
 
 First of all, we will use \verb|Bio.SeqIO| to parse the FASTA file and compile a list
-of all the GC percentages.  Again, you could do this with a for loop, but I prefer the
-list comprehension used here:
+of all the GC percentages.  Again, you could do this with a for loop, but I prefer this:
 
 \begin{verbatim}
 from Bio import SeqIO
 from Bio.SeqUtils import GC
 
-handle = open("ls_orchid.fasta")
-gc_values = [GC(seq_record.seq) for seq_record in SeqIO.parse(handle, "fasta")]
-gc_values.sort()
-handle.close()
+gc_values = sorted(GC(rec.seq) for rec in SeqIO.parse("ls_orchid.fasta", "fasta"))
 \end{verbatim}
 
 Having read in each sequence and calculated the GC\%, we then sorted them into ascending
@@ -10675,36 +10873,6 @@ thing as if you had loaded the GenBank file directly as a SeqRecord using
 
 Biopython's BioSQL module is currently documented at
 \url{http://biopython.org/wiki/BioSQL} which is part of our wiki pages.
-
-\section{InterPro}
-
-The \verb|Bio.InterPro| module works with files from the
-InterPro database, which can be obtained from the InterPro project:
-\url{http://www.ebi.ac.uk/interpro/}.
-
-The \verb|Bio.InterPro.Record| contains all the information stored in
-an InterPro record. Its string representation also is a valid InterPro
-record, but it is NOT guaranteed to be equivalent to the record
-from which it was produced.
-
-The \verb|Bio.InterPro.Record| contains:
-
-\begin{itemize}
-  \item \verb|Database|
-  \item \verb|Accession|
-  \item \verb|Name|
-  \item \verb|Dates|
-  \item \verb|Type|
-  \item \verb|Parent|
-  \item \verb|Process|
-  \item \verb|Function|
-  \item \verb|Component|
-  \item \verb|Signatures|
-  \item \verb|Abstract|
-  \item \verb|Examples|
-  \item \verb|References|
-  \item \verb|Database links|
-\end{itemize}
 
 \chapter{The Biopython testing framework}
 \label{sec:regr_test}

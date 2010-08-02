@@ -9,9 +9,8 @@ __docformat__ = "epytext en"
 from itertools import chain
 
 from Bio.Nexus import Nexus
-from Bio.Phylo import Newick
+from Bio.Phylo import Newick, NewickIO
 
-import NewickIO
 
 # Structure of a Nexus tree-only file
 NEX_TEMPLATE = """\
@@ -47,7 +46,7 @@ def parse(handle):
                 branch_length=node.data.branchlength,
                 name=node.data.taxon,
                 clades=subclades,
-                support=node.data.support,
+                confidence=node.data.support,
                 comment=node.data.comment)
 
     for nxtree in nex.trees:

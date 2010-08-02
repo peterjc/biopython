@@ -3,14 +3,15 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 
+"""Fast atom neighbor lookup using a KD tree (implemented in C++)."""
+
 import numpy
 
-from Bio.KDTree import *
-from PDBExceptions import PDBException
-from Selection import unfold_entities, get_unique_parents, entity_levels, \
-     uniqueify
+from Bio.KDTree import KDTree
 
-__doc__="Fast atom neighbor lookup using a KD tree (implemented in C++)."
+from Bio.PDB.PDBExceptions import PDBException
+from Bio.PDB.Selection import unfold_entities, entity_levels, uniqueify
+
 
 class NeighborSearch:
     """
@@ -33,14 +34,14 @@ class NeighborSearch:
         """
         self.atom_list=atom_list
         # get the coordinates
-        coord_list=map(lambda a: a.get_coord(), atom_list) 
+        coord_list = [a.get_coord() for a in atom_list]
         # to Nx3 array of type float
         self.coords=numpy.array(coord_list).astype("f")
         assert(bucket_size>1)
         assert(self.coords.shape[1]==3)
         self.kdt=KDTree(3, bucket_size)
         self.kdt.set_coords(self.coords)
-    
+
     # Private
 
     def _get_unique_parent_pairs(self, pair_list):
@@ -137,8 +138,3 @@ if __name__=="__main__":
 
         print "Found ", len(ns.search_all(5.0))
 
-
-            
-
-                
-        
