@@ -36,7 +36,7 @@ class XpkEntry:
 
        try:
            self.fields["entrynum"]=datlist[0]
-       except IndexError, e:
+       except IndexError as e:
            pass
 
 class Peaklist:
@@ -116,8 +116,8 @@ def _try_open_read(fn):
 # Try to open a file for reading.  Exit on IOError
   try:
     infile=open(fn,'r')
-  except IOError, e:
-    print "file", fn, "could not be opened for reading - quitting."
+  except IOError as e:
+    print("file", fn, "could not be opened for reading - quitting.")
     sys.exit(0)
   return infile
 
@@ -125,8 +125,8 @@ def _try_open_write(fn):
 # Try to open a file for writing.  Exit on IOError
   try:
     infile=open(fn,'w')
-  except IOError, e:
-    print "file", fn, "could not be opened for writing - quitting."
+  except IOError as e:
+    print("file", fn, "could not be opened for writing - quitting.")
     sys.exit(0)
   return infile
 
@@ -219,7 +219,7 @@ def data_table(fn_list, datalabel, keyatom):
   return outlist
 
 def _sort_keys(dictionary):
-  keys=dictionary.keys()
+  keys=list(dictionary.keys())
   sorted_keys=keys.sort()
   return sorted_keys
 

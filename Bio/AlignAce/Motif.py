@@ -70,7 +70,7 @@ class Motif(object):
             return self._pwm
         #we need to compute new pwm
         self._pwm = []
-        for i in xrange(len(self.mask)):
+        for i in range(len(self.mask)):
             dict = {}
             #filling the dict with 0's
             for letter in self.alphabet.letters:
@@ -86,7 +86,7 @@ class Motif(object):
         """
         a generator function, returning found positions of instances of the motif in a given sequence
         """
-        for pos in xrange(0,len(sequence)-self.length+1):
+        for pos in range(0,len(sequence)-self.length+1):
             for instance in self.instances:
                 if instance.tostring()==sequence[pos:pos+self.length].tostring():
                     yield(pos,instance)
@@ -97,7 +97,7 @@ class Motif(object):
         give the pwm score for a given position
         """
         score = 0.0
-        for pos in xrange(self.length):
+        for pos in range(self.length):
             if not masked or self.mask[pos]:
                 score += self.pwm()[pos][sequence[position+pos]]
         if normalized:
@@ -112,7 +112,7 @@ class Motif(object):
         a generator function, returning found hits in a given sequence with the pwm score higher than the threshold
         """
 
-        for pos in xrange(0,len(sequence)-self.length+1):
+        for pos in range(0,len(sequence)-self.length+1):
             score = self.score_hit(sequence,pos,normalized,masked)
             if score > threshold:
                 yield (pos,score)
@@ -143,7 +143,7 @@ class Motif(object):
         sy = 0  # \sum y
         syy = 0 # \sum x^2
 
-        for pos in xrange(self.length):
+        for pos in range(self.length):
             if not masked or self.mask:
                 for l in self.alphabet.letters:
                     xi = self.pwm()[pos][l]
@@ -187,7 +187,7 @@ class Motif(object):
         for inst in self.instances:
             str = str + inst.tostring() + "\n"
 
-        for i in xrange(self.length):
+        for i in range(self.length):
             if self.mask[i]:
                 str = str + "*"
             else:
@@ -222,8 +222,8 @@ class Motif(object):
         requires an internet connection.
         The parameters from **kwds are passed directly to the weblogo server.
         """
-        import urllib
-        import urllib2
+        import urllib.request, urllib.parse, urllib.error
+        import urllib.request, urllib.error, urllib.parse
         #import Image
         al= self.to_fasta()
 
@@ -260,12 +260,12 @@ class Motif(object):
                   'color6' : 'orange',
                   'color1' : 'black',
                   }
-        for k,v in kwds.iteritems():
+        for k,v in kwds.items():
             values[k]=str(v)
             
-        data = urllib.urlencode(values)
-        req = urllib2.Request(url, data)
-        response = urllib2.urlopen(req)
+        data = urllib.parse.urlencode(values)
+        req = urllib.request.Request(url, data)
+        response = urllib.request.urlopen(req)
         f=open(fname,"w")
         im=response.read()
         

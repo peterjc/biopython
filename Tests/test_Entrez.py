@@ -3285,7 +3285,7 @@ class EFetchTest(unittest.TestCase):
         self.assertEqual(record[0]["MedlineCitation"]["Article"]["Pagination"]["MedlinePgn"], "244-55")
         self.assertEqual(record[0]["MedlineCitation"]["Article"]["Abstract"]["AbstractText"], "This study subdivides the cryopreservation procedure for Diplodus puntazzo spermatozoa into three key phases, fresh, prefreezing (samples equilibrated in cryosolutions), and postthawed stages, and examines the ultrastructural anomalies and motility profiles of spermatozoa in each stage, with different cryodiluents. Two simple cryosolutions were evaluated: 0.17 M sodium chloride containing a final concentration of 15% dimethyl sulfoxide (Me(2)SO) (cryosolution A) and 0.1 M sodium citrate containing a final concentration of 10% Me(2)SO (cryosolution B). Ultrastructural anomalies of the plasmatic and nuclear membranes of the sperm head were common and the severity of the cryoinjury differed significantly between the pre- and the postfreezing phases and between the two cryosolutions. In spermatozoa diluted with cryosolution A, during the prefreezing phase, the plasmalemma of 61% of the cells was absent or damaged compared with 24% in the fresh sample (P < 0.001). In spermatozoa diluted with cryosolution B, there was a pronounced increase in the number of cells lacking the head plasmatic membrane from the prefreezing to the postthawed stages (from 32 to 52%, P < 0.01). In both cryosolutions, damages to nuclear membrane were significantly higher after freezing (cryosolution A: 8 to 23%, P < 0.01; cryosolution B: 5 to 38%, P < 0.001). With cryosolution A, the after-activation motility profile confirmed a consistent drop from fresh at the prefreezing stage, whereas freezing and thawing did not affect the motility much further and 50% of the cells were immotile by 60-90 s after activation. With cryosolution B, only the postthawing stage showed a sharp drop of motility profile. This study suggests that the different phases of the cryoprocess should be investigated to better understand the process of sperm damage.")
         self.assertEqual(record[0]["MedlineCitation"]["Article"]["Abstract"]["CopyrightInformation"], "Copyright 2001 Elsevier Science.")
-        self.assertEqual(record[0]["MedlineCitation"]["Article"]["Affiliation"], u'Dipartimento di Scienze Ambientali, Universit\xe0 degli Studi della Tuscia, 01100 Viterbo, Italy.')
+        self.assertEqual(record[0]["MedlineCitation"]["Article"]["Affiliation"], 'Dipartimento di Scienze Ambientali, Universit\xe0 degli Studi della Tuscia, 01100 Viterbo, Italy.')
         self.assertEqual(record[0]["MedlineCitation"]["Article"]["AuthorList"].attributes["CompleteYN"], "Y")
         self.assertEqual(record[0]["MedlineCitation"]["Article"]["AuthorList"][0].attributes["ValidYN"], "Y")
         self.assertEqual(record[0]["MedlineCitation"]["Article"]["AuthorList"][0]["LastName"], "Taddei")
@@ -4163,7 +4163,7 @@ class EFetchTest(unittest.TestCase):
         handle.close()
         handle = open('GenBank/NT_019265.gb', "rb")
         iterator = Entrez.parse(handle)
-        self.assertRaises(Parser.CorruptedXMLError, iterator.next)
+        self.assertRaises(Parser.CorruptedXMLError, iterator.__next__)
         handle.close()
 
     def test_fasta(self):
@@ -4175,7 +4175,7 @@ class EFetchTest(unittest.TestCase):
         handle.close()
         handle = open('Fasta/wisteria.nu', "rb")
         iterator = Entrez.parse(handle)
-        self.assertRaises(Parser.CorruptedXMLError, iterator.next)
+        self.assertRaises(Parser.CorruptedXMLError, iterator.__next__)
         handle.close()
 
 

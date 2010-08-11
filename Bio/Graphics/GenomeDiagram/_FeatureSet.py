@@ -38,7 +38,7 @@ from reportlab.pdfbase import _fontdata
 from reportlab.lib import colors
 
 # GenomeDiagram
-from _Feature import Feature
+from ._Feature import Feature
 
 # Builtins
 import re
@@ -149,7 +149,7 @@ class FeatureSet(object):
             passed value
         """
         changed = 0
-        for feature in self.features.values():
+        for feature in list(self.features.values()):
             # If the feature has the attribute, and the value should change
             if hasattr(feature, attr):    
                 if getattr(feature, attr) != value:
@@ -183,26 +183,26 @@ class FeatureSet(object):
         """
         # If no attribute or value specified, return all features
         if attribute is None or value is None:
-            return self.features.values()
+            return list(self.features.values())
         # If no comparator is specified, return all features where the attribute
         # value matches that passed
         if comparator is None:
-            return [feature for feature in self.features.values() if\
+            return [feature for feature in list(self.features.values()) if\
                     getattr(feature, attribute) == value]
         # If the comparator is 'not', return all features where the attribute
         # value does not match that passed
         elif comparator == 'not':
-            return [feature for feature in self.features.values() if\
+            return [feature for feature in list(self.features.values()) if\
                     getattr(feature, attribute) != value]
         # If the comparator is 'startswith', return all features where the attribute
         # value does not match that passed
         elif comparator == 'startswith':
-            return [feature for feature in self.features.values() if\
+            return [feature for feature in list(self.features.values()) if\
                     getattr(feature, attribute).startswith(value)]
         # If the comparator is 'like', use a regular expression search to identify
         # features
         elif comparator == 'like':
-            return [feature for feature in self.features.values() if\
+            return [feature for feature in list(self.features.values()) if\
                     re.search(value, getattr(feature, attribute))]
         # As a final option, just return an empty list
         return []
@@ -214,7 +214,7 @@ class FeatureSet(object):
 
             Return a list of all ids for the feature set
         """
-        return self.features.keys()
+        return list(self.features.keys())
 
 
     def range(self):
@@ -223,7 +223,7 @@ class FeatureSet(object):
             Returns the lowest and highest base (or mark) numbers as a tuple
         """
         lows, highs = [], []
-        for feature in self.features.values():
+        for feature in list(self.features.values()):
             for start, end in feature.locations:
                 lows.append(start)
                 highs.append(end)

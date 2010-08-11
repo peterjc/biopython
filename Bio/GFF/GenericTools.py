@@ -43,7 +43,7 @@ class VerboseDict(dict):
 
 class VerboseList(list):
     def __str__(self):
-        return str(map(lambda x: str(x), self))
+        return str([str(x) for x in self])
 
 class TempFile(file):
     def __init__(self, suffix = ".python-temp", keep = 0):
@@ -102,7 +102,7 @@ def is_nestable(x):
     0
     >>> is_nestable((0,))
     1
-    >>> is_nestable(range(5))
+    >>> is_nestable(list(range(5)))
     1
     """
     return isinstance(x, (tuple, list))
@@ -155,10 +155,11 @@ def _test():
     from there in order that the relative paths used in the examples work.
     """
     import doctest
-    print "Runing doctests..."
+    print("Runing doctests...")
     doctest.testmod()
-    print "Done"
+    print("Done")
 
 if __name__ == "__main__":
     if __debug__:
         _test()
+
