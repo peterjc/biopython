@@ -108,14 +108,14 @@ class IteratorTest(unittest.TestCase):
                     1 : ">gi|1348917|gb|G26685|G26685",
                     2 : ">gi|1592936|gb|G29385|G29385"}
         for rec_num in range(3):
-            rec = i.next()
+            rec = next(i)
             lines = rec.split("\n")
             title_part = lines[0].split()
             assert title_part[0] == rec_info[rec_num]
 
         # make sure we keep getting None when the iterator is done
-        assert i.next() is None
-        assert i.next() is None
+        assert next(i) is None
+        assert next(i) is None
 
     def test_new_iterator(self):
         """Ensure the Fasta iterator works like a Python 2.2 iterator.

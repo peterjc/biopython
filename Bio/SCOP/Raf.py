@@ -133,7 +133,7 @@ class SeqMapIndex(dict):
         residues -- A Residues instance, or a string that can be converted into
                     a Residues instance.
         """
-        if isinstance(residues, basestring):
+        if isinstance(residues, str):
             residues = Residues(residues)
 
         pdbid  = residues.pdbid
@@ -303,7 +303,7 @@ class SeqMap(object):
             resSet[(chainid,resid)] = r
 
         resFound = {}
-        for line in pdb_handle.xreadlines():
+        for line in pdb_handle:
             if line.startswith("ATOM  ") or line.startswith("HETATM"):
                 chainid = line[21:22]
                 resid = line[22:27].strip()

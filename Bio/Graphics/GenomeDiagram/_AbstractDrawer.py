@@ -78,7 +78,7 @@ def page_sizes(size):
     try:
         return sizes[size]
     except:
-        raise ValueError, "%s not in list of page sizes" % size
+        raise ValueError("%s not in list of page sizes" % size)
 
 
 def draw_box(point1, point2,
@@ -267,7 +267,7 @@ def intermediate_points(start, end, graph_data):
     newdata.append((start, graph_data[0][0]+(graph_data[1][0]-graph_data[0][0])/2.,
                     graph_data[0][1]))
     # add middle set
-    for index in xrange(1, len(graph_data)-1):
+    for index in range(1, len(graph_data)-1):
         lastxval, lastyval = graph_data[index-1]
         xval, yval = graph_data[index]
         nextxval, nextyval = graph_data[index+1]
@@ -418,12 +418,12 @@ class AbstractDrawer:
         elif type(pagesize) == type((1,2)): # A tuple, so don't translate
             pagesize = pagesize
         else:
-            raise ValueError, "Page size %s not recognised" % pagesize        
+            raise ValueError("Page size %s not recognised" % pagesize)        
         shortside, longside = min(pagesize), max(pagesize)
 
         orientation = orientation.lower()
         if orientation not in ('landscape', 'portrait'):
-            raise ValueError, "Orientation %s not recognised" % orientation
+            raise ValueError("Orientation %s not recognised" % orientation)
         if orientation == 'landscape':
             self.pagesize = (longside, shortside)
         else:

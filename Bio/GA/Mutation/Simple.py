@@ -35,7 +35,7 @@ class SinglePositionMutation:
         if mutation_chance <= self._mutation_rate:
             # pick a gene position to mutate at
             mutation_pos = \
-                         self._pos_rand.choice(range(len(mutated_org.genome)))
+                         self._pos_rand.choice(list(range(len(mutated_org.genome))))
             
             # get a new letter to replace the position at
             new_letter = self._switch_rand.choice(gene_choices)
