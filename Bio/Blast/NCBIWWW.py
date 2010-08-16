@@ -17,9 +17,9 @@ qblast        Do a BLAST search using the QBLAST API.
 
 import sys
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from io import StringIO
 
 from Bio._py3k import _as_string
 
@@ -60,7 +60,7 @@ def qblast(program, database, sequence,
     http://www.ncbi.nlm.nih.gov/BLAST/blast_overview.html
 
     """
-    import urllib, urllib2
+    import urllib, urllib.request, urllib.error, urllib.parse
     import time
 
     assert program in ['blastn', 'blastp', 'blastx', 'tblastn', 'tblastx']
@@ -102,16 +102,16 @@ def qblast(program, database, sequence,
         ('CMD', 'Put'),
         ]
     query = [x for x in parameters if x[1] is not None]
-    message = urllib.urlencode(query)
+    message = urllib.parse.urlencode(query)
 
     # Send off the initial query to qblast.
     # Note the NCBI do not currently impose a rate limit here, other
     # than the request not to make say 50 queries at once using multiple
     # threads.
-    request = urllib2.Request("http://blast.ncbi.nlm.nih.gov/Blast.cgi",
+    request = urllib.request.Request("http://blast.ncbi.nlm.nih.gov/Blast.cgi",
                               message,
                               {"User-Agent":"BiopythonClient"})
-    handle = urllib2.urlopen(request)
+    handle = urllib.request.urlopen(request)
 
     # Format the "Get" command, which gets the formatted results from qblast
     # Parameters taken from http://www.ncbi.nlm.nih.gov/BLAST/Doc/node6.html on 9 July 2007    
@@ -134,7 +134,7 @@ def qblast(program, database, sequence,
         ('CMD', 'Get'),
         ]
     query = [x for x in parameters if x[1] is not None]
-    message = urllib.urlencode(query)
+    message = urllib.parse.urlencode(query)
 
     # Poll NCBI until the results are ready.  Use a 3 second wait
     delay = 3.0
@@ -148,10 +148,10 @@ def qblast(program, database, sequence,
         else:
             previous = current
 
-        request = urllib2.Request("http://blast.ncbi.nlm.nih.gov/Blast.cgi",
+        request = urllib.request.Request("http://blast.ncbi.nlm.nih.gov/Blast.cgi",
                                   message,
                                   {"User-Agent":"BiopythonClient"})
-        handle = urllib2.urlopen(request)
+        handle = urllib.request.urlopen(request)
         results = _as_string(handle.read())
 
         # Can see an "\n\n" page while results are in progress,

@@ -11,7 +11,7 @@ from Bio.Seq import UnknownSeq
 from Bio import SeqIO
 from Bio.SeqIO import QualityIO
 from Bio.SeqIO._convert import _converter as converter_dict
-from StringIO import StringIO
+from io import StringIO
 from Bio.Alphabet import generic_protein, generic_nucleotide, generic_dna
 
 #TODO - share this with the QualityIO tests...
@@ -60,7 +60,7 @@ def check_convert_fails(in_filename, in_format, out_format, alphabet=None):
         warnings.resetwarnings()
         handle.seek(0)
         assert False, "Parse or write should have failed!"
-    except ValueError, err:
+    except ValueError as err:
         err1 = err
     #Now do the conversion...
     try:
@@ -70,7 +70,7 @@ def check_convert_fails(in_filename, in_format, out_format, alphabet=None):
         SeqIO.convert(in_filename, in_format, handle2, out_format, alphabet)
         warnings.resetwarnings()
         assert False, "Convert should have failed!"
-    except ValueError, err2:
+    except ValueError as err2:
         assert str(err1) == str(err2), \
                "Different failures, parse/write:\n%s\nconvert:\n%s" \
                % (err1, err2)
@@ -125,10 +125,10 @@ def compare_record(old, new, truncate=None):
         if truncate:
             converted = [min(q,truncate) for q in converted]
         if converted != new.letter_annotations["solexa_quality"]:
-            print
-            print old.letter_annotations["phred_quality"]
-            print converted
-            print new.letter_annotations["solexa_quality"]
+            print()
+            print(old.letter_annotations["phred_quality"])
+            print(converted)
+            print(new.letter_annotations["solexa_quality"])
             raise ValueError("Mismatch in phred_quality vs solexa_quality")
     if "solexa_quality" in old.letter_annotations \
     and "phred_quality" in new.letter_annotations:
@@ -139,9 +139,9 @@ def compare_record(old, new, truncate=None):
         if truncate:
             converted = [min(q,truncate) for q in converted]
         if converted != new.letter_annotations["phred_quality"]:
-            print old.letter_annotations["solexa_quality"]
-            print converted
-            print new.letter_annotations["phred_quality"]
+            print(old.letter_annotations["solexa_quality"])
+            print(converted)
+            print(new.letter_annotations["phred_quality"])
             raise ValueError("Mismatch in solexa_quality vs phred_quality")
     return True
 

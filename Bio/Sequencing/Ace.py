@@ -77,7 +77,7 @@ class qa:
         self.align_clipping_start=None
         self.align_clipping_end=None
         if line:
-            header=map(eval,line.split()[1:])
+            header=list(map(eval,line.split()[1:]))
             self.qual_clipping_start=header[0]
             self.qual_clipping_end=header[1]
             self.align_clipping_start=header[2]
@@ -95,11 +95,11 @@ class ds:
         self.direction=''
         if line:
             tags=['CHROMAT_FILE','PHD_FILE','TIME','CHEM','DYE','TEMPLATE','DIRECTION']
-            poss=map(line.find,tags)
-            tagpos=dict(zip(poss,tags))
+            poss=list(map(line.find,tags))
+            tagpos=dict(list(zip(poss,tags)))
             if -1 in tagpos:
                 del tagpos[-1]
-            ps=tagpos.keys()
+            ps=list(tagpos.keys())
             ps.sort()
             for (p1,p2) in zip(ps,ps[1:]+[len(line)+1]):
                 setattr(self,tagpos[p1].lower(),line[p1+len(tagpos[p1])+1:p2].strip())   
@@ -266,7 +266,7 @@ def parse(handle):
             while True:
                 if line.startswith('CO'):
                     break
-                line = handle.next()
+                line = next(handle)
         except StopIteration:
             return
 
@@ -287,7 +287,7 @@ def parse(handle):
         for line in handle:
             if not line.strip():
                 break
-            record.quality.extend(map(int,line.split()))
+            record.quality.extend(list(map(int,line.split())))
 
         for line in handle:
             if line.strip():
@@ -298,7 +298,7 @@ def parse(handle):
                 break
             record.af.append(af(line))
             try:
-                line = handle.next()
+                line = next(handle)
             except StopIteration:
                 raise ValueError("Unexpected end of AF block")
 
@@ -306,7 +306,7 @@ def parse(handle):
             if line.strip():
                 break
             try:
-                line = handle.next()
+                line = next(handle)
             except StopIteration:
                 raise ValueError("Unexpected end of file")
 
@@ -315,7 +315,7 @@ def parse(handle):
                 break
             record.bs.append(bs(line))
             try:
-                line = handle.next()
+                line = next(handle)
             except StopIteration:
                 raise ValueError("Failed to find end of BS block")
 
@@ -333,7 +333,7 @@ def parse(handle):
                     # If I've met the condition, then stop reading the line.
                     if line.startswith("RD "):
                         break
-                    line = handle.next()
+                    line = next(handle)
             except StopIteration:
                 raise ValueError("Failed to find RD line")
 
@@ -370,7 +370,7 @@ def parse(handle):
                     while True:
                         if line.strip():
                             break
-                        line = handle.next()
+                        line = next(handle)
                 except StopIteration:
                     # file ends here
                     break
@@ -409,7 +409,7 @@ def parse(handle):
                     if record.wa is None:
                         record.wa=[]
                     try:
-                        line = handle.next()
+                        line = next(handle)
                     except StopIteration:
                         raise ValueError("Failed to read WA block")
                     record.wa.append(wa(line))
@@ -422,7 +422,7 @@ def parse(handle):
                     if record.ct is None:
                         record.ct=[]
                     try:
-                        line = handle.next()
+                        line = next(handle)
                     except StopIteration:
                         raise ValueError("Failed to read CT block")
                     record.ct.append(ct(line))
@@ -518,7 +518,7 @@ def read(handle):
     record=ACEFileRecord()
 
     try:
-        line = handle.next()
+        line = next(handle)
     except StopIteration:
         raise ValueError("Premature end of file")
 
@@ -527,7 +527,7 @@ def read(handle):
         raise ValueError("File does not start with 'AS'.")
 
     words = line.split()
-    record.ncontigs, record.nreads = map(int, words[1:3])
+    record.ncontigs, record.nreads = list(map(int, words[1:3]))
 
     # now read all the records
     record.contigs = list(parse(handle))

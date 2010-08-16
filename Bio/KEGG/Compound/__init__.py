@@ -126,8 +126,8 @@ def parse(handle):
 
     >>> handle = open("KEGG/compound.sample")
     >>> for record in parse(handle):
-    ...     print record.entry, record.name[0]
-    ...
+    ...     print(record.entry, record.name[0])
+    ... 
     C00023 Iron
     C00017 Protein
     C00099 beta-Alanine
@@ -199,13 +199,14 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..","..","..","Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..","..","..","Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
 
 if __name__ == "__main__":
     _test()
+

@@ -41,11 +41,11 @@ def parse(file, format):
 
         >>> trees = parse('../../Tests/PhyloXML/apaf.xml', 'phyloxml')
         >>> for tree in trees:
-        ...     print tree.rooted
+        ...     print(tree.rooted)
         True
     """
     do_close = False
-    if isinstance(file, basestring):
+    if isinstance(file, str):
         file = open(file, 'r')
         do_close = True
     # Py2.4 compatibility: this should be in a try/finally block
@@ -65,11 +65,11 @@ def read(file, format):
     """
     try:
         tree_gen = parse(file, format)
-        tree = tree_gen.next()
+        tree = next(tree_gen)
     except StopIteration:
         raise ValueError("There are no trees in this file.")
     try:
-        tree_gen.next()
+        next(tree_gen)
     except StopIteration:
         return tree
     else:
@@ -85,7 +85,7 @@ def write(trees, file, format, **kwargs):
         # Passed a single tree instead of an iterable -- that's OK
         trees = [trees]
     do_close = False
-    if isinstance(file, basestring):
+    if isinstance(file, str):
         file = open(file, 'w+')
         do_close = True
     try:
@@ -100,3 +100,4 @@ def convert(in_file, in_format, out_file, out_format, **kwargs):
     """Convert between two tree file formats."""
     trees = parse(in_file, in_format)
     return write(trees, out_file, out_format, **kwargs)
+

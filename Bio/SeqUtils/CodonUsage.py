@@ -1,5 +1,5 @@
 import math
-from CodonUsageIndices import SharpEcoliIndex
+from .CodonUsageIndices import SharpEcoliIndex
 from Bio import SeqIO # To parse a FASTA file
 
 CodonsDict = {'TTT':0, 'TTC':0, 'TTA':0, 'TTG':0, 'CTT':0, 
@@ -147,5 +147,5 @@ class CodonAdaptationIndex:
     def print_index (self):
         """This method prints out the index you used."""
         for i in sorted(self.index):
-            print "%s\t%.3f" %(i, self.index[i])
+            print("%s\t%.3f" %(i, self.index[i]))
         
