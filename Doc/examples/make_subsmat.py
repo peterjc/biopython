@@ -22,11 +22,11 @@ replace_info = summary_align.replacement_dictionary(["G", "A", "V", "L", "I",
 
 my_arm = SubsMat.SeqMat(replace_info)
 
-print replace_info
+print(replace_info)
 
 my_lom = SubsMat.make_log_odds_matrix(my_arm)
 
-print 'log_odds_mat:', my_lom
+print('log_odds_mat:', my_lom)
 
 my_lom.print_mat()
 

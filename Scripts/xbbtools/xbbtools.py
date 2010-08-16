@@ -11,7 +11,7 @@
 
 import sys
 sys.path.insert(0, '.')
-from Tkinter import *
+from tkinter import *
 
 from xbb_widget import xbb_widget
 win = Tk()

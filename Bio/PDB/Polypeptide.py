@@ -12,7 +12,7 @@ Simple example with multiple chains,
     >>> structure = PDBParser().get_structure('2BEG', 'PDB/2BEG.pdb')
     >>> ppb=PPBuilder()
     >>> for pp in ppb.build_peptides(structure):
-    ...     print pp.get_sequence()
+    ...     print(pp.get_sequence())
     LVFFAEDVGSNKGAIIGLMVGGVVIA
     LVFFAEDVGSNKGAIIGLMVGGVVIA
     LVFFAEDVGSNKGAIIGLMVGGVVIA
@@ -27,8 +27,8 @@ in this case selenomethionine (MSE):
     >>> structure = PDBParser().get_structure('1A8O', 'PDB/1A8O.pdb')
     >>> ppb=PPBuilder()
     >>> for pp in ppb.build_peptides(structure):
-    ...     print pp.get_sequence()
-    ...     print pp.get_sequence()[-6], pp[-6].get_resname()
+    ...     print(pp.get_sequence())
+    ...     print(pp.get_sequence()[-6], pp[-6].get_resname())
     MDIRQGPKEPFRDYVDRFYKTLRAEQASQEVKNWMTETLLVQNANPDCKTILKALGPGATLEEMMTACQG
     M MSE
 
@@ -157,7 +157,7 @@ def is_aa(residue, standard=False):
     False
     """
     #TODO - What about special cases like XXX, can they appear in PDB files?
-    if not isinstance(residue, basestring):
+    if not isinstance(residue, str):
         residue=residue.get_resname()
     residue=residue.upper()
     if standard:
@@ -331,7 +331,7 @@ class _PPBuilder:
         pp_list=[]
         for chain in chain_list:
             chain_it=iter(chain)
-            prev=chain_it.next()
+            prev=next(chain_it)
             pp=None
             for next in chain_it:
                 if aa_only and not accept(prev):
@@ -434,25 +434,26 @@ if __name__=="__main__":
 
     ppb=PPBuilder()
 
-    print "C-N"
+    print("C-N")
     for pp in ppb.build_peptides(s):
-        print pp.get_sequence()
+        print(pp.get_sequence())
     for pp in ppb.build_peptides(s[0]):
-        print pp.get_sequence()
+        print(pp.get_sequence())
     for pp in ppb.build_peptides(s[0]["A"]):
-        print pp.get_sequence()
+        print(pp.get_sequence())
 
     for pp in ppb.build_peptides(s):
         for phi, psi in pp.get_phi_psi_list():
-            print phi, psi
+            print(phi, psi)
 
     ppb=CaPPBuilder()
 
-    print "CA-CA"
+    print("CA-CA")
     for pp in ppb.build_peptides(s):
-        print pp.get_sequence()
+        print(pp.get_sequence())
     for pp in ppb.build_peptides(s[0]):
-        print pp.get_sequence()
+        print(pp.get_sequence())
     for pp in ppb.build_peptides(s[0]["A"]):
-        print pp.get_sequence()
+        print(pp.get_sequence())
+
 

@@ -25,16 +25,16 @@ warnings.warn("Bio.NetCatch is deprecated, and will be removed in a future"\
               " via the mailing lists to avoid its permanent removal from"\
               " Biopython.", DeprecationWarning)
 import os
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import sgmllib
 from Bio import File
 
 
 def is_absolute_url( candidate ):
-    ( url_type, url ) = urllib.splittype( candidate )
+    ( url_type, url ) = urllib.parse.splittype( candidate )
     if( url_type == None ):
         return 0
-    ( url_host, url ) = urllib.splithost( url )
+    ( url_host, url ) = urllib.parse.splithost( url )
     if( url_host == None ):
         return 0
     return 1
@@ -61,7 +61,7 @@ class ExtractUrls(  sgmllib.SGMLParser ):
 
     def __str__( self ):
         output = ''
-        for key in self.urls.keys():
+        for key in list(self.urls.keys()):
             val = self.urls[ key ]
             output = output + '%s : %s\n' % ( key, val )
         return output
@@ -151,7 +151,7 @@ class NetCatch:
         return output
 
     def import_dict( self, href_dict ):
-        for ( key, val ) in href_dict.items():
+        for ( key, val ) in list(href_dict.items()):
             self.add_url( key, val )
 
     def add_url( self, label, url ):
