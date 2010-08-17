@@ -49,7 +49,7 @@ class BlastTableReader:
       self._lookahead = inline
       self._n = 0
       self._in_header = 1
-   def next(self):
+   def __next__(self):
       self.table_record = BlastTableRec()
       self._n += 1
       inline = self._lookahead

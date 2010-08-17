@@ -41,7 +41,7 @@ else:
     def _as_unicode(s):
         """Turn a (byte) string or a unicode string into a (byte) string."""
         #Will be changed by 2to3 to "isinstance(s, str)" but doesn't matter:
-        if isinstance(s, unicode):
+        if isinstance(s, str):
             return s
         return s.decode()
     

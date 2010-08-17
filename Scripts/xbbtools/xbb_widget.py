@@ -13,8 +13,8 @@ import re
 import sys
 import time
 
-from Tkinter import *
-from tkFileDialog import askopenfilename, asksaveasfilename
+from tkinter import *
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 sys.path.insert(0, '.')
 from xbb_utils import *
@@ -61,7 +61,7 @@ class xbb_widget:
     def init_variables(self):
         self.seqwidth = 60
         self.translation_tables = {}
-        for i, table in CodonTable.unambiguous_dna_by_id.iteritems():
+        for i, table in CodonTable.unambiguous_dna_by_id.items():
             self.translation_tables[table.names[0]] = i
         self.translator = xbb_translations()
 
@@ -105,19 +105,19 @@ class xbb_widget:
         # does anybody know a better way of defining colors ?
         # how would one implement Tk's -class ?
         tk = self.main_frame.master
-        for k,v in self.colorsbg.items():
+        for k,v in list(self.colorsbg.items()):
             name = '*' + k[0].upper() + k[1:] + '.background'
             tk.option_add(name, v)
 
-        for k,v in self.colorsfg.items():
+        for k,v in list(self.colorsfg.items()):
             name = '*' + k[0].upper() + k[1:] + '.foreground'
             tk.option_add(name, v)
             
-        for k,v in self.colorsPMWbg.items():
+        for k,v in list(self.colorsPMWbg.items()):
             name = '*' + k[0].upper() + k[1:] + '.background'
             tk.option_add(name, v)
 
-        for k,v in self.colorsPMWfg.items():
+        for k,v in list(self.colorsPMWfg.items()):
             name = '*' + k[0].upper() + k[1:] + '.foreground'
             tk.option_add(name, v)
             
@@ -151,7 +151,7 @@ class xbb_widget:
         self.current_codon_table.set('Standard')
         self.current_codon_table_id = 1
         
-        keys = self.translation_tables.keys()
+        keys = list(self.translation_tables.keys())
         keys.remove('Standard')
         keys.sort()
         keys = ['Standard'] + keys
@@ -342,7 +342,8 @@ class xbb_widget:
         genes = quick_FASTA_reader(file)
         self.insert_sequence(genes[0])
 
-    def insert_sequence(self, (name, sequence)):
+    def insert_sequence(self, xxx_todo_changeme):
+        (name, sequence) = xxx_todo_changeme
         self.sequence_id.delete(0.0, END)
         self.sequence_id.insert(END, sequence.upper())
         self.fix_sequence()
@@ -362,7 +363,7 @@ class xbb_widget:
         
     def export(self):
         seq = self.get_self_selection()
-        print seq, len(seq)
+        print(seq, len(seq))
         
     def gcframe(self):
         seq = self.get_selection_or_sequence()
@@ -382,7 +383,7 @@ class xbb_widget:
         seq = self.get_selection_or_sequence()
         if not seq: return
         aa_seq = self.translator.frame(seq, frame, self.current_codon_table_id)
-        print '>%s<' % aa_seq
+        print('>%s<' % aa_seq)
         aa_seq = re.sub('(.{50})','\\1\n',str(aa_seq))
         np = NotePad()
         tid = np.text_id()
@@ -425,7 +426,7 @@ GC=%f
             start, stop = 1.0, self.sequence_id.index(END)
 
         seq = w.get(start, stop)
-        seq = map(None,re.sub('[^A-Z]','',seq))
+        seq = list(re.sub('[^A-Z]','',seq))
         seq.reverse()
         seq = ''.join(seq)
 

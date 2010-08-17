@@ -168,7 +168,7 @@ class BlastallCommandline(_BlastAllOrPgpCommandLine):
     ...                             database="nr", expectation=0.001)
     >>> cline
     BlastallCommandline(cmd='blastall', database='nr', infile='m_cold.fasta', expectation=0.001, program='blastx')
-    >>> print cline
+    >>> print(cline)
     blastall -d nr -i m_cold.fasta -e 0.001 -p blastx
 
     You would typically run the command line with the Python subprocess module,
@@ -253,7 +253,7 @@ class BlastpgpCommandline(_BlastAllOrPgpCommandLine):
     >>> cline = BlastpgpCommandline(help=True)
     >>> cline
     BlastpgpCommandline(cmd='blastpgp', help=True)
-    >>> print cline
+    >>> print(cline)
     blastpgp --help
 
     You would typically run the command line with the Python subprocess module,
@@ -310,7 +310,7 @@ class RpsBlastCommandline(_BlastCommandLine):
     >>> cline = RpsBlastCommandline(help=True)
     >>> cline
     RpsBlastCommandline(cmd='rpsblast', help=True)
-    >>> print cline
+    >>> print(cline)
     rpsblast --help
 
     You would typically run the command line with the Python subprocess module,
@@ -554,7 +554,7 @@ class NcbiblastpCommandline(_Ncbiblast2SeqCommandline):
     ...                               evalue=0.001, remote=True, ungapped=True)
     >>> cline
     NcbiblastpCommandline(cmd='blastp', query='rosemary.pro', db='nr', evalue=0.001, remote=True, ungapped=True)
-    >>> print cline
+    >>> print(cline)
     blastp -query rosemary.pro -db nr -evalue 0.001 -remote -ungapped
 
     You would typically run the command line with the Python subprocess module,
@@ -623,7 +623,7 @@ class NcbiblastnCommandline(_Ncbiblast2SeqCommandline):
     ...                               evalue=0.001, out="m_cold.xml", outfmt=5)
     >>> cline
     NcbiblastnCommandline(cmd='blastn', query='m_cold.fasta', db='nt', out='m_cold.xml', evalue=0.001, outfmt=5, strand='plus')
-    >>> print cline
+    >>> print(cline)
     blastn -query m_cold.fasta -db nt -out m_cold.xml -evalue 0.001 -outfmt 5 -strand plus
 
     You would typically run the command line with the Python subprocess module,
@@ -727,7 +727,7 @@ class NcbiblastxCommandline(_Ncbiblast2SeqCommandline):
     >>> cline = NcbiblastxCommandline(query="m_cold.fasta", db="nr", evalue=0.001)
     >>> cline
     NcbiblastxCommandline(cmd='blastx', query='m_cold.fasta', db='nr', evalue=0.001)
-    >>> print cline
+    >>> print(cline)
     blastx -query m_cold.fasta -db nr -evalue 0.001
 
     You would typically run the command line with the Python subprocess module,
@@ -795,7 +795,7 @@ class NcbitblastnCommandline(_Ncbiblast2SeqCommandline):
     >>> cline = NcbitblastnCommandline(help=True)
     >>> cline
     NcbitblastnCommandline(cmd='tblastn', help=True)
-    >>> print cline
+    >>> print(cline)
     tblastn -help
 
     You would typically run the command line with the Python subprocess module,
@@ -869,7 +869,7 @@ class NcbitblastxCommandline(_Ncbiblast2SeqCommandline):
     >>> cline = NcbitblastxCommandline(help=True)
     >>> cline
     NcbitblastxCommandline(cmd='tblastx', help=True)
-    >>> print cline
+    >>> print(cline)
     tblastx -help
 
     You would typically run the command line with the Python subprocess module,
@@ -924,7 +924,7 @@ class NcbipsiblastCommandline(_Ncbiblast2SeqCommandline):
     >>> cline = NcbipsiblastCommandline(help=True)
     >>> cline
     NcbipsiblastCommandline(cmd='psiblast', help=True)
-    >>> print cline
+    >>> print(cline)
     psiblast -help
 
     You would typically run the command line with the Python subprocess module,
@@ -1012,7 +1012,7 @@ class NcbirpsblastCommandline(_NcbiblastCommandline):
     >>> cline = NcbirpsblastCommandline(help=True)
     >>> cline
     NcbirpsblastCommandline(cmd='rpsblast', help=True)
-    >>> print cline
+    >>> print(cline)
     rpsblast -help
 
     You would typically run the command line with the Python subprocess module,
@@ -1041,7 +1041,7 @@ class NcbirpstblastnCommandline(_NcbiblastCommandline):
     >>> cline = NcbirpstblastnCommandline(help=True)
     >>> cline
     NcbirpstblastnCommandline(cmd='rpstblastn', help=True)
-    >>> print cline
+    >>> print(cline)
     rpstblastn -help
 
     You would typically run the command line with the Python subprocess module,
@@ -1081,3 +1081,4 @@ def _test():
 if __name__ == "__main__":
     #Run the doctests
     _test()
+
