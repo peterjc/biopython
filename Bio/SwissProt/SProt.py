@@ -1211,7 +1211,7 @@ def index_file(filename, indexname, rec2key=None):
     end = 0
     for record in records:
         start = end
-        end = int(handle.tell())
+        end = long(handle.tell())
         length = end - start
         
         if rec2key is not None:

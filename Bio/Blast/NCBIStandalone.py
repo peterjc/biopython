@@ -2041,7 +2041,7 @@ def _safe_int(str):
         pass
     # If it fails again, maybe it's too long?
     # XXX why converting to float?
-    return int(float(str))
+    return long(float(str))
 
 def _safe_float(str):
     # Thomas Rosleff Soerensen (rosleff@mpiz-koeln.mpg.de) noted that

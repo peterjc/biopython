@@ -466,7 +466,7 @@ class DatabaseLoader:
         if len(taxonomic_lineage) > 1:
             #Use recursion to find out the taxon id (database key) of the parent.
             parent_taxon_id = self._get_taxon_id_from_ncbi_lineage(taxonomic_lineage[:-1])
-            assert isinstance(parent_taxon_id, int) or isinstance(parent_taxon_id, int), repr(parent_taxon_id)
+            assert isinstance(parent_taxon_id, int) or isinstance(parent_taxon_id, long), repr(parent_taxon_id)
         else:
             parent_taxon_id = None
 
@@ -476,7 +476,7 @@ class DatabaseLoader:
                 "INSERT INTO taxon(ncbi_taxon_id, parent_taxon_id, node_rank)"\
                 " VALUES (%s, %s, %s)", (ncbi_taxon_id, parent_taxon_id, rank))
         taxon_id = self.adaptor.last_id("taxon")
-        assert isinstance(taxon_id, int) or isinstance(taxon_id, int), repr(taxon_id)
+        assert isinstance(taxon_id, int) or isinstance(taxon_id, long), repr(taxon_id)
         # ... and its name in taxon_name
         scientific_name = taxonomic_lineage[-1].get("ScientificName", None)
         if scientific_name:

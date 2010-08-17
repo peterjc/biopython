@@ -204,7 +204,7 @@ class _InsdcWriter(SequentialSequenceWriter):
         #self.handle.write('%s/%s="%s"\n' % (self.QUALIFIER_INDENT_STR, key, value))
         if quote is None:
             #Try to mimic unwritten rules about when quotes can be left out:
-            if isinstance(value, int) or isinstance(value, int):
+            if isinstance(value, int) or isinstance(value, long):
                 quote = False
             else:
                 quote = True

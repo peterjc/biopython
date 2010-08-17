@@ -794,7 +794,7 @@ class Point(PhyloElement):
     def __init__(self, geodetic_datum, lat, long, alt=None, alt_unit=None):
         self.geodetic_datum = geodetic_datum
         self.lat = lat
-        self.long = int
+        self.long = long
         self.alt = alt
         self.alt_unit = alt_unit
 
