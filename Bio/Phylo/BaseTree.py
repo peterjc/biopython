@@ -654,6 +654,15 @@ class Tree(TreeElement, TreeMixin):
         """The first clade in this tree (not itself)."""
         return self.root
 
+    def as_phyloxml(self, **kwargs):
+        """Convert this tree to a PhyloXML-compatible Phylogeny.
+
+        This lets you use the additional annotation types PhyloXML defines, and
+        save this information when you write this tree as 'phyloxml'.
+        """
+        from Bio.Phylo.PhyloXML import Phylogeny
+        return Phylogeny.from_tree(self, **kwargs)
+
     def root_with_outgroup(self, *outgroup_targets):
         """Reroot this tree with the outgroup clade containing outgroup_targets.
 
@@ -661,13 +670,13 @@ class Tree(TreeElement, TreeMixin):
 
         Edge cases:
 
-        - If outgroup == self.root, no change
-        - If outgroup is terminal, create new bifurcating root node with a
-          0-length branch to the outgroup
-        - If outgroup is internal, use the given outgroup node as the new
-          trifurcating root, keeping branches the same
-        - If the original root was bifurcating, drop it from the tree,
-          preserving total branch lengths
+         - If outgroup == self.root, no change
+         - If outgroup is terminal, create new bifurcating root node with a
+           0-length branch to the outgroup
+         - If outgroup is internal, use the given outgroup node as the new
+           trifurcating root, keeping branches the same
+         - If the original root was bifurcating, drop it from the tree,
+           preserving total branch lengths
         """
         # This raises a ValueError if any target is not in this tree
         # Otherwise, common_ancestor guarantees outgroup is in this tree
@@ -703,9 +712,9 @@ class Tree(TreeElement, TreeMixin):
             # Delete the old bifurcating root & add branch lengths
             ingroup = old_root.clades[0]
             if ingroup.branch_length:
-               ingroup.branch_length += prev_blen
+                ingroup.branch_length += prev_blen
             else:
-               ingroup.branch_length = prev_blen
+                ingroup.branch_length = prev_blen
             new_parent.clades.insert(0, ingroup)
             # ENH: If annotations are attached to old_root, do... something.
         else:
