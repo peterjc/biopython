@@ -131,7 +131,7 @@ class Primer3Commandline(_EmbossCommandLine):
     Traceback (most recent call last):
         ...
     ValueError: Option name bogusparameter was not found.
-    >>> print cline
+    >>> print(cline)
     eprimer3 -auto -outfile=myresults.out -sequence=mysequence.fas -hybridprobe=True -psizeopt=200 -osizeopt=20 -explainflag=True
 
     The equivalent for anyone still using an older version of EMBOSS would be:
@@ -141,7 +141,7 @@ class Primer3Commandline(_EmbossCommandLine):
     >>> cline.oligosize=20
     >>> cline.productosize=200          # Old EMBOSS
     >>> cline.outfile = "myresults.out"
-    >>> print cline
+    >>> print(cline)
     eprimer3 -auto -outfile=myresults.out -sequence=mysequence.fas -hybridprobe=True -productosize=200 -oligosize=20 -explainflag=True
     
     """
@@ -1228,7 +1228,7 @@ class SeqmatchallCommandline(_EmbossCommandLine):
     >>> cline.auto = True
     >>> cline.wordsize = 18
     >>> cline.aformat = "pair"
-    >>> print cline
+    >>> print(cline)
     seqmatchall -auto -outfile=opuntia.txt -sequence=opuntia.fasta -wordsize=18 -aformat=pair
 
     """
@@ -1251,3 +1251,4 @@ def _test():
 if __name__ == "__main__":
     #Run the doctests
     _test()
+

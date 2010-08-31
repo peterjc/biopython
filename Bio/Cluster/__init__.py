@@ -8,7 +8,7 @@ def _treesort(order, nodeorder, nodecounts, tree):
     nNodes = len(tree)
     nElements = nNodes + 1
     neworder = numpy.zeros(nElements)
-    clusterids = range(nElements)
+    clusterids = list(range(nElements))
     for i in range(nNodes):
         i1 = tree[i].left
         i2 = tree[i].right
@@ -184,11 +184,11 @@ Cluster/TreeView program.
                                  (len(line), n))
             if line[0] == "EWEIGHT":
                 i = max(cols) + 1
-                self.eweight = map(float, line[i:])
+                self.eweight = list(map(float, line[i:]))
                 continue
             if line[0] == "EORDER":
                 i = max(cols) + 1
-                self.eorder = map(float, line[i:])
+                self.eorder = list(map(float, line[i:]))
                 continue
             rowdata = []
             rowmask = []

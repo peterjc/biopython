@@ -11,7 +11,7 @@ from Bio import utils
 from Bio.Seq import Seq
 
 # local stuff
-from Pattern import PatternRepository
+from .Pattern import PatternRepository
 
 class SignatureFinder:
     """Find Signatures in a group of sequence records.

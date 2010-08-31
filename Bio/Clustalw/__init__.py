@@ -62,7 +62,7 @@ def parse_file(file_name, alphabet = IUPAC.unambiguous_dna, debug_level = 0):
     >>> filename = "Clustalw/protein.aln"
     >>> alpha = Alphabet.Gapped(Alphabet.generic_protein)
     >>> align = Clustalw.parse_file(filename, alphabet=alpha)
-    >>> print align.get_alignment_length()
+    >>> print(align.get_alignment_length())
     411
     >>> clustalw_string = str(align)
 
@@ -73,7 +73,7 @@ def parse_file(file_name, alphabet = IUPAC.unambiguous_dna, debug_level = 0):
     >>> filename = "Clustalw/protein.aln"
     >>> alpha = Alphabet.Gapped(Alphabet.generic_protein)
     >>> align = AlignIO.read(open(filename), "clustal", alphabet=alpha)
-    >>> print align.get_alignment_length()
+    >>> print(align.get_alignment_length())
     411
     >>> assert clustalw_string == align.format("clustal")
     """ 
@@ -507,13 +507,14 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..","..","Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..","..","Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
 
 if __name__ == "__main__":
     _test()
+

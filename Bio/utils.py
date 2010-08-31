@@ -13,10 +13,10 @@ contact the Biopython developers at biopython-dev@biopython.org.
 
 
 
-import Seq
-import Alphabet
+from . import Seq
+from . import Alphabet
 
-from PropertyManager import default_manager
+from .PropertyManager import default_manager
 
 def ungap(seq):
     """given a sequence with gap encoding, return the ungapped sequence"""

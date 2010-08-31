@@ -157,7 +157,7 @@ class PatternRepositoryTest(unittest.TestCase):
                    % (len(patterns), num_patterns)
 
             for pattern in patterns:
-                assert pattern in self.motifs.keys(), \
+                assert pattern in list(self.motifs.keys()), \
                        "Got unexpected pattern %s" % pattern
 
     def test_get_top_percentage(self):
@@ -170,7 +170,7 @@ class PatternRepositoryTest(unittest.TestCase):
                    % (len(patterns), num_patterns)
 
             for pattern in patterns:
-                assert pattern in self.motifs.keys(), \
+                assert pattern in list(self.motifs.keys()), \
                        "Got unexpected pattern %s" % pattern      
 
     def test_get_top(self):
@@ -183,7 +183,7 @@ class PatternRepositoryTest(unittest.TestCase):
                    % (len(patterns), num_patterns)
 
             for pattern in patterns:
-                assert pattern in self.motifs.keys(), \
+                assert pattern in list(self.motifs.keys()), \
                        "Got unexpected pattern %s" % pattern       
 
     def test_get_differing(self):
@@ -239,7 +239,7 @@ class MotifFinderTest(unittest.TestCase):
                                    alphabet=IUPAC.unambiguous_dna)
             while 1:
                 try:
-                    seq_record = iterator.next()
+                    seq_record = next(iterator)
                 except StopIteration:
                     break
                 if seq_record is None:
@@ -517,9 +517,9 @@ class SchemaFactoryTest(unittest.TestCase):
 
         schema_bank = self.factory.from_motifs(motif_bank, .5, 2)
         if VERBOSE:
-            print "\nSchemas:"
+            print("\nSchemas:")
             for schema in schema_bank.get_all():
-                print "%s: %s" % (schema, schema_bank.count(schema))
+                print("%s: %s" % (schema, schema_bank.count(schema)))
 
     def test_hard_from_motifs(self):
         """Generating schema from a real life set of motifs.
@@ -527,9 +527,9 @@ class SchemaFactoryTest(unittest.TestCase):
         schema_bank = self._load_schema_repository()
 
         if VERBOSE:
-            print "\nSchemas:"
+            print("\nSchemas:")
             for schema in schema_bank.get_top(5):
-                print "%s: %s" % (schema, schema_bank.count(schema))
+                print("%s: %s" % (schema, schema_bank.count(schema)))
 
     def _load_schema_repository(self):
         """Helper function to load a schema repository from a file.
@@ -576,7 +576,7 @@ class SchemaFactoryTest(unittest.TestCase):
                                       alphabet=IUPAC.unambiguous_dna):
             schema_values = schema_coder.representation(seq_record.seq)
             if VERBOSE:
-                print "Schema values:", schema_values
+                print("Schema values:", schema_values)
         fasta_handle.close()
 
 # --- Tests for Signatures
