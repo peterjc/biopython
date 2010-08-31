@@ -14,8 +14,8 @@ warnings.warn('Bio.AlignAce is deprecated. Please use Bio.Motif instead.',
 
 
 from Bio.ParserSupport import *
-from Scanner import AlignAceScanner,CompareAceScanner
-from Motif import Motif
+from .Scanner import AlignAceScanner,CompareAceScanner
+from .Motif import Motif
 from Bio.Alphabet import IUPAC
 from Bio.Seq import Seq
 

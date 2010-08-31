@@ -35,16 +35,16 @@ import re
 def read(handle):
     record = None
     try:
-        line = handle.next()
+        line = next(handle)
         record = Record()
         __read_names(record, line)
-        line = handle.next()
+        line = next(handle)
         __read_threshold(record, line)
-        line = handle.next()
+        line = next(handle)
         __read_lengths(record, line)
-        line = handle.next()
+        line = next(handle)
         __read_profilewidth(record, line)
-        line = handle.next()
+        line = next(handle)
         __read_scores(record, line)
     except StopIteration:
         if not record:
@@ -56,9 +56,9 @@ def read(handle):
             continue
         __read_query_alignment(record, line)
         try:
-            line = handle.next()
+            line = next(handle)
             __read_positive_alignment(record, line)
-            line = handle.next()
+            line = next(handle)
             __read_hit_alignment(record, line)
         except StopIteration:
             raise ValueError("Unexpected end of stream.")
@@ -67,20 +67,20 @@ def read(handle):
 def parse(handle):
     record = None
     try:
-        line = handle.next()
+        line = next(handle)
     except StopIteration:
         return
     while True:
         try:
             record = Record()
             __read_names(record, line)
-            line = handle.next()
+            line = next(handle)
             __read_threshold(record, line)
-            line = handle.next()
+            line = next(handle)
             __read_lengths(record, line)
-            line = handle.next()
+            line = next(handle)
             __read_profilewidth(record, line)
-            line = handle.next()
+            line = next(handle)
             __read_scores(record, line)
         except StopIteration:
             raise ValueError("Unexpected end of stream.")
@@ -92,9 +92,9 @@ def parse(handle):
                 break
             __read_query_alignment(record, line)
             try:
-                line = handle.next()
+                line = next(handle)
                 __read_positive_alignment(record, line)
-                line = handle.next()
+                line = next(handle)
                 __read_hit_alignment(record, line)
             except StopIteration:
                 raise ValueError("Unexpected end of stream.")
@@ -411,7 +411,7 @@ class Iterator:
         self._uhandle = File.UndoHandle(handle)
         self._parser = RecordParser()
 
-    def next(self):
+    def __next__(self):
         lines = []
         while 1:
             line = self._uhandle.readline()

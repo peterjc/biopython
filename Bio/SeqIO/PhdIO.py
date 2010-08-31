@@ -17,9 +17,9 @@ from the Biopython unit tests:
 
     >>> from Bio import SeqIO
     >>> for record in SeqIO.parse(open("Phd/phd1"), "phd"):
-    ...     print record.id
-    ...     print record.seq[:10], "..."
-    ...     print record.letter_annotations["phred_quality"][:10], "..."
+    ...     print(record.id)
+    ...     print(record.seq[:10], "...")
+    ...     print(record.letter_annotations["phred_quality"][:10], "...")
     34_222_(80-A03-19).b.ab1
     ctccgtcgga ...
     [9, 9, 10, 19, 22, 37, 28, 28, 24, 22] ...
@@ -34,7 +34,7 @@ Since PHRED files contain quality scores, you can save them as FASTQ or as
 QUAL files, for example using Bio.SeqIO.write(...), or simply with the format
 method of the SeqRecord object:
 
-    >>> print record[:50].format("fastq")
+    >>> print(record[:50].format("fastq"))
     @425_7_(71-A03-19).b.ab1
     acataaatcaaattactnaccaacacacaaaccngtctcgcgtagtggag
     +
@@ -43,7 +43,7 @@ method of the SeqRecord object:
 
 Or,
 
-    >>> print record[:50].format("qual")
+    >>> print(record[:50].format("qual"))
     >425_7_(71-A03-19).b.ab1
     10 10 10 10 8 8 6 6 6 6 8 7 6 6 6 8 3 0 3 6 6 6 8 6 6 6 6 7
     10 13 6 6 3 0 3 8 8 8 8 10 8 8 8 6 6 6 6 6 6 6
@@ -153,17 +153,18 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..", "..", "Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..", "..", "Tests"))
         assert os.path.isfile("Phd/phd1")
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
         
 if __name__ == "__main__":
     _test()
 
         
     
+

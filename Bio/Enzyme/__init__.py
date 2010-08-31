@@ -189,7 +189,7 @@ class Iterator:
     def __init__(self, handle, parser=None):
         self._uhandle = File.UndoHandle(handle)
 
-    def next(self):
+    def __next__(self):
         self._parser = RecordParser()
         lines = []
         while True:
@@ -207,7 +207,7 @@ class Iterator:
         return data
 
     def __iter__(self):
-        return iter(self.next, None)
+        return iter(self.__next__, None)
 
 class _RecordConsumer(AbstractConsumer):
     def __init__(self):

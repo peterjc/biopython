@@ -29,7 +29,7 @@ mast_tests = [
     ]
 
 
-print "Testing MEME Scanner"
+print("Testing MEME Scanner")
 
 datafile = os.path.join("MEME", meme_tests[0])
 uhandle = UndoHandle(open(datafile))
@@ -37,16 +37,16 @@ scanner = Parser._MEMEScanner()
 consumer = ParserSupport.TaggingConsumer()
 scanner.feed(uhandle, consumer)
     
-print "Running tests on MEME parser"    
+print("Running tests on MEME parser")    
 
 meme_parser = Parser.MEMEParser()
 
 for test in meme_tests:
-    print "*" * 50, "TESTING %s" % test
+    print("*" * 50, "TESTING %s" % test)
     datafile = os.path.join("MEME", test)
     rec = meme_parser.parse(open(datafile))
 
-print "Testing MEME Scanner"
+print("Testing MEME Scanner")
 
 datafile = os.path.join("MEME", mast_tests[0])
 uhandle = UndoHandle(open(datafile))
@@ -54,11 +54,11 @@ scanner = Parser._MASTScanner()
 consumer = ParserSupport.TaggingConsumer()
 scanner.feed(uhandle, consumer)    
    
-print "Running tests on MAST parser"
+print("Running tests on MAST parser")
 
 mast_parser = Parser.MASTParser()
 
 for test in mast_tests:
-    print "*" * 50, "TESTING %s" % test
+    print("*" * 50, "TESTING %s" % test)
     datafile = os.path.join("MEME", test)
     rec = mast_parser.parse(open(datafile))

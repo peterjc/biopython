@@ -25,10 +25,10 @@ import os
 import re
 
 from Bio import File
-from Applications import CompareAceCommandline
+from .Applications import CompareAceCommandline
 
-import Scanner
-import Parser
+from . import Scanner
+from . import Parser
 
 
 def CompareAce( cmd="CompareACE", **keywds):
@@ -42,7 +42,7 @@ def CompareAce( cmd="CompareACE", **keywds):
     
     CompareCmd = CompareAceCommandline(cmd)
 
-    for (par,val) in keywds.iteritems():
+    for (par,val) in keywds.items():
         CompareCmd.set_parameter(par,val)
 
     return CompareCmd.run()
