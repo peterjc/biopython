@@ -4,7 +4,14 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 
-"""Miscellaneous functions for dealing with sequences (obsolete?)."""
+"""Miscellaneous functions for dealing with sequences (OBSOLETE).
+
+This module is obsolete, and is likely to be deprecated in a future version
+of Biopython, and to be removed after that. If you use this module, please
+contact the Biopython developers at biopython-dev@biopython.org.
+"""
+
+
 
 from . import Seq
 from . import Alphabet
@@ -23,7 +30,7 @@ def ungap(seq):
                   DeprecationWarning)
     gap = seq.gap_char
     letters = []
-    for c in seq.data:
+    for c in seq:
         if c != gap:
             letters.append(c)
     return Seq.Seq("".join(letters), seq.alphabet.alphabet)
@@ -33,7 +40,7 @@ def verify_alphabet(seq):
     for c in seq.alphabet.letters:
         letters[c] = 1
     try:
-        for c in seq.data:
+        for c in seq:
             letters[c]
     except KeyError:
         return 0
@@ -41,10 +48,8 @@ def verify_alphabet(seq):
 
 def count_monomers(seq):
     dict = {}
-#    bugfix: string.count(s,c) raises an AttributeError. Iddo Friedberg 16 Mar. 04
-#    s = buffer(seq.data)  # works for strings and array.arrays
     for c in seq.alphabet.letters:
-        dict[c] = seq.data.count(c)
+        dict[c] = seq.count(c)
     return dict
 
 def percent_monomers(seq):

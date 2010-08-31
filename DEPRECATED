@@ -16,6 +16,14 @@ support for Python 2.4. This can be delayed given feedback from our users
 (e.g. if this proves to be a problem in combination with other libraries).
 An explicit warning was added to setup.py for Biopython 1.55.
 
+Bio.Encodings
+=============
+Declared obsolete in Release 1.55.
+
+Bio.PropertyManager
+===================
+Declared obsolete in Biopython 1.55.
+
 Bio.InterPro
 ============
 This module was a parser for the EBI InterPro webpages, but no longer works
@@ -44,8 +52,7 @@ Bio.Blast.NCBIStandalone
 ========================
 The three functions for calling the "legacy" NCBI BLAST command line tools
 blastall, blastpgp and rpsblast were declared obsolete in Biopython Release
-1.53, please use the BLAST+ wrappers in Bio.Blast.Applications and the Python
-subprocess module instead.
+1.53, please use the BLAST+ wrappers in Bio.Blast.Applications instead.
 
 The remainder of this module is a parser for the plain text BLAST output,
 which was declared obsolete in Release 1.54. For some time now, both the NCBI
@@ -66,27 +73,29 @@ PHYLIP tools (e.g. fneighbor) instead.
 
 Bio.Clustalw
 ============
-Declared obsolete in Release 1.52, having been replaced with Bio.AlignIO for
-parsing and writing clustal format alignments (since Release 1.46), and
-Bio.Align.Applications for calling the ClustalW command line tool (Release
-1.51). See the Tutorial for examples.
+Declared obsolete in Release 1.52, and deprecated in Release 1.55 final,
+having been replaced with Bio.AlignIO for parsing and writing clustal format
+alignments (since Release 1.46), and Bio.Align.Applications for calling the
+ClustalW command line tool (Release 1.51). See the Tutorial for examples.
 
 BioSQL and psycopg
 ==================
 Support for psycopg (version one) in Biopython's BioSQL code was deprecated
-in Release 1.51, please use psycopg2 instead.
+in Release 1.51, and removed in Release 1.55. Please use psycopg2 instead.
 
 Bio.Application.generic_run and ApplicationResult
 =================================================
 Declared obsolete in Release 1.51, and deprecated in Release 1.53.
-Please use the Python subprocess module instead.
+Please use the Python subprocess module instead, of as of Release 1.55 the
+application wrappers can be used directly to execute the command.
 
 Bio.Entrez.efetch and rettype="genbank"
 =======================================
 As of Easter 2009, the NCBI have stopped supporting the unofficial return type
 of "genbank" in EFetch.  Instead we should be using "gb" (GenBank) or "gp"
 (GenPept).  As of Biopython 1.50, Bio.Entrez.efetch will correct this
-automatically, but issues a deprecation warning.
+automatically, but issues a deprecation warning. The code to check and correct
+for "genbank" was removed in Biopython 1.55 final.
 
 Bio.Entrez.query function
 =========================
@@ -113,8 +122,9 @@ GenomeDiagram originally used colour and centre (UK spelling of color and
 center) for argument names.  As part of its integration into Biopython 1.50,
 this will support both colour and color, and both centre and center, to help
 people port existing scripts written for the standalone version of
-GenomeDiagram.  However, we do intend to deprecate and then eventually
-remove support for colour and centre in later releases of Biopython.
+GenomeDiagram.  However, these were deprecated in Release 1.55 final, and we
+intend to eventually remove support for colour and centre in later releases
+of Biopython.
 
 Bio.AlignAce and Bio.MEME
 =========================
@@ -129,8 +139,9 @@ Please move to NumPy for Biopython 1.49 or later.
 Bio.Seq and the data property
 =============================
 Direct use of the Seq object (and MutableSeq object) .data property is
-discouraged.  As of Release 1.49, writing to the Seq object's .data property
-triggered a warning, and this property was made read only in Release 1.53.
+deprecated.  As of Release 1.49, writing to the Seq object's .data property
+triggered a warning, and this property was made read only in Release 1.53. In
+Release 1.55 final, accessing the .data property gives a DeprecationWarning.
 
 Bio.Transcribe and Bio.Translate
 ================================
@@ -176,18 +187,28 @@ which is suitable even for very large files.
 
 Bio.Fasta (including Bio.Fasta.FastaAlign)
 ==========================================
-Declared obsolete in Release 1.48, and deprecated in Release 1.51.
-Please use the "fasta" support in Bio.SeqIO or Bio.AlignIO instead.
+Declared obsolete in Release 1.48, deprecated in Release 1.51, and removed
+in Release 1.55 final. Please use the "fasta" support in Bio.SeqIO or
+Bio.AlignIO instead.
 
 Bio.Align.FormatConvert
-=======================
-Declared obsolete in Release 1.48, and deprecated in Release 1.51.
-Please use Bio.AlignIO or the Alignment object's format method instead.
+======================
+Declared obsolete in Release 1.48, deprecated in Release 1.51, and
+removed in Release 1.55 final. Please use Bio.AlignIO or the Alignment
+object's format method instead.
 
 Bio.Emboss.Primer
 =================
 Deprecated in Release 1.48, and removed in Release 1.51, this parser was
 replaced by Bio.Emboss.Primer3 and Bio.Emboss.PrimerSearch instead.
+
+Bio.Emboss.Applications
+=======================
+EProtDistCommandline, ENeighborCommandline, EProtParsCommandline,
+EConsenseCommandline,  and ESeqBootCommandline were declared obsolete in
+Release 1.52, and deprecated in Release 1.55 final. These functions were
+replaced by FProtDistCommandline, FNeighborCommandline, FProtParsCommandline,
+FConsenseCommandline, and FSeqBootCommandline, respectively.
 
 Bio.MetaTool
 ============
@@ -347,6 +368,10 @@ and no longer served any useful purpose.
 Function 'reverse' in Bio.SeqUtils was deprecated in Release 1.54, instead
 just use the string's slice method with a step of minus one.
 
+Funtions GC_Frame, fasta_uniqids, apply_on_multi_fasta, and
+quicker_apply_on_multi_fasta were deprecated in Release 1.55 final.
+
+
 Bio.GFF (for accessing a MySQL database created with BioPerl, etc)
 =======
 The functions 'forward_complement' and 'antiparallel' in Bio.GFF.easy have
@@ -389,46 +414,51 @@ Release 1.53.
 Bio.SCOP
 ========
 The module Bio.SCOP.FileIndex was deprecated in Release 1.46, and removed in
-Release 1.53.
+Release 1.53. The class Parser in Bio.SCOP.DOM was removed in Release 1.55
+final.
 
 Bio.utils
 =========
 Functions 'translate', 'translate_to_stop', 'back_translate', 'transcribe',
 and 'back_transcribe' were deprecated in Release 1.49, and removed in Release
 1.53. Function 'ungap' was deprecated in Release 1.53. Use Bio.Seq instead.
+The whole of Bio.utils was declared obsolete in Release 1.55.
 
 Bio.Motif
 =========
 CompareAceParser and CompareAceConsumer from Bio.Motif.Parsers.AlignAce were
-deprecated in Release 1.53. AlignAceConsumer, AlignAceParser, and
-AlignAceScanner were declared obsolete in Release 1.53; their functionality is
+declared obsolete in Release 1.53, and deprecated in Release 1.55 final.
+AlignAceConsumer, AlignAceParser, and AlignAceScanner were declared obsolete
+in Release 1.53 and deprecated in Release 1.55 final; their functionality is
 now available through a read() function in Bio.Motif.Parsers.AlignAce.
-MEMEParser, _MEMEScanner, _MEMEConsumer, _MASTConsumer, MASTParser,
-_MASTScanner, and MASTRecord were declared obsolete in Release 1.54; their
-functionality is now available through a read() function in
+MEMEParser, _MEMEScanner, _MEMEConsumer, _MASTConsumer, MASTParser, _MASTScanner,
+and MASTRecord were declared obsolete in Release 1.54 and deprecated in Release
+1.55 final; their functionality is now available through a read() function in
 Bio.Motif.Parsers.MEME and Bio.Motif.Parsers.MAST, respectively.
 
 Bio.Compass
 ===========
-The RecordParser and Iterator classes were declared obsolete in Release 1.54.
-Their functionality is now available through a read() and a parse() function,
-respectively.
+The RecordParser and Iterator classes were declared obsolete in Release 1.54,
+and deprecated in Release 1.55 final. Their functionality is now available
+through a read() and a parse() function, respectively.
 
 Bio.Affy.CelFile
 ================
 The CelScanner, CelConsumer, CelRecord, and CelParser were declared obsolete
 in Release 1.54. Their functionality is now available through a read()
-function.
+function. These classes were deprecated in Release 1.55 final.
 
 Bio.PopGen.FDist
 ================
 The RecordParser, _Scanner, and _RecordConsumer classes were declared obsolete
-in Release 1.54. Their functionality is now available through a read() function.
+in Release 1.54, and deprecated in Release 1.55 final. Their functionality is
+now available through a read() function.
 
 Bio.UniGene
 ===========
 The classes UnigeneSequenceRecord, UnigeneProtsimRecord, UnigeneSTSRecord,
 UnigeneRecord, _RecordConsumer, _Scanner, RecordParser, and Iterator in
-Bio.UniGene were declared obsolete in Release 1.54. Their functionality is now
-available through a read() and a parse() function in Bio.UniGene.
+Bio.UniGene were declared obsolete in Release 1.54, and deprecated in Release
+1.55 final. Their functionality is now available through a read() and a parse()
+function in Bio.UniGene.
 

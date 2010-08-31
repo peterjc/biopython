@@ -105,7 +105,7 @@ class Seq(object):
     # Note this is read only since the Seq object is meant to be imutable
     @property
     def data(self) :
-        """Sequence as a string (OBSOLETE/DEPRECATED).
+        """Sequence as a string (DEPRECATED).
 
         This is a read only property provided for backwards compatility with
         older versions of Biopython (as is the tostring() method). We now
@@ -120,13 +120,17 @@ class Seq(object):
         >>> from Bio.Seq import Seq
         >>> from Bio.Alphabet import generic_dna
         >>> my_seq = Seq("ACGT", generic_dna)
-        >>> str(my_seq) == my_seq.tostring() == my_seq.data == "ACGT"
+        >>> str(my_seq) == my_seq.tostring() == "ACGT"
         True
         >>> my_seq.data = "AAAA"
         Traceback (most recent call last):
            ...
         AttributeError: can't set attribute
         """
+        import warnings
+        warnings.warn("Accessing the .data attribute is deprecated. Please "
+                      "use str(my_seq) or my_seq.tostring() instead of "
+                      "my_seq.data.", DeprecationWarning)
         return str(self)
 
     def __repr__(self):
@@ -140,7 +144,7 @@ class Seq(object):
                                    repr(self.alphabet))
         else:
             return "%s(%s, %s)" % (self.__class__.__name__,
-                                  repr(self.data),
+                                  repr(self._data),
                                    repr(self.alphabet))
     def __str__(self):
         """Returns the full sequence as a python string, use str(my_seq).
@@ -151,7 +155,6 @@ class Seq(object):
         should continue to use my_seq.tostring() rather than str(my_seq).
         """
         return self._data
-
 
     def __hash__(self):
         """Hash for comparison.
