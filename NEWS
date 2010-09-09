@@ -18,6 +18,9 @@ problem in combination with other libraries or a popular Linux distribution).
 Bio.SeqIO can now read and write IMGT files, a variant of the EMBL sequence
 text file format with longer feature indentation.
 
+In GenomeDiagram, feature labels on circular diagrams are now outside the
+feature to better match the linear diagrams (but remain far less flexible).
+
 (At least) 4 people have contributed to this release, include 1 new person:
 
 Bartek Wilczynski

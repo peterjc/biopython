@@ -436,7 +436,9 @@ class CircularDrawer(AbstractDrawer):
                            border, **kwargs)
 
         if feature.label:   # Feature needs a label
-            label = String(0, 0, feature.name.strip(),
+            #The spaces are a hack to force a little space between the label
+            #and the edge of the feature
+            label = String(0, 0, " %s " % feature.name.strip(),
                            fontName=feature.label_font,
                            fontSize=feature.label_size,
                            fillColor=feature.label_color)
@@ -448,6 +450,7 @@ class CircularDrawer(AbstractDrawer):
                 if startangle < pi: # Turn text round and anchor end to inner radius
                     sinval, cosval = endsin, endcos
                     label_angle = endangle - 0.5 * pi
+                else:
                     labelgroup.contents[0].textAnchor = 'end'
                 pos = self.xcenter+top*sinval
                 coslabel = cos(label_angle)
@@ -459,7 +462,6 @@ class CircularDrawer(AbstractDrawer):
                 if startangle < pi: # Turn text round and anchor end to inner radius
                     sinval, cosval = endsin, endcos
                     label_angle = endangle - 0.5 * pi
-                else:
                     labelgroup.contents[0].textAnchor = 'end'
                 pos = self.xcenter+btm*sinval
                 coslabel = cos(label_angle)
