@@ -59,9 +59,9 @@ class StringElement(str):
             return text
         return "StringElement(%s, attributes=%s)" % (text, repr(attributes))
 
-class UnicodeElement(unicode):
+class UnicodeElement(str):
     def __repr__(self):
-        text = unicode.__repr__(self)
+        text = str.__repr__(self)
         try:
             attributes = self.attributes
         except AttributeError:

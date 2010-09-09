@@ -9,10 +9,10 @@ it contains the core Motif class containing various I/O methods
 as well as methods for motif comparisons and motif searching in sequences.
 It also inlcudes functionality for parsing AlignACE and MEME programs
 """
-from _Motif import Motif
-import Parsers.AlignAce
-import Parsers.MEME
-from Thresholds import ScoreDistribution
+from ._Motif import Motif
+from . import Parsers.AlignAce
+from . import Parsers.MEME
+from .Thresholds import ScoreDistribution
 
 _parsers={"AlignAce":Parsers.AlignAce.read,
           "MEME":Parsers.MEME.read
@@ -46,7 +46,7 @@ def parse(handle,format):
 
     >>> from Bio import Motif
     >>> for motif in Motif.parse(open("Motif/alignace.out"),"AlignAce"):
-    ...     print motif.consensus()
+    ...     print(motif.consensus())
     TCTACGATTGAG
     CTGCACCTAGCTACGAGTGAG
     GTGCCCTAAGCATACTAGGCG
@@ -111,7 +111,7 @@ def read(handle,format):
     shown in the example above).  Instead use:
 
     >>> from Bio import Motif
-    >>> motif = Motif.parse(open("Motif/alignace.out"),"AlignAce").next()
+    >>> motif = next(Motif.parse(open("Motif/alignace.out"),"AlignAce"))
     >>> motif.consensus()
     Seq('TCTACGATTGAG', IUPACUnambiguousDNA())
 
@@ -120,13 +120,13 @@ def read(handle,format):
     """
     iterator = parse(handle, format)
     try:
-        first = iterator.next()
+        first = next(iterator)
     except StopIteration:
         first = None
     if first is None:
         raise ValueError("No motifs found in handle")
     try:
-        second = iterator.next()
+        second = next(iterator)
     except StopIteration:
         second = None
     if second is not None:
@@ -143,14 +143,15 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..","..","Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..","..","Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
 
 if __name__ == "__main__":
     #Run the doctests
     _test()
+

@@ -56,13 +56,13 @@ from Bio import Index
 from Bio.ParserSupport import *
 
 def parse(handle):
-    import cStringIO
+    import io
     parser = RecordParser()
     text = ""
     for line in handle:
         text += line
         if line[:5] == '{END}':
-            handle = cStringIO.StringIO(text)
+            handle = io.StringIO(text)
             record = parser.parse(handle)
             text = ""
             yield record
@@ -312,7 +312,7 @@ def index_file(filename, indexname, rec2key=None):
 
     handle = open(filename)
     records = parse(handle)
-    end = 0L
+    end = 0
     for record in records:
         start = end
         end = handle.tell()

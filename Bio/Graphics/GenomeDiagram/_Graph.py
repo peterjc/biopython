@@ -157,7 +157,7 @@ class GraphData:
             Return data as a list of sorted (position, value) tuples
         """
         data = []
-        for xval in self.data.keys():
+        for xval in list(self.data.keys()):
             yval = self.data[xval]            
             data.append((xval, yval))
         data.sort()
@@ -181,7 +181,7 @@ class GraphData:
             Returns the (minimum, lowerQ, medianQ, upperQ, maximum) values as
             a tuple
         """
-        data = self.data.values()
+        data = list(self.data.values())
         data.sort()
         datalen = len(data)
         return(data[0], data[datalen//4], data[datalen//2],
@@ -194,7 +194,7 @@ class GraphData:
             Returns the range of the data, i.e. its start and end points on
             the genome as a (start, end) tuple
         """
-        positions = self.data.keys()
+        positions = list(self.data.keys())
         positions.sort()
         # Return first and last positions in graph
         #print len(self.data)
@@ -206,7 +206,7 @@ class GraphData:
 
             Returns the mean value for the data points
         """
-        data = self.data.values()
+        data = list(self.data.values())
         sum = 0.
         for item in data:
             sum += float(item)
@@ -218,7 +218,7 @@ class GraphData:
 
             Returns the sample standard deviation for the data
         """
-        data = self.data.values()
+        data = list(self.data.values())
         m = self.mean()
         runtotal = 0.
         for entry in data:
@@ -256,7 +256,7 @@ class GraphData:
             high = index.stop
             if index.step is not None and index.step != 1:
                 raise ValueError
-            positions = self.data.keys()
+            positions = list(self.data.keys())
             positions.sort()
             outlist = []
             for pos in positions:

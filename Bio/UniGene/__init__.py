@@ -292,7 +292,7 @@ def _read(handle):
             elif value=="NO":
                 record.homol = True
             else:
-                raise ValueError, "Cannot parse HOMOL line %s" % line
+                raise ValueError("Cannot parse HOMOL line %s" % line)
         elif tag=="EXPRESS":
             record.express = [word.strip() for word in value.split("|")]
         elif tag=="RESTR_EXPR":
@@ -314,10 +314,10 @@ def _read(handle):
             record.sts.append(sts)
         elif tag=='//':
             if len(record.sequence)!=scount:
-                raise ValueError, "The number of sequences specified in the record (%d) does not agree with the number of sequences found (%d)" % (scount, len(record.sequence))
+                raise ValueError("The number of sequences specified in the record (%d) does not agree with the number of sequences found (%d)" % (scount, len(record.sequence)))
             return record
         else:
-            raise ValueError, "Unknown tag %s" % tag
+            raise ValueError("Unknown tag %s" % tag)
     if record:
         raise ValueError("Unexpected end of stream.")
 
@@ -327,6 +327,7 @@ def _read(handle):
 
 from Bio.ParserSupport import *
 import re
+import collections
 
 #
 # CONSTANTS
@@ -607,9 +608,9 @@ class _Scanner:
             try:
                 f = getattr(consumer, tag)
             except AttributeError:
-                print 'no method called', tag
+                print('no method called', tag)
             else:
-                if callable(f):
+                if isinstance(f, collections.Callable):
                     f(line)
 
         
@@ -640,7 +641,7 @@ class Iterator:
         warnings.warn("Bio.UniGene.Iterator is deprecated; please use the parse() function in this module instead", DeprecationWarning)
         self._uhandle = File.UndoHandle(handle)
 
-    def next(self):
+    def __next__(self):
         self._parser = RecordParser()
         lines = []
         while True:
@@ -658,4 +659,4 @@ class Iterator:
         return data
 
     def __iter__(self):
-        return iter(self.next, None)
+        return iter(self.__next__, None)

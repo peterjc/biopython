@@ -13,7 +13,7 @@
 
 __version__ = "$Revision: 1.12 $"
 
-import commands
+import subprocess
 import itertools
 import os
 import re
@@ -38,7 +38,7 @@ def _build_dnal_cmdline(match, mismatch, gap, extension):
 
 _CMDLINE_FGREP_COUNT = "fgrep -c '%s' %s"
 def _fgrep_count(pattern, file):
-    return int(commands.getoutput(_CMDLINE_FGREP_COUNT % (pattern, file)))
+    return int(subprocess.getoutput(_CMDLINE_FGREP_COUNT % (pattern, file)))
 
 _re_alb_line2coords = re.compile(r"^\[([^:]+):[^\[]+\[([^:]+):")
 def _alb_line2coords(line):
@@ -62,11 +62,11 @@ def _get_coords(filename):
     if end_line is None: # sequence is too short
         return [(0, 0), (0, 0)]
         
-    return zip(*map(_alb_line2coords, [start_line, end_line])) # returns [(start0, end0), (start1, end1)]
+    return list(zip(*list(map(_alb_line2coords, [start_line, end_line])))) # returns [(start0, end0), (start1, end1)]
 
 def _any(seq, pred=bool):
     "Returns True if pred(x) is True at least one element in the iterable"
-    return True in itertools.imap(pred, seq)
+    return True in map(pred, seq)
 
 class Statistics(object):
     """
@@ -115,11 +115,11 @@ def align(pair, match=_SCORE_MATCH, mismatch=_SCORE_MISMATCH, gap=_SCORE_GAP_STA
 def main():
     import sys
     stats = align(sys.argv[1:3])
-    print "\n".join(["%s: %s" % (attr, getattr(stats, attr))
+    print("\n".join(["%s: %s" % (attr, getattr(stats, attr))
                      for attr in
-                     ("matches", "mismatches", "gaps", "extensions")])
-    print "identity_fraction: %s" % stats.identity_fraction()
-    print "coords: %s" % stats.coords
+                     ("matches", "mismatches", "gaps", "extensions")]))
+    print("identity_fraction: %s" % stats.identity_fraction())
+    print("coords: %s" % stats.coords)
 
 def _test(*args, **keywds):
     import doctest, sys

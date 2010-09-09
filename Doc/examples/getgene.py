@@ -33,14 +33,14 @@
 
 import string, re
 import os, sys
-import gdbm
+import dbm.gnu
 
 class DB_Index:
     def __init__(self, open = 1):
         if open: self.Open()
             
     def Create(self, infile, outfile):
-        db = gdbm.open(outfile, 'n')
+        db = dbm.gnu.open(outfile, 'n')
         fid = open(infile)
 
         db['datafile'] = os.path.abspath(infile)
@@ -65,8 +65,8 @@ class DB_Index:
                     db[acc] = value
                     id, acc, start, stop = None, None, None, None
                 except:
-                    print 'AARRGGGG', start, stop, type(start), type(stop)
-                    print id, acc
+                    print('AARRGGGG', start, stop, type(start), type(stop))
+                    print(id, acc)
                     
         db.close()
         fid.close()
@@ -75,7 +75,7 @@ class DB_Index:
         if not indexfile:
             indexfile = os.path.join(os.environ['PYPHY'],'nr.dat.indexed')
 
-        self.db = gdbm.open(indexfile)
+        self.db = dbm.gnu.open(indexfile)
         self.datafile = self.db['datafile']
         self.fid = open(self.datafile)
 
@@ -87,7 +87,7 @@ class DB_Index:
             values = self.db[id]
         except:
             return None
-        start, stop= map(int,string.split(values))
+        start, stop= list(map(int,string.split(values)))
         self.fid.seek(start)
         txt = self.fid.read(stop - start)
         return txt
@@ -129,7 +129,7 @@ class DB_Index:
         elif kd == "Archaebacteria" or kd == "Archaea": return "A"
         elif kd == "Viridae" or kd == "Viruses": return "V"
         else:
-            print kd, "UNKNOWN"
+            print(kd, "UNKNOWN")
             return "U"
         
     def Get_Gene(self, id):
@@ -222,8 +222,8 @@ class DB_Index:
 
 def help(exit = 0):
     name = os.path.basename(sys.argv[0])
-    print 'Usage: %s <db> <gene ID>' % name
-    print '  or   %s --index <db.dat>' % name
+    print('Usage: %s <db> <gene ID>' % name)
+    print('  or   %s --index <db.dat>' % name)
     if exit: sys.exit(0)
 
 if __name__ == '__main__':
@@ -261,7 +261,7 @@ if __name__ == '__main__':
     db_index.Open(dbfile)
     for id in ids:
         #print db_index.Get(id)
-        print func(id)
+        print(func(id))
         
 
 
