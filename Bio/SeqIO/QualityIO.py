@@ -511,6 +511,104 @@ def phred_quality_from_solexa(solexa_quality):
                       % repr(solexa_quality))
     return 10*log(10**(solexa_quality/10.0) + 1, 10)
 
+class FastqEncoded(object):
+    """Act like a list of integer quality scores, decoding on demand.
+
+    >>> fq = FastqEncoded("!ABC~")
+    >>> fq
+    FastqEncoded('!ABC~')
+    >>> fq[0]
+    0
+    >>> fq[-1]
+    93
+    >>> for q in fq: print q
+    0
+    32
+    33
+    34
+    93
+    >>> max(fq)
+    93
+    >>> min(fq)
+    0
+    >>> print fq
+    !ABC~
+    >>> print fq[::-1]
+    ~CBA!
+    >>> fq.append(1)
+    >>> fq
+    FastqEncoded('!ABC~"')
+    >>> fq.extend([2,3,4])
+    >>> len(fq)
+    9
+    >>> fq
+    FastqEncoded('!ABC~"#$%')
+    >>> fq[1:4] + fq[-4:]
+    FastqEncoded('ABC"#$%')
+    >>> list(fq)
+    >>> fq + [1,3,4]
+    """
+    _OFFSET = 33
+    def __init__(self, fastq_string):
+        self._data = fastq_string
+        self._ints = None
+
+    def __str__(self):
+        return self._data
+
+    def __repr__(self):
+        return "%s(%s)" % (self.__class__.__name__, repr(self._data))
+
+    def __len__(self):
+        return len(self._data)
+
+    def _decode(self):
+        if self._ints: return
+        #TODO - Cache the mapping as a dict
+        self._ints = [ord(q)-self._OFFSET for q in self._data]
+
+    def __iter__(self):
+        self._decode()
+        return iter(self._ints)
+
+    def __getitem__(self, value):
+        if isinstance(value, int):
+            #Just call _decode?
+            if self._ints:
+                return self._ints[value]
+            else:
+                return ord(self._data[value])-33
+        else:
+            return FastqEncoded(self._data[value])
+
+    def append(self, value):
+        if not isinstance(value, int):
+            raise TypeError
+        if value < 0:
+            raise ValueError
+        encoded =  value + self._OFFSET
+        if encoded > 255:
+            raise ValueError
+        self._data += chr(encoded)
+        if self._ints is not None:
+            self._ints.append(value)
+
+    def extend(self, values):
+        for value in values:
+            self.append(value)
+
+    def __add__(self, other):
+        if not isinstance(other, FastqEncoded):
+            return list(self) + other
+        elif self._OFFSET == other._OFFSET:
+            return self.__class__(self._data + other._data)
+        else:
+            raise NotImplementedError
+
+class IlluminaFastqEncoded(FastqEncoded):
+    """Act like a list of PHRED quality scores, decoding on demand."""
+    _OFFSET = 64
+
 def _get_phred_quality(record):
     """Extract PHRED qualities from a SeqRecord's letter_annotations (PRIVATE).
 
