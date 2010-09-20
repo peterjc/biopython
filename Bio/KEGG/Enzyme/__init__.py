@@ -187,8 +187,8 @@ def parse(handle):
 
     >>> handle = open("KEGG/enzyme.sample")
     >>> for record in parse(handle):
-    ...     print record.entry, record.name[0]
-    ...
+    ...     print(record.entry, record.name[0])
+    ... 
     1.1.1.1 Alcohol dehydrogenase
     1.1.1.62 Estradiol 17beta-dehydrogenase
     1.1.1.68 Transferred to EC 1.7.99.5
@@ -301,13 +301,14 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..","..","..","Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..","..","..","Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
 
 if __name__ == "__main__":
     _test()
+

@@ -14,6 +14,6 @@ warnings.filterwarnings("ignore", category=BiopythonDeprecationWarning)
 import Bio.GFF
 warnings.resetwarnings()
 
-print "Running Bio.GFF doctests..."
+print("Running Bio.GFF doctests...")
 Bio.GFF._test()
-print "Bio.GFF doctests complete."
+print("Bio.GFF doctests complete.")
