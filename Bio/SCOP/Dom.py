@@ -16,7 +16,7 @@ The DOM files for older releases can be found
 """
 
 
-from Residues import Residues
+from .Residues import Residues
 
 class Record:
     """Holds information for one SCOP domain.
@@ -100,12 +100,12 @@ class Iterator:
         self._handle = handle
         self._parser = parser
 
-    def next(self):
+    def __next__(self):
         line = self._handle.readline()
         if not line:
             return None
         if line.startswith('#'):
-            return self.next()
+            return next(self)
         if self._parser is not None:
             return self._parser.parse(line)
         return line

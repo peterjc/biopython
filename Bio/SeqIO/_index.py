@@ -83,7 +83,7 @@ class _IndexedSeqFileDict(dict):
 
     def __str__(self):
         if self:
-            return "{%s : SeqRecord(...), ...}" % repr(self.keys()[0])
+            return "{%s : SeqRecord(...), ...}" % repr(list(self.keys())[0])
         else:
             return "{}"
 
@@ -135,7 +135,7 @@ class _IndexedSeqFileDict(dict):
         #For non-trivial file formats this must be over-ridden in the subclass
         handle = self._handle
         handle.seek(dict.__getitem__(self, key))
-        record = SeqIO.parse(handle, self._format, self._alphabet).next()
+        record = next(SeqIO.parse(handle, self._format, self._alphabet))
         if self._key_function:
             assert self._key_function(record.id) == key, \
                    "Requested key %s, found record.id %s which has key %s" \
@@ -227,7 +227,7 @@ class SffDict(_IndexedSeqFileDict) :
                        "Indexed %i records, expected %i" \
                        % (len(self), number_of_reads)
                 return
-            except ValueError, err :
+            except ValueError as err :
                 import warnings
                 warnings.warn("Could not parse the SFF index: %s" % err)
                 assert len(self)==0, "Partially populated index"
@@ -441,7 +441,7 @@ class TabDict(_IndexedSeqFileDict):
             if not line : break #End of file
             try:
                 key = line.split("\t")[0]
-            except ValueError, err:
+            except ValueError as err:
                 if not line.strip():
                     #Ignore blank lines
                     continue
