@@ -42,7 +42,7 @@ class AlignmentIterator:
         # or if additional arguments are required.          #
         #####################################################
 
-    def next(self):
+    def __next__(self):
         """Return the next alignment in the file.
         
         This method should be replaced by any derived class to do something
@@ -66,7 +66,7 @@ class AlignmentIterator:
                 print record.id
                 print record.seq
         myFile.close()"""
-        return iter(self.next, None)
+        return iter(self.__next__, None)
 
 class AlignmentWriter:
     """Base class for building MultipleSeqAlignment writers.

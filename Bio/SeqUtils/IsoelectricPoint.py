@@ -46,13 +46,13 @@ class IsoelectricPoint:
     #This function calculates the total charge of the protein at a given pH.
     def _chargeR(self, pH, pos_pKs, neg_pKs):
         PositiveCharge = 0.0
-        for aa, pK in pos_pKs.iteritems():         
+        for aa, pK in pos_pKs.items():         
              CR = 10**(pK-pH)
              partial_charge = CR/(CR+1.0)
              PositiveCharge += self.charged_aas_content[aa] * partial_charge 
 
         NegativeCharge = 0.0
-        for aa, pK in neg_pKs.iteritems():         
+        for aa, pK in neg_pKs.items():         
              CR = 10**(pH-pK)
              partial_charge = CR/(CR+1.0)
              NegativeCharge += self.charged_aas_content[aa] * partial_charge 
@@ -65,9 +65,9 @@ class IsoelectricPoint:
         neg_pKs = dict(negative_pKs)
         nterm = self.sequence[0]
         cterm = self.sequence[-1]    
-        if nterm in pKnterminal.keys():
+        if nterm in list(pKnterminal.keys()):
             pos_pKs['Nterm'] = pKnterminal[nterm]
-        if cterm in pKcterminal.keys():
+        if cterm in list(pKcterminal.keys()):
             neg_pKs['Cterm'] = pKcterminal[cterm]
 
         # Bracket between pH1 and pH2

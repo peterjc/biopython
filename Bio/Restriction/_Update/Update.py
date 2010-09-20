@@ -44,7 +44,7 @@ class RebaseUpdate(FancyURLopener):
         return (Rebase_name, Rebase_password)
 
     def openRebase(self, name = ftp_Rebase):
-        print '\n Please wait, trying to connect to Rebase\n'
+        print('\n Please wait, trying to connect to Rebase\n')
         try:
             self.open(name)
         except:
@@ -52,13 +52,13 @@ class RebaseUpdate(FancyURLopener):
         return
 
     def getfiles(self, *files):
-        print '\n',
+        print('\n', end=' ')
         for file in self.update(*files):
-            print 'copying', file
+            print('copying', file)
             fn = os.path.basename(file)
             #filename = os.path.join(Rebase, fn)
             filename = os.path.join(os.getcwd(), fn)
-            print 'to', filename
+            print('to', filename)
             self.retrieve(file, filename)
         self.close()
         return
@@ -86,29 +86,29 @@ class RebaseUpdate(FancyURLopener):
 class FtpNameError(ValueError):
 
     def __init__(self, which_server):
-        print " In order to connect to %s ftp server, you must provide a name.\
-        \n Please edit Bio.Restriction.RanaConfig\n" % which_server
+        print(" In order to connect to %s ftp server, you must provide a name.\
+        \n Please edit Bio.Restriction.RanaConfig\n" % which_server)
         sys.exit()
 
 class FtpPasswordError(ValueError):
 
     def __init__(self, which_server):
-        print "\n\
+        print("\n\
         \n In order to connect to %s ftp server, you must provide a password.\
         \n Use the --e-mail switch to enter your e-mail address.\
-        \n\n" % which_server
+        \n\n" % which_server)
         sys.exit()
 
 
 class ConnectionError(IOError):
 
     def __init__(self, which_server):
-        print '\
+        print('\
         \n Unable to connect to the %s ftp server, make sure your computer\
         \n is connected to the internet and that you have correctly configured\
         \n the ftp proxy.\
         \n Use the --proxy switch to enter the address of your proxy\
-        \n' % which_server
+        \n' % which_server)
         sys.exit()
         
 
