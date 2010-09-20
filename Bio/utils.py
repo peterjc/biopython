@@ -4,17 +4,23 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 
-"""Miscellaneous functions for dealing with sequences (OBSOLETE).
+"""Miscellaneous functions for dealing with sequences (DEPRECATED).
 
-This module is obsolete, and is likely to be deprecated in a future version
-of Biopython, and to be removed after that. If you use this module, please
-contact the Biopython developers at biopython-dev@biopython.org.
+This module is deprecated, and is expected to be removed in the next release.
+If you use this module, please contact the Biopython developers via the
+mailing lists.
 """
 
-
+import warnings
+import Bio
+warnings.warn("Bio.utils has been deprecated, and we intend to remove it in "
+              "the next release of Biopython.", Bio.BiopythonDeprecationWarning)
+raise NotImplementedError("Error to force a traceback")
 
 from . import Seq
 from . import Alphabet
+
+from Bio.Alphabet import _verify_alphabet as verify_alphabet
 
 from .PropertyManager import default_manager
 
@@ -22,29 +28,17 @@ def ungap(seq):
     """given a sequence with gap encoding, return the ungapped sequence"""
     #TODO - Fix this?  It currently assumes the outmost AlphabetEncoder
     #is for the gap.  Consider HasStopCodon(Gapped(Protein())) as a test case.
-    import warnings
-    warnings.warn("Bio.utils.ungap() has been deprecated, and we"
-                  " intend to remove it in a future release of Biopython."
-                  " Instead, please use the ungap method of the Seq object "
-                  " (added in Biopython 1.53).",
-                  DeprecationWarning)
+    warnings.warn("Bio.utils has been deprecated, and we intend to remove it "
+                  "in the next release of Biopython. Instead of function "
+                  "Bio.utils.ungap please use the ungap method of the Seq "
+                  "object (added in Biopython 1.53).",
+                  Bio.BiopythonDeprecationWarning)
     gap = seq.gap_char
     letters = []
     for c in seq:
         if c != gap:
             letters.append(c)
     return Seq.Seq("".join(letters), seq.alphabet.alphabet)
-
-def verify_alphabet(seq):
-    letters = {}
-    for c in seq.alphabet.letters:
-        letters[c] = 1
-    try:
-        for c in seq:
-            letters[c]
-    except KeyError:
-        return 0
-    return 1
 
 def count_monomers(seq):
     dict = {}

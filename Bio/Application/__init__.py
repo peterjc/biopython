@@ -59,19 +59,20 @@ def generic_run(commandline):
     This may be in issue when the program writes a large amount of
     data to standard output.
 
-    NOTE - This function is considered to be obsolete, and we intend to
-    deprecate it and then remove it in future releases of Biopython.
+    NOTE - This function is deprecated, and we intend to remove it in
+    future releases of Biopython.
     We now recommend you invoke subprocess directly, using str(commandline)
     to turn an AbstractCommandline wrapper into a command line string. This
     will give you full control of the tool's input and output as well.
     """
     import warnings
+    import Bio
     warnings.warn("Bio.Application.generic_run and the associated "
                   "Bio.Application.ApplicationResult are deprecated. "
                   "Please use the Bio.Application based wrappers with "
                   "the built in Python module subprocess instead, as "
                   "described in the Biopython Tutorial.",
-                  DeprecationWarning)
+                  Bio.BiopythonDeprecationWarning)
     #We don't need to supply any piped input, but we setup the
     #standard input pipe anyway as a work around for a python
     #bug if this is called from a Windows GUI program.  For
@@ -103,12 +104,13 @@ class ApplicationResult:
         """Intialize with the commandline from the program.
         """
         import warnings
+        import Bio
         warnings.warn("Bio.Application.ApplicationResult and the "
                       "associated function Bio.Application.generic_run "
                       "are deprecated. Please use the Bio.Application "
                       "based wrappers with the built in Python module "
                       "subprocess instead, as described in the Biopython "
-                      "Tutorial.", DeprecationWarning)
+                      "Tutorial.", Bio.BiopythonDeprecationWarning)
         self._cl = application_cl
 
         # provide the return code of the application

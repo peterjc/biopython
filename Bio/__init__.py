@@ -15,3 +15,10 @@ __version__ = "1.55+"
 class MissingExternalDependencyError(Exception):
     pass
 
+class BiopythonDeprecationWarning(UserWarning):
+    """Code marked as deprecated is likely to be removed in a future version
+of Biopython. To avoid removal of this code, please contact the Biopython
+developers by sending an email to biopython-dev@biopython.org.
+"""
+    # Use this warning instead of Python's DeprecationWarning, since
+    # those are ignored by default since Python 2.7.

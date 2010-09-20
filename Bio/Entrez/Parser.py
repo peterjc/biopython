@@ -110,20 +110,30 @@ class StructureElement(dict):
 
 
 class NotXMLError(ValueError):
+    def __init__(self, message):
+        self.message = message
     def __str__(self):
-        return "Failed to parse the XML data. Please make sure that the input data are in XML format."
+        return "Failed to parse the XML data (%s). Please make sure that the input data are in XML format." % self.message
 
 
 class CorruptedXMLError(ValueError):
+    def __init__(self, message):
+        self.message = message
     def __str__(self):
-        # This message can be changed once all XML data returned by EUtils
-        # start with the XML declaration
-        return "Failed to parse the XML data. Please make sure that the input data are in XML format, and that the data are not corrupted."
+        return "Failed to parse the XML data (%s). Please make sure that the input data are not corrupted." % self.message
+
+
+class ValidationError(ValueError):
+    """Validating parsers raise this error if the parser finds a tag in the XML that is not defined in the DTD. Non-validating parsers do not raise this error. The Bio.Entrez.read and Bio.Entrez.parse functions use validating parsers by default (see those functions for more information)"""
+    def __init__(self, name):
+        self.name = name
+    def __str__(self):
+        return "Failed to find tag '%s' in the DTD. To skip all tags that are not represented in the DTD, please call Bio.Entrez.read or Bio.Entrez.parse with validate=False" % self.name
 
 
 class DataHandler:
 
-    def __init__(self, dtd_dir):
+    def __init__(self, dtd_dir, validate):
         self.stack = []
         self.errors = []
         self.integers = []
@@ -133,31 +143,25 @@ class DataHandler:
         self.structures = {}
         self.items = []
         self.dtd_dir = dtd_dir
-        self.valid = True
-        # Set to False once EUtils always returns XML files starting with <!xml
+        self.validating = validate
         self.parser = expat.ParserCreate(namespace_separator=" ")
         self.parser.SetParamEntityParsing(expat.XML_PARAM_ENTITY_PARSING_ALWAYS)
         self.parser.XmlDeclHandler = self.xmlDeclHandler
-        self.parser.StartElementHandler = self.startElementHandler
-        self.parser.EndElementHandler = self.endElementHandler
-        self.parser.CharacterDataHandler = self.characterDataHandler
-        self.parser.ExternalEntityRefHandler = self.externalEntityRefHandler
-        self.parser.StartNamespaceDeclHandler = self.startNamespaceDeclHandler
 
     def read(self, handle):
         """Set up the parser and let it parse the XML results"""
         try:
             self.parser.ParseFile(handle)
-        except expat.ExpatError:
-            if self.valid:
+        except expat.ExpatError as e:
+            if self.parser.StartElementHandler:
                 # We saw the initial <!xml declaration, so we can be sure that
                 # we are parsing XML data. Most likely, the XML file is
                 # corrupted.
-                raise CorruptedXMLError
+                raise CorruptedXMLError(e)
             else:
                 # We have not seen the initial <!xml declaration, so probably
                 # the input data is not in XML format.
-                raise NotXMLError
+                raise NotXMLError(e)
         return self.object
 
     def parse(self, handle):
@@ -177,16 +181,16 @@ class DataHandler:
 
             try:
                 self.parser.Parse(text, False)        
-            except expat.ExpatError:
-                if self.valid:
+            except expat.ExpatError as e:
+                if self.parser.StartElementHandler:
                     # We saw the initial <!xml declaration, so we can be sure
                     # that we are parsing XML data. Most likely, the XML file
                     # is corrupted.
-                    raise CorruptedXMLError
+                    raise CorruptedXMLError(e)
                 else:
                     # We have not seen the initial <!xml declaration, so
                     # probably the input data is not in XML format.
-                    raise NotXMLError
+                    raise NotXMLError(e)
 
             if not self.stack:
                 # Haven't read enough from the XML file yet
@@ -200,15 +204,17 @@ class DataHandler:
                 yield record
 
     def xmlDeclHandler(self, version, encoding, standalone):
-        # The purpose of this method is to make sure that we are parsing XML.
-        self.valid = True
+        # XML declaration found; set the handlers
+        self.parser.StartElementHandler = self.startElementHandler
+        self.parser.EndElementHandler = self.endElementHandler
+        self.parser.CharacterDataHandler = self.characterDataHandler
+        self.parser.ExternalEntityRefHandler = self.externalEntityRefHandler
+        self.parser.StartNamespaceDeclHandler = self.startNamespaceDeclHandler
 
     def startNamespaceDeclHandler(self, prefix, un):
         raise NotImplementedError("The Bio.Entrez parser cannot handle XML data that make use of XML namespaces")
 
     def startElementHandler(self, name, attrs):
-        if not self.valid:
-            raise NotXMLError
         self.content = ""
         if name in self.lists:
             object = ListElement()
@@ -235,8 +241,12 @@ class DataHandler:
             self.attributes = attrs
             return
         else:
-            # Element not found in DTD; this will not be stored in the record
-            object = ""
+            # Element not found in DTD
+            if self.validating:
+                raise ValidationError(name)
+            else:
+                # this will not be stored in the record
+                object = ""
         if object!="":
             object.tag = name
             if attrs:
@@ -250,8 +260,6 @@ class DataHandler:
         self.stack.append(object)
 
     def endElementHandler(self, name):
-        if not self.valid:
-            raise NotXMLError
         value = self.content
         if name in self.errors:
             if value=="":
@@ -294,8 +302,6 @@ class DataHandler:
                 current[name] = value
 
     def characterDataHandler(self, content):
-        if not self.valid:
-            raise NotXMLError
         self.content += content
 
     def elementDecl(self, name, model):
@@ -304,8 +310,6 @@ class DataHandler:
         encountered in a DTD. The purpose of this function is to determine
         whether this element should be regarded as a string, integer, list
         dictionary, structure, or error."""
-        if not self.valid:
-            raise NotXMLError
         if name.upper()=="ERROR":
             self.errors.append(name)
             return
@@ -385,8 +389,6 @@ class DataHandler:
         we try to download it. In practice, this may fail though, if the XML
         relies on many interrelated DTDs. If new DTDs appear, putting them in
         Bio/Entrez/DTDs will allow the parser to see them."""
-        if not self.valid:
-            raise NotXMLError
         location, filename = os.path.split(systemId)
         path = os.path.join(str(self.dtd_dir), str(filename))
         try:

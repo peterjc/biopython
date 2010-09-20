@@ -18,11 +18,11 @@ An explicit warning was added to setup.py for Biopython 1.55.
 
 Bio.Encodings
 =============
-Declared obsolete in Release 1.55.
+Explicitly declared obsolete in Release 1.55, and deprecated in Release 1.56.
 
 Bio.PropertyManager
 ===================
-Declared obsolete in Biopython 1.55.
+Explicitly declared obsolete in Release 1.55, and deprecated in Release 1.56.
 
 Bio.InterPro
 ============
@@ -33,13 +33,13 @@ Bio.GenBank.LocationParser
 ==========================
 This module used to be used for parsing GenBank and EMBL feature locations.
 It has been replaced with faster code using regular expressions, and is no
-longer needed. Declared obsolete in Release 1.55.
+longer needed. Declared obsolete in Release 1.55, deprecated in Release 1.56.
 
 Bio.Parsers and Bio.Parsers.spark
 =================================
 This module was a copy of John Aycock's SPARK parser included with Biopython
 soley for use in Bio.GenBank.LocationParser. Declared obsolete in Release
-1.55.
+1.55, deprecated in Release 1.56.
 
 Bio.Restriction.DNAUtils and check_bases
 ========================================
@@ -423,7 +423,8 @@ Bio.utils
 Functions 'translate', 'translate_to_stop', 'back_translate', 'transcribe',
 and 'back_transcribe' were deprecated in Release 1.49, and removed in Release
 1.53. Function 'ungap' was deprecated in Release 1.53. Use Bio.Seq instead.
-The whole of Bio.utils was declared obsolete in Release 1.55.
+The whole of Bio.utils was declared obsolete in Release 1.55, and deprecated
+in Biopython 1.56.
 
 Bio.Motif
 =========

@@ -1,5 +1,5 @@
 # Copyright 2000-2002 by Andrew Dalke.
-# Revisions copyright 2007-2008 by Peter Cock.
+# Revisions copyright 2007-2010 by Peter Cock.
 # All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
@@ -264,12 +264,40 @@ def _consensus_base_alphabet(alphabets):
 def _consensus_alphabet(alphabets):
     """Returns a common but often generic alphabet object (PRIVATE).
 
+    >>> from Bio.Alphabet import IUPAC
+    >>> _consensus_alphabet([IUPAC.extended_protein, IUPAC.protein])
+    ExtendedIUPACProtein()
+    >>> _consensus_alphabet([generic_protein, IUPAC.protein])
+    ProteinAlphabet()
+
     Note that DNA+RNA -> Nucleotide, and Nucleotide+Protein-> generic single
     letter.  These DO NOT raise an exception!
+
+    >>> _consensus_alphabet([generic_dna, generic_nucleotide])
+    NucleotideAlphabet()
+    >>> _consensus_alphabet([generic_dna, generic_rna])
+    NucleotideAlphabet()
+    >>> _consensus_alphabet([generic_dna, generic_protein])
+    SingleLetterAlphabet()
+    >>> _consensus_alphabet([single_letter_alphabet, generic_protein])
+    SingleLetterAlphabet()
     
     This is aware of Gapped and HasStopCodon and new letters added by
     other AlphabetEncoders.  This WILL raise an exception if more than
-    one gap character or stop symbol is present."""
+    one gap character or stop symbol is present.
+
+    >>> from Bio.Alphabet import IUPAC
+    >>> _consensus_alphabet([Gapped(IUPAC.extended_protein), HasStopCodon(IUPAC.protein)])
+    HasStopCodon(Gapped(ExtendedIUPACProtein(), '-'), '*')
+    >>> _consensus_alphabet([Gapped(IUPAC.protein, "-"), Gapped(IUPAC.protein, "=")])
+    Traceback (most recent call last):
+        ...
+    ValueError: More than one gap character present
+    >>> _consensus_alphabet([HasStopCodon(IUPAC.protein, "*"), HasStopCodon(IUPAC.protein, "+")])
+    Traceback (most recent call last):
+        ...
+    ValueError: More than one stop symbol present
+    """
     base = _consensus_base_alphabet(alphabets)
     gap = None
     stop = None
@@ -312,6 +340,15 @@ def _consensus_alphabet(alphabets):
 def _check_type_compatible(alphabets):
     """Returns True except for DNA+RNA or Nucleotide+Protein (PRIVATE).
 
+    >>> _check_type_compatible([generic_dna, generic_nucleotide])
+    True
+    >>> _check_type_compatible([generic_dna, generic_rna])
+    False
+    >>> _check_type_compatible([generic_dna, generic_protein])
+    False
+    >>> _check_type_compatible([single_letter_alphabet, generic_protein])
+    True
+
     This relies on the Alphabet subclassing hierarchy.  It does not
     check things like gap characters or stop symbols."""
     dna, rna, nucl, protein = False, False, False, False
@@ -332,3 +369,35 @@ def _check_type_compatible(alphabets):
             protein = True
             if nucl : return False
     return True
+
+def _verify_alphabet(sequence):
+    """Check all letters in sequence are in the alphabet (PRIVATE).
+
+    >>> from Bio.Seq import Seq
+    >>> from Bio.Alphabet import IUPAC
+    >>> my_seq = Seq("MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF",
+    ...              IUPAC.protein)
+    >>> _verify_alphabet(my_seq)
+    True
+
+    This example has an X, which is not in the IUPAC protein alphabet
+    (you should be using the IUPAC extended protein alphabet):
+
+    >>> bad_seq = Seq("MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVFX",
+    ...                IUPAC.protein)
+    >>> _verify_alphabet(bad_seq)
+    False
+
+    This replaces Bio.utils.verify_alphabet() since we are deprecating
+    that. Potentially this could be added to the Alphabet object, and
+    I would like it to be an option when creating a Seq object... but
+    that might slow things down.
+    """
+    letters = sequence.alphabet.letters
+    if not letters:
+        raise ValueError("Alphabet does not define letters.")
+    for letter in sequence:
+        if letter not in letters:
+            return False
+    return True
+
