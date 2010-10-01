@@ -303,25 +303,25 @@ class _InsdcWriter(SequentialSequenceWriter):
         "Returns a list of strings."""
         #TODO - Do the line spliting while preserving white space?
         text = text.strip()
-        if len(text) < max_len:
+        if len(text) <= max_len:
             return [text]
 
         words = text.split()
-        assert max([len(w) for w in words]) < max_len, \
-               "Your description cannot be broken into nice lines!:\n%s" \
-               % repr(text)
+        if max([len(w) for w in words]) > max_len:
+            raise ValueError("Text cannot be broken into len %i lines!:\n%s"
+                             % (max_len, repr(text)))
         text = ""
-        while words and len(text) + 1 + len(words[0]) < max_len:
+        while words and len(text) + 1 + len(words[0]) <= max_len:
             text += " " + words.pop(0)
             text = text.strip()
-        assert len(text) < max_len
+        assert len(text) <= max_len
         answer = [text]
         while words:
-            text = ""
-            while words and len(text) + 1 + len(words[0]) < max_len:
+            text = words.pop(0)
+            while words and len(text) + 1 + len(words[0]) <= max_len:
                 text += " " + words.pop(0)
                 text = text.strip()
-            assert len(text) < max_len
+            assert len(text) <= max_len
             answer.append(text)
         assert not words
         return answer
@@ -356,7 +356,7 @@ class GenBankWriter(_InsdcWriter):
     def _write_single_line(self, tag, text):
         "Used in the the 'header' of each GenBank record."""
         assert len(tag) < self.HEADER_WIDTH
-        assert len(text) < self.MAX_WIDTH - self.HEADER_WIDTH, \
+        assert len(text) <= self.MAX_WIDTH - self.HEADER_WIDTH, \
                "Annotation %s too long for %s line" % (repr(text), tag)
         self.handle.write("%s%s\n" % (tag.ljust(self.HEADER_WIDTH),
                                       text.replace("\n", " ")))
@@ -366,9 +366,8 @@ class GenBankWriter(_InsdcWriter):
         #TODO - Do the line spliting while preserving white space?
         max_len = self.MAX_WIDTH - self.HEADER_WIDTH
         lines = self._split_multi_line(text, max_len)
-        assert len(tag) < self.HEADER_WIDTH
         self._write_single_line(tag, lines[0])
-        for line in lines[1:] :
+        for line in lines[1:]:
             self._write_single_line("", line)
 
     def _write_multi_entries(self, tag, text_list):
@@ -766,14 +765,20 @@ class EmblWriter(_InsdcWriter):
         data = self._get_seq_string(record) #Catches sequence being None
         seq_len = len(data)
         #TODO - Should we change the case?
-        #TODO - What if we have RNA?
-        a_count = data.count('A') + data.count('a')
-        c_count = data.count('C') + data.count('c')
-        g_count = data.count('G') + data.count('g')
-        t_count = data.count('T') + data.count('t')
-        other = seq_len - (a_count + c_count + g_count + t_count)
-        handle.write("SQ   Sequence %i BP; %i A; %i C; %i G; %i T; %i other;\n" \
-                     % (seq_len, a_count, c_count, g_count, t_count, other))
+
+        #Get the base alphabet (underneath any Gapped or StopCodon encoding)
+        a = Alphabet._get_base_alphabet(record.seq.alphabet)
+        if isinstance(a, Alphabet.DNAAlphabet):
+            #TODO - What if we have RNA?
+            a_count = data.count('A') + data.count('a')
+            c_count = data.count('C') + data.count('c')
+            g_count = data.count('G') + data.count('g')
+            t_count = data.count('T') + data.count('t')
+            other = seq_len - (a_count + c_count + g_count + t_count)
+            handle.write("SQ   Sequence %i BP; %i A; %i C; %i G; %i T; %i other;\n" \
+                         % (seq_len, a_count, c_count, g_count, t_count, other))
+        else:
+            handle.write("SQ   \n")
         
         for line_number in range(0, seq_len // LETTERS_PER_LINE):
             handle.write("    ") #Just four, not five
@@ -832,15 +837,18 @@ class EmblWriter(_InsdcWriter):
         a = Alphabet._get_base_alphabet(record.seq.alphabet)
         if not isinstance(a, Alphabet.Alphabet):
             raise TypeError("Invalid alphabet")
-        elif not isinstance(a, Alphabet.NucleotideAlphabet):
-            raise ValueError("Need a Nucleotide alphabet")
         elif isinstance(a, Alphabet.DNAAlphabet):
             mol_type = "DNA"
+            units = "BP"
         elif isinstance(a, Alphabet.RNAAlphabet):
             mol_type = "RNA"
+            units = "BP"
+        elif isinstance(a, Alphabet.ProteinAlphabet):
+            mol_type = "PROTEIN"
+            units = "AA"
         else:
             #Must be something like NucleotideAlphabet
-            raise ValueError("Need a DNA or RNA alphabet")
+            raise ValueError("Need a DNA, RNA or Protein alphabet")
 
         #Get the taxonomy division
         division = self._get_data_division(record)
@@ -855,9 +863,9 @@ class EmblWriter(_InsdcWriter):
         #5. Data class
         #6. Taxonomic division
         #7. Sequence length
-        self._write_single_line("ID", "%s; %s; ; %s; ; %s; %i BP." \
+        self._write_single_line("ID", "%s; %s; ; %s; ; %s; %i %s." \
                                 % (accession, version, mol_type,
-                                   division, len(record)))
+                                   division, len(record), units))
         handle.write("XX\n")
         self._write_single_line("AC", accession+";")
         handle.write("XX\n")
