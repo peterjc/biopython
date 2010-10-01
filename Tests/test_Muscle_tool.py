@@ -43,8 +43,8 @@ if sys.platform=="win32":
                 break
         if muscle_exe : break
 else:
-    import commands
-    output = commands.getoutput("muscle -version")
+    import subprocess
+    output = subprocess.getoutput("muscle -version")
     #Since "not found" may be in another language, try and be sure this is
     #really the MUSCLE tool's output
     if "not found" not in output and "MUSCLE" in output \

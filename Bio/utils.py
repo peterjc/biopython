@@ -17,12 +17,12 @@ warnings.warn("Bio.utils has been deprecated, and we intend to remove it in "
               "the next release of Biopython.", Bio.BiopythonDeprecationWarning)
 raise NotImplementedError("Error to force a traceback")
 
-import Seq
-import Alphabet
+from . import Seq
+from . import Alphabet
 
 from Bio.Alphabet import _verify_alphabet as verify_alphabet
 
-from PropertyManager import default_manager
+from .PropertyManager import default_manager
 
 def ungap(seq):
     """given a sequence with gap encoding, return the ungapped sequence"""

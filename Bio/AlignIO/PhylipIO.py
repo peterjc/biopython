@@ -24,7 +24,7 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord  
 from Bio.Alphabet import single_letter_alphabet
 from Bio.Align import MultipleSeqAlignment
-from Interfaces import AlignmentIterator, SequentialAlignmentWriter
+from .Interfaces import AlignmentIterator, SequentialAlignmentWriter
 
 class PhylipWriter(SequentialAlignmentWriter):
     """Phylip alignment writer."""
@@ -124,7 +124,7 @@ class PhylipIterator(AlignmentIterator):
 
     def _is_header(self, line):
         line = line.strip()
-        parts = filter(None, line.split())
+        parts = [_f for _f in line.split() if _f]
         if len(parts)!=2:
             return False # First line should have two integers
         try:
@@ -134,7 +134,7 @@ class PhylipIterator(AlignmentIterator):
         except ValueError:
             return False # First line should have two integers
 
-    def next(self):
+    def __next__(self):
         handle = self.handle
 
         try:
@@ -147,7 +147,7 @@ class PhylipIterator(AlignmentIterator):
 
         if not line: return
         line = line.strip()
-        parts = filter(None, line.split())
+        parts = [_f for _f in line.split() if _f]
         if len(parts)!=2:
             raise ValueError("First line should have two integers")
         try:
@@ -201,7 +201,7 @@ class PhylipIterator(AlignmentIterator):
         return MultipleSeqAlignment(records, self.alphabet)
 
 if __name__=="__main__":
-    print "Running short mini-test"
+    print("Running short mini-test")
 
     phylip_text="""     8    286
 V_Harveyi_ --MKNWIKVA VAAIA--LSA A--------- ---------T VQAATEVKVG 
@@ -259,13 +259,13 @@ HISJ_E_COL MKKLVLSLSL VLAFSSATAA F--------- ---------- AAIPQNIRIG
            LREALNKAFA EMRADGTYEK LAKKYFDFDV YGG---
 """
 
-    from cStringIO import StringIO
+    from io import StringIO
     handle = StringIO(phylip_text)
     count=0
     for alignment in PhylipIterator(handle):
         for record in alignment:
             count=count+1
-            print record.id
+            print(record.id)
             #print record.seq.tostring()
     assert count == 8
 
@@ -362,9 +362,9 @@ Gorilla   AAACCCTTGC CGGTACGCTT AAACCATTGC CGGTACGCTT AA"""
         list5 = list(PhylipIterator(handle))
         assert len(list5)==1
         assert len(list5[0])==5
-        print "That should have failed..."
+        print("That should have failed...")
     except ValueError:
-        print "Evil multiline non-interlaced example failed as expected"
+        print("Evil multiline non-interlaced example failed as expected")
     handle.close()
 
     handle = StringIO(phylip_text5a)
@@ -373,16 +373,16 @@ Gorilla   AAACCCTTGC CGGTACGCTT AAACCATTGC CGGTACGCTT AA"""
     assert len(list5)==1
     assert len(list4[0])==5
 
-    print "Concatenation"
+    print("Concatenation")
     handle = StringIO(phylip_text4 + "\n" + phylip_text4)
     assert len(list(PhylipIterator(handle))) == 2
 
     handle = StringIO(phylip_text3 + "\n" + phylip_text4 + "\n\n\n" + phylip_text)
     assert len(list(PhylipIterator(handle))) == 3
     
-    print "OK"
+    print("OK")
 
-    print "Checking write/read"
+    print("Checking write/read")
     handle = StringIO()
     PhylipWriter(handle).write_file(list5)
     handle.seek(0)
@@ -393,4 +393,4 @@ Gorilla   AAACCCTTGC CGGTACGCTT AAACCATTGC CGGTACGCTT AA"""
         for r1, r2 in zip(a1, a2):
             assert r1.id == r2.id
             assert r1.seq.tostring() == r2.seq.tostring()
-    print "Done"
+    print("Done")

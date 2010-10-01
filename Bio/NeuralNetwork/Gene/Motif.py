@@ -12,7 +12,7 @@ from Bio.Alphabet import _verify_alphabet
 from Bio.Seq import Seq
 
 # local modules
-from Pattern import PatternRepository
+from .Pattern import PatternRepository
 
 class MotifFinder:
     """Find motifs in a set of Sequence Records.
@@ -199,7 +199,7 @@ class MotifCoder:
         # as long as we have some motifs present, normalize them
         # otherwise we'll just return 0 for everything 
         if max_count > 0:
-            for motif in seq_motifs.keys():
+            for motif in list(seq_motifs.keys()):
                 seq_motifs[motif] = (float(seq_motifs[motif] - min_count)
                                      / float(max_count))
 

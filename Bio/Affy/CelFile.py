@@ -64,7 +64,7 @@ def read(handle):
             if "=" in line:
                 continue
             words = line.split()
-            y, x = map(int, words[:2])
+            y, x = list(map(int, words[:2]))
             record.intensities[x,y]  = float(words[2])
             record.stdevs[x,y] = float(words[3])
             record.npix[x,y]  = int(words[4])
@@ -154,7 +154,7 @@ class CelConsumer(AbstractConsumer):
         self._npix  = zeros((self._rows, self._cols), int)
 
     def ReadIntensity(self, line):
-        y, x, mean, stdev, npix = map(float, line.split())
+        y, x, mean, stdev, npix = list(map(float, line.split()))
         x = int(x)
         y = int(y)
         self._mean[x,y]  = mean

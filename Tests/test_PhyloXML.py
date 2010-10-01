@@ -235,7 +235,7 @@ class TreeTests(unittest.TestCase):
 
     def test_BinaryCharacters(self):
         """Instantiation of BinaryCharacters objects."""
-        tree = PhyloXMLIO.parse(EX_DOLLO).next()
+        tree = next(PhyloXMLIO.parse(EX_DOLLO))
         bchars = tree.clade[0,0].binary_characters
         self.assertTrue(isinstance(bchars, PX.BinaryCharacters))
         self.assertEqual(bchars.type, 'parsimony inferred')
@@ -261,7 +261,7 @@ class TreeTests(unittest.TestCase):
 
     def test_Confidence(self):
         """Instantiation of Confidence objects."""
-        tree = PhyloXMLIO.parse(EX_MADE).next()
+        tree = next(PhyloXMLIO.parse(EX_MADE))
         self.assertEqual(tree.name, 'testing confidence')
         for conf, type, val in zip(tree.confidences,
                 ('bootstrap', 'probability'),
@@ -308,7 +308,7 @@ class TreeTests(unittest.TestCase):
                 (hirschweg, nagoya, eth_zurich, san_diego),
                 ('Hirschweg, Winterthur, Switzerland',
                     'Nagoya, Aichi, Japan',
-                    u'ETH Z\xfcrich',
+                    'ETH Z\xfcrich',
                     'San Diego'),
                 (47.481277, 35.155904, 47.376334, 32.880933),
                 (8.769303, 136.915863, 8.548108, -117.217543),
@@ -327,7 +327,7 @@ class TreeTests(unittest.TestCase):
 
         Also checks ProteinDomain type.
         """
-        tree = PhyloXMLIO.parse(EX_APAF).next()
+        tree = next(PhyloXMLIO.parse(EX_APAF))
         clade = tree.clade[0,0,0,0,0,0,0,0,0,0]
         darch = clade.sequences[0].domain_architecture
         self.assertTrue(isinstance(darch, PX.DomainArchitecture))
@@ -395,7 +395,7 @@ class TreeTests(unittest.TestCase):
 
     def test_Reference(self):
         """Instantiation of Reference objects."""
-        tree = PhyloXMLIO.parse(EX_DOLLO).next()
+        tree = next(PhyloXMLIO.parse(EX_DOLLO))
         reference = tree.clade[0,0,0,0,0,0].references[0]
         self.assertTrue(isinstance(reference, PX.Reference))
         self.assertEqual(reference.doi, '10.1038/nature06614')
