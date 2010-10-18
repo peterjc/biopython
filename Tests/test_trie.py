@@ -43,14 +43,14 @@ class TestTrie(unittest.TestCase):
         trieobj["he"] = 7
         trieobj["hej"] = 9
         trieobj["foo"] = "bar"
-        k = trieobj.keys()
+        k = list(trieobj.keys())
         k.sort()
         self.assertEqual(k, ["foo", "he", "hej", "hello"])
         self.assertEqual(trieobj["hello"], 5)
         self.assertEqual(trieobj.get("bye"), None)
-        self.assertEqual(trieobj.has_key("hello"), True)
-        self.assertEqual(trieobj.has_key("he"), True)
-        self.assertEqual(trieobj.has_key("bye"), False)
+        self.assertEqual("hello" in trieobj, True)
+        self.assertEqual("he" in trieobj, True)
+        self.assertEqual("bye" in trieobj, False)
         self.assertEqual(trieobj.has_prefix("h"), True)
         self.assertEqual(trieobj.has_prefix("hel"), True)
         self.assertEqual(trieobj.has_prefix("foa"), False)
@@ -67,12 +67,12 @@ class TestTrie(unittest.TestCase):
         self.assertEqual(k, [])
 
     def test_save(self):
-        import StringIO
+        import io
         trieobj = trie.trie()
         trieobj["foo"] = 1
-        k = trieobj.keys()
+        k = list(trieobj.keys())
         self.assertEqual(k, ["foo"])
-        v = trieobj.values()
+        v = list(trieobj.values())
         self.assertEqual(v, [1])
         self.assertEqual(trieobj.get("bar", 99), 99)
         trieobj["hello"] = '55a'
@@ -92,14 +92,14 @@ class TestTrie(unittest.TestCase):
         y = {}
         for z in x:
             y[z] = y.get(z, 0) + 1
-        x = y.items()
+        x = list(y.items())
         x.sort()
         self.assertEqual(x,[(('foo', 1, 0), 1), (('hello', '55a', 4), 6)])
-        h = StringIO.StringIO()
+        h = io.StringIO()
         trie.save(h, trieobj)
         h.seek(0)
         trieobj = trie.load(h)
-        k = trieobj.keys()
+        k = list(trieobj.keys())
         self.assertTrue("foo" in k)
         self.assertTrue("hello" in k)
         self.assertEqual(repr(trieobj["foo"]), '1')

@@ -1,4 +1,4 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from xml.sax import handler, make_parser, expatreader
 from xml.sax.expatreader import ExpatParser
 from xml.sax._exceptions import SAXParseException
@@ -37,12 +37,12 @@ def scan(seq="", mirror='http://www.expasy.org', output='xml', **keywords):
     """
     parameters = {'seq': seq,
                   'output': output}
-    for key, value in keywords.iteritems():
+    for key, value in keywords.items():
         if value is not None:
             parameters[key] = value
-    command = urllib.urlencode(parameters)
+    command = urllib.parse.urlencode(parameters)
     url = "%s/cgi-bin/prosite/PSScan.cgi?%s" % (mirror, command)
-    handle = urllib.urlopen(url)
+    handle = urllib.request.urlopen(url)
     return handle
 
 def read(handle):
@@ -70,7 +70,7 @@ class Parser(ExpatParser):
         # fed to the parser.
         if self.firsttime:
             if data[:5]!="<?xml":
-                raise ValueError, data
+                raise ValueError(data)
         self.firsttime = False 
         return ExpatParser.feed(self, data, isFinal)
 
