@@ -12,7 +12,7 @@ if sys.version_info[0] >= 3:
     
 import os
 import unittest
-from StringIO import StringIO
+from io import StringIO
 from Bio.SeqRecord import SeqRecord
 from Bio import SeqIO
 from Bio.SeqIO._index import _FormatToIndexedDict
@@ -53,7 +53,7 @@ class IndexDictTests(unittest.TestCase):
         self.assertEqual(rec_dict.get(chr(0), chr(1)), chr(1))
         if hasattr(dict, "iteritems"):
             #Python 2.x
-            for key, rec in rec_dict.iteritems():
+            for key, rec in rec_dict.items():
                 self.assertTrue(key in id_list)
                 self.assertTrue(isinstance(rec, SeqRecord))
                 self.assertEqual(rec.id, key)
@@ -63,11 +63,11 @@ class IndexDictTests(unittest.TestCase):
         else:
             #Python 3
             assert not hasattr(rec_dict, "iteritems")
-            for key, rec in rec_dict.iteritems():
+            for key, rec in rec_dict.items():
                 self.assertTrue(key in id_list)
                 self.assertTrue(isinstance(rec, SeqRecord))
                 self.assertEqual(rec.id, key)
-            for rec in rec_dict.itervalues():
+            for rec in rec_dict.values():
                 self.assertTrue(key in id_list)
                 self.assertTrue(isinstance(rec, SeqRecord))
         

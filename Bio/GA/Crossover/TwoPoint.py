@@ -16,7 +16,7 @@ new genome 2 --   a b c C D E F
 
 """
 # standard modules
-from GeneralPoint import TwoCrossover
+from .GeneralPoint import TwoCrossover
 
 class TwoPointCrossover(TwoCrossover):
     """Perform two point crossover between genomes at some defined rate.

@@ -5,10 +5,10 @@
 # File: xbb_search.py
 
 import re
-import os, sys, commands
+import os, sys, subprocess
 sys.path.insert(0, '.')
-from Tkinter import *
-from tkColorChooser import askcolor
+from tkinter import *
+from tkinter.colorchooser import askcolor
 from Bio.Data.IUPACData import ambiguous_dna_values
 import re
 
@@ -21,9 +21,9 @@ class DNAsearch:
         
     def init_alphabet(self):
         self.alphabet = ambiguous_dna_values
-        other = ''.join(self.alphabet.keys())
+        other = ''.join(list(self.alphabet.keys()))
         self.alphabet['N'] = self.alphabet['N'] + other
-        for key in self.alphabet.keys():
+        for key in list(self.alphabet.keys()):
             if key == 'N': continue
             if key in self.alphabet[key]: continue
             self.alphabet[key] = self.alphabet[key] + key

@@ -16,7 +16,7 @@ in the training data.
 import math
 
 # local stuff
-from DynamicProgramming import ScaledDPAlgorithms
+from .DynamicProgramming import ScaledDPAlgorithms
 
 class TrainingSequence:
     """Hold a training sequence with emissions and optionally, a state path.
@@ -102,7 +102,7 @@ class AbstractTrainer:
         calculation.
         """
         # get an ordered list of all items
-        all_ordered = counts.keys()
+        all_ordered = list(counts.keys())
         all_ordered.sort()
         
         ml_estimation = {}

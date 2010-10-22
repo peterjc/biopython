@@ -59,9 +59,9 @@ class StringElement(str):
             return text
         return "StringElement(%s, attributes=%s)" % (text, repr(attributes))
 
-class UnicodeElement(unicode):
+class UnicodeElement(str):
     def __repr__(self):
-        text = unicode.__repr__(self)
+        text = str.__repr__(self)
         try:
             attributes = self.attributes
         except AttributeError:
@@ -152,7 +152,7 @@ class DataHandler:
         """Set up the parser and let it parse the XML results"""
         try:
             self.parser.ParseFile(handle)
-        except expat.ExpatError, e:
+        except expat.ExpatError as e:
             if self.parser.StartElementHandler:
                 # We saw the initial <!xml declaration, so we can be sure that
                 # we are parsing XML data. Most likely, the XML file is
@@ -205,7 +205,7 @@ class DataHandler:
 
             try:
                 self.parser.Parse(text, False)        
-            except expat.ExpatError, e:
+            except expat.ExpatError as e:
                 if self.parser.StartElementHandler:
                     # We saw the initial <!xml declaration, so we can be sure
                     # that we are parsing XML data. Most likely, the XML file
