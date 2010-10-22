@@ -145,7 +145,8 @@ class PhylipIterator(AlignmentIterator):
         except AttributeError:
             line = handle.readline()
 
-        if not line: return
+        if not line:
+            raise StopIteration
         line = line.strip()
         parts = [_f for _f in line.split() if _f]
         if len(parts)!=2:
