@@ -26,9 +26,9 @@ class MMCIFParser:
         residue_id_list=mmcif_dict["_atom_site.label_comp_id"]
         seq_id_list=mmcif_dict["_atom_site.label_seq_id"]
         chain_id_list=mmcif_dict["_atom_site.label_asym_id"]
-        x_list=map(float, mmcif_dict["_atom_site.Cartn_x"])
-        y_list=map(float, mmcif_dict["_atom_site.Cartn_y"])
-        z_list=map(float, mmcif_dict["_atom_site.Cartn_z"])
+        x_list=list(map(float, mmcif_dict["_atom_site.Cartn_x"]))
+        y_list=list(map(float, mmcif_dict["_atom_site.Cartn_y"]))
+        z_list=list(map(float, mmcif_dict["_atom_site.Cartn_z"]))
         alt_list=mmcif_dict["_atom_site.label_alt_id"]
         b_factor_list=mmcif_dict["_atom_site.B_iso_or_equiv"]
         occupancy_list=mmcif_dict["_atom_site.occupancy"]
@@ -58,7 +58,7 @@ class MMCIFParser:
         structure_builder.init_structure(structure_id)
         structure_builder.init_model(current_model_id)
         structure_builder.init_seg(" ")
-        for i in xrange(0, len(atom_id_list)):
+        for i in range(0, len(atom_id_list)):
             x=x_list[i]
             y=y_list[i]
             z=z_list[i]
@@ -94,7 +94,7 @@ class MMCIFParser:
             if aniso_flag==1:
                 u=(aniso_u11[i], aniso_u12[i], aniso_u13[i],
                     aniso_u22[i], aniso_u23[i], aniso_u33[i])
-                mapped_anisou=map(float, u)
+                mapped_anisou=list(map(float, u))
                 anisou_array=numpy.array(mapped_anisou, 'f')
                 structure_builder.set_anisou(anisou_array)
         # Now try to set the cell
@@ -137,8 +137,8 @@ if __name__=="__main__":
     structure=p.get_structure("test", filename)
 
     for model in structure.get_list():
-        print model
+        print(model)
         for chain in model.get_list():
-            print chain
-            print "Found %d residues." % len(chain.get_list())
+            print(chain)
+            print("Found %d residues." % len(chain.get_list()))
 

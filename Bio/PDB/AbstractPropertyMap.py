@@ -63,7 +63,7 @@ class AbstractPropertyMap:
 
         Example:
 
-            >>> if apmap.has_key((chain_id, res_id)):
+            >>> if (chain_id, res_id) in apmap:
             ...     res, prop = apmap[(chain_id, res_id)]
 
         Is equivalent to:
@@ -97,7 +97,7 @@ class AbstractPropertyMap:
 
         Example:
             >>> for (res, property) in iter(map):
-            ...     print res, property
+            ...     print(res, property)
 
         @return: iterator
         """
@@ -131,4 +131,5 @@ class AbstractAtomPropertyMap(AbstractPropertyMap):
         if isinstance(res_id, int):
             ent_id=(chain_id, (' ', res_id, ' '), atom_name, icode)
         return ent_id
+
 

@@ -55,7 +55,7 @@ class GenericScanner:
         self.re = re.compile(pattern, re.VERBOSE)
 
         self.index2func = {}
-        for name, number in self.re.groupindex.items():
+        for name, number in list(self.re.groupindex.items()):
             self.index2func[number-1] = getattr(self, 't_' + name)
 
     def makeRE(self, name):
@@ -73,7 +73,7 @@ class GenericScanner:
         return '|'.join(rv)
 
     def error(self, s, pos):
-        print >>sys.stderr, "Lexical error at position %s" % pos
+        print("Lexical error at position %s" % pos, file=sys.stderr)
         raise SystemExit
 
     def tokenize(self, s):
@@ -158,7 +158,7 @@ class GenericParser:
         union = {}
         self.first = {}
         
-        for rulelist in self.rules.values():
+        for rulelist in list(self.rules.values()):
             for lhs, rhs in rulelist:
                 if lhs not in self.first:
                     self.first[lhs] = {}
@@ -175,7 +175,7 @@ class GenericParser:
         changes = 1
         while changes:
             changes = 0
-            for src, dest in union.keys():
+            for src, dest in list(union.keys()):
                 destlen = len(self.first[dest])
                 self.first[dest].update(self.first[src])
                 if len(self.first[dest]) != destlen:
@@ -192,7 +192,7 @@ class GenericParser:
         return None
 
     def error(self, token):
-        print >>sys.stderr, "Syntax error at or near `%s' token" % token
+        print("Syntax error at or near `%s' token" % token, file=sys.stderr)
         raise SystemExit
 
     def parse(self, tokens):
@@ -203,7 +203,7 @@ class GenericParser:
         if self.ruleschanged:
             self.makeFIRST()
 
-        for i in xrange(len(tokens)):
+        for i in range(len(tokens)):
             states[i+1] = []
 
             if states[i] == []:
@@ -401,7 +401,7 @@ class GenericParser:
             sortlist.append((len(rhs), name))
             name2index[name] = i
         sortlist.sort()
-        list = map(lambda (a,b): b, sortlist)
+        list = [a_b[1] for a_b in sortlist]
         return children[name2index[self.resolve(list)]]
 
     def resolve(self, list):
@@ -566,14 +566,14 @@ class GenericASTMatcher(GenericParser):
 
 def _dump(tokens, states):
     for i in range(len(states)):
-        print 'state', i
+        print('state', i)
         for (lhs, rhs), pos, parent in states[i]:
-            print '\t', lhs, '::=',
-            print ' '.join(rhs[:pos]),
-            print '.',
-            print ' '.join(rhs[pos:]),
-            print ',', parent
+            print('\t', lhs, '::=', end=' ')
+            print(' '.join(rhs[:pos]), end=' ')
+            print('.', end=' ')
+            print(' '.join(rhs[pos:]), end=' ')
+            print(',', parent)
         if i < len(tokens):
-            print
-            print 'token', str(tokens[i])
-            print
+            print()
+            print('token', str(tokens[i]))
+            print()

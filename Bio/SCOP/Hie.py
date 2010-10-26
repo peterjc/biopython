@@ -64,7 +64,7 @@ class Record:
             self.children = ()
         else:
             children = children.split(',')
-            self.children = map(int, children)
+            self.children = list(map(int, children))
 
 
     def __str__(self):
@@ -81,7 +81,7 @@ class Record:
                 
 
         if self.children:
-            child_str = map(str, self.children)
+            child_str = list(map(str, self.children))
             s.append(",".join(child_str))
         else:
             s.append('-')

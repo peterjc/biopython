@@ -70,7 +70,7 @@ class Atom:
             warnings.warn("Atom object (name=%s) without element" % name,
                           PDBConstructionWarning)
             element = "?"
-            print name, "--> ?"
+            print(name, "--> ?")
         elif len(element)>2 or element != element.upper() or element != element.strip():
             raise ValueError(element)
         self.element=element
