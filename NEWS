@@ -22,7 +22,13 @@ text file format with longer feature indentation, and protein EMBL files
 The Bio.Seq translation methods and function will now accept an arbitrary
 CodonTable object (for those of your working on very unusual organisms).
 
-(At least) 9 people have contributed to this release, include 4 new people:
+The SeqFeature object now supports len(feature) giving the length consistent
+with the existing extract method. Also, it now supports iteration giving the
+coordindate (with respect to the parent sequence) of each letter within the
+feature (in frame aware order), and "in" which allows you to check if a
+(parent based) coordindate is within the feature location.
+
+(At least) 10 people have contributed to this release, include 5 new people:
 
 Bart de Koning
 Bartek Wilczynski
@@ -31,6 +37,7 @@ Cymon Cox
 Eric Talevich
 Michiel de Hoon
 Peter Cock
+Phillip Garland (first contribution)
 Siong Kong (first contribution)
 Uri Laserson (first contribution)
 

@@ -173,27 +173,12 @@ class Phylogeny(PhyloElement, BaseTree.Tree):
         """
         return Clade.from_clade(clade).to_phylogeny(**kwargs)
 
-    # XXX Backward compatibility shim -- remove in Biopython 1.56
-    @classmethod
-    def from_subtree(cls, clade, **kwargs):
-        """DEPRECATED: use from_clade() instead."""
-        warnings.warn("use from_clade() instead.""",
-                Bio.BiopythonDeprecationWarning, stacklevel=2)
-        return cls.from_clade(clade, **kwargs)
-
     def as_phyloxml(self):
         """Return this tree, a PhyloXML-compatible Phylogeny object.
 
         Overrides the BaseTree method.
         """
         return self
-
-    # XXX Backward compatibility shim -- remove in Biopython 1.56
-    def to_phyloxml(self, **kwargs):
-        """DEPRECATED: use to_phyloxml_container instead."""
-        warnings.warn("use to_phyloxml_container() instead.""",
-                      Bio.BiopythonDeprecationWarning, stacklevel=2)
-        return self.to_phyloxml_container(**kwargs)
 
     def to_phyloxml_container(self, **kwargs):
         """Create a new Phyloxml object containing just this phylogeny."""
@@ -230,6 +215,10 @@ class Phylogeny(PhyloElement, BaseTree.Tree):
         return self.confidences[0]
 
     def _set_confidence(self, value):
+        if value is None:
+            # Special case: mirror the behavior of _get_confidence
+            self.confidences = []
+            return
         if isinstance(value, float) or isinstance(value, int):
             value = Confidence(value)
         elif not isinstance(value, Confidence):
@@ -242,7 +231,10 @@ class Phylogeny(PhyloElement, BaseTree.Tree):
             raise ValueError("multiple confidence values already exist; "
                              "use Phylogeny.confidences instead")
 
-    confidence = property(_get_confidence, _set_confidence)
+    def _del_confidence(self):
+        self.confidences = []
+
+    confidence = property(_get_confidence, _set_confidence, _del_confidence)
 
 
 class Clade(PhyloElement, BaseTree.Clade):
@@ -314,16 +306,9 @@ class Clade(PhyloElement, BaseTree.Clade):
         new_clade = cls(branch_length=clade.branch_length,
                     name=clade.name)
         new_clade.clades = [cls.from_clade(c) for c in clade]
+        new_clade.confidence = clade.confidence
         new_clade.__dict__.update(kwargs)
         return new_clade
-
-    # XXX Backward compatibility shim -- remove in Biopython 1.56
-    @classmethod
-    def from_subtree(cls, clade, **kwargs):
-        """DEPRECATED: use from_clade() instead."""
-        warnings.warn("use from_clade() instead.""",
-                Bio.BiopythonDeprecationWarning, stacklevel=2)
-        return cls.from_clade(clade, **kwargs)
 
     def to_phylogeny(self, **kwargs):
         """Create a new phylogeny containing just this clade."""
@@ -332,6 +317,7 @@ class Clade(PhyloElement, BaseTree.Clade):
         return phy
 
     # Shortcuts for list attributes that are usually only 1 item
+    # NB: Duplicated from Phylogeny class
     def _get_confidence(self):
         if len(self.confidences) == 0:
             return None
@@ -341,6 +327,10 @@ class Clade(PhyloElement, BaseTree.Clade):
         return self.confidences[0]
 
     def _set_confidence(self, value):
+        if value is None:
+            # Special case: mirror the behavior of _get_confidence
+            self.confidences = []
+            return
         if isinstance(value, float) or isinstance(value, int):
             value = Confidence(value)
         elif not isinstance(value, Confidence):
@@ -353,7 +343,10 @@ class Clade(PhyloElement, BaseTree.Clade):
             raise ValueError("multiple confidence values already exist; "
                              "use Phylogeny.confidences instead")
 
-    confidence = property(_get_confidence, _set_confidence)
+    def _del_confidence(self):
+        self.confidences = []
+
+    confidence = property(_get_confidence, _set_confidence, _del_confidence)
 
     def _get_taxonomy(self):
         if len(self.taxonomies) == 0:
@@ -719,22 +712,6 @@ class Events(PhyloElement):
 
     def values(self):
         return [v for v in self.__dict__.values() if v is not None]
-
-    # XXX Backwards compatibility shims -- remove in Biopython 1.56
-    def iteritems(self):
-        warnings.warn("use items() instead.""",
-                Bio.BiopythonDeprecationWarning, stacklevel=2)
-        return iter(list(self.items()))
-
-    def iterkeys(self):
-        warnings.warn("use keys() instead.""",
-                Bio.BiopythonDeprecationWarning, stacklevel=2)
-        return iter(list(self.keys()))
-
-    def itervalues(self):
-        warnings.warn("use values() instead.""",
-                Bio.BiopythonDeprecationWarning, stacklevel=2)
-        return iter(list(self.values()))
 
     def __len__(self):
         return len(list(self.values()))

@@ -1006,12 +1006,11 @@ class _FeatureConsumer(_BaseGenBankConsumer):
             # add a qualifier if we've got one
             self._add_qualifier()
 
-            # remove the / and = from the qualifier if they're present
-            qual_key = content.replace('/', '')
-            qual_key = qual_key.replace('=', '')
-            qual_key = qual_key.strip()
+            # assume the / and = have been removed, and it has been trimmed
+            assert '/' not in content and  '=' not in content \
+                   and content == content.strip(), content
             
-            self._cur_qualifier_key = qual_key
+            self._cur_qualifier_key = content
             self._cur_qualifier_value = []
         
     def feature_qualifier_description(self, content):
@@ -1055,10 +1054,8 @@ class _FeatureConsumer(_BaseGenBankConsumer):
         into a list of strings, and then uses string.join later to put
         them together. Supposedly, this is a big time savings
         """
-        new_seq = content.replace(' ', '')
-        new_seq = new_seq.upper()
-
-        self._seq_data.append(new_seq)
+        assert ' ' not in content
+        self._seq_data.append(content.upper())
 
     def record_end(self, content):
         """Clean up when we've finished the record.
@@ -1344,8 +1341,8 @@ class _RecordConsumer(_BaseGenBankConsumer):
         list together to make the final sequence. This is faster than
         adding on the new string every time.
         """
-        new_seq = content.replace(' ', '')
-        self._seq_data.append(new_seq.upper())
+        assert ' ' not in content
+        self._seq_data.append(content.upper())
 
     def record_end(self, content):
         """Signal the end of the record and do any necessary clean-up.
