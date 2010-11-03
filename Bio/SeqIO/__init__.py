@@ -239,6 +239,8 @@ names are also used in Bio.AlignIO and include the following:
  - qual    - A "FASTA like" format holding PHRED quality values from
              sequencing DNA, but no actual sequences (usually provided
              in separate FASTA files).
+ - uniprot-xml - The UniProt XML format (replacement for the SwissProt plain
+             text format which we call "swiss")
 
 Note that while Bio.SeqIO can read all the above file formats, it cannot
 write to all of them.
@@ -309,7 +311,7 @@ from . import SffIO
 from . import SwissIO
 from . import TabIO
 from . import QualityIO #FastQ and qual files
-
+from . import UniprotIO
 
 #Convention for format names is "mainname-subtype" in lower case.
 #Please use the same names as BioPerl or EMBOSS where possible.
@@ -341,6 +343,7 @@ _FormatToIterator = {"fasta" : FastaIO.FastaIterator,
                      "sff": SffIO.SffIterator,
                      #Not sure about this in the long run:
                      "sff-trim": SffIO._SffTrimIterator,
+                     "uniprot-xml": UniprotIO.UniprotIterator,
                      }
 
 _FormatToWriter = {"fasta" : FastaIO.FastaWriter,

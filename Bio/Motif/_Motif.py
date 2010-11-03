@@ -325,7 +325,7 @@ class Motif(object):
         """
         calculates the dist_dpq measure with a given offset.
 
-        offset should satisfy 0<=offset<=self.length
+        offset should satisfy 0<=offset<=len(self)
         """
         def dpq (f1,f2,alpha):
             s=0
@@ -373,6 +373,8 @@ class Motif(object):
 
     def __len__(self):
         """return the length of a motif
+
+        Please use this method (i.e. invoke len(m)) instead of refering to the m.length directly.
         """
         if self.length==None:
             return 0
@@ -396,7 +398,7 @@ class Motif(object):
             self.make_instances_from_counts()
         str = ""
         for i,inst in enumerate(self.instances):
-            str = str + "> instance %d\n"%i + inst.tostring() + "\n"
+            str = str + ">instance%d\n"%i + inst.tostring() + "\n"
             
         return str       
 
@@ -755,10 +757,10 @@ class Motif(object):
     def scanPWM(self,seq):
         """Matrix of log-odds scores for a nucleotide sequence.
  
-        scans (using a fast C extension) a nucleotide sequence and returns
-        the matrix of log-odds scores for all positions
+        scans a nucleotide sequence and returns the matrix of log-odds
+        scores for all positions.
 
-        - the result is a one-dimensional numpy array
+        - the result is a one-dimensional list or numpy array
         - the sequence can only be a DNA sequence
         - the search is performed only on one strand
         """
@@ -767,12 +769,34 @@ class Motif(object):
         if seq.alphabet!=IUPAC.unambiguous_dna:
             raise ValueError("Wrong alphabet! Use only with DNA sequences")
 
-        import numpy
+        seq = seq.tostring()
+
+        # check if the fast C code can be used
+        try:
+            import _pwm
+        except ImportError:
+            # use the slower Python code otherwise
+            return self._pwm_calculate(seq)
+        
         # get the log-odds matrix into a proper shape
-        # (each column contains sorted (ACGT) log-odds values)
-        logodds=numpy.array([[y[1] for y in sorted(x.items())] \
-                             for x in self.log_odds()]).transpose()
-        
-        import _pwm
-        
-        return _pwm.calculate(seq.tostring(),logodds)
+        # (each row contains sorted (ACGT) log-odds values)
+        logodds=[[y[1] for y in sorted(x.items())] for x in self.log_odds()]
+        return _pwm.calculate(seq, logodds)
+
+    def _pwm_calculate(self, sequence):
+        logodds = self.log_odds()
+        m = len(logodds)
+        s = len(sequence)
+        n = s - m + 1
+        result = [None] * n
+        for i in range(n):
+            score = 0.0
+            for j in range(m):
+                c = sequence[i+j]
+                temp = logodds[j].get(c)
+                if temp==None:
+                    break
+                score += temp
+            else:
+                result[i] = score
+        return result

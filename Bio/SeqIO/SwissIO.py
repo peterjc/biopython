@@ -9,14 +9,55 @@
 
 You are expected to use this module via the Bio.SeqIO functions.
 See also the Bio.SwissProt module which offers more than just accessing
-the sequences as SeqRecord objects."""
+the sequences as SeqRecord objects.
+
+See also Bio.SeqIO.UniprotIO.py which supports the "uniprot-xml" format.
+"""
 
 from Bio import Seq
 from Bio import SeqRecord
 from Bio import Alphabet
 from Bio import SeqFeature
 from Bio import SwissProt
-    
+
+def _make_position(location_string, offset=0):
+    """Turn a Swiss location position into a SeqFeature position object (PRIVATE).
+
+    An offset of -1 is used with a start location to make it pythonic.
+    """
+    if location_string=="?":
+	return SeqFeature.UnknownPosition()
+    #Hack so that feature from 0 to 0 becomes 0 to 0, not -1 to 0.
+    try:
+        return SeqFeature.ExactPosition(max(0, offset+int(location_string)))
+    except ValueError:
+        pass
+    if location_string.startswith("<"):
+        try:
+            return SeqFeature.BeforePosition(max(0,offset+int(location_string[1:])))
+        except ValueError:
+            pass
+    elif location_string.startswith(">"): # e.g. ">13"
+        try:
+            return SeqFeature.AfterPosition(max(0,offset+int(location_string[1:])))
+        except ValueError :
+            pass
+    elif location_string.startswith("?"): # e.g. "?22"
+        try:
+            return SeqFeature.UncertainPosition(max(0,offset+int(location_string[1:])))
+        except ValueError:
+            pass
+    raise NotImplementedError("Cannot parse location '%s'" % location_string)
+
+def _make_seqfeature(name, from_res, to_res, description, ft_id):
+    """Construct SeqFeature from feature data from parser (PRIVATE)."""
+    loc = SeqFeature.FeatureLocation(_make_position(from_res,-1),
+	                             _make_position(to_res, 0))
+    if not ft_id:
+	ft_id = "<unknown id>" #The default in SeqFeature object
+    return SeqFeature.SeqFeature(loc, type=name, id=ft_id,
+                                 qualifiers={"description":description})
+
 #This is a generator function!
 def SwissIterator(handle):
     """Breaks up a Swiss-Prot/UniProt file into SeqRecord objects.
@@ -29,11 +70,8 @@ def SwissIterator(handle):
      * TrEMBL
      * UniProtKB aka UniProt Knowledgebase
 
-    It does NOT read their new XML file format.
-    http://www.expasy.org/sprot/
-
     For consistency with BioPerl and EMBOSS we call this the "swiss"
-    format.
+    format. See also the SeqIO support for "uniprot-xml" format.
     """
     swiss_records = SwissProt.parse(handle)
     for swiss_record in swiss_records:
@@ -43,6 +81,8 @@ def SwissIterator(handle):
                                      id=swiss_record.accessions[0],
                                      name=swiss_record.entry_name,
                                      description=swiss_record.description,
+                                     features=[_make_seqfeature(*f) for f \
+                                               in swiss_record.features],
                                     )
         record.description = swiss_record.description
         for cross_reference in swiss_record.cross_references:
@@ -114,4 +154,6 @@ if __name__ == "__main__":
             print(record.annotations['keywords'])
             print(repr(record.annotations['organism']))
             print(record.seq.tostring()[:20] + "...")
+            for f in record.features: print(f)
         handle.close()
+
