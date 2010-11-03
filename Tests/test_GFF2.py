@@ -10,11 +10,11 @@ import Bio.GFF.GenericTools
 import Bio.GFF.easy
 warnings.filters.pop()
 
-print "Running Bio.GFF.GenericTools doctests..."
+print("Running Bio.GFF.GenericTools doctests...")
 Bio.GFF.GenericTools._test()
-print "Bio.GFF.GenericTools doctests complete."
+print("Bio.GFF.GenericTools doctests complete.")
 
-print "Running Bio.GFF.easy doctests..."
+print("Running Bio.GFF.easy doctests...")
 Bio.GFF.easy._test()
-print "Bio.GFF.easy doctests complete."
+print("Bio.GFF.easy doctests complete.")
 

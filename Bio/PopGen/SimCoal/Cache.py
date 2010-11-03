@@ -11,7 +11,7 @@ from sys import exit
 import os
 import tarfile
 import tempfile
-from Controller import SimCoalController
+from .Controller import SimCoalController
 
 class SimCoalCache:
     def __init__(self, data_dir, simcoal_dir):

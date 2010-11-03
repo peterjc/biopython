@@ -27,7 +27,7 @@ VERBOSITY = 0
 
 # standard modules
 import sys
-import cStringIO
+import io
 import os
 import re
 import getopt
@@ -107,9 +107,9 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv, 'gv', ["generate", "verbose",
             "doctest", "help"])
-    except getopt.error, msg:
-        print msg
-        print __doc__
+    except getopt.error as msg:
+        print(msg)
+        print(__doc__)
         return 2
 
     verbosity = VERBOSITY
@@ -117,16 +117,16 @@ def main(argv):
     # deal with the options
     for o, a in opts:
         if o == "--help":
-            print __doc__
+            print(__doc__)
             return 0
         if o == "-g" or o == "--generate":
             if len(args) > 1:
-                print "Only one argument (the test name) needed for generate"
-                print __doc__
+                print("Only one argument (the test name) needed for generate")
+                print(__doc__)
                 return 2
             elif len(args) == 0:
-                print "No test name specified to generate output for."
-                print __doc__
+                print("No test name specified to generate output for.")
+                print(__doc__)
                 return 2
             # strip off .py if it was included
             if args[0][-3:] == ".py":
@@ -265,14 +265,14 @@ class TestRunner(unittest.TextTestRunner):
         if "doctest" in self.tests:
             self.tests.remove("doctest")
             self.tests.extend(DOCTEST_MODULES)
-        stream = cStringIO.StringIO()
+        stream = io.StringIO()
         unittest.TextTestRunner.__init__(self, stream,
                 verbosity=verbosity)
 
     def runTest(self, name):
         from Bio import MissingExternalDependencyError
         result = self._makeResult()
-        output = cStringIO.StringIO()
+        output = io.StringIO()
         # Restore the language and thus default encoding (in case a prior
         # test changed this, e.g. to help with detecting command line tools)
         global system_lang
@@ -308,10 +308,10 @@ class TestRunner(unittest.TextTestRunner):
                     sys.stderr.write("FAIL\n")
                     result.printErrors()
                 return False
-            except MissingExternalDependencyError, msg:
+            except MissingExternalDependencyError as msg:
                 sys.stderr.write("skipping. %s\n" % msg)
                 return True
-            except Exception, msg:
+            except Exception as msg:
                 # This happened during the import
                 sys.stderr.write("ERROR\n")
                 result.stream.write(result.separator1+"\n")
@@ -319,7 +319,7 @@ class TestRunner(unittest.TextTestRunner):
                 result.stream.write(result.separator2+"\n")
                 result.stream.write(traceback.format_exc())
                 return False
-            except KeyboardInterrupt, err:
+            except KeyboardInterrupt as err:
                 # Want to allow this, and abort the test
                 # (see below for special case)
                 raise err

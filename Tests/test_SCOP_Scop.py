@@ -6,7 +6,7 @@
 """Unit test for Scop"""
 
 import unittest
-from StringIO import *
+from io import *
 
 from Bio.SCOP import *
 

@@ -212,17 +212,17 @@ if __name__=="__main__":
     d=DSSP(model, sys.argv[1])
 
     for r in d:
-        print r
+        print(r)
 
-    print d.keys()
+    print(list(d.keys()))
 
-    print len(d)
+    print(len(d))
 
-    print ('A', 1) in d
+    print(('A', 1) in d)
 
-    print d[('A', 1)]
+    print(d[('A', 1)])
 
-    print s[0]['A'][1].xtra
+    print(s[0]['A'][1].xtra)
 
 
 
