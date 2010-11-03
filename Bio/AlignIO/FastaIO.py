@@ -23,7 +23,7 @@ which can also be used to store a multiple sequence alignments.
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
-from Interfaces import AlignmentIterator
+from .Interfaces import AlignmentIterator
 from Bio.Alphabet import single_letter_alphabet, generic_dna, generic_protein
 from Bio.Alphabet import Gapped
 
@@ -60,7 +60,7 @@ class FastaM10Iterator(AlignmentIterator):
     MultipleSeqAlignment objects returned.
     """
     
-    def next(self):
+    def __next__(self):
         """Reads from the handle to construct and return the next alignment.
 
         This returns the pairwise alignment of query and match/library
@@ -241,9 +241,9 @@ class FastaM10Iterator(AlignmentIterator):
         alignment._annotations = {}
         
         #Want to record both the query header tags, and the alignment tags.
-        for key, value in self._query_header_annotation.iteritems():
+        for key, value in self._query_header_annotation.items():
             alignment._annotations[key] = value
-        for key, value in alignment_annotation.iteritems():
+        for key, value in alignment_annotation.items():
             alignment._annotations[key] = value
         
         #Query
@@ -461,7 +461,7 @@ class FastaM10Iterator(AlignmentIterator):
         return line
     
 if __name__ == "__main__":
-    print "Running a quick self-test"
+    print("Running a quick self-test")
 
     #http://emboss.sourceforge.net/docs/themes/alnformats/align.simple
     simple_example = \
@@ -698,18 +698,18 @@ Function used was FASTA [version 34.26 January 12, 2007]
 """                 
 
 
-    from StringIO import StringIO
+    from io import StringIO
 
     alignments = list(FastaM10Iterator(StringIO(simple_example)))
     assert len(alignments) == 4, len(alignments)
     assert len(alignments[0]) == 2
     for a in alignments:
-        print "Alignment %i sequences of length %i" \
-              % (len(a), a.get_alignment_length())
+        print("Alignment %i sequences of length %i" \
+              % (len(a), a.get_alignment_length()))
         for r in a:
-            print "%s %s %i" % (r.seq, r.id, r.annotations["original_length"])
+            print("%s %s %i" % (r.seq, r.id, r.annotations["original_length"]))
         #print a.annotations
-    print "Done"
+    print("Done")
 
     import os
     path = "../../Tests/Fasta/"
@@ -717,11 +717,11 @@ Function used was FASTA [version 34.26 January 12, 2007]
     files.sort()
     for filename in files:
         if os.path.splitext(filename)[-1] == ".m10":
-            print
-            print filename
-            print "="*len(filename)
+            print()
+            print(filename)
+            print("="*len(filename))
             for i,a in enumerate(FastaM10Iterator(open(os.path.join(path,filename)))):
-                print "#%i, %s" % (i+1,a)
+                print("#%i, %s" % (i+1,a))
                 for r in a:
                     if "-" in r.seq:
                         assert r.seq.alphabet.gap_char == "-"

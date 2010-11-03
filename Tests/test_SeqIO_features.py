@@ -17,7 +17,7 @@ from Bio.SeqRecord import SeqRecord
 from Bio.SeqFeature import SeqFeature, FeatureLocation, ExactPosition, \
                            BeforePosition, AfterPosition, OneOfPosition, \
                            WithinPosition
-from StringIO import StringIO
+from io import StringIO
 from Bio.SeqIO.InsdcIO import _insdc_feature_location_string
 
 #Top level function as this makes it easier to use for debugging:

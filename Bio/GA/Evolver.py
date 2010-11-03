@@ -65,7 +65,7 @@ class GenerationEvolver:
                 # sort the population so we can look at duplicates
                 self._population.sort()
                 for org in self._population:
-                    print org
+                    print(org)
                 sys.exit()
             
         return self._population
