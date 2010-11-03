@@ -22,9 +22,9 @@ from Bio import SeqFeature
 from Bio import Alphabet
 from Bio.SeqRecord import SeqRecord
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from io import StringIO
 import warnings
 try:
     if (3,0,0) <= sys.version_info < (3,1,2):
@@ -66,10 +66,10 @@ def UniprotIterator(handle, alphabet=Alphabet.ProteinAlphabet(), return_raw_comm
     skip_parsing_errors = True --> if parsing errors are found, skip to next entry
     '''
     if isinstance(alphabet, Alphabet.NucleotideAlphabet):
-        raise ValueError, "Wrong alphabet %r" % alphabet
+        raise ValueError("Wrong alphabet %r" % alphabet)
     if isinstance(alphabet, Alphabet.Gapped):
         if isinstance(alphabet.alphabet, Alphabet.NucleotideAlphabet):
-            raise ValueError, "Wrong alphabet %r" % alphabet
+            raise ValueError("Wrong alphabet %r" % alphabet)
 
     if not hasattr(handle, "read"):
         if type(handle)==type(''):
@@ -97,7 +97,7 @@ class Parser():
         assert self.entry.tag == NS + 'entry'
         
         def append_to_annotations(key, value):
-            if not self.ParsedSeqRecord.annotations.has_key(key):
+            if key not in self.ParsedSeqRecord.annotations:
                 self.ParsedSeqRecord.annotations[key]=[]
             if value not in self.ParsedSeqRecord.annotations[key]:
                 self.ParsedSeqRecord.annotations[key].append(value)
@@ -132,7 +132,7 @@ class Parser():
         
         def _parse_gene(element):
             for genename_element in element.getchildren():  
-                if genename_element.attrib.has_key('type'):
+                if 'type' in genename_element.attrib:
                     ann_key='gene_%s_%s' % (genename_element.tag.replace(NS,''), genename_element.attrib['type'])
                     if genename_element.attrib['type']=='primary':
                         self.ParsedSeqRecord.annotations[ann_key]=genename_element.text
@@ -345,21 +345,21 @@ class Parser():
                     pub_type=ref_element.attrib['type']
                     if pub_type=='submission':
                         pub_type+=' to the '+ref_element.attrib['db']
-                    if ref_element.attrib.has_key('name'):
+                    if 'name' in ref_element.attrib:
                         journal_name=ref_element.attrib['name']
-                    if ref_element.attrib.has_key('date'):
+                    if 'date' in ref_element.attrib:
                         pub_date=ref_element.attrib['date']
                     else:
                         pub_date=''
-                    if ref_element.attrib.has_key('volume'):
+                    if 'volume' in ref_element.attrib:
                         j_volume=ref_element.attrib['volume']
                     else:
                         j_volume=''
-                    if ref_element.attrib.has_key('first'):
+                    if 'first' in ref_element.attrib:
                         j_first=ref_element.attrib['first']
                     else:
                         j_first=''
-                    if ref_element.attrib.has_key('last'):
+                    if 'last' in ref_element.attrib:
                         j_last=ref_element.attrib['last']
                     else:
                         j_last=''
@@ -404,7 +404,7 @@ class Parser():
         def _parse_position(element, offset=0):
             try:
                 position=int(element.attrib['position']) + offset
-            except KeyError, err:
+            except KeyError as err:
                 position=None
             status = element.attrib.get('status', '')
             if status == 'unknown':
@@ -423,15 +423,15 @@ class Parser():
 
         def _parse_feature(element):
             feature=SeqFeature.SeqFeature()
-            for k,v in element.attrib.items():
+            for k,v in list(element.attrib.items()):
                 feature.qualifiers[k]=v
-            if element.attrib.has_key('type'):
+            if 'type' in element.attrib:
                 feature.type=element.attrib['type']
             else:
                 feature.type=''
-            if element.attrib.has_key('type'):
+            if 'type' in element.attrib:
                 feature.type=element.attrib['type']
-            if element.attrib.has_key('id'):
+            if 'id' in element.attrib:
                 feature.id=element.attrib['id']
             for feature_element in element.getchildren():
                 if feature_element.tag==NS + 'location':
@@ -457,12 +457,12 @@ class Parser():
             append_to_annotations('proteinExistence', element.attrib['type'])   
             
         def _parse_evidence(element):
-            for k, v in  element.attrib.items():
+            for k, v in  list(element.attrib.items()):
                 ann_key = k
                 append_to_annotations(ann_key, v)   
         
         def  _parse_sequence(element):
-            for k, v in element.attrib.items():
+            for k, v in list(element.attrib.items()):
                 if k in ("length", "mass", "version"):
                     self.ParsedSeqRecord.annotations['sequence_%s' % k] = int(v)
                 else:
@@ -475,12 +475,12 @@ class Parser():
         self.ParsedSeqRecord=SeqRecord('', id='') 
         
         '''Entry attribs parsing '''
-        if self.entry.attrib.has_key('dataset'):
+        if 'dataset' in self.entry.attrib:
             self.dbname=self.entry.attrib['dataset']
         else:
             self.dbname='UnknownDataset'#this should not happen!
         '''add attribs to annotations '''
-        for k, v in self.entry.attrib.items():
+        for k, v in list(self.entry.attrib.items()):
             if k in ("version"):
                 '''original'''
                 #self.ParsedSeqRecord.annotations["entry_%s" % k] = int(v)

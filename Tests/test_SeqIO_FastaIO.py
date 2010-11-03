@@ -39,9 +39,9 @@ def title_to_ids(title):
 def read_single_with_titles(filename, alphabet):
     global title_to_ids
     iterator = FastaIterator(open(filename), alphabet, title_to_ids)
-    record = iterator.next()
+    record = next(iterator)
     try:
-        second = iterator.next()
+        second = next(iterator)
     except StopIteration:
         second = None
     assert record is not None and second is None
