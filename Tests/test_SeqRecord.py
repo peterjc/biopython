@@ -40,7 +40,7 @@ class SeqRecordCreation(unittest.TestCase):
         try:
             rec.letter_annotations["bad"] = "abc"
             self.assertTrue(False, "Adding a bad letter_annotation should fail!")
-        except (TypeError, ValueError), e:
+        except (TypeError, ValueError) as e:
             pass
         #Now try setting it afterwards to a bad value...
         rec = SeqRecord(Seq("ACGT", generic_dna),
@@ -48,7 +48,7 @@ class SeqRecordCreation(unittest.TestCase):
         try:
             rec.letter_annotations={"test" : [1, 2, 3]}
             self.assertTrue(False, "Changing to bad letter_annotations should fail!")
-        except (TypeError, ValueError), e:
+        except (TypeError, ValueError) as e:
             pass
         #Now try setting it at creation time to a bad value...
         try:
@@ -56,7 +56,7 @@ class SeqRecordCreation(unittest.TestCase):
                             id="Test", name="Test", description="Test",
                             letter_annotations={"test" : [1, 2, 3]})
             self.assertTrue(False, "Wrong length letter_annotations should fail!")
-        except (TypeError, ValueError), e:
+        except (TypeError, ValueError) as e:
             pass
 
 class SeqRecordMethods(unittest.TestCase):
@@ -77,8 +77,8 @@ class SeqRecordMethods(unittest.TestCase):
 
     def test_slice_variantes(self):
         """Simple slices using different start/end values"""
-        for start in range(-30,30)+[None] :
-            for end in range(-30,30)+[None] :
+        for start in list(range(-30,30))+[None] :
+            for end in list(range(-30,30))+[None] :
                 if start is None and end is None : continue
                 rec = self.record[start:end]
                 seq = self.record.seq[start:end]

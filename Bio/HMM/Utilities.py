@@ -38,14 +38,14 @@ def pretty_print_prediction(emissions, real_state, predicted_state,
         else:
             extension = len(emissions) - cur_position
         
-        print "%s%s" % (emission_title,
-                        emissions.data[cur_position:cur_position + seq_length])
-        print "%s%s" % (real_title,
+        print("%s%s" % (emission_title,
+                        emissions.data[cur_position:cur_position + seq_length]))
+        print("%s%s" % (real_title,
                         real_state.data[cur_position:
-                                        cur_position + seq_length])
-        print "%s%s\n" % (predicted_title,
+                                        cur_position + seq_length]))
+        print("%s%s\n" % (predicted_title,
                           predicted_state.data[cur_position:
-                                               cur_position + seq_length])
+                                               cur_position + seq_length]))
 
         if (len(emissions) < (cur_position + seq_length)):
             break

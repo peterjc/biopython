@@ -41,7 +41,7 @@ class Alignment:
         >>> align.add_sequence("Alpha", "ACTGCTAGCTAG")
         >>> align.add_sequence("Beta",  "ACT-CTAGCTAG")
         >>> align.add_sequence("Gamma", "ACTGCTAGATAG")
-        >>> print align
+        >>> print(align)
         Gapped(IUPACUnambiguousDNA(), '-') alignment with 3 rows and 12 columns
         ACTGCTAGCTAG Alpha
         ACT-CTAGCTAG Beta
@@ -80,7 +80,7 @@ class Alignment:
         >>> align.add_sequence("Alpha", "ACTGCTAGCTAG")
         >>> align.add_sequence("Beta",  "ACT-CTAGCTAG")
         >>> align.add_sequence("Gamma", "ACTGCTAGATAG")
-        >>> print align
+        >>> print(align)
         Gapped(IUPACUnambiguousDNA(), '-') alignment with 3 rows and 12 columns
         ACTGCTAGCTAG Alpha
         ACT-CTAGCTAG Beta
@@ -136,7 +136,7 @@ class Alignment:
         >>> align.add_sequence("Alpha", "ACTGCTAGCTAG")
         >>> align.add_sequence("Beta",  "ACT-CTAGCTAG")
         >>> align.add_sequence("Gamma", "ACTGCTAGATAG")
-        >>> print align.format("fasta")
+        >>> print(align.format("fasta"))
         >Alpha
         ACTGCTAGCTAG
         >Beta
@@ -144,7 +144,7 @@ class Alignment:
         >Gamma
         ACTGCTAGATAG
         <BLANKLINE>
-        >>> print align.format("phylip")
+        >>> print(align.format("phylip"))
          3 12
         Alpha      ACTGCTAGCT AG
         Beta       ACT-CTAGCT AG
@@ -166,7 +166,7 @@ class Alignment:
         string supported by Bio.AlignIO as an output file format.
         See also the alignment's format() method."""
         if format_spec:
-            from StringIO import StringIO
+            from io import StringIO
             from Bio import AlignIO
             handle = StringIO()
             AlignIO.write([self], handle, format_spec)
@@ -203,8 +203,8 @@ class Alignment:
         >>> align.add_sequence("Beta",  "ACT-CTAGCTAG")
         >>> align.add_sequence("Gamma", "ACTGCTAGATAG")
         >>> for record in align:
-        ...    print record.id
-        ...    print record.seq
+        ...    print(record.id)
+        ...    print(record.seq)
         Alpha
         ACTGCTAGCTAG
         Beta
@@ -368,17 +368,17 @@ class Alignment:
         index (think of the alignment as a list of SeqRecord objects here):
 
         >>> first_record = align[0]
-        >>> print first_record.id, first_record.seq
+        >>> print(first_record.id, first_record.seq)
         Alpha ACTGCTAGCTAG
         >>> last_record = align[-1]
-        >>> print last_record.id, last_record.seq
+        >>> print(last_record.id, last_record.seq)
         Epsilon ACTGCTTGATAG
 
         You can also access use python's slice notation to create a sub-alignment
         containing only some of the SeqRecord objects:
 
         >>> sub_alignment = align[2:5]
-        >>> print sub_alignment
+        >>> print(sub_alignment)
         Gapped(IUPACUnambiguousDNA(), '-') alignment with 3 rows and 12 columns
         ACTGCTAGATAG Gamma
         ACTGCTTGCTAG Delta
@@ -388,7 +388,7 @@ class Alignment:
         can be used to select every second sequence:
 
         >>> sub_alignment = align[::2]
-        >>> print sub_alignment
+        >>> print(sub_alignment)
         Gapped(IUPACUnambiguousDNA(), '-') alignment with 3 rows and 12 columns
         ACTGCTAGCTAG Alpha
         ACTGCTAGATAG Gamma
@@ -397,7 +397,7 @@ class Alignment:
         Or to get a copy of the alignment with the rows in reverse order:
 
         >>> rev_alignment = align[::-1]
-        >>> print rev_alignment
+        >>> print(rev_alignment)
         Gapped(IUPACUnambiguousDNA(), '-') alignment with 5 rows and 12 columns
         ACTGCTTGATAG Epsilon
         ACTGCTTGCTAG Delta
@@ -428,10 +428,11 @@ class Alignment:
 
 def _test():
     """Run the Bio.Align.Generic module's doctests."""
-    print "Running doctests..."
+    print("Running doctests...")
     import doctest
     doctest.testmod()
-    print "Done"
+    print("Done")
 
 if __name__ == "__main__":
     _test()
+
