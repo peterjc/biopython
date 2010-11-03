@@ -217,7 +217,7 @@ class GraphTest(unittest.TestCase):
         for data_values, name, color in zip([data1,data2,data3],
                                             ["sin", "cos", "2sin2"],
                                             ["red","green","blue"]):
-            data = zip(range(points), data_values)
+            data = list(zip(list(range(points)), data_values))
             gds_data.new_graph(data, "", style="line",
                                color = color, altcolor = color,
                                center = 0)
@@ -483,14 +483,14 @@ class DiagramTest(unittest.TestCase):
                 gdd.write(filename, output)
                 assert False, \
                        "Should have rejected %s as an output format" % output
-            except ValueError, e:
+            except ValueError as e:
                 #Good!
                 pass
             try:
                 gdd.write_to_string(output)
                 assert False, \
                        "Should have rejected %s as an output format" % output
-            except ValueError, e:
+            except ValueError as e:
                 #Good!
                 pass
 
