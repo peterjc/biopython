@@ -132,20 +132,8 @@ class _IndexedSeqFileDict(dict):
 
     def __getitem__(self, key):
         """x.__getitem__(y) <==> x[y]"""
-        #For non-trivial file formats this must be over-ridden in the subclass
-        handle = self._handle
-        handle.seek(dict.__getitem__(self, key))
-        record = next(SeqIO.parse(handle, self._format, self._alphabet))
-        if self._key_function:
-            assert self._key_function(record.id) == key, \
-                   "Requested key %s, found record.id %s which has key %s" \
-                   % (repr(key), repr(record.id),
-                      repr(self._key_function(record.id)))
-        else:
-            assert record.id == key, \
-                   "Requested key %s, found record.id %s" \
-                   % (repr(key), repr(record.id))
-        return record
+        #Should be done by each sub-class
+        raise NotImplementedError("Not implemented for this file format (yet).")
 
     def get(self, k, d=None):
         """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None."""
@@ -263,12 +251,35 @@ class SffTrimmedDict(SffDict) :
                                                 self._alphabet,
                                                 trim=True)
 
+
 ###################
 # Simple indexers #
 ###################
 
 class SequentialSeqFileDict(_IndexedSeqFileDict):
     """Indexed dictionary like access to most sequential sequence files."""
+    def __init__(self, filename, format, alphabet, key_function):
+        _IndexedSeqFileDict.__init__(self, filename, format, alphabet, key_function)
+        #Load the parser class/function once an avoid the dict lookup in each
+        #__getitem__ call:
+        i = SeqIO._FormatToIterator[format]
+        #The following alphabet code is a bit nasty... duplicates logic in
+        #Bio.SeqIO.parse()
+        if alphabet is None:
+            def _parse():
+                """Dynamically generated parser function (PRIVATE)."""
+                return next(i(self._handle))
+        else:
+            #TODO - Detect alphabet support ONCE at __init__
+            def _parse():
+                """Dynamically generated parser function (PRIVATE)."""
+                try:
+                    return next(i(self._handle, alphabet=alphabet))
+                except TypeError:
+                    return next(SeqIO._force_alphabet(i(self._handle),
+                                                 alphabet))
+        self._parse = _parse
+
     def _build(self):
         handle = self._handle
         marker = {"ace" : "CO ",
@@ -283,11 +294,29 @@ class SequentialSeqFileDict(_IndexedSeqFileDict):
         while True:
             offset = handle.tell()
             line = handle.readline()
-            if not line : break #End of file
             if marker_re.match(line):
                 #Here we can assume the record.id is the first word after the
                 #marker. This is generally fine... but not for GenBank, EMBL, Swiss
                 yield line[marker_offset:].strip().split(None, 1)[0], offset
+            elif not line:
+                #End of file
+                break
+
+    def __getitem__(self, key):
+        """x.__getitem__(y) <==> x[y]"""
+        handle = self._handle
+        handle.seek(dict.__getitem__(self, key))
+        record = self._parse()
+        if self._key_function:
+            assert self._key_function(record.id) == key, \
+                   "Requested key %s, found record.id %s which has key %s" \
+                   % (repr(key), repr(record.id),
+                      repr(self._key_function(record.id)))
+        else:
+            assert record.id == key, \
+                   "Requested key %s, found record.id %s" \
+                   % (repr(key), repr(record.id))
+        return record
 
     def get_raw(self, key):
         """Similar to the get method, but returns the record as a raw string."""
@@ -298,11 +327,12 @@ class SequentialSeqFileDict(_IndexedSeqFileDict):
         data = handle.readline()
         while True:
             line = handle.readline()
-            if not line or marker_re.match(line):
+            if marker_re.match(line) or not line:
                 #End of file, or start of next record => end of this record
                 break
             data += line
         return data
+
 
 #######################################
 # Fiddly indexers: GenBank, EMBL, ... #
@@ -317,7 +347,6 @@ class GenBankDict(SequentialSeqFileDict):
         while True:
             offset = handle.tell()
             line = handle.readline()
-            if not line : break #End of file
             if marker_re.match(line):
                 #We cannot assume the record.id is the first word after LOCUS,
                 #normally the first entry on the VERSION or ACCESSION line is used.
@@ -344,6 +373,10 @@ class GenBankDict(SequentialSeqFileDict):
                 if not key:
                     raise ValueError("Did not find ACCESSION/VERSION lines")
                 yield key, offset
+            elif not line:
+                #End of file
+                break
+
 
 class EmblDict(SequentialSeqFileDict):
     """Indexed dictionary like access to an EMBL file."""
@@ -354,7 +387,6 @@ class EmblDict(SequentialSeqFileDict):
         while True:
             offset = handle.tell()
             line = handle.readline()
-            if not line : break #End of file
             if marker_re.match(line):
                 #We cannot assume the record.id is the first word after ID,
                 #normally the SV line is used.
@@ -385,6 +417,10 @@ class EmblDict(SequentialSeqFileDict):
                     or not line:
                         break
                 yield key, offset
+            elif not line:
+                #End of file
+                break
+
 
 class SwissDict(SequentialSeqFileDict):
     """Indexed dictionary like access to a SwissProt file."""
@@ -395,7 +431,6 @@ class SwissDict(SequentialSeqFileDict):
         while True:
             offset = handle.tell()
             line = handle.readline()
-            if not line : break #End of file
             if marker_re.match(line):
                 #We cannot assume the record.id is the first word after ID,
                 #normally the following AC line is used.
@@ -403,6 +438,10 @@ class SwissDict(SequentialSeqFileDict):
                 assert line.startswith("AC ")
                 key = line[3:].strip().split(";")[0].strip()
                 yield key, offset
+            elif not line:
+                #End of file
+                break
+
 
 class UniprotDict(SequentialSeqFileDict):
     """Indexed dictionary like access to a UniProt XML file."""
@@ -413,7 +452,6 @@ class UniprotDict(SequentialSeqFileDict):
         while True:
             offset = handle.tell()
             line = handle.readline()
-            if not line : break #End of file
             if marker_re.match(line):
                 #We expect the next line to be <accession>xxx</accession>
                 #but allow it to be later on within the <entry>
@@ -425,13 +463,17 @@ class UniprotDict(SequentialSeqFileDict):
                         assert "</accession>" in line, line
                         key = line[11:].split("<")[0]
                         break
-                    elif "</entry>" in line \
-                    or marker_re.match(line) \
-                    or not line:
+                    elif "</entry>" in line:
                         break
+                    elif marker_re.match(line) or not line:
+                        #Start of next record or end of file
+                        raise ValueError("Didn't find end of record")
                 if not key:
                     raise ValueError("Did not find <accession> line")
                 yield key, offset
+            elif not line:
+                #End of file
+                break
     
     def get_raw(self, key):
         """Similar to the get method, but returns the record as a raw string."""
@@ -441,12 +483,13 @@ class UniprotDict(SequentialSeqFileDict):
         data = handle.readline()
         while True:
             line = handle.readline()
-            if "</entry>" in line:
-                data += line[:line.find("</entry>")+8]
+            i = line.find("</entry>")
+            if i != -1:
+                data += line[:i+8]
                 break
-            if not line or marker_re.match(line):
-                #End of file, or start of next record => end of this record
-                break
+            if marker_re.match(line) or not line:
+                #End of file, or start of next record
+                raise ValueError("Didn't find end of record")
             data += line
         return data
 
@@ -465,6 +508,7 @@ class UniprotDict(SequentialSeqFileDict):
         #TODO - For consistency, this function should not accept a string:
         return next(SeqIO.UniprotIO.UniprotIterator(data))
 
+
 class IntelliGeneticsDict(SequentialSeqFileDict):
     """Indexed dictionary like access to a IntelliGenetics file."""
     def _build(self):
@@ -474,19 +518,22 @@ class IntelliGeneticsDict(SequentialSeqFileDict):
         while True:
             offset = handle.tell()
             line = handle.readline()
-            if not line : break #End of file
             if marker_re.match(line):
                 #Now look for the first line which doesn't start ";"
                 while True:
                     line = handle.readline()
-                    if not line:
-                        raise ValueError("Premature end of file?")
                     if line[0] != ";" and line.strip():
                         key = line.split()[0]
                         yield key, offset
                         break
+                    if not line:
+                        raise ValueError("Premature end of file?")
+            elif not line:
+                #End of file
+                break
 
-class TabDict(_IndexedSeqFileDict):
+
+class TabDict(SequentialSeqFileDict):
     """Indexed dictionary like access to a simple tabbed file."""
     def _build(self):
         handle = self._handle
@@ -511,11 +558,12 @@ class TabDict(_IndexedSeqFileDict):
         handle.seek(dict.__getitem__(self, key))
         return handle.readline()
 
+
 ##########################
 # Now the FASTQ indexers #
 ##########################
          
-class FastqDict(_IndexedSeqFileDict):
+class FastqDict(SequentialSeqFileDict):
     """Indexed dictionary like access to a FASTQ file (any supported variant).
     
     With FASTQ the records all start with a "@" line, but so can quality lines.
