@@ -232,7 +232,7 @@ class DisorderedEntityWrapper:
 
     def disordered_get_id_list(self):
         "Return a list of id's."
-        l=self.child_dict.keys()
+        l=list(self.child_dict.keys())
         # sort id list alphabetically
         l.sort()
         return l
@@ -248,6 +248,6 @@ class DisorderedEntityWrapper:
 
     def disordered_get_list(self):
         "Return list of children."
-        return self.child_dict.values()
+        return list(self.child_dict.values())
 
         

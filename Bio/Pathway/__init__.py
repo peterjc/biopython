@@ -33,6 +33,7 @@ Note: This module should be regarded as a prototype only. API changes are likely
 
 from Bio.Pathway.Rep.HashSet import *
 from Bio.Pathway.Rep.MultiGraph import *
+from functools import reduce
 
 
 class Reaction:
@@ -74,7 +75,7 @@ class Reaction:
         # enforce invariants on reactants:
         self.reactants = reactants.copy()
         # loop over original, edit the copy
-        for r, value in reactants.iteritems():
+        for r, value in reactants.items():
             if value == 0:
                 del self.reactants[r]
         self.catalysts  = HashSet(catalysts).list()
@@ -144,7 +145,7 @@ class Reaction:
 
     def species(self):
         """Returns a list of all Species involved in self."""
-        return self.reactants.keys()
+        return list(self.reactants.keys())
 
 
 class System:

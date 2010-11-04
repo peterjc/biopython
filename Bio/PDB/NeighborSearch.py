@@ -136,5 +136,5 @@ if __name__=="__main__":
 
         ns=NeighborSearch(al)
 
-        print "Found ", len(ns.search_all(5.0))
+        print("Found ", len(ns.search_all(5.0)))
 
