@@ -3,7 +3,7 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 
-import commands
+import subprocess
 import os
 import shutil
 import tempfile
@@ -101,6 +101,6 @@ class AppTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print "Running fdist tests, which might take some time, please wait"
+    print("Running fdist tests, which might take some time, please wait")
     runner = unittest.TextTestRunner(verbosity = 2)
     unittest.main(testRunner=runner)

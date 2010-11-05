@@ -111,12 +111,12 @@ class PrintFormat(object):
         if not dct:
             dct = self.results
         ls, nc = [], []
-        for k, v in dct.iteritems():
+        for k, v in dct.items():
             if v:
                 ls.append((k,v))
             else:
                 nc.append(k)
-        print self.make_format(ls, title, nc, s1)
+        print(self.make_format(ls, title, nc, s1))
         return
        
     def make_format(self, cut=[], title='', nc=[], s1=''):
@@ -304,11 +304,11 @@ class PrintFormat(object):
                     enzymemap[c].append(str(enzyme))
                 else:
                     enzymemap[c] = [str(enzyme)]
-        mapping = enzymemap.keys()
+        mapping = list(enzymemap.keys())
         mapping.sort()
         cutloc = {}
         x, counter, length = 0, 0, len(self.sequence)
-        for x in xrange(60, length, 60):
+        for x in range(60, length, 60):
             counter = x - 60
             l=[]
             for key in mapping:
@@ -326,7 +326,7 @@ class PrintFormat(object):
         base, counter = 0, 0
         emptyline = ' ' * 60
         Join = ''.join
-        for base in xrange(60, length, 60):
+        for base in range(60, length, 60):
             counter = base - 60
             line = emptyline
             for key in cutloc[counter]:

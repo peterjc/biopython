@@ -37,7 +37,7 @@ class SequenceIterator:
         # or if additional arguments are required.          #
         #####################################################
 
-    def next(self):
+    def __next__(self):
         """Return the next record in the file.
 
         This method should be replaced by any derived class to do something useful."""
@@ -59,7 +59,7 @@ class SequenceIterator:
             print record.id
             print record.seq
         myFile.close()"""
-        return iter(self.next, None)
+        return iter(self.__next__, None)
 
 class InterlacedSequenceIterator(SequenceIterator):
     """Base class for any iterator of a non-sequential file type.
@@ -119,7 +119,7 @@ class InterlacedSequenceIterator(SequenceIterator):
     def move_start(self):
         self._n = 0
 
-    def next(self):
+    def __next__(self):
         next_record = self._n
         if next_record < len(self):
             self._n = next_record+1
@@ -129,7 +129,7 @@ class InterlacedSequenceIterator(SequenceIterator):
             return None
     
     def __iter__(self):
-        return iter(self.next, None)
+        return iter(self.__next__, None)
 
 class SequenceWriter:
     """This class should be subclassed.

@@ -28,26 +28,26 @@ assert return_code==0, "Calling ClustalW failed"
 alignment = AlignIO.read("test.aln", "clustal",
                          alphabet=Gapped(IUPAC.unambiguous_dna))
 
-print alignment
+print(alignment)
 
-print 'first description:', alignment[0].description
-print 'first sequence:', alignment[0].seq
+print('first description:', alignment[0].description)
+print('first sequence:', alignment[0].seq)
 
 # get the length of the alignment
-print 'length', alignment.get_alignment_length()
+print('length', alignment.get_alignment_length())
 
-print alignment
+print(alignment)
 
 # print out interesting information about the alignment
 summary_align = AlignInfo.SummaryInfo(alignment)
 
 consensus = summary_align.dumb_consensus()
-print 'consensus', consensus
+print('consensus', consensus)
 
 my_pssm = summary_align.pos_specific_score_matrix(consensus,
                                                   chars_to_ignore = ['N'])
 
-print my_pssm
+print(my_pssm)
 
 expect_freq = {
     'A' : .3,
@@ -63,5 +63,5 @@ info_content = summary_align.information_content(5, 30,
                                                  e_freq_table = \
                                                  freq_table_info)
 
-print "relative info content:", info_content
+print("relative info content:", info_content)
 

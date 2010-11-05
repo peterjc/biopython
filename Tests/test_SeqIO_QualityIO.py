@@ -8,7 +8,7 @@ import os
 import unittest
 import warnings
 
-from StringIO import StringIO
+from io import StringIO
 try:
     #This is in Python 2.6+, but we need it on Python 3
     from io import BytesIO
@@ -96,10 +96,10 @@ def compare_record(old, new, truncate=None):
         if truncate:
             converted = [min(q,truncate) for q in converted]
         if converted != new.letter_annotations["solexa_quality"]:
-            print
-            print old.letter_annotations["phred_quality"]
-            print converted
-            print new.letter_annotations["solexa_quality"]
+            print()
+            print(old.letter_annotations["phred_quality"])
+            print(converted)
+            print(new.letter_annotations["solexa_quality"])
             raise ValueError("Mismatch in phred_quality vs solexa_quality")
     if "solexa_quality" in old.letter_annotations \
     and "phred_quality" in new.letter_annotations:
@@ -110,9 +110,9 @@ def compare_record(old, new, truncate=None):
         if truncate:
             converted = [min(q,truncate) for q in converted]
         if converted != new.letter_annotations["phred_quality"]:
-            print old.letter_annotations["solexa_quality"]
-            print converted
-            print new.letter_annotations["phred_quality"]
+            print(old.letter_annotations["solexa_quality"])
+            print(converted)
+            print(new.letter_annotations["phred_quality"])
             raise ValueError("Mismatch in solexa_quality vs phred_quality")
     return True
 
@@ -135,17 +135,17 @@ class TestFastqErrors(unittest.TestCase):
             handle = open(filename, "rU")
             records = SeqIO.parse(handle, format)
             for i in range(good_count):
-                record = records.next() #Make sure no errors!
+                record = next(records) #Make sure no errors!
                 self.assertTrue(isinstance(record, SeqRecord))
-            self.assertRaises(ValueError, records.next)
+            self.assertRaises(ValueError, records.__next__)
             handle.close()
 
     def check_general_fails(self, filename, good_count):
         handle = open(filename, "rU")
         tuples = QualityIO.FastqGeneralIterator(handle)
         for i in range(good_count):
-            title, seq, qual = tuples.next() #Make sure no errors!
-        self.assertRaises(ValueError, tuples.next)
+            title, seq, qual = next(tuples) #Make sure no errors!
+        self.assertRaises(ValueError, tuples.__next__)
         handle.close()
 
     def check_general_passes(self, filename, record_count):
@@ -667,7 +667,7 @@ class MappingTests(unittest.TestCase):
         """Mapping check for FASTQ Illumina (0 to 62) to Sanger (0 to 62)"""
         seq = "N"*63
         qual = "".join(chr(64+q) for q in range(0,63))
-        expected_phred = range(63)
+        expected_phred = list(range(63))
         in_handle = StringIO("@Test\n%s\n+\n%s" % (seq,qual))
         out_handle = StringIO("")
         SeqIO.write(SeqIO.parse(in_handle, "fastq-illumina"),

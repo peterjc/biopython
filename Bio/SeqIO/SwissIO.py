@@ -137,23 +137,23 @@ def SwissIterator(handle):
         yield record
 
 if __name__ == "__main__":
-    print "Quick self test..."
+    print("Quick self test...")
 
     example_filename = "../../Tests/SwissProt/sp008"
 
     import os
     if not os.path.isfile(example_filename):
-        print "Missing test file %s" % example_filename
+        print("Missing test file %s" % example_filename)
     else:
         #Try parsing it!
         handle = open(example_filename)
         records = SwissIterator(handle)
         for record in records:
-            print record.name
-            print record.id
-            print record.annotations['keywords']
-            print repr(record.annotations['organism'])
-            print record.seq.tostring()[:20] + "..."
-            for f in record.features: print f
+            print(record.name)
+            print(record.id)
+            print(record.annotations['keywords'])
+            print(repr(record.annotations['organism']))
+            print(record.seq.tostring()[:20] + "...")
+            for f in record.features: print(f)
         handle.close()
 
