@@ -32,7 +32,7 @@ from Bio import ExPASy
 
 #In order to check any sequences returned
 from Bio import SeqIO
-from StringIO import StringIO
+from io import StringIO
 from Bio.SeqUtils.CheckSum import seguid
 
 from Bio.File import UndoHandle

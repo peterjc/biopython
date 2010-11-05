@@ -105,10 +105,10 @@ if __name__=="__main__":
     from Bio.PDB import PDBParser
 
     if len(sys.argv) != 4:
-        print "Expects three arguments,"
-        print " - FASTA alignment filename (expect two sequences)"
-        print " - PDB file one"
-        print " - PDB file two"
+        print("Expects three arguments,")
+        print(" - FASTA alignment filename (expect two sequences)")
+        print(" - PDB file one")
+        print(" - PDB file two")
         sys.exit()
 
     # The alignment
@@ -131,5 +131,5 @@ if __name__=="__main__":
 
     # Print aligned pairs (r is None if gap)
     for (r1,r2) in al.get_iterator():
-        print r1, r2
+        print(r1, r2)
 

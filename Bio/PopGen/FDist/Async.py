@@ -17,7 +17,7 @@ SplitFDist splits a single Fdist execution in several, taking advantage
 
 import os
 import shutil
-import thread
+import _thread
 from time import sleep
 from Bio.PopGen.Async import Local
 from Bio.PopGen.FDist.Controller import FDistController
@@ -106,7 +106,7 @@ class SplitFDist:
         while(True):
             sleep(1)
             self.async.access_ds.acquire()
-            keys =  self.async.done.keys()[:]
+            keys =  list(self.async.done.keys())[:]
             self.async.access_ds.release()
             for done in keys:
                 self.async.access_ds.acquire()
@@ -180,4 +180,4 @@ class SplitFDist:
                'max_freq'    : max_freq 
            }, {})
            self.parts[id] = full_path
-        thread.start_new_thread(self.monitor, ())
+        _thread.start_new_thread(self.monitor, ())

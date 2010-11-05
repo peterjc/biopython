@@ -16,7 +16,7 @@ The DOM files for older releases can be found
 """
 
 
-from Residues import Residues
+from .Residues import Residues
 
 class Record:
     """Holds information for one SCOP domain.

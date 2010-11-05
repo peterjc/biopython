@@ -73,12 +73,12 @@ def align(cmdline, pair, kbyte=None, force_type=None, dry_run=False, quiet=False
     input_files = tempfile.NamedTemporaryFile(mode="w"), tempfile.NamedTemporaryFile(mode="w")
 
     if dry_run:
-        print _build_align_cmdline(cmdline,
+        print(_build_align_cmdline(cmdline,
                                    pair,
                                    output_file.name,
                                    kbyte,
                                    force_type,
-                                   quiet)
+                                   quiet))
         return
 
     for filename, input_file in zip(pair, input_files):
@@ -99,13 +99,13 @@ def align(cmdline, pair, kbyte=None, force_type=None, dry_run=False, quiet=False
                                        quiet)
 
     if debug:
-        print >>sys.stderr, cmdline_str
+        print(cmdline_str, file=sys.stderr)
 
     status = os.system(cmdline_str) >> 8
 
     if status > 1:
         if kbyte != 0: # possible memory problem; could be None
-            print >>sys.stderr, "INFO trying again with the linear model"
+            print("INFO trying again with the linear model", file=sys.stderr)
             return align(cmdline, pair, 0, force_type, dry_run, quiet, debug)
         else:
             raise OSError("%s returned %s" % (" ".join(cmdline), status))
@@ -116,7 +116,7 @@ def all_pairs(singles):
     """
     Generate pairs list for all-against-all alignments
 
-    >>> all_pairs(range(4))
+    >>> all_pairs(list(range(4)))
     [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]
     """
     pairs = []
@@ -139,3 +139,4 @@ if __name__ == "__main__":
     if __debug__:
         _test()
     main()
+

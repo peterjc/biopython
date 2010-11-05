@@ -17,10 +17,10 @@ def extract_organisms(file_to_parse, format):
     return all_species
 
 if __name__ == "__main__":
-    print "Using Bio.SeqIO on a FASTA file"
+    print("Using Bio.SeqIO on a FASTA file")
     all_species = extract_organisms("ls_orchid.fasta", "fasta")
-    print "number of species:", len(all_species)
-    print 'species names:', all_species
+    print("number of species:", len(all_species))
+    print('species names:', all_species)
 
 
 # The Old Way
@@ -38,7 +38,7 @@ def extract_organisms(file_to_parse):
     all_species = []
 
     while 1:
-        cur_record = iterator.next()
+        cur_record = next(iterator)
 
         if cur_record is None:
             break
@@ -53,8 +53,8 @@ def extract_organisms(file_to_parse):
     return all_species
 
 if __name__ == "__main__":
-    print "Using Bio.Fasta"
+    print("Using Bio.Fasta")
     all_species = extract_organisms("ls_orchid.fasta")
-    print "number of species:", len(all_species)
-    print 'species names:', all_species
+    print("number of species:", len(all_species))
+    print('species names:', all_species)
     

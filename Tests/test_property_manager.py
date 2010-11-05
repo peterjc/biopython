@@ -24,12 +24,12 @@ def test():
     f = Foo()
     b = Bar()
     fb = FooBar()
-    print pm.resolve(f, "name")
+    print(pm.resolve(f, "name"))
     #print pm.resolve(b, "name")
-    print pm.resolve(fb, "name")
+    print(pm.resolve(fb, "name"))
  
     def list_resolver(manager, klass, property, FooBar = FooBar):
-        print "resolving list"
+        print("resolving list")
         x = manager.resolve_class(FooBar, "list")
         y = []
         for a in x:
@@ -37,20 +37,20 @@ def test():
         return y
  
     pm.class_property_resolver[Bar]["list"] = list_resolver
-    print pm.resolve(fb, "list")
-    print pm.resolve(b, "list")
-    print pm.resolve(b, "list")
+    print(pm.resolve(fb, "list"))
+    print(pm.resolve(b, "list"))
+    print(pm.resolve(b, "list"))
     data.append(-10)
-    print pm.resolve(b, "list")
+    print(pm.resolve(b, "list"))
  
     def prop_resolver(manager, klass, property):
-        print "I am called"
+        print("I am called")
         x = str(klass) + property
         manager.class_property[klass][property] = x
         return x
  
     pm.class_resolver[Foo] = prop_resolver
-    print pm.resolve(f, "qwq")
-    print pm.resolve(f, "qwq")
+    print(pm.resolve(f, "qwq"))
+    print(pm.resolve(f, "qwq"))
 
 test()
