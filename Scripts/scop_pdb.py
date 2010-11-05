@@ -9,13 +9,12 @@
 import getopt
 import sys
 import types
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from Bio.SCOP import *
 
 def usage() :
-    print \
-"""Extract a SCOP domain's ATOM and HETATOM records from the relevant PDB file.
+    print("""Extract a SCOP domain's ATOM and HETATOM records from the relevant PDB file.
 
 For example:
   scop_pdb.py astral-rapid-access-1.55.raf dir.cla.scop.txt_1.55 d3hbib_
@@ -53,7 +52,7 @@ Usage: scop_pdb [-h] [-i file] [-o file] [-p pdb_url_prefix]
               See [http://scop.berkeley.edu/parse/index.html]
 
   sid      -- A SCOP domain identifier. e.g. d3hbib_ 
-"""
+""")
 
 
 
@@ -64,7 +63,7 @@ default_pdb_url = "http://www.rcsb.org/pdb/cgi/export.cgi/somefile.pdb?" \
 def open_pdb(pdbid, pdb_url=None) :
     if pdb_url ==None: pdb_url = default_pdb_url
     url = pdb_url % pdbid
-    fn, header = urllib.urlretrieve(url)
+    fn, header = urllib.request.urlretrieve(url)
     return open(fn)
 
 
@@ -96,26 +95,25 @@ def main():
             pdb_url = a
 
     if len(args) <2 :
-        print >>sys.stderr, \
-             "Not enough arguments. Try --help for more details."
+        print("Not enough arguments. Try --help for more details.", file=sys.stderr)
         sys.exit(2)
 
     raf_url = args[0]
     cla_url = args[1]
     
-    (raf_filename, headers) = urllib.urlretrieve(raf_url)
+    (raf_filename, headers) = urllib.request.urlretrieve(raf_url)
     seqMapIndex = Raf.SeqMapIndex(raf_filename)
 
-    (cla_filename, headers) = urllib.urlretrieve(cla_url)
+    (cla_filename, headers) = urllib.request.urlretrieve(cla_url)
     claIndex = Cla.Index(cla_filename)
 
     if input == None :
         sids = args[2:]
     elif input == '-' :
-        sids = sys.stdin.xreadlines()
+        sids = sys.stdin
     else :
         in_handle = open(input)
-        sids = in_handle.xreadlines()
+        sids = in_handle
 
     try:
         for sid in sids :
@@ -124,7 +122,7 @@ def main():
             pdbid=id[1:5]
             s = pdbid[0:1]
             if s=='0' or s=='s' :
-                print >>sys.stderr,"No coordinates for domain "+id
+                print("No coordinates for domain "+id, file=sys.stderr)
                 continue
 
             if output == None :
@@ -147,8 +145,8 @@ def main():
                         seqMap.getAtoms(f, out_handle)
                     finally :
                         f.close()
-                except (IOError, KeyError, RuntimeError), e:
-                    print >>sys.stderr, "I cannot do SCOP domain ",id,":",e
+                except (IOError, KeyError, RuntimeError) as e:
+                    print("I cannot do SCOP domain ",id,":",e, file=sys.stderr)
             finally :
                 out_handle.close()
     finally :

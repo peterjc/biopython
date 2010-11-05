@@ -15,7 +15,7 @@ For example, to iterate over the records in an SFF file,
 
     >>> from Bio import SeqIO
     >>> for record in SeqIO.parse("Roche/E3MFGYR02_random_10_reads.sff", "sff"):
-    ...     print record.id, len(record), record.seq[:20]+"..."
+    ...     print(record.id, len(record), record.seq[:20]+"...")
     E3MFGYR02JWQ7T 265 tcagGGTCTACATGTTGGTT...
     E3MFGYR02JA6IL 271 tcagTTTTTTTTGGAAAGGA...
     E3MFGYR02JHD4H 310 tcagAAAGACAAGTGGTATC...
@@ -30,40 +30,40 @@ For example, to iterate over the records in an SFF file,
 Each SeqRecord object will contain all the annotation from the SFF file,
 including the PHRED quality scores.
 
-    >>> print record.id, len(record)
+    >>> print(record.id, len(record))
     E3MFGYR02F7Z7G 219
-    >>> print record.seq[:10], "..."
+    >>> print(record.seq[:10], "...")
     tcagAATCAT ...
-    >>> print record.letter_annotations["phred_quality"][:10], "..."
+    >>> print(record.letter_annotations["phred_quality"][:10], "...")
     [22, 21, 23, 28, 26, 15, 12, 21, 28, 21] ...
 
 Notice that the sequence is given in mixed case, the central upper case region
 corresponds to the trimmed sequence. This matches the output of the Roche
 tools (and the 3rd party tool sff_extract) for SFF to FASTA.
 
-    >>> print record.annotations["clip_qual_left"]
+    >>> print(record.annotations["clip_qual_left"])
     4
-    >>> print record.annotations["clip_qual_right"]
+    >>> print(record.annotations["clip_qual_right"])
     134
-    >>> print record.seq[:4]
+    >>> print(record.seq[:4])
     tcag
-    >>> print record.seq[4:20], "...", record.seq[120:134]
+    >>> print(record.seq[4:20], "...", record.seq[120:134])
     AATCATCCACTTTTTA ... CAAAACACAAACAG
-    >>> print record.seq[134:]
+    >>> print(record.seq[134:])
     atcttatcaacaaaactcaaagttcctaactgagacacgcaacaggggataagacaaggcacacaggggataggnnnnnnnnnnn
 
 The annotations dictionary also contains any adapter clip positions
 (usually zero), and information about the flows. e.g.
 
-    >>> print record.annotations["flow_key"]
+    >>> print(record.annotations["flow_key"])
     TCAG
-    >>> print record.annotations["flow_values"][:10], "..."
+    >>> print(record.annotations["flow_values"][:10], "...")
     (83, 1, 128, 7, 4, 84, 6, 106, 3, 172) ...
-    >>> print len(record.annotations["flow_values"])
+    >>> print(len(record.annotations["flow_values"]))
     400
-    >>> print record.annotations["flow_index"][:10], "..."
+    >>> print(record.annotations["flow_index"][:10], "...")
     (1, 2, 3, 2, 2, 0, 3, 2, 3, 3) ...
-    >>> print len(record.annotations["flow_index"])
+    >>> print(len(record.annotations["flow_index"]))
     219
 
 As a convenience method, you can read the file with SeqIO format name "sff-trim"
@@ -72,7 +72,7 @@ except for the PHRED quality scores):
 
     >>> from Bio import SeqIO
     >>> for record in SeqIO.parse("Roche/E3MFGYR02_random_10_reads.sff", "sff-trim"):
-    ...     print record.id, len(record), record.seq[:20]+"..."
+    ...     print(record.id, len(record), record.seq[:20]+"...")
     E3MFGYR02JWQ7T 260 GGTCTACATGTTGGTTAACC...
     E3MFGYR02JA6IL 265 TTTTTTTTGGAAAGGAAAAC...
     E3MFGYR02JHD4H 292 AAAGACAAGTGGTATCAACG...
@@ -87,29 +87,29 @@ except for the PHRED quality scores):
 Looking at the final record in more detail, note how this differs to the
 example above:
 
-    >>> print record.id, len(record)
+    >>> print(record.id, len(record))
     E3MFGYR02F7Z7G 130
-    >>> print record.seq[:10], "..."
+    >>> print(record.seq[:10], "...")
     AATCATCCAC ...
-    >>> print record.letter_annotations["phred_quality"][:10], "..."
+    >>> print(record.letter_annotations["phred_quality"][:10], "...")
     [26, 15, 12, 21, 28, 21, 36, 28, 27, 27] ...
-    >>> print record.annotations
+    >>> print(record.annotations)
     {}
 
 You might use the Bio.SeqIO.convert() function to convert the (trimmed) SFF
 reads into a FASTQ file (or a FASTA file and a QUAL file), e.g.
 
     >>> from Bio import SeqIO
-    >>> from StringIO import StringIO
+    >>> from io import StringIO
     >>> out_handle = StringIO()
     >>> count = SeqIO.convert("Roche/E3MFGYR02_random_10_reads.sff", "sff",
     ...                       out_handle, "fastq")
-    >>> print "Converted %i records" % count
+    >>> print("Converted %i records" % count)
     Converted 10 records
 
 The output FASTQ file would start like this:
 
-    >>> print "%s..." % out_handle.getvalue()[:50]
+    >>> print("%s..." % out_handle.getvalue()[:50])
     @E3MFGYR02JWQ7T
     tcagGGTCTACATGTTGGTTAACCCGTACTGATT...
 
@@ -122,7 +122,7 @@ which is a little slower. For example,
     >>> from Bio import SeqIO
     >>> reads = SeqIO.index("Roche/E3MFGYR02_random_10_reads.sff", "sff")
     >>> record = reads["E3MFGYR02JHD4H"]
-    >>> print record.id, len(record), record.seq[:20]+"..."
+    >>> print(record.id, len(record), record.seq[:20]+"...")
     E3MFGYR02JHD4H 310 tcagAAAGACAAGTGGTATC...
 
 Or, using the trimmed reads:
@@ -130,7 +130,7 @@ Or, using the trimmed reads:
     >>> from Bio import SeqIO
     >>> reads = SeqIO.index("Roche/E3MFGYR02_random_10_reads.sff", "sff-trim")
     >>> record = reads["E3MFGYR02JHD4H"]
-    >>> print record.id, len(record), record.seq[:20]+"..."
+    >>> print(record.id, len(record), record.seq[:20]+"...")
     E3MFGYR02JHD4H 292 AAAGACAAGTGGTATCAACG...
 
 You can also use the Bio.SeqIO.write() function with the "sff" format. Note
@@ -149,7 +149,7 @@ degenerate bit of this pretend primer):
     ...            SeqIO.parse("Roche/E3MFGYR02_random_10_reads.sff","sff") 
     ...            if record.seq[record.annotations["clip_qual_left"]:].startswith("AAAGA"))
     >>> count = SeqIO.write(records, "temp_filtered.sff", "sff")
-    >>> print "Selected %i records" % count
+    >>> print("Selected %i records" % count)
     Selected 2 records
 
 Of course, for an assembly you would probably want to remove these primers.
@@ -166,18 +166,18 @@ is just to adjust the left clip position!
     >>> records = SeqIO.parse("Roche/E3MFGYR02_random_10_reads.sff", "sff")
     >>> count = SeqIO.write(filter_and_trim(records,"AAAGA"),
     ...                     "temp_filtered.sff", "sff")
-    >>> print "Selected %i records" % count
+    >>> print("Selected %i records" % count)
     Selected 2 records
 
 We can check the results, note the lower case clipped region now includes the "AAAGA"
 sequence:
 
     >>> for record in SeqIO.parse("temp_filtered.sff", "sff"):
-    ...     print record.id, len(record), record.seq[:20]+"..."
+    ...     print(record.id, len(record), record.seq[:20]+"...")
     E3MFGYR02JHD4H 310 tcagaaagaCAAGTGGTATC...
     E3MFGYR02GAZMS 278 tcagaaagaAGTAAGGTAAA...
     >>> for record in SeqIO.parse("temp_filtered.sff", "sff-trim"):
-    ...     print record.id, len(record), record.seq[:20]+"..."
+    ...     print(record.id, len(record), record.seq[:20]+"...")
     E3MFGYR02JHD4H 287 CAAGTGGTATCAACGCAGAG...
     E3MFGYR02GAZMS 266 AGTAAGGTAAATAACAAACG...
     >>> import os
@@ -218,15 +218,15 @@ def _sff_file_header(handle):
 
     >>> handle = open("Roche/greek.sff", "rb")
     >>> values = _sff_file_header(handle)
-    >>> print values[0]
+    >>> print(values[0])
     840
-    >>> print values[1]
+    >>> print(values[1])
     65040
-    >>> print values[2]
+    >>> print(values[2])
     256
-    >>> print values[3]
+    >>> print(values[3])
     24
-    >>> print values[4]
+    >>> print(values[4])
     800
     >>> values[-1]
     'TCAG'
@@ -584,7 +584,7 @@ def SffIterator(handle, alphabet=Alphabet.generic_dna, trim=False):
     >>> from Bio import SeqIO
     >>> handle = open("Roche/E3MFGYR02_random_10_reads.sff", "rb")
     >>> for record in SeqIO.parse(handle, "sff"):
-    ...     print record.id, len(record)
+    ...     print(record.id, len(record))
     E3MFGYR02JWQ7T 265
     E3MFGYR02JA6IL 271
     E3MFGYR02JHD4H 310
@@ -601,7 +601,7 @@ def SffIterator(handle, alphabet=Alphabet.generic_dna, trim=False):
 
     >>> handle = open("Roche/E3MFGYR02_random_10_reads.sff", "rb")
     >>> for record in SffIterator(handle):
-    ...     print record.id, len(record)
+    ...     print(record.id, len(record))
     E3MFGYR02JWQ7T 265
     E3MFGYR02JA6IL 271
     E3MFGYR02JHD4H 310
@@ -618,7 +618,7 @@ def SffIterator(handle, alphabet=Alphabet.generic_dna, trim=False):
         
     >>> handle = open("Roche/E3MFGYR02_random_10_reads.sff", "rb")
     >>> for record in SffIterator(handle, trim=True):
-    ...     print record.id, len(record)
+    ...     print(record.id, len(record))
     E3MFGYR02JWQ7T 260
     E3MFGYR02JA6IL 265
     E3MFGYR02JHD4H 292
@@ -746,7 +746,7 @@ class SffWriter(SequenceWriter):
         #Get the first record in order to find the flow information
         #we will need for the header.
         try:
-            record = records.next()
+            record = next(records)
         except StopIteration:
             record = None
         if record is None:
@@ -982,14 +982,14 @@ class SffWriter(SequenceWriter):
 
 
 if __name__ == "__main__":
-    print "Running quick self test"
+    print("Running quick self test")
     filename = "../../Tests/Roche/E3MFGYR02_random_10_reads.sff"
     metadata = _sff_read_roche_index_xml(open(filename, "rb"))
     index1 = sorted(_sff_read_roche_index(open(filename, "rb")))
     index2 = sorted(_sff_do_slow_index(open(filename, "rb")))
     assert index1 == index2
     assert len(index1) == len(list(SffIterator(open(filename, "rb"))))
-    from StringIO import StringIO
+    from io import StringIO
     try:
         #This is in Python 2.6+, and is essential on Python 3
         from io import BytesIO
@@ -1041,7 +1041,7 @@ if __name__ == "__main__":
     
     sff_trim = list(SffIterator(open(filename, "rb"), trim=True))
 
-    print _sff_read_roche_index_xml(open(filename, "rb"))
+    print(_sff_read_roche_index_xml(open(filename, "rb")))
 
     from Bio import SeqIO
     filename = "../../Tests/Roche/E3MFGYR02_random_10_reads_no_trim.fasta"
@@ -1057,7 +1057,7 @@ if __name__ == "__main__":
     for s, sT, f, q, fT, qT in zip(sff, sff_trim, fasta_no_trim,
                                    qual_no_trim, fasta_trim, qual_trim):
         #print
-        print s.id
+        print(s.id)
         #print s.seq
         #print s.letter_annotations["phred_quality"]
         
@@ -1070,12 +1070,12 @@ if __name__ == "__main__":
         assert sT.letter_annotations["phred_quality"] == qT.letter_annotations["phred_quality"]
 
 
-    print "Writing with a list of SeqRecords..."
+    print("Writing with a list of SeqRecords...")
     handle = StringIO()
     w = SffWriter(handle, xml=metadata)
     w.write_file(sff) #list
     data = handle.getvalue()
-    print "And again with an iterator..."
+    print("And again with an iterator...")
     handle = StringIO()
     w = SffWriter(handle, xml=metadata)
     w.write_file(iter(sff))
@@ -1088,15 +1088,15 @@ if __name__ == "__main__":
     del data
     handle.close()
 
-    print "-"*50
+    print("-"*50)
     filename = "../../Tests/Roche/greek.sff"
     for record in SffIterator(open(filename,"rb")):
-        print record.id
+        print(record.id)
     index1 = sorted(_sff_read_roche_index(open(filename, "rb")))
     index2 = sorted(_sff_do_slow_index(open(filename, "rb")))
     assert index1 == index2
     try:
-        print _sff_read_roche_index_xml(open(filename, "rb"))
+        print(_sff_read_roche_index_xml(open(filename, "rb")))
         assert False, "Should fail!"
     except ValueError:
         pass
@@ -1107,11 +1107,11 @@ if __name__ == "__main__":
         pass
     try:
         for record in SffIterator(handle):
-            print record.id
+            print(record.id)
         assert False, "Should have failed"
-    except ValueError, err:
-        print "Checking what happens on re-reading a handle:"
-        print err
+    except ValueError as err:
+        print("Checking what happens on re-reading a handle:")
+        print(err)
 
 
     """
@@ -1216,4 +1216,5 @@ if __name__ == "__main__":
     k = list(_sff_do_slow_index(open("../../Tests/Roche/E3MFGYR02_alt_index_at_end.sff", "rb")))
     """
 
-    print "Done"
+    print("Done")
+

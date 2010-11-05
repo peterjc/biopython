@@ -16,23 +16,23 @@ for record in ugparser:
     assert isinstance(record.express, list)
     assert isinstance(record.sequence, list)
 
-    print record.ID
-    print "Title: '%s'" % record.title
-    print "Expressed:", record.express
-    print "Chromosome:", record.chromosome
+    print(record.ID)
+    print("Title: '%s'" % record.title)
+    print("Expressed:", record.express)
+    print("Chromosome:", record.chromosome)
     if record.sequence:
-        print "Sequences:"
+        print("Sequences:")
         for s in record.sequence:
             assert isinstance(s, UniGene.UnigeneSequenceRecord)
-            print s
+            print(s)
     else:
-        print "No sequences"
+        print("No sequences")
             
     assert record.species == "Mdm"
     #Should be no PROTSIM lines in this file!
     assert isinstance(record.protsim, list)
     assert len(record.protsim) == 0
 
-    print
-print "Done"
+    print()
+print("Done")
 handle.close()

@@ -36,8 +36,8 @@ be used directly.
 
 
 import os.path
-import urlparse
-import urllib
+import urllib.parse
+import urllib.request, urllib.parse, urllib.error
 import warnings
 from xml.parsers import expat
 
@@ -62,9 +62,9 @@ class StringElement(str):
             return text
         return "StringElement(%s, attributes=%s)" % (text, repr(attributes))
 
-class UnicodeElement(unicode):
+class UnicodeElement(str):
     def __repr__(self):
-        text = unicode.__repr__(self)
+        text = str.__repr__(self)
         try:
             attributes = self.attributes
         except AttributeError:
@@ -163,7 +163,7 @@ class DataHandler:
         """Set up the parser and let it parse the XML results"""
         try:
             self.parser.ParseFile(handle)
-        except expat.ExpatError, e:
+        except expat.ExpatError as e:
             if self.parser.StartElementHandler:
                 # We saw the initial <!xml declaration, so we can be sure that
                 # we are parsing XML data. Most likely, the XML file is
@@ -216,7 +216,7 @@ class DataHandler:
 
             try:
                 self.parser.Parse(text, False)        
-            except expat.ExpatError, e:
+            except expat.ExpatError as e:
                 if self.parser.StartElementHandler:
                     # We saw the initial <!xml declaration, so we can be sure
                     # that we are parsing XML data. Most likely, the XML file
@@ -440,7 +440,7 @@ class DataHandler:
         DTD results in much faster parsing. If the DTD is not found locally,
         we try to download it. If new DTDs become available from NCBI,
         putting them in Bio/Entrez/DTDs will allow the parser to see them."""
-        urlinfo = urlparse.urlparse(systemId)
+        urlinfo = urllib.parse.urlparse(systemId)
         if urlinfo.scheme=='http':
             # Then this is an absolute path to the DTD.
             url = systemId
@@ -492,7 +492,7 @@ Proceeding to access the DTD file through the internet...
 """ % (filename, filename, url, self.global_dtd_dir, self.local_dtd_dir, filename)
             warnings.warn(message)
             try:
-                handle = urllib.urlopen(url)
+                handle = urllib.request.urlopen(url)
             except IOError:
                 raise RuntimeException("Failed to access %s at %s" % (filename, url))
 

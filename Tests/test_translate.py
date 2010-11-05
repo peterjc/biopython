@@ -59,60 +59,60 @@ assert protein.tostring()=='ENSFSLDFLWNPSPSNDAWDSSY'
 # use the standard table
 
 s = "TCAAAAAGGTGCATCTAGATG"
-print "Starting with", s
+print("Starting with", s)
 dna = Seq.Seq(s, IUPAC.unambiguous_dna)
 protein = dna.translate(to_stop=True)
 assert isinstance(protein.alphabet, IUPAC.IUPACProtein)
 
-print len(protein), "ungapped residues translated"
+print(len(protein), "ungapped residues translated")
 
 gapped_protein = dna.translate()
 assert isinstance(gapped_protein.alphabet, Alphabet.HasStopCodon)
-print protein.tostring()
+print(protein.tostring())
 
-print len(gapped_protein), "residues translated, including gaps"
-print gapped_protein.tostring()
+print(len(gapped_protein), "residues translated, including gaps")
+print(gapped_protein.tostring())
 
 # This has "AGG" as a stop codon
 p2 = dna.translate(table=2, to_stop=True)
-print len(p2), "SGC1 has a stop codon"
-print p2.tostring()
+print(len(p2), "SGC1 has a stop codon")
+print(p2.tostring())
 p2 = dna.translate(table=2)
-print "Actually, there are", p2.count("*"), "stops."
-print p2.tostring()
+print("Actually, there are", p2.count("*"), "stops.")
+print(p2.tostring())
 
 # Make sure I can change the stop character
 p2 = dna.translate(table=2, stop_symbol="+")
-print "Yep,", p2.count("+"), "stops."
-print p2.tostring()
+print("Yep,", p2.count("+"), "stops.")
+print(p2.tostring())
 
 
 # Some of the same things, with RNA
 # (The code is the same, so I'm not doing all of the tests.)
 rna = Seq.Seq(s.replace("T", "U"), IUPAC.unambiguous_rna)
 
-print "RNA translation ...",
+print("RNA translation ...", end=' ')
 protein_from_rna = rna.translate(to_stop=True)
 assert protein.alphabet is protein_from_rna.alphabet
 assert protein.tostring() == protein_from_rna.tostring()
-print "works."
+print("works.")
 
-print "RNA translation to stop ...",
+print("RNA translation to stop ...", end=' ')
 gapped_protein_from_rna = rna.translate()
 assert len(gapped_protein) == len(gapped_protein_from_rna)
 assert gapped_protein.tostring() == gapped_protein_from_rna.tostring()
-print "works."
+print("works.")
 
 # some tests for "by name"
 # How about some forward ambiguity?
-print "Forward ambiguous"
+print("Forward ambiguous")
 s = "RATGATTARAATYTA"
 #     B  D  *  N  L
 dna = Seq.Seq(s, IUPAC.ambiguous_dna)
 protein = dna.translate('Vertebrate Mitochondrial')
-print protein.tostring()
+print(protein.tostring())
 stop_protein = dna.translate('SGC1', to_stop=True)
-print stop_protein.tostring()
+print(stop_protein.tostring())
 
 # XXX (Backwards with ambiguity code is unfinished!)
 

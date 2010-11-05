@@ -11,7 +11,7 @@ See: U{ http://evolution.genetics.washington.edu/phylip/newick_doc.html }
 """
 __docformat__ = "epytext en"
 
-from cStringIO import StringIO
+from io import StringIO
 
 from Bio.Phylo import Newick
 

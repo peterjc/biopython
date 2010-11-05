@@ -17,7 +17,7 @@ The latest CLA file can be found
 
 
 
-from Residues import * 
+from .Residues import * 
 
 
 class Record:

@@ -180,7 +180,7 @@ class SeqFeature(object):
                 location_operator = self.location_operator,
                 strand = self.strand,
                 id = self.id,
-                qualifiers = dict(self.qualifiers.iteritems()),
+                qualifiers = dict(iter(self.qualifiers.items())),
                 sub_features = [f._shift(offset) for f in self.sub_features],
                 ref = self.ref,
                 ref_db = self.ref_db)
@@ -241,7 +241,7 @@ class SeqFeature(object):
                 f_seq = reverse_complement(f_seq)
         return f_seq
     
-    def __nonzero__(self):
+    def __bool__(self):
         """Returns True regardless of the length of the feature.
 
         This behaviour is for backwards compatibility, since until the
@@ -292,7 +292,7 @@ class SeqFeature(object):
         >>> f = SeqFeature(FeatureLocation(5,10), type="domain", strand=-1)
         >>> len(f)
         5
-        >>> for i in f: print i
+        >>> for i in f: print(i)
         9
         8
         7
@@ -336,7 +336,7 @@ class SeqFeature(object):
         >>> record = SeqIO.read("GenBank/NC_000932.gb", "gb")
         >>> for f in record.features:
         ...     if 1750 in f:
-        ...         print f.type, f.strand, f.location
+        ...         print(f.type, f.strand, f.location)
         source 1 [0:154478]
         gene -1 [1716:4347]
         tRNA -1 [1716:4347]
@@ -349,7 +349,7 @@ class SeqFeature(object):
 
         >>> for f in record.features:
         ...     if 1760 in f:
-        ...         print f.type, f.strand, f.location
+        ...         print(f.type, f.strand, f.location)
         source 1 [0:154478]
         gene -1 [1716:4347]
 
@@ -493,7 +493,7 @@ class FeatureLocation(object):
         return "%s(%s,%s)" \
                % (self.__class__.__name__, repr(self.start), repr(self.end))
 
-    def __nonzero__(self):
+    def __bool__(self):
         """Returns True regardless of the length of the feature.
 
         This behaviour is for backwards compatibility, since until the
@@ -552,7 +552,7 @@ class FeatureLocation(object):
         >>> loc = FeatureLocation(BeforePosition(5),AfterPosition(10))
         >>> len(loc)
         5
-        >>> for i in loc: print i
+        >>> for i in loc: print(i)
         5
         6
         7
@@ -895,22 +895,23 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..","Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..","Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
     elif os.path.isdir(os.path.join("Tests")) :
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
 
 
 if __name__ == "__main__":
     _test()
+
