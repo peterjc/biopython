@@ -19,7 +19,7 @@ from Bio import Alphabet
 from Bio.Seq import MutableSeq
 
 # neural network libraries
-from Pattern import PatternRepository
+from .Pattern import PatternRepository
 
 # genetic algorithm libraries
 from Bio.GA import Organism
@@ -595,7 +595,7 @@ class SchemaFactory:
         while (float(matched_count) / float(total_count)) < motif_percent:
             
             new_schema, matching_motifs = \
-                        self._get_unique_schema(schema_info.keys(),
+                        self._get_unique_schema(list(schema_info.keys()),
                                                 all_motifs, num_ambiguous)
 
             # get the number of counts for the new schema and clean up
@@ -696,7 +696,7 @@ class SchemaFactory:
         for add_ambiguous in range(num_ambiguous):
             # add an ambiguous position in a new place in the motif
             while 1:
-                ambig_pos = random.choice(range(len(new_schema_list)))
+                ambig_pos = random.choice(list(range(len(new_schema_list))))
 
                 # only add a position if it isn't already ambiguous
                 # otherwise, we'll try again

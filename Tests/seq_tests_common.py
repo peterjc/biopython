@@ -91,7 +91,7 @@ def compare_feature(old_f, new_f):
     try:
         assert str(old_f.location) == str(new_f.location), \
            "%s -> %s" % (str(old_f.location), str(new_f.location))
-    except AssertionError, e:
+    except AssertionError as e:
         if isinstance(old_f.location.start, ExactPosition) and \
             isinstance(old_f.location.end, ExactPosition):
             # Its not a problem with fuzzy locations, re-raise 
@@ -139,7 +139,7 @@ def compare_feature(old_f, new_f):
         try:
             assert str(old_sub.location) == str(new_sub.location), \
                "%s -> %s" % (str(old_sub.location), str(new_sub.location))
-        except AssertionError, e:
+        except AssertionError as e:
             if isinstance(old_sub.location.start, ExactPosition) and \
                 isinstance(old_sub.location.end, ExactPosition):
                 # Its not a problem with fuzzy locations, re-raise 
@@ -193,7 +193,7 @@ def compare_sequence(old, new):
     #this takes far far far too long to run!
     #Test both positive and negative indices
     if ln < 50:
-        indices = range(-ln,ln)
+        indices = list(range(-ln,ln))
     else:
         #A selection of end cases, and the mid point
         indices = [-ln,-ln+1,-(ln//2),-1,0,1,ln//2,ln-2,ln-1]
@@ -305,7 +305,7 @@ def compare_record(old, new):
             #If there is a taxon id recorded, these fields get overwritten
             #by data from the taxon/taxon_name tables.  There is no
             #guarantee that they will be identical after a load/retrieve.
-            assert isinstance(new.annotations[key], basestring) \
+            assert isinstance(new.annotations[key], str) \
                 or isinstance(new.annotations[key], list)
         elif type(old.annotations[key]) == type(new.annotations[key]):
             assert old.annotations[key] == new.annotations[key], \

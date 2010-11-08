@@ -4,7 +4,7 @@
 # as part of this package.
 
 import os
-from StringIO import StringIO
+from io import StringIO
 from Bio import AlignIO
 import Bio
 
@@ -52,14 +52,14 @@ def compare(a1, a2):
     return True
 
 
-print "Checking Bio.AlignIO and Bio.Clustalw can read example files..."
+print("Checking Bio.AlignIO and Bio.Clustalw can read example files...")
 for (t_per, t_count, t_filename) in test_files:
-    print
-    print "Testing reading %s format file %s with %i alignments" \
-          % ("clustal", t_filename, t_count)
+    print()
+    print("Testing reading %s format file %s with %i alignments" \
+          % ("clustal", t_filename, t_count))
     assert os.path.isfile(t_filename), t_filename
 
-    print "Using Bio.AlignIO.parse(...)"
+    print("Using Bio.AlignIO.parse(...)")
     alignments  = list(AlignIO.parse(handle=open(t_filename,"r"), format="clustal"))
     assert len(alignments)  == t_count, \
          "Found %i alignments but expected %i" % (len(alignments), t_count)
@@ -67,18 +67,18 @@ for (t_per, t_count, t_filename) in test_files:
         assert len(alignment) == t_per, \
             "Expected %i records per alignment, got %i" \
             % (t_per, len(alignment))
-        print
-        print alignment
+        print()
+        print(alignment)
     
     if t_count != 1 : continue
-    print
+    print()
 
     # Check Bio.AlignIO.read(...)
     alignment = AlignIO.read(handle=open(t_filename), format="clustal")
     assert isinstance(alignment, Alignment)
     assert compare(alignment, alignments[0])
 
-    print "Using Bio.AlignIO.read(...)"
+    print("Using Bio.AlignIO.read(...)")
     #print "~" * 75
     #handle = StringIO()
     #AlignIO.write([alignment], handle, "clustal")
@@ -86,7 +86,7 @@ for (t_per, t_count, t_filename) in test_files:
     #print handle.read()
     #print "~" * 75
 
-    print "Using Bio.Clustalw.parse_file(...)"
+    print("Using Bio.Clustalw.parse_file(...)")
     c_alignment = Clustalw.parse_file(t_filename)
     assert isinstance(c_alignment, Alignment)
     assert isinstance(c_alignment, Clustalw.ClustalAlignment)
@@ -105,4 +105,4 @@ for (t_per, t_count, t_filename) in test_files:
     assert isinstance(alignment, Alignment)
     assert compare(n_alignment, c_alignment)
 
-print "Finished tested reading files"
+print("Finished tested reading files")

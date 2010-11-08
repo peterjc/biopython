@@ -56,18 +56,18 @@ if sys.platform=="win32":
                     break
             if clustalw_exe : break
 else:
-    import commands
+    import subprocess
     #Note that clustalw 1.83 and clustalw 2.0.10 don't obey the --version
     #command, but this does cause them to quit cleanly.  Otherwise they prompt
     #the user for input (causing a lock up).
-    output = commands.getoutput("clustalw2 --version")
+    output = subprocess.getoutput("clustalw2 --version")
     #Since "not found" may be in another language, try and be sure this is
     #really the clustalw tool's output
     if "not found" not in output and "CLUSTAL" in output \
     and "Multiple Sequence Alignments" in output:
         clustalw_exe = "clustalw2"
     if not clustalw_exe:
-        output = commands.getoutput("clustalw --version")
+        output = subprocess.getoutput("clustalw --version")
         if "not found" not in output and "CLUSTAL" in output \
         and "Multiple Sequence Alignments" in output:
             clustalw_exe = "clustalw"
@@ -78,18 +78,18 @@ if not clustalw_exe:
 
 #################################################################
 
-print "Checking error conditions"
-print "========================="
+print("Checking error conditions")
+print("=========================")
 
-print "Empty file"
+print("Empty file")
 input_file = "does_not_exist.fasta"
 assert not os.path.isfile(input_file)
 cline = MultipleAlignCL(input_file, command=clustalw_exe)
 try:
     align = Clustalw.do_alignment(cline)
     assert False, "Should have failed, returned %s" % repr(align)
-except IOError, err:
-    print "Failed (good)"
+except IOError as err:
+    print("Failed (good)")
     #Python 2.3 on Windows gave (0, 'Error')
     #Python 2.5 on Windows gives [Errno 0] Error
     assert "Cannot open sequence file" in str(err) \
@@ -97,8 +97,8 @@ except IOError, err:
            or str(err) == "[Errno 0] Error" \
            or str(err) == "(0, 'Error')", str(err)
 
-print
-print "Single sequence"
+print()
+print("Single sequence")
 input_file = "Fasta/f001"
 assert os.path.isfile(input_file)
 assert len(list(SeqIO.parse(open(input_file),"fasta")))==1
@@ -106,26 +106,26 @@ cline = MultipleAlignCL(input_file, command=clustalw_exe)
 try:
     align = Clustalw.do_alignment(cline)
     assert False, "Should have failed, returned %s" % repr(align)
-except IOError, err:
-    print "Failed (good)"
+except IOError as err:
+    print("Failed (good)")
     assert "has only one sequence present" in str(err)
-except ValueError, err:
-    print "Failed (good)"
+except ValueError as err:
+    print("Failed (good)")
     assert str(err) == "No records found in handle"
     #Ideally we'd get an IOError but sometimes we don't seem to
     #get a return value from clustalw.  If so, then there is a
     #ValueError when the parsing fails.
 
-print
-print "Invalid sequence"
+print()
+print("Invalid sequence")
 input_file = "Medline/pubmed_result1.txt"
 assert os.path.isfile(input_file)
 cline = MultipleAlignCL(input_file, command=clustalw_exe)
 try:
     align = Clustalw.do_alignment(cline)
     assert False, "Should have failed, returned %s" % repr(align)
-except IOError, err:
-    print "Failed (good)"
+except IOError as err:
+    print("Failed (good)")
     #Ideally we'd catch the return code and raise the specific
     #error for "invalid format", rather than just notice there
     #is not output file.
@@ -138,9 +138,9 @@ except IOError, err:
            or str(err) == "(0, 'Error')", str(err)
 
 #################################################################
-print
-print "Checking normal situations"
-print "=========================="
+print()
+print("Checking normal situations")
+print("==========================")
 
 #Create a temp fasta file with a space in the name
 temp_filename_with_spaces = "Clustalw/temp horses.fasta"
@@ -175,11 +175,11 @@ for input_file, output_file, newtree_file in [
                                   lambda rec : rec.id.replace(":","_"))
     if os.path.isfile(output_file):
         os.remove(output_file)
-    print "Calling clustalw on %s (with %i records)" \
-          % (repr(input_file), len(input_records))
-    print "using output file %s" % repr(output_file)
+    print("Calling clustalw on %s (with %i records)" \
+          % (repr(input_file), len(input_records)))
+    print("using output file %s" % repr(output_file))
     if newtree_file is not None:
-        print "requesting output guide tree file %s" % repr(newtree_file)
+        print("requesting output guide tree file %s" % repr(newtree_file))
 
     #Prepare the command...
     cline = MultipleAlignCL(input_file, command=clustalw_exe)
@@ -191,7 +191,7 @@ for input_file, output_file, newtree_file in [
     align = Clustalw.do_alignment(cline)
 
     #Check the output...
-    print "Got an alignment, %i sequences" % (len(align))
+    print("Got an alignment, %i sequences" % (len(align)))
     #The length of the alignment will depend on the version of clustalw
     #(clustalw 2.0.10 and clustalw 1.83 are certainly different).
     output_records = SeqIO.to_dict(SeqIO.parse(open(output_file),"clustal"))
@@ -272,4 +272,4 @@ if os.path.isfile(temp_filename_with_spaces):
 if os.path.isfile(temp_large_fasta_file):
     os.remove(temp_large_fasta_file)
 
-print "Done"
+print("Done")

@@ -340,16 +340,16 @@ def _retrieve_annotations(adaptor, primary_id, taxon_id):
     # Convert values into strings in cases of unicode from the database.
     # BioSQL could eventually be expanded to be unicode aware.
     str_anns = {}
-    for key, val in annotations.items():
+    for key, val in list(annotations.items()):
         if isinstance(val, list):
             val = [_make_unicode_into_string(x) for x in val]
-        elif isinstance(val, unicode):
+        elif isinstance(val, str):
             val = str(val)
         str_anns[key] = val
     return str_anns
 
 def _make_unicode_into_string(text):
-    if isinstance(text, unicode):
+    if isinstance(text, str):
         return str(text)
     else :
         return text
