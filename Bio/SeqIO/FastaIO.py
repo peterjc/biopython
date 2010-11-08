@@ -145,7 +145,7 @@ class FastaWriter(SequentialSequenceWriter):
             self.handle.write(data + "\n")
 
 if __name__ == "__main__":
-    print "Running quick self test"
+    print("Running quick self test")
 
     import os
     from Bio.Alphabet import generic_protein, generic_nucleotide
@@ -164,30 +164,30 @@ if __name__ == "__main__":
     def print_record(record):
         #See also bug 2057
         #http://bugzilla.open-bio.org/show_bug.cgi?id=2057
-        print "ID:" + record.id
-        print "Name:" + record.name
-        print "Descr:" + record.description
-        print record.seq
+        print("ID:" + record.id)
+        print("Name:" + record.name)
+        print("Descr:" + record.description)
+        print(record.seq)
         for feature in record.annotations:
-            print '/%s=%s' % (feature, record.annotations[feature])
+            print('/%s=%s' % (feature, record.annotations[feature]))
         if record.dbxrefs:
-            print "Database cross references:"
-            for x in record.dbxrefs : print " - %s" % x
+            print("Database cross references:")
+            for x in record.dbxrefs : print(" - %s" % x)
 
     if os.path.isfile(fna_filename):
-        print "--------"
-        print "FastaIterator (single sequence)"
+        print("--------")
+        print("FastaIterator (single sequence)")
         iterator = FastaIterator(open(fna_filename, "r"), alphabet=generic_nucleotide, title2ids=genbank_name_function)
         count=0
         for record in iterator:
             count=count+1
             print_record(record)
         assert count == 1
-        print str(record.__class__)
+        print(str(record.__class__))
 
     if os.path.isfile(faa_filename):
-        print "--------"
-        print "FastaIterator (multiple sequences)"
+        print("--------")
+        print("FastaIterator (multiple sequences)")
         iterator = FastaIterator(open(faa_filename, "r"), alphabet=generic_protein, title2ids=genbank_name_function)
         count=0
         for record in iterator:
@@ -195,11 +195,11 @@ if __name__ == "__main__":
             print_record(record)
             break
         assert count>0
-        print str(record.__class__)
+        print(str(record.__class__))
 
-    from cStringIO import StringIO
-    print "--------"
-    print "FastaIterator (empty input file)"
+    from io import StringIO
+    print("--------")
+    print("FastaIterator (empty input file)")
     #Just to make sure no errors happen
     iterator = FastaIterator(StringIO(""))
     count = 0
@@ -207,4 +207,4 @@ if __name__ == "__main__":
         count = count+1
     assert count==0
 
-    print "Done"
+    print("Done")
