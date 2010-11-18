@@ -23,7 +23,7 @@ This module also includes some deprecated functionality (function generic_run
 and class ApplicationResult) which should not be used anymore.
 """
 import os, sys
-import StringIO
+import io
 import subprocess
 import re
 
@@ -95,8 +95,8 @@ def generic_run(commandline):
     # capture error code:
     error_code = child.returncode
     return ApplicationResult(commandline, error_code), \
-           File.UndoHandle(StringIO.StringIO(r_out)), \
-           File.UndoHandle(StringIO.StringIO(e_out))
+           File.UndoHandle(io.StringIO(r_out)), \
+           File.UndoHandle(io.StringIO(e_out))
 
 
 class ApplicationError(_ProcessCalledError):
@@ -112,7 +112,7 @@ class ApplicationError(_ProcessCalledError):
     >>> err = ApplicationError(-11, "helloworld", "", "Some error text")
     >>> err.returncode, err.cmd, err.stdout, err.stderr
     (-11, 'helloworld', '', 'Some error text')
-    >>> print err
+    >>> print(err)
     Command 'helloworld' returned non-zero exit status -11, 'Some error text'
     
     """
@@ -183,7 +183,7 @@ class ApplicationResult:
         """
         try:
             return self._results[output_name]
-        except KeyError, err:
+        except KeyError as err:
             #Try the aliases...
             for parameter in self._cl.parameters:
                 if output_name in parameter.names:
@@ -194,7 +194,7 @@ class ApplicationResult:
     def available_results(self):
         """Retrieve a list of all available results.
         """
-        result_names = self._results.keys()
+        result_names = list(self._results.keys())
         result_names.sort()
         return result_names
 
@@ -244,7 +244,7 @@ class AbstractCommandline(object):
     >>> water_cmd.asequence = "asis:ACCCGGGCGCGGT"
     >>> water_cmd.bsequence = "asis:ACCCGAGCGCGGT"
     >>> water_cmd.outfile = "temp_water.txt"
-    >>> print water_cmd
+    >>> print(water_cmd)
     water -outfile=temp_water.txt -asequence=asis:ACCCGGGCGCGGT -bsequence=asis:ACCCGAGCGCGGT -gapopen=10 -gapextend=0.5
     >>> water_cmd
     WaterCommandline(cmd='water', outfile='temp_water.txt', asequence='asis:ACCCGGGCGCGGT', bsequence='asis:ACCCGAGCGCGGT', gapopen=10, gapextend=0.5)
@@ -319,7 +319,7 @@ class AbstractCommandline(object):
                        "argument value required." % p.names[0]
             prop = property(getter(name), setter(name), deleter(name), doc)
             setattr(self.__class__, name, prop) #magic!
-        for key, value in kwargs.iteritems():
+        for key, value in kwargs.items():
             self.set_parameter(key, value)
     
     def _validate(self):
@@ -346,7 +346,7 @@ class AbstractCommandline(object):
         >>> cline.asequence = "asis:ACCCGGGCGCGGT"
         >>> cline.bsequence = "asis:ACCCGAGCGCGGT"
         >>> cline.outfile = "temp_water.txt"
-        >>> print cline
+        >>> print(cline)
         water -outfile=temp_water.txt -asequence=asis:ACCCGGGCGCGGT -bsequence=asis:ACCCGAGCGCGGT -gapopen=10 -gapextend=0.5
         >>> str(cline)
         'water -outfile=temp_water.txt -asequence=asis:ACCCGGGCGCGGT -bsequence=asis:ACCCGAGCGCGGT -gapopen=10 -gapextend=0.5'
@@ -368,7 +368,7 @@ class AbstractCommandline(object):
         >>> cline.asequence = "asis:ACCCGGGCGCGGT"
         >>> cline.bsequence = "asis:ACCCGAGCGCGGT"
         >>> cline.outfile = "temp_water.txt"
-        >>> print cline
+        >>> print(cline)
         water -outfile=temp_water.txt -asequence=asis:ACCCGGGCGCGGT -bsequence=asis:ACCCGAGCGCGGT -gapopen=10 -gapextend=0.5
         >>> cline
         WaterCommandline(cmd='water', outfile='temp_water.txt', asequence='asis:ACCCGGGCGCGGT', bsequence='asis:ACCCGAGCGCGGT', gapopen=10, gapextend=0.5)
@@ -462,7 +462,7 @@ class AbstractCommandline(object):
         Traceback (most recent call last):
         ...
         ValueError: Option name csequence was not found.
-        >>> print cline
+        >>> print(cline)
         water -stdout -asequence=a.fasta -bsequence=b.fasta -gapopen=10 -gapextend=0.5
 
         This workaround uses a whitelist of object attributes, and sets the
@@ -689,9 +689,9 @@ def _escape_filename(filename):
 
     Note this will not add quotes if they are already included:
     
-    >>> print _escape_filename('example with spaces')
+    >>> print(_escape_filename('example with spaces'))
     "example with spaces"
-    >>> print _escape_filename('"example with spaces"')
+    >>> print(_escape_filename('"example with spaces"'))
     "example with spaces"
     """
     #Is adding the following helpful
@@ -724,3 +724,4 @@ def _test():
 if __name__ == "__main__":
     #Run the doctests
     _test()
+

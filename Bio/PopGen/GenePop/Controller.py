@@ -42,16 +42,16 @@ def _read_allele_freq_table(f):
         if l == "":
             raise StopIteration
         l = f.readline()
-    alleles = filter(lambda x: x != '', f.readline().rstrip().split(" "))
-    alleles = map(lambda x: _gp_int(x), alleles)
+    alleles = [x for x in f.readline().rstrip().split(" ") if x != '']
+    alleles = [_gp_int(x) for x in alleles]
     l = f.readline().rstrip()
     table = []
     while l != "":
-        line = filter(lambda x: x != '', l.split(" "))
+        line = [x for x in l.split(" ") if x != '']
         try:
             table.append(
                 (line[0],
-                map(lambda x: _gp_float(x), line[1:-1]),
+                [_gp_float(x) for x in line[1:-1]],
                 _gp_int(line[-1])))
         except ValueError:
             table.append(
@@ -68,7 +68,7 @@ def _read_table(f, funs):
         l = f.readline().rstrip()
     l = f.readline().rstrip()
     while l.find("===")==-1 and l.find("---")==-1 and l != "":
-        toks = filter(lambda x: x != "", l.split(" ")) 
+        toks = [x for x in l.split(" ") if x != ""] 
         line = []
         for i in range(len(toks)):
             try:
@@ -84,8 +84,7 @@ def _read_triangle_matrix(f):
     l = f.readline().rstrip()
     while l != "":
         matrix.append(
-            map(lambda x: _gp_float(x),
-                filter(lambda y: y != "", l.split(" "))))
+            [_gp_float(x) for x in [y for y in l.split(" ") if y != ""]])
         l = f.readline().rstrip()
     return matrix
 
@@ -94,10 +93,10 @@ def _read_headed_triangle_matrix(f):
     header = f.readline().rstrip()
     if header.find("---")>-1 or header.find("===")>-1:
         header = f.readline().rstrip()
-    nlines = len(filter(lambda x:x != '', header.split(' '))) - 1
+    nlines = len([x for x in header.split(' ') if x != '']) - 1
     for line_pop in range(nlines):
         l = f.readline().rstrip()
-        vals = filter(lambda x:x != '', l.split(' ')[1:])
+        vals = [x for x in l.split(' ')[1:] if x != '']
         clean_vals = []
         for val in vals:
             try:
@@ -152,7 +151,7 @@ class _FileIterator:
             raise StopIteration
         return self
 
-    def next(self):
+    def __next__(self):
         return self.func(self)
 
     def __del__(self):
@@ -228,7 +227,7 @@ class _GenePopCommandline(AbstractCommandline):
         Example set_menu([6,1]) = get all F statistics (menu 6.1)
         """
         self.set_parameter("command", "MenuOptions="+
-                ".".join(map(lambda x:str(x),option_list)))
+                ".".join([str(x) for x in option_list]))
 
     def set_input(self, fname):
         """Sets the input file name.
@@ -343,8 +342,7 @@ class GenePopController:
         f.readline()
         f.readline()
         l = f.readline().rstrip()
-        p, se, switches = tuple(map(lambda x: _gp_float(x),
-            filter(lambda y: y != "",l.split(" "))))
+        p, se, switches = tuple([_gp_float(x) for x in [y for y in l.split(" ") if y != ""]])
         f.close()
         return pop_p, loc_p, (p, se, switches)
 
@@ -454,7 +452,7 @@ class GenePopController:
             if l == "":
                 self.done = True
                 raise StopIteration
-            toks = filter(lambda x: x != "", l.split(" "))
+            toks = [x for x in l.split(" ") if x != ""]
             pop, locus1, locus2 = toks[0], toks[1], toks[2]
             if not hasattr(self, "start_locus1"):
                 start_locus1, start_locus2 = locus1, locus2
@@ -470,7 +468,7 @@ class GenePopController:
             if l == "":
                 self.done = True
                 raise StopIteration
-            toks = filter(lambda x: x != "", l.split(" "))
+            toks = [x for x in l.split(" ") if x != ""]
             locus1, locus2 = toks[0], toks[2]
             try:
                 chi2, df, p = _gp_float(toks[3]), _gp_int(toks[4]), _gp_float(toks[5])
@@ -652,8 +650,7 @@ class GenePopController:
                 freq_fis={}
                 overall_fis = None
                 while l.find("----")==-1:
-                    vals = filter(lambda x: x!='',
-                            l.rstrip().split(' '))
+                    vals = [x for x in l.rstrip().split(' ') if x!='']
                     if vals[0]=="Tot":
                         overall_fis = _gp_int(vals[1]), \
                                 _gp_float(vals[2]), _gp_float(vals[3])
@@ -709,8 +706,7 @@ class GenePopController:
                     self.stream.readline()
                     fis_table = _read_table(self.stream, [str, _gp_float, _gp_float, _gp_float])
                     self.stream.readline()
-                    avg_qinter, avg_fis = tuple(map (lambda x: _gp_float(x),
-                        filter(lambda y:y != "", self.stream.readline().split(" "))))
+                    avg_qinter, avg_fis = tuple([_gp_float(x) for x in [y for y in self.stream.readline().split(" ") if y != ""]])
                     return locus, fis_table, avg_qinter, avg_fis
                 l = self.stream.readline()
             self.done = True
@@ -748,7 +744,7 @@ class GenePopController:
         l = f.readline()
         while l != '':
             if l.startswith('           All:'):
-                toks=filter(lambda x:x!="", l.rstrip().split(' '))
+                toks=[x for x in l.rstrip().split(' ') if x!=""]
                 try:
                     allFis = _gp_float(toks[1])
                 except ValueError:

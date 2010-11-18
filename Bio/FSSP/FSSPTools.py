@@ -26,7 +26,7 @@ def mult_align(sum_dict,align_dict):
       for j in align_dict.abs(i).pos_align_dict:
          # loop within a position
          mult_align_dict[j] += align_dict.abs(i).pos_align_dict[j].aa
-   seq_order = mult_align_dict.keys()
+   seq_order = list(mult_align_dict.keys())
    seq_order.sort()
    fssp_align = Generic.Alignment(Alphabet.Gapped(
                                   Alphabet.IUPAC.extended_protein))
@@ -64,7 +64,7 @@ def filter(sum_dict,align_dict,filter_attribute,low_bound, high_bound):
       if (attr_value >= low_bound and
           attr_value <= high_bound):
          new_sum_dict[prot_num] = sum_dict[prot_num]
-   prot_numbers = new_sum_dict.keys()
+   prot_numbers = list(new_sum_dict.keys())
    prot_numbers.sort()
    for pos_num in new_align_dict.abs_res_dict:
       new_align_dict.abs(pos_num).pos_align_dict = {}
@@ -82,7 +82,7 @@ def name_filter(sum_dict, align_dict, name_list):
       for prot_num in sum_dict:
          if sum_dict[prot_num].pdb2+sum_dict[prot_num].chain2 == cur_pdb_name:
             new_sum_dict[prot_num] = sum_dict[prot_num]
-   prot_numbers = new_sum_dict.keys()
+   prot_numbers = list(new_sum_dict.keys())
    prot_numbers.sort()
    for pos_num in new_align_dict.abs_res_dict:
       new_align_dict.abs(pos_num).pos_align_dict = {}

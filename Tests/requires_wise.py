@@ -13,9 +13,9 @@ if sys.platform=="win32":
     raise MissingExternalDependencyError(\
         "Don't know how to find the Wise2 tool dnal on Windows.")
 
-import commands
+import subprocess
 not_found_types = ["command not found", "dnal: not found", "not recognized"]
-dnal_output = commands.getoutput("dnal")
+dnal_output = subprocess.getoutput("dnal")
 
 for not_found in not_found_types:
     if dnal_output.find(not_found) != -1:

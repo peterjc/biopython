@@ -83,7 +83,7 @@ class _IndexedSeqFileDict(dict):
 
     def __str__(self):
         if self:
-            return "{%s : SeqRecord(...), ...}" % repr(self.keys()[0])
+            return "{%s : SeqRecord(...), ...}" % repr(list(self.keys())[0])
         else:
             return "{}"
 
@@ -215,7 +215,7 @@ class SffDict(_IndexedSeqFileDict) :
                        "Indexed %i records, expected %i" \
                        % (len(self), number_of_reads)
                 return
-            except ValueError, err :
+            except ValueError as err :
                 import warnings
                 warnings.warn("Could not parse the SFF index: %s" % err)
                 assert len(self)==0, "Partially populated index"
@@ -268,16 +268,16 @@ class SequentialSeqFileDict(_IndexedSeqFileDict):
         if alphabet is None:
             def _parse():
                 """Dynamically generated parser function (PRIVATE)."""
-                return i(self._handle).next()
+                return next(i(self._handle))
         else:
             #TODO - Detect alphabet support ONCE at __init__
             def _parse():
                 """Dynamically generated parser function (PRIVATE)."""
                 try:
-                    return i(self._handle, alphabet=alphabet).next()
+                    return next(i(self._handle, alphabet=alphabet))
                 except TypeError:
-                    return SeqIO._force_alphabet(i(self._handle),
-                                                 alphabet).next()
+                    return next(SeqIO._force_alphabet(i(self._handle),
+                                                 alphabet))
         self._parse = _parse
 
     def _build(self):
@@ -506,7 +506,7 @@ class UniprotDict(SequentialSeqFileDict):
         </uniprot>
         """ % self.get_raw(key)
         #TODO - For consistency, this function should not accept a string:
-        return SeqIO.UniprotIO.UniprotIterator(data).next()
+        return next(SeqIO.UniprotIO.UniprotIterator(data))
 
 
 class IntelliGeneticsDict(SequentialSeqFileDict):
@@ -543,7 +543,7 @@ class TabDict(SequentialSeqFileDict):
             if not line : break #End of file
             try:
                 key = line.split("\t")[0]
-            except ValueError, err:
+            except ValueError as err:
                 if not line.strip():
                     #Ignore blank lines
                     continue

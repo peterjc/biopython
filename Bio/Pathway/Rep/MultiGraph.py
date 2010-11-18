@@ -5,6 +5,7 @@
 
 # get set abstraction for graph representation
 from Bio.Pathway.Rep.HashSet import *
+from functools import reduce
 
 class MultiGraph:
     """A directed multigraph abstraction with labeled edges."""
@@ -39,7 +40,7 @@ class MultiGraph:
         """Returns a concise string description of this graph."""
         nodenum = len(self.__adjacency_list)
         edgenum = reduce(lambda x,y: x+y,
-                         map(len, self.__adjacency_list.values()))
+                         list(list(map(len, list(list(self.__adjacency_list.values()))))))
         labelnum = len(self.__label_map)
         return "<MultiGraph: " + \
                str(nodenum) + " node(s), " + \
@@ -82,11 +83,11 @@ class MultiGraph:
 
     def labels(self):
         """Returns a list of all the edge labels in this graph."""
-        return self.__label_map.keys()
+        return list(list(self.__label_map.keys()))
 
     def nodes(self):
         """Returns a list of the nodes in this graph."""
-        return self.__adjacency_list.keys()
+        return list(list(self.__adjacency_list.keys()))
 
     def parent_edges(self, child):
         """Returns a list of (parent, label) pairs for child."""
@@ -113,13 +114,13 @@ class MultiGraph:
         del self.__adjacency_list[node]
         # remove all in-edges from adjacency list
         for n in self.__adjacency_list:
-            self.__adjacency_list[n] = HashSet(filter(lambda x,node=node: x[0] is not node,
-                                                      self.__adjacency_list[n].list()))
+            self.__adjacency_list[n] = HashSet(list(list(filter(lambda x,node=node: x[0] is not node,
+                                                      self.__adjacency_list[n].list()))))
         # remove all refering pairs in label map
-        for label in self.__label_map.keys():
-            lm = HashSet(filter(lambda x,node=node: \
+        for label in list(list(self.__label_map.keys())):
+            lm = HashSet(list(list(filter(lambda x,node=node: \
                                 (x[0] is not node) and (x[1] is not node),
-                                self.__label_map[label].list()))
+                                self.__label_map[label].list()))))
             # remove the entry completely if the label is now unused
             if lm.empty():
                 del self.__label_map[label]

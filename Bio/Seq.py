@@ -37,8 +37,8 @@ def _maketrans(complement_mapping):
 
     For internal use only.
     """
-    before = ''.join(complement_mapping.keys())
-    after  = ''.join(complement_mapping.values())
+    before = ''.join(list(complement_mapping.keys()))
+    after  = ''.join(list(complement_mapping.values()))
     before = before + before.lower()
     after  = after + after.lower()
     if sys.version_info[0] == 3 :
@@ -88,14 +88,14 @@ class Seq(object):
         ...              IUPAC.protein)
         >>> my_seq
         Seq('MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF', IUPACProtein())
-        >>> print my_seq
+        >>> print(my_seq)
         MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF
         >>> my_seq.alphabet
         IUPACProtein()
 
         """
         # Enforce string storage
-        if not isinstance(data, basestring):
+        if not isinstance(data, str):
             raise TypeError("The sequence data given to a Seq object should "
                             "be a string (not another Seq object etc)")
         self._data = data
@@ -273,7 +273,7 @@ class Seq(object):
             #They should be the same sequence type (or one of them is generic)
             a = Alphabet._consensus_alphabet([self.alphabet, other.alphabet])
             return self.__class__(str(self) + str(other), a)
-        elif isinstance(other, basestring):
+        elif isinstance(other, str):
             #other is a plain string - use the current alphabet
             return self.__class__(str(self) + other, self.alphabet)
         elif isinstance(other, SeqRecord):
@@ -303,7 +303,7 @@ class Seq(object):
             #They should be the same sequence type (or one of them is generic)
             a = Alphabet._consensus_alphabet([self.alphabet, other.alphabet])
             return self.__class__(str(other) + str(self), a)
-        elif isinstance(other, basestring):
+        elif isinstance(other, str):
             #other is a plain string - use the current alphabet
             return self.__class__(other + str(self), self.alphabet)
         else:
@@ -359,7 +359,7 @@ class Seq(object):
         #Return as a string
         return str(other_sequence)
     
-    def count(self, sub, start=0, end=sys.maxint):
+    def count(self, sub, start=0, end=sys.maxsize):
         """Non-overlapping count method, like that of a python string.
 
         This behaves like the python string method of the same name,
@@ -379,13 +379,13 @@ class Seq(object):
 
         >>> from Bio.Seq import Seq
         >>> my_seq = Seq("AAAATGA")
-        >>> print my_seq.count("A")
+        >>> print(my_seq.count("A"))
         5
-        >>> print my_seq.count("ATG")
+        >>> print(my_seq.count("ATG"))
         1
-        >>> print my_seq.count(Seq("AT"))
+        >>> print(my_seq.count(Seq("AT")))
         1
-        >>> print my_seq.count("AT", 2, -1)
+        >>> print(my_seq.count("AT", 2, -1))
         1
 
         HOWEVER, please note because python strings and Seq objects (and
@@ -394,7 +394,7 @@ class Seq(object):
 
         >>> "AAAA".count("AA")
         2
-        >>> print Seq("AAAA").count("AA")
+        >>> print(Seq("AAAA").count("AA"))
         2
 
         A non-overlapping search would give the answer as three!
@@ -434,7 +434,7 @@ class Seq(object):
         sub_str = self._get_seq_str_and_check_alphabet(char)
         return sub_str in str(self)
 
-    def find(self, sub, start=0, end=sys.maxint):
+    def find(self, sub, start=0, end=sys.maxsize):
         """Find method, like that of a python string.
 
         This behaves like the python string method of the same name.
@@ -460,7 +460,7 @@ class Seq(object):
         sub_str = self._get_seq_str_and_check_alphabet(sub)
         return str(self).find(sub_str, start, end)
 
-    def rfind(self, sub, start=0, end=sys.maxint):
+    def rfind(self, sub, start=0, end=sys.maxsize):
         """Find from right method, like that of a python string.
 
         This behaves like the python string method of the same name.
@@ -486,7 +486,7 @@ class Seq(object):
         sub_str = self._get_seq_str_and_check_alphabet(sub)
         return str(self).rfind(sub_str, start, end)
 
-    def startswith(self, prefix, start=0, end=sys.maxint):
+    def startswith(self, prefix, start=0, end=sys.maxsize):
         """Does the Seq start with the given prefix?  Returns True/False.
 
         This behaves like the python string method of the same name.
@@ -523,7 +523,7 @@ class Seq(object):
             prefix_str = self._get_seq_str_and_check_alphabet(prefix)
             return str(self).startswith(prefix_str, start, end)
 
-    def endswith(self, suffix, start=0, end=sys.maxint):
+    def endswith(self, suffix, start=0, end=sys.maxsize):
         """Does the Seq end with the given suffix?  Returns True/False.
 
         This behaves like the python string method of the same name.
@@ -1095,7 +1095,7 @@ class UnknownSeq(Seq):
     Seq('NNNNN', Alphabet())
     >>> len(my_seq)
     5
-    >>> print my_seq
+    >>> print(my_seq)
     NNNNN
 
     However, this is rather wasteful of memory (especially for large
@@ -1218,13 +1218,13 @@ class UnknownSeq(Seq):
         """Get a subsequence from the UnknownSeq object.
         
         >>> unk = UnknownSeq(8, character="N")
-        >>> print unk[:]
+        >>> print(unk[:])
         NNNNNNNN
-        >>> print unk[5:3]
+        >>> print(unk[5:3])
         <BLANKLINE>
-        >>> print unk[1:-1]
+        >>> print(unk[1:-1])
         NNNNNN
-        >>> print unk[1:-1:2]
+        >>> print(unk[1:-1:2])
         NNN
         """
         if isinstance(index, int):
@@ -1259,7 +1259,7 @@ class UnknownSeq(Seq):
         #        new_length, len(("X"*old_length)[index]))
         return UnknownSeq(new_length, self.alphabet, self._character)
 
-    def count(self, sub, start=0, end=sys.maxint):
+    def count(self, sub, start=0, end=sys.maxsize):
         """Non-overlapping count method, like that of a python string.
 
         This behaves like the python string (and Seq object) method of the
@@ -1321,11 +1321,11 @@ class UnknownSeq(Seq):
         >>> my_nuc = UnknownSeq(8)
         >>> my_nuc
         UnknownSeq(8, alphabet = Alphabet(), character = '?')
-        >>> print my_nuc
+        >>> print(my_nuc)
         ????????
         >>> my_nuc.complement()
         UnknownSeq(8, alphabet = Alphabet(), character = '?')
-        >>> print my_nuc.complement()
+        >>> print(my_nuc.complement())
         ????????
         """
         if isinstance(Alphabet._get_base_alphabet(self.alphabet),
@@ -1339,11 +1339,11 @@ class UnknownSeq(Seq):
         >>> my_nuc = UnknownSeq(10)
         >>> my_nuc
         UnknownSeq(10, alphabet = Alphabet(), character = '?')
-        >>> print my_nuc
+        >>> print(my_nuc)
         ??????????
         >>> my_nuc.reverse_complement()
         UnknownSeq(10, alphabet = Alphabet(), character = '?')
-        >>> print my_nuc.reverse_complement()
+        >>> print(my_nuc.reverse_complement())
         ??????????
         """
         if isinstance(Alphabet._get_base_alphabet(self.alphabet),
@@ -1357,12 +1357,12 @@ class UnknownSeq(Seq):
         >>> my_dna = UnknownSeq(10, character="N")
         >>> my_dna
         UnknownSeq(10, alphabet = Alphabet(), character = 'N')
-        >>> print my_dna
+        >>> print(my_dna)
         NNNNNNNNNN
         >>> my_rna = my_dna.transcribe()
         >>> my_rna
         UnknownSeq(10, alphabet = RNAAlphabet(), character = 'N')
-        >>> print my_rna
+        >>> print(my_rna)
         NNNNNNNNNN
         """
         #Offload the alphabet stuff
@@ -1375,12 +1375,12 @@ class UnknownSeq(Seq):
         >>> my_rna = UnknownSeq(20, character="N")
         >>> my_rna
         UnknownSeq(20, alphabet = Alphabet(), character = 'N')
-        >>> print my_rna
+        >>> print(my_rna)
         NNNNNNNNNNNNNNNNNNNN
         >>> my_dna = my_rna.back_transcribe()
         >>> my_dna
         UnknownSeq(20, alphabet = DNAAlphabet(), character = 'N')
-        >>> print my_dna
+        >>> print(my_dna)
         NNNNNNNNNNNNNNNNNNNN
         """
         #Offload the alphabet stuff
@@ -1395,11 +1395,11 @@ class UnknownSeq(Seq):
         >>> my_seq = UnknownSeq(20, generic_dna, character="n")
         >>> my_seq
         UnknownSeq(20, alphabet = DNAAlphabet(), character = 'n')
-        >>> print my_seq
+        >>> print(my_seq)
         nnnnnnnnnnnnnnnnnnnn
         >>> my_seq.upper()
         UnknownSeq(20, alphabet = DNAAlphabet(), character = 'N')
-        >>> print my_seq.upper()
+        >>> print(my_seq.upper())
         NNNNNNNNNNNNNNNNNNNN
 
         This will adjust the alphabet if required. See also the lower method.
@@ -1416,11 +1416,11 @@ class UnknownSeq(Seq):
         >>> my_seq = UnknownSeq(20, IUPAC.extended_protein)
         >>> my_seq
         UnknownSeq(20, alphabet = ExtendedIUPACProtein(), character = 'X')
-        >>> print my_seq
+        >>> print(my_seq)
         XXXXXXXXXXXXXXXXXXXX
         >>> my_seq.lower()
         UnknownSeq(20, alphabet = ProteinAlphabet(), character = 'x')
-        >>> print my_seq.lower()
+        >>> print(my_seq.lower())
         xxxxxxxxxxxxxxxxxxxx
 
         See also the upper method.
@@ -1433,23 +1433,23 @@ class UnknownSeq(Seq):
         e.g.
 
         >>> my_seq = UnknownSeq(11, character="N")
-        >>> print my_seq
+        >>> print(my_seq)
         NNNNNNNNNNN
         >>> my_protein = my_seq.translate()
         >>> my_protein
         UnknownSeq(3, alphabet = ProteinAlphabet(), character = 'X')
-        >>> print my_protein
+        >>> print(my_protein)
         XXX
 
         In comparison, using a normal Seq object:
 
         >>> my_seq = Seq("NNNNNNNNNNN")
-        >>> print my_seq
+        >>> print(my_seq)
         NNNNNNNNNNN
         >>> my_protein = my_seq.translate()
         >>> my_protein
         Seq('XXX', ExtendedIUPACProtein())
-        >>> print my_protein
+        >>> print(my_protein)
         XXX
 
         """
@@ -1602,7 +1602,7 @@ class MutableSeq(object):
                 return cmp(self.data, other.data)
             else:
                 return cmp(str(self), str(other))
-        elif isinstance(other, basestring):
+        elif isinstance(other, str):
             return cmp(str(self), other)
         else:
             raise TypeError
@@ -1663,7 +1663,7 @@ class MutableSeq(object):
                 return self.__class__(self.data + other.data, a)
             else:
                 return self.__class__(str(self) + str(other), a)
-        elif isinstance(other, basestring):
+        elif isinstance(other, str):
             #other is a plain string - use the current alphabet
             return self.__class__(str(self) + str(other), self.alphabet)
         else:
@@ -1684,7 +1684,7 @@ class MutableSeq(object):
                 return self.__class__(other.data + self.data, a)
             else:
                 return self.__class__(str(other) + str(self), a)
-        elif isinstance(other, basestring):
+        elif isinstance(other, str):
             #other is a plain string - use the current alphabet
             return self.__class__(str(other) + str(self), self.alphabet)
         else:
@@ -1708,7 +1708,7 @@ class MutableSeq(object):
                 return
         raise ValueError("MutableSeq.remove(x): x not in list")
 
-    def count(self, sub, start=0, end=sys.maxint):
+    def count(self, sub, start=0, end=sys.maxsize):
         """Non-overlapping count method, like that of a python string.
 
         This behaves like the python string method of the same name,
@@ -1728,13 +1728,13 @@ class MutableSeq(object):
         
         >>> from Bio.Seq import MutableSeq
         >>> my_mseq = MutableSeq("AAAATGA")
-        >>> print my_mseq.count("A")
+        >>> print(my_mseq.count("A"))
         5
-        >>> print my_mseq.count("ATG")
+        >>> print(my_mseq.count("ATG"))
         1
-        >>> print my_mseq.count(Seq("AT"))
+        >>> print(my_mseq.count(Seq("AT")))
         1
-        >>> print my_mseq.count("AT", 2, -1)
+        >>> print(my_mseq.count("AT", 2, -1))
         1
         
         HOWEVER, please note because that python strings, Seq objects and
@@ -1743,7 +1743,7 @@ class MutableSeq(object):
 
         >>> "AAAA".count("AA")
         2
-        >>> print MutableSeq("AAAA").count("AA")
+        >>> print(MutableSeq("AAAA").count("AA"))
         2
 
         A non-overlapping search would give the answer as three!
@@ -1754,7 +1754,7 @@ class MutableSeq(object):
         except AttributeError:
             search = sub
 
-        if not isinstance(search, basestring):
+        if not isinstance(search, str):
             raise TypeError("expected a string, Seq or MutableSeq")
 
         if len(search) == 1:
@@ -1801,9 +1801,9 @@ class MutableSeq(object):
             d = ambiguous_rna_complement
         else:
             d = ambiguous_dna_complement
-        c = dict([(x.lower(), y.lower()) for x,y in d.iteritems()])
+        c = dict([(x.lower(), y.lower()) for x,y in d.items()])
         d.update(c)
-        self.data = map(lambda c: d[c], self.data)
+        self.data = [d[c] for c in self.data]
         self.data = array.array(self.array_indicator, self.data)
         
     def reverse_complement(self):
@@ -1980,7 +1980,7 @@ def _translate_str(sequence, table, stop_symbol="*", to_stop=False,
         sequence = sequence[3:-3]
         amino_acids = ["M"]
     n = len(sequence)
-    for i in xrange(0,n-n%3,3):
+    for i in range(0,n-n%3,3):
         codon = sequence[i:i+3]
         try:
             amino_acids.append(forward_table[codon])
@@ -2124,13 +2124,14 @@ def reverse_complement(sequence):
 def _test():
     """Run the Bio.Seq module's doctests (PRIVATE)."""
     if sys.version_info[0:2] == (3,1):
-        print "Not running Bio.Seq doctest on Python 3.1"
-        print "See http://bugs.python.org/issue7490"
+        print("Not running Bio.Seq doctest on Python 3.1")
+        print("See http://bugs.python.org/issue7490")
     else:
-        print "Runing doctests..."
+        print("Runing doctests...")
         import doctest
         doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)
-        print "Done"
+        print("Done")
 
 if __name__ == "__main__":
     _test()
+
