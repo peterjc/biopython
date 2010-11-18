@@ -12,21 +12,23 @@ from Bio.PopGen import FDist
 from Bio.PopGen.FDist import Controller
 from Bio import MissingExternalDependencyError
 
-#Tests fdist related code. Note: this case requires fdist
-#test_PopGen_FDist_nodepend tests code that does not require fdist
+#Tests FDist2 related code. Note: this case requires fdist2 (four binaries)
+#test_PopGen_FDist_nodepend tests code that does not require fdist2 or Dfdist
 
-found = False
+wanted = dict()
 for path in os.environ['PATH'].split(os.pathsep):
     try:
         list = os.listdir(path)
         for file in os.listdir(path):
-            if file.startswith('fdist2'):
-                found = True
+            for f in ['fdist2', 'datacal', 'pv', 'cplot2']:
+                if file == f or file.lower() == f.lower()+".exe":
+                    wanted[f] = file
     except os.error:
         pass #Path doesn't exist - correct to pass
-if not found:
+if len(wanted) != 4:
     raise MissingExternalDependencyError(\
-        "Install FDist if you want to use Bio.PopGen.FDist.")
+        "Install fdist2, datacal, pv and cplot if you want to use FDist2 with Bio.PopGen.FDist.")
+del wanted
 
 
 class AppTest(unittest.TestCase):
@@ -57,8 +59,8 @@ class AppTest(unittest.TestCase):
         """Test datacal execution.
         """
         fst, samp_size = self.ctrl.run_datacal(data_dir = self.dirname)
-        assert (fst - 0.44 < 0.01)
-        assert (samp_size == 11)
+        self.assertTrue(fst - 0.44 < 0.01)
+        self.assertEqual(samp_size, 11)
 
     def test_fdist(self):
         """Test fdist execution.
@@ -68,7 +70,7 @@ class AppTest(unittest.TestCase):
         fst = self.ctrl.run_fdist(npops = 15, nsamples = 10, fst = 0.1,
                 sample_size = 20, mut = 0, num_sims = 100,
                 data_dir = self.dirname)
-        assert(abs(fst - 0.1) < 0.02) #Stochastic result...
+        self.assertTrue(abs(fst - 0.1) < 0.02) #Stochastic result...
 
     def test_fdist_force_fst(self):
         """Test fdist execution approximating Fst.
@@ -79,19 +81,19 @@ class AppTest(unittest.TestCase):
                 fst = 0.1,
                 sample_size = 20, mut = 0, num_sims = 100,
                 data_dir = self.dirname)
-        assert(abs(fst - 0.09) < 0.05) #Stochastic result...
+        self.assertTrue(abs(fst - 0.09) < 0.05) #Stochastic result...
 
     def test_cplot(self):
         """Test cplot execution.
         """
         cpl_interval =self.ctrl.run_cplot(data_dir = self.dirname)
-        assert(len(cpl_interval) == 8)
+        self.assertEqual(len(cpl_interval), 8)
 
     def test_pv(self):
         """Test pv execution.
         """
         pv_data = self.ctrl.run_pv(data_dir = self.dirname)
-        assert(len(pv_data) == 4)
+        self.assertEqual(len(pv_data), 4)
 
 
 if __name__ == "__main__":

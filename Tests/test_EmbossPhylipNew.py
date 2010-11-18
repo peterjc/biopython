@@ -24,28 +24,23 @@ exes_wanted = ['fdnadist', 'fneighbor', 'fprotdist','fprotpars','fconsense',
                'fseqboot', 'ftreedist', 'fdnapars']
 exes = dict() #Dictionary mapping from names to exe locations
 
-# Windows bit not tested (but copied from test_Emboss so should work) 
-if sys.platform=="win32":
-    #The default installation path is C:\mEMBOSS which contains the exes.
+if "EMBOSS_ROOT" in os.environ:
+    #Windows default installation path is C:\mEMBOSS which contains the exes.
     #EMBOSS also sets an environment variable which we will check for.
-    try:
-        path = os.environ["EMBOSS_ROOT"]
-    except KeyError:
-        #print >> sys.stderr, "Missing EMBOSS_ROOT environment variable!"
-        raise MissingExternalDependencyError(\
-        "Install the Emboss package 'Phylip New' if you want to use the "+\
-        "Bio.Emboss.Applications wrappers for phylogenetic tools")
+    path = os.environ["EMBOSS_ROOT"]
     if os.path.isdir(path):
         for name in exes_wanted:
             if os.path.isfile(os.path.join(path, name+".exe")):
                 exes[name] = os.path.join(path, name+".exe")
     del path, name
-else:
+if sys.platform!="win32":
     import subprocess
     for name in exes_wanted:
         #This will "just work" if installed on the path as normal on Unix
-        if "not found" not in subprocess.getoutput("%s -help" % name):
+        output = subprocess.getoutput("%s -help" % name)
+        if "not found" not in output and "not recognized" not in output:
             exes[name] = name
+        del output
     del name
 
 if len(exes) < len(exes_wanted):
@@ -56,39 +51,31 @@ if len(exes) < len(exes_wanted):
  ###########################################################################
 
 # A few top level functions that are called repeatedly in the test cases
-def run_command(cline):
-    """ Run a given commandline using subprocess"""
-    return subprocess.call(str(cline),
-                           stdin=subprocess.PIPE,
-                           stdout=subprocess.PIPE,
-                           stderr=subprocess.PIPE,
-                           shell=(sys.platform!="win32"))
-
 def write_AlignIO_dna():
-    """ Convert opuntia.aln to a phylip file """
-    dna = AlignIO.parse(open("Clustalw/opuntia.aln", "r"), "clustal")
-    AlignIO.write(dna, open("Phylip/opuntia.phy", "w"), "phylip")
+    """Convert opuntia.aln to a phylip file"""
+    assert 1 == AlignIO.convert("Clustalw/opuntia.aln", "clustal",
+                                "Phylip/opuntia.phy", "phylip")
 
 def write_AlignIO_protein():
-    """ Conver hedgehog.aln to a phylip file"""
-    protein = AlignIO.parse(open("Clustalw/hedgehog.aln", "r"), "clustal")
-    AlignIO.write(protein, open("Phylip/hedgehog.phy", "w"), "phylip")
+    """Convert hedgehog.aln to a phylip file"""
+    assert 1 == AlignIO.convert("Clustalw/hedgehog.aln", "clustal",
+                                "Phylip/hedgehog.phy", "phylip")
 
 def clean_up():
-    """ Delete tests files (to be used as tearDown() function in test fixtures)"""
+    """Delete tests files (to be used as tearDown() function in test fixtures)"""
     for filename in ["test_file", "Phylip/opuntia.phy","Phylip/hedgehog.phy"]:
         if os.path.isfile(filename):
             os.remove(filename)
 
 def parse_trees(filename):
-    """Helper function until we have Bio.TreeIO on trunk."""
+    """Helper function until we have Bio.Phylo on trunk."""
     data = open("test_file", "r").read()
     for tree_str in data.split(";\n"):
         if tree_str:
             yield Trees.Tree(tree_str+";")
 
 class DistanceTests(unittest.TestCase):
-    """ Tests for calculating distance based phylogenetic trees with phylip """
+    """Tests for calculating distance based phylogenetic trees with phylip"""
 
     def tearDown(self):
         clean_up()
@@ -98,7 +85,7 @@ class DistanceTests(unittest.TestCase):
                  'Parahippus', 'Pliohippus']
     
     def distances_from_alignment(self, filename, DNA = True):
-        """ check we can make distance matrix from a given alignment """
+        """check we can make distance matrix from a given alignment"""
         self.assertTrue(os.path.isfile(filename), "Missing %s" % filename)
         if DNA:
             cline =  FDNADistCommandline(exes["fdnadist"],
@@ -112,29 +99,24 @@ class DistanceTests(unittest.TestCase):
                                          sequence= filename,
                                          outfile = "test_file",
                                          auto = True)
-        return_code = run_command(cline)
-        if return_code != 0:
-            raise ValueError("Return code %s from:\n%s" \
-                             % (return_code, str(cline)))
+        stdout, strerr = cline()
         #biopython can't grok distance matrices, so we'll just check it exists
         self.assertTrue(os.path.isfile("test_file"))
     
     def tree_from_distances(self, filename):
-        """ Check we can estimate a tree from a distance matrix """
+        """Check we can estimate a tree from a distance matrix"""
         self.assertTrue(os.path.isfile(filename), "Missing %s" % filename)
         cline = FNeighborCommandline(exes["fneighbor"],
                                      datafile = filename,
                                      outtreefile = "test_file",
                                      auto= True, filter = True)
-        return_code = run_command(cline)
-        if return_code != 0:
-            raise ValueError("Return code %s from:\n%s" % (return_code, str(cline)))
+        stdout, stderr = cline()
         for tree in parse_trees("test_file"):
             tree_taxa = [t.replace(" ", "_") for t in tree.get_taxa()]
             self.assertEqual(self.test_taxa, sorted(tree_taxa))
 
     def test_distances_from_phylip_DNA(self):
-        """Calculate a distance matrix from an phylip alignment """
+        """Calculate a distance matrix from an phylip alignment"""
         self.distances_from_alignment("Phylip/horses.phy")
 
     def test_distances_from_AlignIO_DNA(self):
@@ -143,13 +125,13 @@ class DistanceTests(unittest.TestCase):
         self.distances_from_alignment("Phylip/opuntia.phy")
 
     #def test_distances_from_bootstrapped_phylip_DNA(self):
-    #    """ Calculate a set of distance matrices from phylip alignments """
+    #    """Calculate a set of distance matrices from phylip alignments"""
     #    self.distances_from_alignment("Phylip/bs_horses.phy")
 
-     # fprotdist tests
+    # fprotdist tests
     def test_distances_from_protein_phylip(self):
-       """ Calculate a distance matrix from phylip protein alignment"""
-       self.distances_from_alignment("Phylip/interlaced.phy", DNA=False)
+        """Calculate a distance matrix from phylip protein alignment"""
+        self.distances_from_alignment("Phylip/interlaced.phy", DNA=False)
 
     def test_distances_from_protein_AlignIO(self):
         """Calculate distance matrix from an AlignIO written protein alignment"""
@@ -157,8 +139,8 @@ class DistanceTests(unittest.TestCase):
         self.distances_from_alignment("Phylip/hedgehog.phy", DNA=False)
 
     #def test_distances_from_bootstrapped_phylip_protein(self):
-    #   """Calculate distance matrices from a bootstrapped protein alignment"""
-    #   self.distances_from_alignment("Clustalw/bs_interlaced.phy", DNA=False)
+    #    """Calculate distance matrices from a bootstrapped protein alignment"""
+    #    self.distances_from_alignment("Clustalw/bs_interlaced.phy", DNA=False)
 
     # fneighbor tests
     #def test_tree_from_distances(self):
@@ -167,17 +149,17 @@ class DistanceTests(unittest.TestCase):
 
     # This one won't work because of a bug in EMBOSS 6.0.1
     #def test_tree_from_bootstrapped_distances(self):
-        #"""Estimate tree from bootstrapped distance matrix and parse it """
-        ##self.tree_from_distances("Phylip/bs_horses.fdnadist")
+    #    """Estimate tree from bootstrapped distance matrix and parse it"""
+    #    self.tree_from_distances("Phylip/bs_horses.fdnadist")
 
 class ParsimonyTests(unittest.TestCase):
-    """ Tests for estimating parsimony based phylogenetic trees with phylip"""
+    """Tests for estimating parsimony based phylogenetic trees with phylip"""
 
     def tearDown(self):
         clean_up()
 
     def parsimony_tree(self, filename, format, DNA=True):
-        """ estimate a parsimony tree from an alignment """
+        """Estimate a parsimony tree from an alignment"""
         self.assertTrue(os.path.isfile(filename), "Missing %s" % filename)
         if DNA:
             cline = FDNAParsCommandline(exes["fdnapars"],
@@ -189,10 +171,7 @@ class ParsimonyTests(unittest.TestCase):
                                          sequence = filename,
                                          outtreefile = "test_file",
                                          auto= True, stdout=True)
-        return_code = run_command(cline)
-        if return_code != 0:
-            raise ValueError("Return code %s from:\n%s" \
-                             % (return_code, str(cline)))
+        stdout, stderr = cline()
         a_taxa = [s.name.replace(" ", "_") for s in
                   next(AlignIO.parse(open(filename, "r"), format))]
         for tree in parse_trees("test_file"):
@@ -201,21 +180,21 @@ class ParsimonyTests(unittest.TestCase):
     
     # fdnapars tests
     #def test_parsimony_tree_from_phylip_DNA(self):
-    #    """ Make a parsimony tree from a phylip DNA alignment """
+    #    """Make a parsimony tree from a phylip DNA alignment"""
     #    self.parsimony_tree("Phylip/horses.phy", "phylip")
 
     def test_parsimony_tree_from_AlignIO_DNA(self):
-        """ Make a parsimony tree from an alignment written with AlignIO"""
+        """Make a parsimony tree from an alignment written with AlignIO"""
         write_AlignIO_dna()
         self.parsimony_tree("Phylip/opuntia.phy", "phylip")
 
     #def test_parsimony_bootstrapped_phylip_DNA(self):
-    #    """ make a parsimony tree from a bootstrapped phylip DNA alignment """
+    #    """Make a parsimony tree from a bootstrapped phylip DNA alignment"""
     #    self.parsimony_tree("Phylip/bs_horses.phy", "phylip")
 
     # fprotpars tests
     #def test_parsimony_tree_from_phylip_protein(self):
-    #    """ Make a parsimony tree from a phylip DNA alignment """
+    #    """Make a parsimony tree from a phylip DNA alignment"""
     #    self.parsimony_tree("Phylip/interlaced.phy", "phylip", DNA=False)
 
     def test_parsimony_from_AlignIO_protein(self):
@@ -224,17 +203,17 @@ class ParsimonyTests(unittest.TestCase):
         self.parsimony_tree("Phylip/interlaced.phy", "phylip", DNA=False)
 
     #def test_parsimony_tree_bootstrapped_phylip_protein(self):
-    #    """ Make a parsimony tree from a phylip DNA alignment"""
+    #    """Make a parsimony tree from a phylip DNA alignment"""
     #    self.parsimony_tree("Phylip/bs_interlaced.phy", "phylip", DNA=False)
 
 class BootstrapTests(unittest.TestCase):
-    """ Tests for pseudosampling alignments with fseqboot"""
+    """Tests for pseudosampling alignments with fseqboot"""
 
     def tearDown(self):
         clean_up()
      
     def check_bootstrap(self, filename, format, align_type="d"):
-        """ check we can use fseqboot to pseudosample an alignment
+        """Check we can use fseqboot to pseudosample an alignment
         
         The align_type type argument is passed to the commandline object to
         set the output format to use (from [D]na,[p]rotein and [r]na )
@@ -246,10 +225,7 @@ class BootstrapTests(unittest.TestCase):
                                     seqtype = align_type,
                                     reps = 2,
                                     auto = True, filter = True)
-        return_code = run_command(cline)
-        if return_code != 0:
-            raise ValueError("Return code %s from:\n%s" \
-                             % (return_code, str(cline)))
+        stdout, stderr = cline()
         # the resultant file should have 2 alignments...
         bs = list(AlignIO.parse(open("test_file", "r" ), format))
         self.assertEqual(len(bs), 2)
@@ -261,39 +237,36 @@ class BootstrapTests(unittest.TestCase):
             self.assertEqual(a_names, [s.name.replace(" ", "_") for s in a])
 
     def test_bootstrap_phylip_DNA(self):
-        """ pseudosample a phylip DNA alignment """
+        """Pseudosample a phylip DNA alignment"""
         self.check_bootstrap("Phylip/horses.phy", "phylip")
 
     def test_bootstrap_AlignIO_DNA(self):
-        """ pseudosample a phylip DNA alignment written with AlignIO """
+        """Pseudosample a phylip DNA alignment written with AlignIO"""
         write_AlignIO_dna()
         self.check_bootstrap("Phylip/opuntia.phy", "phylip")
 
     def test_bootstrap_phylip_protein(self):
-        """ pseudosample a phylip protein alignment """
+        """Pseudosample a phylip protein alignment"""
         self.check_bootstrap("Phylip/interlaced.phy", "phylip", "p")
 
     def test_bootstrap_AlignIO_protein(self):
-        """ pseudosample a phylip protein alignment written with AlignIO """
+        """Pseudosample a phylip protein alignment written with AlignIO"""
         write_AlignIO_protein()
         self.check_bootstrap("Phylip/hedgehog.phy", "phylip", "p")
 
 class TreeComparisonTests(unittest.TestCase):
-    """ Tests for comparing phylogenetic trees with phylip tools """
+    """Tests for comparing phylogenetic trees with phylip tools"""
 
     def tearDown(self):
         clean_up()
 
     def test_fconsense(self):
-        """ Calculate a consensus tree with fconsense """
+        """Calculate a consensus tree with fconsense"""
         cline = FConsenseCommandline(exes["fconsense"],
                                      intreefile = "Phylip/horses.tree",
                                      outtreefile = "test_file",
                                      auto = True, filter = True)
-        return_code = run_command(str(cline))
-        if return_code != 0:
-            raise ValueError("Return code %s from:\n%s" \
-                             % (return_code, str(cline)))
+        stdout, stderr = cline()
         #Split the next and get_taxa into two steps to help 2to3 work
         tree1 = next(parse_trees("test_file"))
         taxa1 = tree1.get_taxa()
@@ -302,15 +275,12 @@ class TreeComparisonTests(unittest.TestCase):
             self.assertEqual(sorted(taxa1),sorted(taxa2))
 
     def test_ftreedist(self):
-        """ Calculate the distance between trees with ftreedist """
+        """Calculate the distance between trees with ftreedist"""
         cline = FTreeDistCommandline(exes["ftreedist"],
                                      intreefile = "Phylip/horses.tree",
                                      outfile = "test_file",
                                      auto = True, filter = True)
-        return_code = run_command(str(cline))
-        if return_code != 0:
-            raise ValueError("Return code %s from:\n%s" \
-                             % (return_code, str(cline)))
+        stdout, stderr = cline()
         self.assertTrue(os.path.isfile("test_file"))
 
 if __name__ == "__main__":

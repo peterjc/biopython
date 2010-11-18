@@ -156,7 +156,11 @@ class _FileIterator:
 
     def __del__(self):
         self.stream.close()
-        os.remove(self.fname)
+        try:
+            os.remove(self.fname)
+        except OSError:
+            #Jython seems to call the iterator twice
+            pass
 
 class _GenePopCommandline(AbstractCommandline):
     """ Command Line Wrapper for GenePop.
@@ -278,17 +282,8 @@ class GenePopController:
         self.controller.set_input(fname)
         for opt in opts:
             self.controller.set_parameter(opt, opt+"="+str(opts[opt]))
-        child = subprocess.Popen(str(self.controller),
-                             stdin=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE,
-                             shell=(sys.platform!="win32"))
-        r_out, e_out = child.communicate()
-        # capture error code:
-        ret = child.returncode
-
+        self.controller() #checks error level is zero
         self._remove_garbage(None)
-        if ret != 0: raise IOError("GenePop not found")
         return
 
 

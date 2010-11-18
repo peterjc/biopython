@@ -46,11 +46,14 @@ except ImportError:
                 try:
                     from elementtree import ElementTree
                 except ImportError:
-                    from Bio import MissingExternalDependencyError
-                    raise MissingExternalDependencyError(
-                            "No ElementTree module was found. "
-                            "Use Python 2.5+, lxml or elementtree if you "
-                            "want to use Bio.SeqIO.UniprotIO.")
+                    ElementTree = None
+                    #TODO - Clean this up after we drop Python 2.4,
+                    #for now delay the error so the tests pass on Python 2.4
+                    #from Bio import MissingPythonDependencyError
+                    #raise MissingPythonDependencyError(
+                    #        "No ElementTree module was found. "
+                    #        "Use Python 2.5+, lxml or elementtree if you "
+                    #        "want to use Bio.SeqIO.UniprotIO.")
 
 NS = "{http://uniprot.org/uniprot}"
 REFERENCE_JOURNAL = "%(name)s %(volume)s:%(first)s-%(last)s(%(pub_date)s)"
@@ -77,12 +80,19 @@ def UniprotIterator(handle, alphabet=Alphabet.ProteinAlphabet(), return_raw_comm
         else:
             raise Exception('An XML-containing handler or an XML string must be passed')
 
+    if ElementTree is None:
+        from Bio import MissingExternalDependencyError
+        raise MissingExternalDependencyError(
+                "No ElementTree module was found. "
+                "Use Python 2.5+, lxml or elementtree if you "
+                "want to use Bio.SeqIO.UniprotIO.")
+        
     for event, elem in ElementTree.iterparse(handle, events=("start", "end")):
         if event=="end" and elem.tag == NS + "entry":
             yield Parser(elem, alphabet=alphabet, return_raw_comments=return_raw_comments).parse()
             elem.clear()
 
-class Parser():
+class Parser(object):
     '''Parse a UniProt XML entry to a SeqRecord
     return_raw_comments=True to get back the complete comment field in XML format
     alphabet=Alphabet.ProteinAlphabet()    can be modified if needed, default is protein alphabet.
