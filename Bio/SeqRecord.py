@@ -210,7 +210,7 @@ class SeqRecord(object):
         slxa_0001_1_0001_01 ACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTNNNNNN
         >>> print record.letter_annotations.keys()
         ['solexa_quality']
-        >>> print record.letter_annotations["solexa_quality"]
+        >>> list(record.letter_annotations["solexa_quality"])
         [40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5]
 
         The letter_annotations get sliced automatically if you slice the
@@ -219,7 +219,9 @@ class SeqRecord(object):
         >>> sub_record = record[-10:]
         >>> print sub_record.id, sub_record.seq
         slxa_0001_1_0001_01 ACGTNNNNNN
-        >>> print sub_record.letter_annotations["solexa_quality"]
+        >>> sub_record.letter_annotations["solexa_quality"]
+        FastqEncoded('DCBA@?>=<;', 64)
+        >>> list(sub_record.letter_annotations["solexa_quality"])
         [4, 3, 2, 1, 0, -1, -2, -3, -4, -5]
 
         Any python sequence (i.e. list, tuple or string) can be recorded in
