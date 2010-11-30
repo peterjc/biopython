@@ -516,7 +516,7 @@ class FastqEncoded(object):
 
     >>> fq = FastqEncoded("!ABC~")
     >>> fq
-    FastqEncoded('!ABC~')
+    FastqEncoded('!ABC~', 33)
     >>> fq[0]
     0
     >>> fq[-1]
@@ -537,27 +537,30 @@ class FastqEncoded(object):
     ~CBA!
     >>> fq.append(1)
     >>> fq
-    FastqEncoded('!ABC~"')
+    FastqEncoded('!ABC~"', 33)
     >>> fq.extend([2,3,4])
     >>> len(fq)
     9
     >>> fq
-    FastqEncoded('!ABC~"#$%')
+    FastqEncoded('!ABC~"#$%', 33)
     >>> fq[1:4] + fq[-4:]
-    FastqEncoded('ABC"#$%')
+    FastqEncoded('ABC"#$%', 33)
     >>> list(fq)
+    [0, 32, 33, 34, 93, 1, 2, 3, 4]
     >>> fq + [1,3,4]
+    [0, 32, 33, 34, 93, 1, 2, 3, 4, 1, 3, 4]
+
     """
-    _OFFSET = 33
-    def __init__(self, fastq_string):
+    def __init__(self, fastq_string, offset=SANGER_SCORE_OFFSET):
         self._data = fastq_string
         self._ints = None
+        self._OFFSET = offset
 
     def __str__(self):
         return self._data
 
     def __repr__(self):
-        return "%s(%s)" % (self.__class__.__name__, repr(self._data))
+        return "%s(%s, %i)" % (self.__class__.__name__, repr(self._data), self._OFFSET)
 
     def __len__(self):
         return len(self._data)
@@ -566,7 +569,7 @@ class FastqEncoded(object):
         if self._ints: return
         #TODO - Cache the mapping as a dict
         self._ints = [ord(q)-self._OFFSET for q in self._data]
-
+    
     def __iter__(self):
         self._decode()
         return iter(self._ints)
@@ -577,11 +580,24 @@ class FastqEncoded(object):
             if self._ints:
                 return self._ints[value]
             else:
-                return ord(self._data[value])-33
+                return ord(self._data[value])-self._OFFSET
         else:
+            #Slice it
             return FastqEncoded(self._data[value])
 
     def append(self, value):
+        """Add one quality value to end (right) of current list.
+
+        >>> fq = FastqEncoded('!ABC~"')
+        >>> len(fq)
+        6
+
+        >>> fq.append(2)
+        >>> fq
+        FastqEncoded('!ABC~"#', 33)
+        >>> len(fq)
+        7
+        """
         if not isinstance(value, int):
             raise TypeError
         if value < 0:
@@ -594,20 +610,89 @@ class FastqEncoded(object):
             self._ints.append(value)
 
     def extend(self, values):
+        """Add more quality values to end (right) of current list.
+
+        >>> fq = FastqEncoded('!ABC~"')
+        >>> len(fq)
+        6
+
+        >>> fq.extend([2,3,4])
+        >>> fq
+        FastqEncoded('!ABC~"#$%', 33)
+        >>> len(fq)
+        9
+        """
         for value in values:
             self.append(value)
 
     def __add__(self, other):
+        """Add FASTQ encoded quality strings together.
+
+        >>> FastqEncoded('!"#$%') + FastqEncoded('ABC')
+        FastqEncoded('!"#$%ABC', 33)
+
+        If the two have different offsets:
+
+        >>> FastqEncoded('!"#$%') + FastqEncoded('ABC', 64)
+        FastqEncoded('!"#$%"#$', 33)
+        >>> list(FastqEncoded('!"#$%'))
+        [0, 1, 2, 3, 4]
+        >>> list(FastqEncoded('ABC', 64))
+        [1, 2, 3]
+        >>> list(FastqEncoded('!"#$%') + FastqEncoded('ABC', 64))
+        [0, 1, 2, 3, 4, 1, 2, 3]
+
+        You can also add a FASTQ encoded string to a list of quality scores:
+
+        >>> FastqEncoded('!"#$%') + [5, 6, 7]
+        [0, 1, 2, 3, 4, 5, 6, 7]
+
+        """
         if not isinstance(other, FastqEncoded):
             return list(self) + other
         elif self._OFFSET == other._OFFSET:
-            return self.__class__(self._data + other._data)
+            return self.__class__(self._data + other._data, self._OFFSET)
         else:
-            raise NotImplementedError
+            #TODO - improve this to avoid extra temp object
+            return self + other.new_offset(self._OFFSET)
 
-class IlluminaFastqEncoded(FastqEncoded):
-    """Act like a list of PHRED quality scores, decoding on demand."""
-    _OFFSET = 64
+    def __radd__(self, other):
+        """Add FASTQ encoded quality strings together.
+
+        >>> [10, 9] + FastqEncoded('!"#$%')
+        [10, 9, 0, 1, 2, 3, 4]
+        """
+        assert not isinstance(other, FastqEncoded), \
+               "Python should have called __add__ for this!"
+        return other + list(self)
+
+    def new_offset(self, offset):
+        """Returns a FASTQ encoded quality string using new offset.
+
+        A common use case is to switch between Sanger and Illumina 1.3+ FASTQ
+        encodings, which is just a change of offset from 33 to 64:
+
+        >>> fq_sanger = FastqEncoded('!"#$%ABC')
+        >>> fq_sanger
+        FastqEncoded('!"#$%ABC', 33)
+        >>> list(fq_sanger)
+        [0, 1, 2, 3, 4, 32, 33, 34]
+
+        >>> fq_illumina = fq_sanger.new_offset(64)
+        >>> fq_illumina
+        FastqEncoded('@ABCD`ab', 64)
+        >>> list(fq_illumina)
+        [0, 1, 2, 3, 4, 32, 33, 34]
+        >>> fq_illumina.new_offset(33)
+        FastqEncoded('!"#$%ABC', 33)
+
+        As implemented this is a bit slow - it decodes the current data
+        (if not previously done and cached) then re-encodes it with the
+        new offset.
+        """
+        if offset == self._OFFSET: return self
+        shifted = "".join(chr(q+offset) for q in self)
+        return self.__class__(shifted, offset)
 
 def _get_phred_quality(record):
     """Extract PHRED qualities from a SeqRecord's letter_annotations (PRIVATE).
