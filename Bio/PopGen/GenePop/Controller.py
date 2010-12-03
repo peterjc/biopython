@@ -164,7 +164,26 @@ class _FileIterator:
             pass
 
 class _GenePopCommandline(AbstractCommandline):
-    """ Command Line Wrapper for GenePop.
+    """Command Line Wrapper for GenePop (PRIVATE).
+
+    This wrapper follows the Bio.Application style used elsewhere in
+    Biopython, but rather than using it directly use the Controller
+    class instead.
+
+    Example to calculates allele and genotype frequencies per locus
+    and per sample (menu 5.1) for an input file (c2line.gen):
+
+    >>> from Bio.PopGen.GenePop.Controller import _GenePopCommandline
+    >>> genepop_cline = _GenePopCommandline(input="InputFile=c2line.gen",
+    ...                                     command="MenuOptions=5.1",
+    ...                                     mode="Mode=Batch")
+    >>> print genepop_cline
+    Genepop MenuOptions=5.1 Mode=Batch InputFile=c2line.gen
+
+    You coul run the command line with tcoffee_cline() or via the Python
+    subprocess module, as described in the Biopython tutorial for other
+    wrapper classes. However, don't do that. This is a private class and
+    you are expected to use it indirectly via the Controller class instead.
     """
     def __init__(self, cmd='Genepop', **kwargs):
         self.parameters = [
@@ -869,3 +888,12 @@ class GenePopController:
         return self._calc_ibd(fname, 6, stat, scale, min_dist)
 
 
+def _test():
+    """Run the module's doctests (PRIVATE)."""
+    print "Runing GenePop Controller doctests..."
+    import doctest
+    doctest.testmod()
+    print "Done"
+
+if __name__ == "__main__":
+    _test()
