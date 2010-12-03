@@ -212,8 +212,16 @@ class _GenePopCommandline(AbstractCommandline):
                     "Log or Linear"),
         ]
         AbstractCommandline.__init__(self, cmd, **kwargs)
-        #TODO - Remove mode option and do in __str__ instead?
-        self.set_parameter("mode", "Batch")
+
+    def _validate(self):
+        """Make sure the required parameters have been set (PRIVATE).
+
+        No return value - it either works or raises a ValueError.
+        """
+        if self.mode != "Batch":
+            raise ValueError("To call Genepop without user prompts mode "
+                             "must be 'Batch'")
+        AbstractCommandline._validate(self)
         
 
 class GenePopController:
@@ -227,7 +235,7 @@ class GenePopController:
         """
         #TODO? - Allow user to specify the binary?
         assert genepop_dir is None, "Don't bother passing the directory - we ignore it"
-        self.controller = _GenePopCommandline()
+        self.controller = _GenePopCommandline(mode="Batch")
 
     def _remove_garbage(self, fname_out):
         try:
