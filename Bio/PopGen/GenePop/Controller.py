@@ -174,9 +174,9 @@ class _GenePopCommandline(AbstractCommandline):
     and per sample (menu 5.1) for an input file (c2line.gen):
 
     >>> from Bio.PopGen.GenePop.Controller import _GenePopCommandline
-    >>> genepop_cline = _GenePopCommandline(input="InputFile=c2line.gen",
-    ...                                     command="MenuOptions=5.1",
-    ...                                     mode="Mode=Batch")
+    >>> genepop_cline = _GenePopCommandline(input="c2line.gen",
+    ...                                     command="5.1",
+    ...                                     mode="Batch")
     >>> print genepop_cline
     Genepop MenuOptions=5.1 Mode=Batch InputFile=c2line.gen
 
@@ -187,45 +187,34 @@ class _GenePopCommandline(AbstractCommandline):
     """
     def __init__(self, cmd='Genepop', **kwargs):
         self.parameters = [
-                _Argument(["command"],
-                    "GenePop option to be called",
+                _Option(["MenuOptions", "command"],
+                    "GenePop option to be called (numbers separated by period)",
                     is_required=True),
-                _Argument(["mode"],
+                _Option(["Mode", "mode"],
                     "Should allways be batch",
                     is_required=True),
-                _Argument(["input"],
+                _Option(["InputFile", "input"],
                     "Input file",
                     is_required=True),
-                _Argument(["Dememorization"],
+                _Option(["Dememorization"],
                     "Dememorization step"),
-                _Argument(["BatchNumber"],
+                _Option(["BatchNumber"],
                     "Number of MCMC batches"),
-                _Argument(["BatchLength"],
+                _Option(["BatchLength"],
                     "Length of MCMC chains"),
-                _Argument(["HWtests"],
+                _Option(["HWtests"],
                     "Enumeration or MCMC"),
-                _Argument(["IsolBDstatistic"],
+                _Option(["IsolBDstatistic"],
                     "IBD statistic (a or e)"),
-                _Argument(["MinimalDistance"],
+                _Option(["MinimalDistance"],
                     "Minimal IBD distance"),
-                _Argument(["GeographicScale"],
+                _Option(["GeographicScale"],
                     "Log or Linear"),
         ]
         AbstractCommandline.__init__(self, cmd, **kwargs)
-        self.set_parameter("mode", "Mode=Batch")
-
-    def set_menu(self, option_list):
-        """Sets the menu option.
-
-        Example set_menu([6,1]) = get all F statistics (menu 6.1)
-        """
-        self.set_parameter("command", "MenuOptions="+
-                ".".join(map(lambda x:str(x),option_list)))
-
-    def set_input(self, fname):
-        """Sets the input file name.
-        """
-        self.set_parameter("input", "InputFile="+fname)
+        #TODO - Remove mode option and do in __str__ instead?
+        self.set_parameter("mode", "Batch")
+        
 
 class GenePopController:
     def __init__(self, genepop_dir = None):
@@ -273,10 +262,11 @@ class GenePopController:
     def _run_genepop(self, extensions, option, fname, opts={}):
         for extension in extensions:
             self._remove_garbage(fname + extension)
-        self.controller.set_menu(option)
-        self.controller.set_input(fname)
-        for opt in opts:
-            self.controller.set_parameter(opt, opt+"="+str(opts[opt]))
+        #Example option=[6,1], use "6.1" (get all F statistics):
+        self.controller.command = ".".join(str(x) for x in option)
+        self.controller.input = fname
+        for opt, value in opts.iteritems():
+            self.controller.set_parameter(opt, str(value))
         self.controller() #checks error level is zero
         self._remove_garbage(None)
         return
