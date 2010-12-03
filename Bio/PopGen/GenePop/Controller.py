@@ -166,7 +166,7 @@ class _FileIterator:
 class _GenePopCommandline(AbstractCommandline):
     """ Command Line Wrapper for GenePop.
     """
-    def __init__(self, genepop_dir=None, cmd='Genepop', **kwargs):
+    def __init__(self, cmd='Genepop', **kwargs):
         self.parameters = [
                 _Argument(["command"],
                     "GenePop option to be called",
@@ -212,12 +212,14 @@ class GenePopController:
     def __init__(self, genepop_dir = None):
         """Initializes the controller.
         
-        genepop_dir is the directory where GenePop is.
+        genepop_dir is the directory where GenePop is [IGNORED].
 
         The binary should be called Genepop (capital G)
         
         """
-        self.controller = _GenePopCommandline(genepop_dir)
+        #TODO? - Allow user to specify the binary?
+        assert genepop_dir is None, "Don't bother passing the directory - we ignore it"
+        self.controller = _GenePopCommandline()
 
     def _remove_garbage(self, fname_out):
         try:
