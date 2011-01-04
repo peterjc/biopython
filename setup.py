@@ -53,13 +53,13 @@ if sys.version_info[:2] < (2, 4):
 elif sys.version_info[:2] == (2,4):
     print ("WARNING - This is the last Biopython release to support Python 2.4")
 elif sys.version_info[0] == 3:
-    print("Biopython does not yet officially support Python 3, but you")
-    print("can try it by first using the 2to3 script on our source code.")
-    print("For details on how to use 2to3 with Biopython see README.")
-    print("If you still haven't applied 2to3 to Biopython please abort now.")
-    cont = get_yes_or_no("Do you want to continue this installation?", False)
-    if not cont:
-        sys.exit(-1)
+    print("Biopython does not yet officially support Python 3, but you can")
+    print("help test it. The 2to3 library will be called automatically now,")
+    print("and the converted files cached under the build subdirectory.")
+    import do2to3
+    do2to3.main()
+    python3_source = "build/py%i.%i" % sys.version_info[:2]
+    assert os.path.isdir(python3_source)
     
 from distutils.core import setup
 from distutils.core import Command
@@ -342,27 +342,42 @@ for line in open('Bio/__init__.py'):
     if (line.startswith('__version__')):
         exec(line.strip())
 
-setup(
-    name='biopython',
-    version=__version__,
-    author='The Biopython Consortium',
-    author_email='biopython@biopython.org',
-    url='http://www.biopython.org/',
-    description='Freely available tools for computational molecular biology.',
-    download_url='http://biopython.org/DIST/',
-    cmdclass={
-        "install" : install_biopython,
-        "build_py" : build_py_biopython,
-        "build_ext" : build_ext_biopython,
-        "test" : test_biopython,
-        },
-    packages=PACKAGES,
-    ext_modules=EXTENSIONS,
-    package_data = {'Bio.Entrez': ['DTDs/*.dtd', 'DTDs/*.ent', 'DTDs/*.mod'],
-                    'Bio.PopGen': ['SimCoal/data/*.par'],
-                   },
-    #install_requires = ['numpy>=1.0'],
-    #extras_require = {
-    #    'PDF' : ['reportlab>=2.0']
-    #    }
-    )
+#Simple trick to use the 2to3 converted source under Python 3,
+#change the current directory before/after running setup.
+#Note as a side effect there will be a build folder underneath
+#the python3_source folder.
+old_path = os.getcwd()
+try:
+    src_path = python3_source
+except NameError:
+    src_path = os.path.dirname(os.path.abspath(sys.argv[0]))
+os.chdir(src_path)
+sys.path.insert(0, src_path)
+try:
+    setup(
+        name='biopython',
+        version=__version__,
+        author='The Biopython Consortium',
+        author_email='biopython@biopython.org',
+        url='http://www.biopython.org/',
+        description='Freely available tools for computational molecular biology.',
+        download_url='http://biopython.org/DIST/',
+        cmdclass={
+            "install" : install_biopython,
+            "build_py" : build_py_biopython,
+            "build_ext" : build_ext_biopython,
+            "test" : test_biopython,
+            },
+        packages=PACKAGES,
+        ext_modules=EXTENSIONS,
+        package_data = {'Bio.Entrez': ['DTDs/*.dtd', 'DTDs/*.ent', 'DTDs/*.mod'],
+                        'Bio.PopGen': ['SimCoal/data/*.par'],
+                       },
+        #install_requires = ['numpy>=1.0'],
+        #extras_require = {
+        #    'PDF' : ['reportlab>=2.0']
+        #    }
+        )
+finally:
+    del sys.path[0]
+    os.chdir(old_path)
