@@ -24,7 +24,7 @@ class PrankCommandline(AbstractCommandline):
     ...                                o="aligned", #prefix only!
     ...                                f=8, #FASTA output
     ...                                notree=True, noxml=True)
-    >>> print prank_cline
+    >>> print(prank_cline)
     prank -d=unaligned.fasta -o=aligned -f=8 -noxml -notree
 
     You would typically run the command line with prank_cline() or via
@@ -195,10 +195,11 @@ class PrankCommandline(AbstractCommandline):
 
 def _test():
     """Run the module's doctests (PRIVATE)."""
-    print "Runing modules doctests..."
+    print("Runing modules doctests...")
     import doctest
     doctest.testmod()
-    print "Done"
+    print("Done")
 
 if __name__ == "__main__":
     _test()
+

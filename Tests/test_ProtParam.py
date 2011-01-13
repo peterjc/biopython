@@ -2,28 +2,28 @@ from Bio.SeqUtils import ProtParam, ProtParamData
 
 def PrintDictionary(MyDict):
     for i in sorted(MyDict):
-        print "%s\t%.2f" %(i, MyDict[i])
-    print ""
+        print("%s\t%.2f" %(i, MyDict[i]))
+    print("")
 
 X = ProtParam.ProteinAnalysis("MAEGEITTFTALTEKFNLPPGNYKKPKLLYCSNGGHFLRILPDGTVDGTRDRSDQHIQLQLSAESVGEVYIKSTETGQYLAMDTSGLLYGSQTPSEECLFLERLEENHYNTYTSKKHAEKNWFVGLKKNGSCKRGPRTHYGQKAILFLPLPV")
 
-print "Amino acid\tCount"
+print("Amino acid\tCount")
 PrintDictionary(X.count_amino_acids())
 
-print "Amino acid\tFraction"
+print("Amino acid\tFraction")
 PrintDictionary(X.get_amino_acids_percent())
 
-print "Molecular weight of test protein: %.2f" % X.molecular_weight()
-print "Aromaticity of test protein: %.2f" % X.aromaticity()
-print "Instability index of test protein: %.2f" % X.instability_index()
-print "length of flexibility list: %i" % len(X.flexibility())
-print "The isoelectric point of the test protein is: %.2f" \
-      % X.isoelectric_point()
+print("Molecular weight of test protein: %.2f" % X.molecular_weight())
+print("Aromaticity of test protein: %.2f" % X.aromaticity())
+print("Instability index of test protein: %.2f" % X.instability_index())
+print("length of flexibility list: %i" % len(X.flexibility()))
+print("The isoelectric point of the test protein is: %.2f" \
+      % X.isoelectric_point())
 Helix, Turn, Sheet = X.secondary_structure_fraction()
-print "Fraction of amino acids in Helix: %.2f" % Helix
-print "Fraction of amino acids in Turn: %.2f" % Turn
-print "Fraction of amino acids in Sheet: %.2f" % Sheet
-print "\nKyte and Doolittle protein scale:"
+print("Fraction of amino acids in Helix: %.2f" % Helix)
+print("Fraction of amino acids in Turn: %.2f" % Turn)
+print("Fraction of amino acids in Sheet: %.2f" % Sheet)
+print("\nKyte and Doolittle protein scale:")
 expected = [-0.0783,+0.0358,+0.1258,+0.6950,+0.8775,+0.8350,+0.2925,+0.3383,
             -0.1733,-0.4142,-0.5292,-0.6108,-0.8308,-0.8100,-0.8208,-1.0283,
             -1.6300,-1.8233,-2.4267,-2.2292,-1.7817,-1.4742,-0.7467,-0.1608,
@@ -44,7 +44,7 @@ expected = [-0.0783,+0.0358,+0.1258,+0.6950,+0.8775,+0.8350,+0.2925,+0.3383,
             -1.4742,-0.8083,-0.2100,+0.8067,+1.3092,+1.8367,+2.0283,+2.3558]
 for i,e in zip(X.protein_scale(ProtParamData.kd, 9, 0.4), expected):
     assert abs(i-e)<0.01
-print "ok"
-print "\nGRAVY:"
-print "%0.4f" % X.gravy()
+print("ok")
+print("\nGRAVY:")
+print("%0.4f" % X.gravy())
 

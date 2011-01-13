@@ -3,7 +3,7 @@
 """
 # standard library
 import os
-import cStringIO
+import io
 
 # GenBank stuff to test
 from Bio import GenBank
@@ -42,61 +42,61 @@ feature_parser = GenBank.FeatureParser(debug_level = 0)
 record_parser = GenBank.RecordParser(debug_level = 0)
 
 all_parsers = [feature_parser, record_parser]
-print "Testing parsers..."
+print("Testing parsers...")
 for parser in all_parsers:
     for filename in files_to_parse:
         if not os.path.isfile(filename):
-            print "Missing test input file: %s" % filename
+            print("Missing test input file: %s" % filename)
             continue
         
         handle = open(filename, 'r')
         iterator = GenBank.Iterator(handle, parser)
         
         while 1:
-            cur_record = iterator.next()
+            cur_record = next(iterator)
 
             if cur_record is None:
                 break
 
             if isinstance(parser, GenBank.FeatureParser):
-                print "***Record from %s with the FeatureParser" \
-                      % filename.split(os.path.sep)[-1]
-                print "Seq:", repr(cur_record.seq)
-                print "Id:", cur_record.id
-                print "Name:", cur_record.name
-                print "Description", cur_record.description
-                print "Annotations***"
-                ann_keys = cur_record.annotations.keys()
+                print("***Record from %s with the FeatureParser" \
+                      % filename.split(os.path.sep)[-1])
+                print("Seq:", repr(cur_record.seq))
+                print("Id:", cur_record.id)
+                print("Name:", cur_record.name)
+                print("Description", cur_record.description)
+                print("Annotations***")
+                ann_keys = list(cur_record.annotations.keys())
                 ann_keys.sort()
                 for ann_key in ann_keys:
                     if ann_key != 'references':
-                        print "Key: %s" % ann_key
-                        print "Value: %s" % \
-                              cur_record.annotations[ann_key]
+                        print("Key: %s" % ann_key)
+                        print("Value: %s" % \
+                              cur_record.annotations[ann_key])
                     else:
-                        print "References*"
+                        print("References*")
                         for reference in cur_record.annotations[ann_key]:
-                            print str(reference) 
-                print "Feaures"
+                            print(str(reference)) 
+                print("Feaures")
                 for feature in cur_record.features:
-                    print feature
-                print "DB cross refs", cur_record.dbxrefs
+                    print(feature)
+                print("DB cross refs", cur_record.dbxrefs)
             elif isinstance(parser, GenBank.RecordParser):
-                print "***Record from %s with the RecordParser" \
-                      % filename.split(os.path.sep)[-1]
-                print "sequence length: %i" % len(cur_record.sequence)
-                print "locus:", cur_record.locus
-                print "definition:", cur_record.definition
-                print "accession:", cur_record.accession
+                print("***Record from %s with the RecordParser" \
+                      % filename.split(os.path.sep)[-1])
+                print("sequence length: %i" % len(cur_record.sequence))
+                print("locus:", cur_record.locus)
+                print("definition:", cur_record.definition)
+                print("accession:", cur_record.accession)
                 for reference in cur_record.references:
-                    print "reference title:", reference.title
+                    print("reference title:", reference.title)
 
                 for feature in cur_record.features:
-                    print "feature key:", feature.key
-                    print "location:", feature.location
-                    print "num qualifiers:", len(feature.qualifiers)
+                    print("feature key:", feature.key)
+                    print("location:", feature.location)
+                    print("num qualifiers:", len(feature.qualifiers))
                     for qualifier in feature.qualifiers:
-                        print "key:", qualifier.key, "value:", qualifier.value
+                        print("key:", qualifier.key, "value:", qualifier.value)
                          
         handle.close()
         
@@ -105,7 +105,7 @@ for parser in all_parsers:
 #...
 
 # test writing GenBank format
-print "Testing writing GenBank format..."
+print("Testing writing GenBank format...")
 
 def do_comparison(good_record, test_record):
     """Compare two records to see if they are the same.
@@ -113,8 +113,8 @@ def do_comparison(good_record, test_record):
     Ths compares the two GenBank record, and will raise an AssertionError
     if two lines do not match, showing the non-matching lines.
     """
-    good_handle = cStringIO.StringIO(good_record)
-    test_handle = cStringIO.StringIO(test_record)
+    good_handle = io.StringIO(good_record)
+    test_handle = io.StringIO(test_record)
 
     while 1:
         good_line = good_handle.readline()
@@ -136,7 +136,7 @@ def t_write_format():
     record_parser = GenBank.RecordParser(debug_level = 0)
 
     for file in write_format_files:
-        print "Testing GenBank writing for %s..." % os.path.basename(file)
+        print("Testing GenBank writing for %s..." % os.path.basename(file))
         cur_handle = open(os.path.join("GenBank", file), "r")
         compare_handle = open(os.path.join("GenBank", file), "r")
         
@@ -144,13 +144,13 @@ def t_write_format():
         compare_iterator = GenBank.Iterator(compare_handle)
         
         while 1:
-            cur_record = iterator.next()
-            compare_record = compare_iterator.next()
+            cur_record = next(iterator)
+            compare_record = next(compare_iterator)
             
             if cur_record is None or compare_record is None:
                 break
 
-            print "\tTesting for %s" % cur_record.version
+            print("\tTesting for %s" % cur_record.version)
 
             output_record = str(cur_record) + "\n"
             do_comparison(compare_record, output_record)
@@ -168,7 +168,7 @@ def t_cleaning_features():
     handle = open(os.path.join("GenBank", "arab1.gb"))
     iterator = GenBank.Iterator(handle, parser)
 
-    first_record = iterator.next()
+    first_record = next(iterator)
     
     # test for cleaning of translation
     translation_feature = first_record.features[1]
@@ -180,7 +180,7 @@ def t_cleaning_features():
 
     handle.close()
 
-print "Testing feature cleaning..."
+print("Testing feature cleaning...")
 t_cleaning_features()
 
 def t_bioformat():
@@ -209,5 +209,5 @@ def t_bioformat():
       "Unexpected description: %s" % all_records[0].description
     test_handle.close()
 
-print "Testing format conversions..."
+print("Testing format conversions...")
 # t_bioformat() # XXX this is mucked up right now and still under work

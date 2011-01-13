@@ -8,7 +8,7 @@ import sys
 import os
 import unittest
 import subprocess
-from cStringIO import StringIO
+from io import StringIO
 from Bio import AlignIO, SeqIO, MissingExternalDependencyError
 from Bio.Align.Applications import ProbconsCommandline
 
@@ -19,8 +19,8 @@ probcons_exe = None
 if sys.platform=="win32":
     raise MissingExternalDependencyError("PROBCONS not available on Windows")
 else:
-    import commands
-    output = commands.getoutput("probcons")
+    import subprocess
+    output = subprocess.getoutput("probcons")
     if "not found" not in output and "probcons" in output.lower():
         probcons_exe = "probcons"
 

@@ -19,7 +19,7 @@ class MuscleCommandline(AbstractCommandline):
     >>> in_file = r"C:\My Documents\unaligned.fasta"
     >>> out_file = r"C:\My Documents\aligned.fasta"
     >>> muscle_cline = MuscleCommandline(muscle_exe, input=in_file, out=out_file)
-    >>> print muscle_cline
+    >>> print(muscle_cline)
     C:\Program Files\Aligments\muscle3.8.31_i86win32.exe -in "C:\My Documents\unaligned.fasta" -out "C:\My Documents\aligned.fasta"
 
     You would typically run the command line with muscle_cline() or via
@@ -463,10 +463,11 @@ class MuscleCommandline(AbstractCommandline):
 
 def _test():
     """Run the module's doctests (PRIVATE)."""
-    print "Runing MUSCLE doctests..."
+    print("Runing MUSCLE doctests...")
     import doctest
     doctest.testmod()
-    print "Done"
+    print("Done")
 
 if __name__ == "__main__":
     _test()
+

@@ -20,7 +20,7 @@ class DialignCommandline(AbstractCommandline):
     >>> from Bio.Align.Applications import DialignCommandline
     >>> dialign_cline = DialignCommandline(input="unaligned.fasta",
     ...                                    fn="aligned", fa=True)
-    >>> print dialign_cline
+    >>> print(dialign_cline)
     dialign2-2 -fa -fn aligned unaligned.fasta
 
     You would typically run the command line with dialign_cline() or via
@@ -178,10 +178,11 @@ class DialignCommandline(AbstractCommandline):
 
 def _test():
     """Run the module's doctests (PRIVATE)."""
-    print "Runing modules doctests..."
+    print("Runing modules doctests...")
     import doctest
     doctest.testmod()
-    print "Done"
+    print("Done")
 
 if __name__ == "__main__":
     _test()
+

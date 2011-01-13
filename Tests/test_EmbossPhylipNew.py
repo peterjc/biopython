@@ -34,10 +34,10 @@ if "EMBOSS_ROOT" in os.environ:
                 exes[name] = os.path.join(path, name+".exe")
     del path, name
 if sys.platform!="win32":
-    import commands
+    import subprocess
     for name in exes_wanted:
         #This will "just work" if installed on the path as normal on Unix
-        output = commands.getoutput("%s -help" % name)
+        output = subprocess.getoutput("%s -help" % name)
         if "not found" not in output and "not recognized" not in output:
             exes[name] = name
         del output
@@ -173,7 +173,7 @@ class ParsimonyTests(unittest.TestCase):
                                          auto= True, stdout=True)
         stdout, stderr = cline()
         a_taxa = [s.name.replace(" ", "_") for s in
-                  AlignIO.parse(open(filename, "r"), format).next()]
+                  next(AlignIO.parse(open(filename, "r"), format))]
         for tree in parse_trees("test_file"):
             t_taxa = [t.replace(" ", "_") for t in tree.get_taxa()]
             self.assertEqual(sorted(a_taxa), sorted(t_taxa))
@@ -268,7 +268,7 @@ class TreeComparisonTests(unittest.TestCase):
                                      auto = True, filter = True)
         stdout, stderr = cline()
         #Split the next and get_taxa into two steps to help 2to3 work
-        tree1 = parse_trees("test_file").next()
+        tree1 = next(parse_trees("test_file"))
         taxa1 = tree1.get_taxa()
         for tree in parse_trees("Phylip/horses.tree"):
             taxa2 = tree.get_taxa()

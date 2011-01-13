@@ -10,7 +10,7 @@ from Bio import SeqIO
 from Bio import AlignIO
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq, UnknownSeq
-from StringIO import StringIO
+from io import StringIO
 from Bio import Alphabet
 from Bio.Align import MultipleSeqAlignment
 
@@ -133,7 +133,7 @@ class WriterTests(unittest.TestCase):
         if err_msg:
             try:
                 SeqIO.write(records, handle, format)
-            except err_type, err:
+            except err_type as err:
                 self.assertEqual(str(err), err_msg)
         else:
             self.assertRaises(err_type, SeqIO.write, records, handle, format)

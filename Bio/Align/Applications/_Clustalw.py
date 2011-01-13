@@ -18,7 +18,7 @@ class ClustalwCommandline(AbstractCommandline):
     >>> from Bio.Align.Applications import ClustalwCommandline
     >>> in_file = "unaligned.fasta"
     >>> clustalw_cline = ClustalwCommandline("clustalw2", infile=in_file)
-    >>> print clustalw_cline
+    >>> print(clustalw_cline)
     clustalw2 -infile=unaligned.fasta
 
     You would typically run the command line with clustalw_cline() or via
@@ -306,10 +306,11 @@ class ClustalwCommandline(AbstractCommandline):
 
 def _test():
     """Run the module's doctests (PRIVATE)."""
-    print "Runing ClustalW doctests..."
+    print("Runing ClustalW doctests...")
     import doctest
     doctest.testmod()
-    print "Done"
+    print("Done")
 
 if __name__ == "__main__":
     _test()
+

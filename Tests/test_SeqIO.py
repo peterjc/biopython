@@ -9,7 +9,7 @@ from Bio import SeqIO
 from Bio import AlignIO
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq, UnknownSeq
-from StringIO import StringIO
+from io import StringIO
 from Bio import Alphabet
 from Bio.Align import MultipleSeqAlignment
 
@@ -24,7 +24,7 @@ def send_warnings_to_stdout(message, category, filename, lineno,
                                 file=None, line=None):
     #TODO - Have Biopython DataLossWarning?
     if category in [UserWarning]:
-        print "%s - %s" % (category.__name__, message)
+        print("%s - %s" % (category.__name__, message))
 warnings.showwarning = send_warnings_to_stdout
 
 
@@ -281,7 +281,7 @@ def check_simple_write_read(records, indent=" "):
            #Skipping for speed.  Some of the unknown sequences are
            #rather long, and it seems a bit pointless to record them.
            continue
-        print indent+"Checking can write/read as '%s' format" % format
+        print(indent+"Checking can write/read as '%s' format" % format)
         
         #Going to write to a handle...
         if format in SeqIO._BinaryFormats:
@@ -292,7 +292,7 @@ def check_simple_write_read(records, indent=" "):
         try:
             c = SeqIO.write(sequences=records, handle=handle, format=format)
             assert c == len(records)
-        except (TypeError, ValueError), e:
+        except (TypeError, ValueError) as e:
             #This is often expected to happen, for example when we try and
             #write sequences of different lengths to an alignment file.
             if "len()" in str(e):
@@ -305,9 +305,9 @@ def check_simple_write_read(records, indent=" "):
                 #>>> len(None)
                 #...
                 #TypeError: object of type 'NoneType' has no len()
-                print "Failed: Probably len() of None"
+                print("Failed: Probably len() of None")
             else:
-                print indent+"Failed: %s" % str(e)
+                print(indent+"Failed: %s" % str(e))
             assert format != t_format, \
                    "Should be able to re-write in the original format!"
             #Carry on to the next format:
@@ -318,7 +318,7 @@ def check_simple_write_read(records, indent=" "):
         #Now ready to read back from the handle...
         try:
             records2 = list(SeqIO.parse(handle=handle, format=format))
-        except ValueError, e:
+        except ValueError as e:
             #This is BAD.  We can't read our own output.
             #I want to see the output when called from the test harness,
             #run_tests.py (which can be funny about new lines on Windows)
@@ -389,7 +389,7 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
     else:
         mode = "r"
     
-    print "Testing reading %s format file %s" % (t_format, t_filename)
+    print("Testing reading %s format file %s" % (t_format, t_filename))
     assert os.path.isfile(t_filename), t_filename
 
     #Try as an iterator using handle
@@ -408,7 +408,7 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
     seq_iterator = SeqIO.parse(handle=open(t_filename,mode), format=t_format)
     while True:
         try:
-            record = seq_iterator.next()
+            record = next(seq_iterator)
         except StopIteration:
             break
         assert record is not None, "Should raise StopIteration not return None"
@@ -417,7 +417,7 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
     #Try a mixture of next() and list (a torture test!)
     seq_iterator = SeqIO.parse(handle=open(t_filename,mode), format=t_format)
     try:
-        record = seq_iterator.next()
+        record = next(seq_iterator)
     except StopIteration:
         record = None
     if record is not None:
@@ -430,7 +430,7 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
     #Try a mixture of next() and for loop (a torture test!)
     seq_iterator = SeqIO.parse(handle=open(t_filename,mode), format=t_format)
     try:
-        record = seq_iterator.next()
+        record = next(seq_iterator)
     except StopIteration:
         record = None
     if record is not None:
@@ -451,9 +451,9 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
                    isinstance(record.seq, UnknownSeq)
         else:
             assert isinstance(record.seq, Seq)
-        assert isinstance(record.id, basestring)
-        assert isinstance(record.name, basestring)
-        assert isinstance(record.description, basestring)
+        assert isinstance(record.id, str)
+        assert isinstance(record.name, str)
+        assert isinstance(record.description, str)
         assert record.id != ""
 
         if "accessions" in record.annotations:
@@ -478,12 +478,12 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
         assert compare_record(record, records5[i])
 
         if i < 3:
-            print record_summary(record)
+            print(record_summary(record))
     # Only printed the only first three records: 0,1,2 
     if t_count > 4:
-        print " ..."
+        print(" ...")
     if t_count > 3:
-        print record_summary(records[-1])
+        print(record_summary(records[-1]))
 
     # Check Bio.SeqIO.read(...)
     if t_count == 1:
@@ -538,7 +538,7 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
     for given_alpha in bad:
         #These should all fail...
         try:
-            print SeqIO.parse(open(t_filename,mode),t_format,given_alpha).next()
+            print(next(SeqIO.parse(open(t_filename,mode),t_format,given_alpha)))
             assert False, "Forcing wrong alphabet, %s, should fail (%s)" \
                    % (repr(given_alpha), t_filename)
         except ValueError:
@@ -546,8 +546,8 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
     del good, bad, given_alpha, base_alpha
 
     if t_alignment:
-        print "Testing reading %s format file %s as an alignment" \
-              % (t_format, t_filename)
+        print("Testing reading %s format file %s as an alignment" \
+              % (t_format, t_filename))
 
         alignment = MultipleSeqAlignment(SeqIO.parse( \
                     handle=open(t_filename,mode), format=t_format))
@@ -561,7 +561,7 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
             assert compare_record(records[i], alignment[i])
             assert len(records[i].seq) == alignment_len
 
-        print alignment_summary(alignment)
+        print(alignment_summary(alignment))
 
     #Some alignment file formats have magic characters which mean
     #use the letter in this position in the first sequence.
@@ -570,4 +570,4 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
     records.reverse()
     check_simple_write_read(records)
 
-print "Finished tested reading files"
+print("Finished tested reading files")

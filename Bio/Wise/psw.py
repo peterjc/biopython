@@ -72,7 +72,7 @@ class ColumnUnit(object):
 _re_unit = re.compile(r"^Unit +([01])- \[ *(-?\d+)- *(-?\d+)\] \[(\w+)\]$")
 def parse_line(line):
     """
-    >>> print parse_line("Column 0:")
+    >>> print(parse_line("Column 0:"))
     None
     >>> parse_line("Unit  0- [  -1-   0] [SEQUENCE]")
     ColumnUnit(unit=0, column=0, SEQUENCE)
@@ -101,7 +101,7 @@ def parse(iterable):
     for line in iterable:
         try:
             if os.environ["WISE_PY_DEBUG"]:
-                print line,
+                print(line, end=' ')
         except KeyError:
             pass
             
@@ -128,7 +128,7 @@ def align(pair,
     return parse(temp_file)
 
 def main():
-    print align(sys.argv[1:3])
+    print(align(sys.argv[1:3]))
 
 def _test(*args, **keywds):
     import doctest, sys
@@ -138,3 +138,4 @@ if __name__ == "__main__":
     if __debug__:
         _test()
     main()
+

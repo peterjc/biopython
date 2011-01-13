@@ -29,12 +29,12 @@ using the Bio.AlignIO.read() function:
 
     >>> from Bio import AlignIO
     >>> align = AlignIO.read("Stockholm/simple.sth", "stockholm")
-    >>> print align
+    >>> print(align)
     SingleLetterAlphabet() alignment with 2 rows and 104 columns
     UUAAUCGAGCUCAACACUCUUCGUAUAUCCUC-UCAAUAUGG-G...UGU AP001509.1
     AAAAUUGAAUAUCGUUUUACUUGUUUAU-GUCGUGAAU-UGG-C...GAU AE007476.1
     >>> for record in align:
-    ...     print record.id, len(record)
+    ...     print(record.id, len(record))
     AP001509.1 104
     AE007476.1 104
 
@@ -47,7 +47,7 @@ optional argument to the Bio.AlignIO.read() function:
     >>> from Bio.Alphabet import generic_rna
     >>> align = AlignIO.read("Stockholm/simple.sth", "stockholm",
     ...                      alphabet=generic_rna)
-    >>> print align
+    >>> print(align)
     RNAAlphabet() alignment with 2 rows and 104 columns
     UUAAUCGAGCUCAACACUCUUCGUAUAUCCUC-UCAAUAUGG-G...UGU AP001509.1
     AAAAUUGAAUAUCGUUUUACUUGUUUAU-GUCGUGAAU-UGG-C...GAU AE007476.1
@@ -57,9 +57,9 @@ some GR lines for the secondary structure of the sequences.  These are
 strings, with one character for each letter in the associated sequence:
 
     >>> for record in align:
-    ...     print record.id
-    ...     print record.seq
-    ...     print record.letter_annotations['secondary_structure']
+    ...     print(record.id)
+    ...     print(record.seq)
+    ...     print(record.letter_annotations['secondary_structure'])
     AP001509.1
     UUAAUCGAGCUCAACACUCUUCGUAUAUCCUC-UCAAUAUGG-GAUGAGGGUCUCUAC-AGGUA-CCGUAAA-UACCUAGCUACGAAAAGAAUGCAGUUAAUGU
     -----------------<<<<<<<<---..<<-<<-------->>->>..---------<<<<<--------->>>>>--->>>>>>>>---------------
@@ -71,7 +71,7 @@ Any general annotation for each row is recorded in the SeqRecord's annotations
 dictionary.  You can output this alignment in many different file formats
 using Bio.AlignIO.write(), or the MultipleSeqAlignment object's format method:
 
-    >>> print align.format("fasta")
+    >>> print(align.format("fasta"))
     >AP001509.1
     UUAAUCGAGCUCAACACUCUUCGUAUAUCCUC-UCAAUAUGG-GAUGAGGGUCUCUAC-A
     GGUA-CCGUAAA-UACCUAGCUACGAAAAGAAUGCAGUUAAUGU
@@ -83,7 +83,7 @@ using Bio.AlignIO.write(), or the MultipleSeqAlignment object's format method:
 Most output formats won't be able to hold the annotation possible in a
 Stockholm file:
 
-    >>> print align.format("stockholm")
+    >>> print(align.format("stockholm"))
     # STOCKHOLM 1.0
     #=GF SQ 2
     AP001509.1 UUAAUCGAGCUCAACACUCUUCGUAUAUCCUC-UCAAUAUGG-GAUGAGGGUCUCUAC-AGGUA-CCGUAAA-UACCUAGCUACGAAAAGAAUGCAGUUAAUGU
@@ -110,9 +110,9 @@ with Alignnment objects. Again, if you want to you can specify this is RNA:
     >>> from Bio.Alphabet import generic_rna
     >>> for record in SeqIO.parse("Stockholm/simple.sth", "stockholm",
     ...                           alphabet=generic_rna):
-    ...     print record.id
-    ...     print record.seq
-    ...     print record.letter_annotations['secondary_structure']
+    ...     print(record.id)
+    ...     print(record.seq)
+    ...     print(record.letter_annotations['secondary_structure'])
     AP001509.1
     UUAAUCGAGCUCAACACUCUUCGUAUAUCCUC-UCAAUAUGG-GAUGAGGGUCUCUAC-AGGUA-CCGUAAA-UACCUAGCUACGAAAAGAAUGCAGUUAAUGU
     -----------------<<<<<<<<---..<<-<<-------->>->>..---------<<<<<--------->>>>>--->>>>>>>>---------------
@@ -124,16 +124,16 @@ Remember that if you slice a SeqRecord, the per-letter-annotions like the
 secondary structure string here, are also sliced:
 
     >>> sub_record = record[10:20]
-    >>> print sub_record.seq
+    >>> print(sub_record.seq)
     AUCGUUUUAC
-    >>> print sub_record.letter_annotations['secondary_structure']
+    >>> print(sub_record.letter_annotations['secondary_structure'])
     -------<<<
 """
 __docformat__ = "epytext en" #not just plaintext
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
-from Interfaces import AlignmentIterator, SequentialAlignmentWriter
+from .Interfaces import AlignmentIterator, SequentialAlignmentWriter
 
 class StockholmWriter(SequentialAlignmentWriter):
     """Stockholm/PFAM alignment writer."""
@@ -237,7 +237,7 @@ class StockholmWriter(SequentialAlignmentWriter):
                 % (seq_name, self.clean(xref)))
 
         #GS = other per sequence annotation
-        for key, value in record.annotations.iteritems():
+        for key, value in record.annotations.items():
             if key in self.pfam_gs_mapping:
                 data = self.clean(str(value))
                 if data:
@@ -251,7 +251,7 @@ class StockholmWriter(SequentialAlignmentWriter):
                 pass
 
         #GR = per row per column sequence annotation
-        for key, value in record.letter_annotations.iteritems():
+        for key, value in record.letter_annotations.items():
             if key in self.pfam_gr_mapping and len(str(value))==len(record.seq):
                 data = self.clean(str(value))
                 if data:
@@ -308,7 +308,7 @@ class StockholmIterator(AlignmentIterator):
                        "OC" : "organism_classification",
                        "LO" : "look"}
 
-    def next(self):
+    def __next__(self):
         try:
             line = self._header
             del self._header
@@ -422,7 +422,7 @@ class StockholmIterator(AlignmentIterator):
                 raise ValueError("Found %i records in this alignment, told to expect %i" \
                                  % (len(ids), self.records_per_alignment))
 
-            alignment_length = len(seqs.values()[0])
+            alignment_length = len(list(seqs.values())[0])
             records = [] #Alignment obj will put them all in a list anyway
             for id in ids:
                 seq = seqs[id]
@@ -459,7 +459,7 @@ class StockholmIterator(AlignmentIterator):
         if identifier.find("/")!=-1:
             name, start_end = identifier.rsplit("/",1)
             if start_end.count("-")==1:
-                start, end = map(int, start_end.split("-"))
+                start, end = list(map(int, start_end.split("-")))
                 return (name, start, end)
         return (identifier, None, None)
     
@@ -537,14 +537,15 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..","..","Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..","..","Tests"))
         assert os.path.isfile("Stockholm/simple.sth")
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
         
 if __name__ == "__main__":
     _test()
+

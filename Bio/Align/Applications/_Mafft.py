@@ -22,7 +22,7 @@ class MafftCommandline(AbstractCommandline):
     >>> mafft_exe = "/opt/local/mafft"
     >>> in_file = "../Doc/examples/opuntia.fasta"
     >>> mafft_cline = MafftCommandline(mafft_exe, input=in_file)
-    >>> print mafft_cline
+    >>> print(mafft_cline)
     /opt/local/mafft ../Doc/examples/opuntia.fasta
 
     If the mafft binary is on the path (typically the case on a Unix style
@@ -31,7 +31,7 @@ class MafftCommandline(AbstractCommandline):
     >>> from Bio.Align.Applications import MafftCommandline
     >>> in_file = "../Doc/examples/opuntia.fasta"
     >>> mafft_cline = MafftCommandline(input=in_file)
-    >>> print mafft_cline
+    >>> print(mafft_cline)
     mafft ../Doc/examples/opuntia.fasta
 
     You would typically run the command line with mafft_cline() or via
@@ -350,21 +350,22 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..","Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..","Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
     elif os.path.isdir(os.path.join("Tests")) :
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
 
 if __name__ == "__main__":
     _test()
+

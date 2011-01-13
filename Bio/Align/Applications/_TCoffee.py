@@ -25,7 +25,7 @@ class TCoffeeCommandline(AbstractCommandline):
     >>> tcoffee_cline = TCoffeeCommandline(infile="unaligned.fasta",
     ...                                    output="clustalw",
     ...                                    outfile="aligned.aln")
-    >>> print tcoffee_cline
+    >>> print(tcoffee_cline)
     t_coffee -output clustalw -infile unaligned.fasta -outfile aligned.aln
 
     You would typically run the command line with tcoffee_cline() or via
@@ -98,10 +98,11 @@ class TCoffeeCommandline(AbstractCommandline):
 
 def _test():
     """Run the module's doctests (PRIVATE)."""
-    print "Runing modules doctests..."
+    print("Runing modules doctests...")
     import doctest
     doctest.testmod()
-    print "Done"
+    print("Done")
 
 if __name__ == "__main__":
     _test()
+

@@ -56,7 +56,7 @@ def _sorted_attrs(elem):
     singles = []
     lists = []
     # Sort attributes for consistent results
-    for attrname, child in sorted(elem.__dict__.iteritems(),
+    for attrname, child in sorted(iter(elem.__dict__.items()),
                                   key=lambda kv: kv[0]):
         if child is None:
             continue
@@ -84,7 +84,7 @@ def _class_matcher(target_cls):
 
 def _string_matcher(target):
     def match(node):
-        return unicode(node) == target
+        return str(node) == target
     return match
 
 def _attribute_matcher(kwargs):
@@ -111,13 +111,13 @@ def _attribute_matcher(kwargs):
                 return False
         else:
             kwa_copy = kwargs
-        for key, pattern in kwa_copy.iteritems():
+        for key, pattern in kwa_copy.items():
             # Nodes must match all other specified attributes
             if not hasattr(node, key):
                 return False
             target = getattr(node, key)
-            if isinstance(pattern, basestring):
-                return (isinstance(target, basestring) and
+            if isinstance(pattern, str):
+                return (isinstance(target, str) and
                         re.match(pattern+'$', target))
             if isinstance(pattern, bool):
                 return (pattern == bool(target))
@@ -154,11 +154,11 @@ def _object_matcher(obj):
         return _identity_matcher(obj)
     if isinstance(obj, type):
         return _class_matcher(obj)
-    if isinstance(obj, basestring):
+    if isinstance(obj, str):
         return _string_matcher(obj)
     if isinstance(obj, dict):
         return _attribute_matcher(obj)
-    if callable(obj):
+    if isinstance(obj, collections.Callable):
         return _function_matcher(obj)
     raise ValueError("%s (type %s) is not a valid type for comparison."
                      % (obj, type(obj)))
@@ -197,7 +197,7 @@ def _combine_args(first, *rest):
     # of cases where either style is more convenient, so let's support both
     # (for backward compatibility and consistency between methods).
     if hasattr(first, '__iter__') and not (isinstance(first, TreeElement) or
-            isinstance(first, type) or isinstance(first, basestring) or
+            isinstance(first, type) or isinstance(first, str) or
             isinstance(first, dict)):
         # `terminals` is an iterable of targets
         if rest:
@@ -217,14 +217,14 @@ class TreeElement(object):
     def __repr__(self):
         """Show this object's constructor with its primitive arguments."""
         def pair_as_kwarg_string(key, val):
-            if isinstance(val, basestring):
-                return "%s='%s'" % (key, _sugar.trim_str(unicode(val)))
+            if isinstance(val, str):
+                return "%s='%s'" % (key, _sugar.trim_str(str(val)))
             return "%s=%s" % (key, val)
-        return u'%s(%s)' % (self.__class__.__name__,
+        return '%s(%s)' % (self.__class__.__name__,
                             ', '.join(pair_as_kwarg_string(key, val)
-                                  for key, val in self.__dict__.iteritems()
+                                  for key, val in self.__dict__.items()
                                   if val is not None and
-                                  type(val) in (str, int, float, bool, unicode)
+                                  type(val) in (str, int, float, bool, str)
                                   ))
 
     __str__ = __repr__
@@ -259,7 +259,7 @@ class TreeMixin(object):
         else:
             get_children = lambda elem: elem.clades
             root = self.root
-        return itertools.ifilter(filter_func, order_func(root, get_children))
+        return filter(filter_func, order_func(root, get_children))
 
     def find_any(self, *args, **kwargs):
         """Return the first element found by find_elements(), or None.
@@ -269,7 +269,7 @@ class TreeMixin(object):
         """
         hits = self.find_elements(*args, **kwargs)
         try:
-            return hits.next()
+            return next(hits)
         except StopIteration:
             return None
 
@@ -296,7 +296,7 @@ class TreeMixin(object):
             >>> from Bio.Phylo.IO import PhyloXMIO
             >>> phx = PhyloXMLIO.read('phyloxml_examples.xml')
             >>> matches = phx.phylogenies[5].find_elements(code='OCTVU')
-            >>> matches.next()
+            >>> next(matches)
             Taxonomy(code='OCTVU', scientific_name='Octopus vulgaris')
 
         @param target: 
@@ -406,7 +406,7 @@ class TreeMixin(object):
             if p is None:
                 raise ValueError("target %s is not in this tree" % repr(t))
         mrca = self.root
-        for level in itertools.izip(*paths):
+        for level in zip(*paths):
             ref = level[0]
             for other in level[1:]:
                 if ref is not other:
@@ -575,7 +575,7 @@ class TreeMixin(object):
         """
         internals = self.find_clades(terminal=False, order='level')
         # Skip the root node -- it can't be collapsed
-        internals.next()
+        next(internals)
         for clade in internals:
             self.collapse(clade)
 
@@ -821,7 +821,7 @@ class Tree(TreeElement, TreeMixin):
         Bio.Phylo.write as an output file format. 
         """
         if format_spec:
-            from StringIO import StringIO
+            from io import StringIO
             from Bio.Phylo import _io
             handle = StringIO()
             _io.write([self], handle, format_spec)
@@ -914,7 +914,7 @@ class Clade(TreeElement, TreeMixin):
         """Number of clades directy under the root."""
         return len(self.clades)
 
-    def __nonzero__(self):
+    def __bool__(self):
         """Boolean value of an instance of this class.
 
         NB: If this method is not defined, but __len__  is, then the object is
@@ -927,3 +927,4 @@ class Clade(TreeElement, TreeMixin):
         if self.name:
             return _sugar.trim_str(self.name, maxlen=40)
         return self.__class__.__name__
+

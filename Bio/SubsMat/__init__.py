@@ -170,7 +170,7 @@ class SeqMat(dict):
           try:
               self.update(data)
           except ValueError:
-              raise ValueError, "Failed to store data in a dictionary"
+              raise ValueError("Failed to store data in a dictionary")
       if alphabet == None:
          alphabet = Alphabet.Alphabet()
       assert Alphabet.generic_alphabet.contains(alphabet)
@@ -197,7 +197,7 @@ class SeqMat(dict):
       self.relative_entropy = 0
 
    def _correct_matrix(self):
-      keylist = self.keys()
+      keylist = list(self.keys())
       for key in keylist:
          if key[0] > key[1]:
             self[(key[1],key[0])] = self[key]
@@ -237,7 +237,7 @@ class SeqMat(dict):
       result = {}
       for letter in self.alphabet.letters:
           result[letter] = 0.0
-      for pair, value in self.iteritems():
+      for pair, value in self.items():
           i1, i2 = pair
           if i1==i2:
               result[i1] += value
@@ -373,7 +373,7 @@ class SubstitutionMatrix(SeqMat):
         """Calculate and return the relative entropy with respect to an
         observed frequency matrix"""
         relative_entropy = 0.
-        for key, value in self.iteritems():
+        for key, value in self.items():
             if value > EPSILON:
                 relative_entropy += obs_freq_mat[key]*log(value)
         relative_entropy /= log(2)
@@ -387,7 +387,7 @@ class LogOddsMatrix(SeqMat):
         """Calculate and return the relative entropy with respect to an
         observed frequency matrix"""
         relative_entropy = 0.
-        for key, value in self.iteritems():
+        for key, value in self.items():
             relative_entropy += obs_freq_mat[key]*value/log(2)
         return relative_entropy
 
@@ -456,7 +456,7 @@ def _build_log_odds_mat(subs_mat,logbase=2,factor=10.0,round_digit=0,keep_nd=0):
    minimum log-odds value of the matrix in entries containing -999
    """
    lo_mat = LogOddsMatrix(subs_mat)
-   for key, value in subs_mat.iteritems():
+   for key, value in subs_mat.items():
       if value < EPSILON:
          lo_mat[key] = -999
       else:
@@ -522,7 +522,7 @@ def read_text_matrix(data_file):
          i += 1
       j += 1
    # delete entries with an asterisk
-   for i in matrix.keys():
+   for i in list(matrix.keys()):
       if '*' in i: del(matrix[i])
    ret_mat = SeqMat(matrix)
    return ret_mat
@@ -570,14 +570,14 @@ def two_mat_correlation(mat_1, mat_2):
     try:
         import numpy
     except ImportError:
-        raise ImportError, "Please install Numerical Python (numpy) if you want to use this function"
+        raise ImportError("Please install Numerical Python (numpy) if you want to use this function")
     values = []
     assert mat_1.ab_list == mat_2.ab_list
     for ab_pair in mat_1:
        try:
           values.append((mat_1[ab_pair], mat_2[ab_pair]))
        except KeyError:
-          raise ValueError, "%s is not a common key" % ab_pair
+          raise ValueError("%s is not a common key" % ab_pair)
     correlation_matrix = numpy.corrcoef(values, rowvar=0)
     correlation = correlation_matrix[0,1]
     return correlation

@@ -22,9 +22,9 @@ from Bio import SeqFeature
 from Bio import Alphabet
 from Bio.SeqRecord import SeqRecord
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from io import StringIO
 import warnings
 try:
     if (3,0,0) <= sys.version_info[:3] <= (3,1,2):
@@ -70,10 +70,10 @@ def UniprotIterator(handle, alphabet=Alphabet.ProteinAlphabet(), return_raw_comm
     skip_parsing_errors = True --> if parsing errors are found, skip to next entry
     """
     if isinstance(alphabet, Alphabet.NucleotideAlphabet):
-        raise ValueError, "Wrong alphabet %r" % alphabet
+        raise ValueError("Wrong alphabet %r" % alphabet)
     if isinstance(alphabet, Alphabet.Gapped):
         if isinstance(alphabet.alphabet, Alphabet.NucleotideAlphabet):
-            raise ValueError, "Wrong alphabet %r" % alphabet
+            raise ValueError("Wrong alphabet %r" % alphabet)
 
     if not hasattr(handle, "read"):
         if type(handle)==type(''):
@@ -409,7 +409,7 @@ class Parser(object):
         def _parse_position(element, offset=0):
             try:
                 position=int(element.attrib['position']) + offset
-            except KeyError, err:
+            except KeyError as err:
                 position=None
             status = element.attrib.get('status', '')
             if status == 'unknown':
@@ -428,7 +428,7 @@ class Parser(object):
 
         def _parse_feature(element):
             feature=SeqFeature.SeqFeature()
-            for k,v in element.attrib.items():
+            for k,v in list(element.attrib.items()):
                 feature.qualifiers[k]=v
             feature.type=element.attrib.get('type','')
             if 'id' in element.attrib:
@@ -457,12 +457,12 @@ class Parser(object):
             append_to_annotations('proteinExistence', element.attrib['type'])   
             
         def _parse_evidence(element):
-            for k, v in  element.attrib.items():
+            for k, v in  list(element.attrib.items()):
                 ann_key = k
                 append_to_annotations(ann_key, v)   
         
         def  _parse_sequence(element):
-            for k, v in element.attrib.items():
+            for k, v in list(element.attrib.items()):
                 if k in ("length", "mass", "version"):
                     self.ParsedSeqRecord.annotations['sequence_%s' % k] = int(v)
                 else:
@@ -478,7 +478,7 @@ class Parser(object):
         #Unknown dataset should not happen!
         self.dbname=self.entry.attrib.get('dataset', 'UnknownDataset')
         #add attribs to annotations
-        for k, v in self.entry.attrib.items():
+        for k, v in list(self.entry.attrib.items()):
             if k in ("version"):
                 #original
                 #self.ParsedSeqRecord.annotations["entry_%s" % k] = int(v)

@@ -7,7 +7,7 @@
 # standard library
 import os
 import unittest
-from StringIO import StringIO
+from io import StringIO
 
 # local stuff
 from Bio import MissingExternalDependencyError
@@ -40,7 +40,7 @@ try:
                                               user = DBUSER, passwd = DBPASSWD,
                                               host = DBHOST)
     del server
-except Exception, e:
+except Exception as e:
     message = "Connection failed, check settings in Tests/setup_BioSQL.py "\
               "if you plan to use BioSQL: %s" % str(e)
     raise MissingExternalDependencyError(message)
@@ -78,10 +78,10 @@ def _do_db_create():
         sql = r"DROP DATABASE " + TESTDB
         server.adaptor.cursor.execute(sql, ())
     except (server.module.OperationalError,
-            server.module.DatabaseError), e: # the database doesn't exist
+            server.module.DatabaseError) as e: # the database doesn't exist
         pass
     except (server.module.IntegrityError,
-            server.module.ProgrammingError), e: # ditto--perhaps
+            server.module.ProgrammingError) as e: # ditto--perhaps
         if str(e).find('database "%s" does not exist' % TESTDB) == -1:
             raise
     # create a new database
@@ -157,7 +157,7 @@ class ReadTest(unittest.TestCase):
         server = self.server
         self.assertTrue("biosql-test" in server)
         self.assertEqual(1, len(server))
-        self.assertEqual(["biosql-test"], server.keys())
+        self.assertEqual(["biosql-test"], list(server.keys()))
         #Check we can delete the namespace...
         del server["biosql-test"]
         self.assertEqual(0, len(server))
@@ -170,14 +170,14 @@ class ReadTest(unittest.TestCase):
     def test_get_db_items(self):
         """Check list, keys, length etc"""
         db = self.db
-        items = db.values()
-        keys = db.keys()
+        items = list(db.values())
+        keys = list(db.keys())
         l = len(items)
         self.assertEqual(l, len(db))
-        self.assertEqual(l, len(list(db.iteritems())))
-        self.assertEqual(l, len(list(db.iterkeys())))
-        self.assertEqual(l, len(list(db.itervalues())))
-        for (k1,r1), (k2,r2) in zip(zip(keys, items), db.iteritems()):
+        self.assertEqual(l, len(list(db.items())))
+        self.assertEqual(l, len(list(db.keys())))
+        self.assertEqual(l, len(list(db.values())))
+        for (k1,r1), (k2,r2) in zip(list(zip(keys, items)), iter(db.items())):
             self.assertEqual(k1, k2)
             self.assertEqual(r1.id, r2.id)
         for k in keys:
@@ -373,7 +373,7 @@ class LoaderTest(unittest.TestCase):
 
         # do some simple tests to make sure we actually loaded the right
         # thing. More advanced tests in a different module.
-        items = self.db.values()
+        items = list(self.db.values())
         self.assertEqual(len(items), 6)
         self.assertEqual(len(self.db), 6)
         item_names = []
@@ -411,7 +411,7 @@ class DupLoadTest(unittest.TestCase):
         record = SeqRecord(Seq("ATGCTATGACTAT", Alphabet.generic_dna),id="Test1")
         try:
             count = self.db.load([record,record])
-        except Exception, err:
+        except Exception as err:
             #Good!
             #Note we don't do a specific exception handler because the
             #exception class will depend on which DB back end is in use.            
@@ -428,7 +428,7 @@ class DupLoadTest(unittest.TestCase):
         self.assertEqual(count,1)
         try:
             count = self.db.load([record])
-        except Exception, err:
+        except Exception as err:
             #Good!
             self.assertEqual("IntegrityError", err.__class__.__name__)
             return
@@ -440,7 +440,7 @@ class DupLoadTest(unittest.TestCase):
         record2 = SeqRecord(Seq("GGGATGCGACTAT", Alphabet.generic_dna),id="TestA")
         try:
             count = self.db.load([record1,record2])
-        except Exception, err:
+        except Exception as err:
             #Good!
             self.assertEqual("IntegrityError", err.__class__.__name__)
             return
@@ -616,7 +616,7 @@ class InDepthLoadTest(unittest.TestCase):
         """Make sure can't reimport existing records."""
         gb_file = os.path.join(os.getcwd(), "GenBank", "cor6_6.gb")
         gb_handle = open(gb_file, "r")
-        record = SeqIO.parse(gb_handle, "gb").next()
+        record = next(SeqIO.parse(gb_handle, "gb"))
         gb_handle.close()
         #Should be in database already...
         db_record = self.db.lookup(accession = "X55053")
@@ -627,7 +627,7 @@ class InDepthLoadTest(unittest.TestCase):
         #Good... now try reloading it!
         try:
             count = self.db.load([record])
-        except Exception, err:
+        except Exception as err:
             #Good!
             self.assertEqual("IntegrityError", err.__class__.__name__)
             return
@@ -661,7 +661,7 @@ class InDepthLoadTest(unittest.TestCase):
         test_feature = features[0]
         self.assertEqual(test_feature.type, "source")
         self.assertEqual(str(test_feature.location), "[0:206]")
-        self.assertEqual(len(test_feature.qualifiers.keys()), 3)
+        self.assertEqual(len(list(test_feature.qualifiers.keys())), 3)
         self.assertEqual(test_feature.qualifiers["country"], ["Russia:Bashkortostan"])
         self.assertEqual(test_feature.qualifiers["organism"], ["Armoracia rusticana"])
         self.assertEqual(test_feature.qualifiers["db_xref"], ["taxon:3704"])
@@ -677,7 +677,7 @@ class InDepthLoadTest(unittest.TestCase):
         self.assertEqual(str(test_feature.sub_features[1].location), "[142:206]")
         self.assertEqual(test_feature.sub_features[1].type, "CDS")
         self.assertEqual(test_feature.sub_features[1].location_operator, "join")
-        self.assertEqual(len(test_feature.qualifiers.keys()), 6)
+        self.assertEqual(len(list(test_feature.qualifiers.keys())), 6)
         self.assertEqual(test_feature.qualifiers["gene"], ["csp14"])
         self.assertEqual(test_feature.qualifiers["codon_start"], ["2"])
         self.assertEqual(test_feature.qualifiers["product"],

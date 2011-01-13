@@ -151,7 +151,7 @@ def train(training_set, results, priors=None, typecode=None):
         nb.classes = list(set(results))
     else:
         class_freq = _contents(results)
-        nb.classes = class_freq.keys()
+        nb.classes = list(class_freq.keys())
         percs = class_freq
     nb.classes.sort()   # keep it tidy
 
@@ -225,6 +225,6 @@ if __name__ == "__main__":
 
     carmodel = train(xcar, ycar)
     carresult = classify(carmodel, ['Red', 'Sports', 'Domestic'])
-    print 'Is Yes?', carresult
+    print('Is Yes?', carresult)
     carresult = classify(carmodel, ['Red', 'SUV', 'Domestic'])
-    print 'Is No?', carresult
+    print('Is No?', carresult)

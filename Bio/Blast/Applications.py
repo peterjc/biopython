@@ -203,7 +203,7 @@ class BlastallCommandline(_BlastAllOrPgpCommandLine):
     ...                             database="nr", expectation=0.001)
     >>> cline
     BlastallCommandline(cmd='blastall', database='nr', infile='m_cold.fasta', expectation=0.001, program='blastx')
-    >>> print cline
+    >>> print(cline)
     blastall -d nr -i m_cold.fasta -e 0.001 -p blastx
 
     You would typically run the command line with cline() or via the Python
@@ -307,7 +307,7 @@ class BlastpgpCommandline(_BlastAllOrPgpCommandLine):
     >>> cline = BlastpgpCommandline(help=True)
     >>> cline
     BlastpgpCommandline(cmd='blastpgp', help=True)
-    >>> print cline
+    >>> print(cline)
     blastpgp --help
 
     You would typically run the command line with cline() or via the Python
@@ -386,7 +386,7 @@ class RpsBlastCommandline(_BlastCommandLine):
     >>> cline = RpsBlastCommandline(help=True)
     >>> cline
     RpsBlastCommandline(cmd='rpsblast', help=True)
-    >>> print cline
+    >>> print(cline)
     rpsblast --help
 
     You would typically run the command line with cline() or via the Python
@@ -707,7 +707,7 @@ class NcbiblastpCommandline(_Ncbiblast2SeqCommandline):
     ...                               evalue=0.001, remote=True, ungapped=True)
     >>> cline
     NcbiblastpCommandline(cmd='blastp', query='rosemary.pro', db='nr', evalue=0.001, remote=True, ungapped=True)
-    >>> print cline
+    >>> print(cline)
     blastp -query rosemary.pro -db nr -evalue 0.001 -remote -ungapped
 
     You would typically run the command line with cline() or via the Python
@@ -783,7 +783,7 @@ class NcbiblastnCommandline(_Ncbiblast2SeqCommandline):
     ...                               evalue=0.001, out="m_cold.xml", outfmt=5)
     >>> cline
     NcbiblastnCommandline(cmd='blastn', out='m_cold.xml', outfmt=5, query='m_cold.fasta', db='nt', evalue=0.001, strand='plus')
-    >>> print cline
+    >>> print(cline)
     blastn -out m_cold.xml -outfmt 5 -query m_cold.fasta -db nt -evalue 0.001 -strand plus
 
     You would typically run the command line with cline() or via the Python
@@ -909,7 +909,7 @@ class NcbiblastxCommandline(_Ncbiblast2SeqCommandline):
     >>> cline = NcbiblastxCommandline(query="m_cold.fasta", db="nr", evalue=0.001)
     >>> cline
     NcbiblastxCommandline(cmd='blastx', query='m_cold.fasta', db='nr', evalue=0.001)
-    >>> print cline
+    >>> print(cline)
     blastx -query m_cold.fasta -db nr -evalue 0.001
 
     You would typically run the command line with cline() or via the Python
@@ -986,7 +986,7 @@ class NcbitblastnCommandline(_Ncbiblast2SeqCommandline):
     >>> cline = NcbitblastnCommandline(help=True)
     >>> cline
     NcbitblastnCommandline(cmd='tblastn', help=True)
-    >>> print cline
+    >>> print(cline)
     tblastn -help
 
     You would typically run the command line with cline() or via the Python
@@ -1076,7 +1076,7 @@ class NcbitblastxCommandline(_Ncbiblast2SeqCommandline):
     >>> cline = NcbitblastxCommandline(help=True)
     >>> cline
     NcbitblastxCommandline(cmd='tblastx', help=True)
-    >>> print cline
+    >>> print(cline)
     tblastx -help
 
     You would typically run the command line with cline() or via the Python
@@ -1146,7 +1146,7 @@ class NcbipsiblastCommandline(_Ncbiblast2SeqCommandline):
     >>> cline = NcbipsiblastCommandline(help=True)
     >>> cline
     NcbipsiblastCommandline(cmd='psiblast', help=True)
-    >>> print cline
+    >>> print(cline)
     psiblast -help
 
     You would typically run the command line with cline() or via the Python
@@ -1255,7 +1255,7 @@ class NcbirpsblastCommandline(_NcbiblastCommandline):
     >>> cline = NcbirpsblastCommandline(help=True)
     >>> cline
     NcbirpsblastCommandline(cmd='rpsblast', help=True)
-    >>> print cline
+    >>> print(cline)
     rpsblast -help
 
     You would typically run the command line with cline() or via the Python
@@ -1285,7 +1285,7 @@ class NcbirpstblastnCommandline(_NcbiblastCommandline):
     >>> cline = NcbirpstblastnCommandline(help=True)
     >>> cline
     NcbirpstblastnCommandline(cmd='rpstblastn', help=True)
-    >>> print cline
+    >>> print(cline)
     rpstblastn -help
 
     You would typically run the command line with cline() or via the Python
@@ -1336,7 +1336,7 @@ class NcbiblastformatterCommandline(_NcbibaseblastCommandline):
     >>> cline = NcbiblastformatterCommandline(archive="example.asn", outfmt=5, out="example.xml")
     >>> cline
     NcbiblastformatterCommandline(cmd='blast_formatter', out='example.xml', outfmt=5, archive='example.asn')
-    >>> print cline
+    >>> print(cline)
     blast_formatter -out example.xml -outfmt 5 -archive example.asn
 
     You would typically run the command line with cline() or via the Python
@@ -1381,3 +1381,4 @@ def _test():
 if __name__ == "__main__":
     #Run the doctests
     _test()
+

@@ -16,7 +16,8 @@ SGMLStripper   Object that strips SGML.  This is now DEPRECATED, and is likely
                to be removed in a future release of Biopython.
 
 """
-import StringIO
+import io
+from functools import reduce
 
 class UndoHandle:
     """A Python handle that adds functionality for saving lines.
@@ -35,7 +36,7 @@ class UndoHandle:
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         next = self.readline()
         if not next:
             raise StopIteration
@@ -82,7 +83,7 @@ class UndoHandle:
         return line
 
     def tell(self):
-        lengths = map(len, self._saved)
+        lengths = list(list(map(len, self._saved)))
         sum = reduce(lambda x, y: x+y, lengths, 0)
         return self._handle.tell() - sum
 
@@ -103,7 +104,7 @@ class UndoHandle:
 # I could make this faster by using cStringIO.
 # However, cStringIO (in v1.52) does not implement the
 # readlines method.
-StringHandle = StringIO.StringIO
+StringHandle = io.StringIO
 
 try:
     import sgmllib

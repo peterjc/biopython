@@ -97,7 +97,7 @@ class _IndexedSeqFileDict(_dict_base):
 
     def __str__(self):
         if self:
-            return "{%s : SeqRecord(...), ...}" % repr(self.keys()[0])
+            return "{%s : SeqRecord(...), ...}" % repr(list(self.keys())[0])
         else:
             return "{}"
 
@@ -137,7 +137,7 @@ class _IndexedSeqFileDict(_dict_base):
         def keys(self) :
             """Return a list of all the keys (SeqRecord identifiers)."""
             #TODO - Stick a warning in here for large lists? Or just refuse?
-            return self._offsets.keys()
+            return list(self._offsets.keys())
 
         def itervalues(self):
             """Iterate over the SeqRecord) items."""
@@ -272,7 +272,7 @@ class _SQLiteManySeqFilesDict(_IndexedSeqFileDict):
                 if self._length == -1:
                     raise ValueError("Unfinished/partial database")
                 count, = con.execute("SELECT COUNT(key) FROM offset_data;").fetchone()
-                if self._length <> int(count):
+                if self._length != int(count):
                     raise ValueError("Corrupt database? %i entries not %i" \
                                      % (int(count), self._length))
                 self._format, = con.execute("SELECT value FROM meta_data WHERE key=?;",
@@ -288,7 +288,7 @@ class _SQLiteManySeqFilesDict(_IndexedSeqFileDict):
                                      % (len(self.filenames) != len(filenames)))
                 if filenames and filenames != self._filenames:
                     raise ValueError("Index file has different filenames")
-            except _OperationalError, err:
+            except _OperationalError as err:
                 raise ValueError("Not a Biopython index database? %s" % err)
             #Now we have the format (from the DB if not given to us),
             try:
@@ -350,7 +350,7 @@ class _SQLiteManySeqFilesDict(_IndexedSeqFileDict):
             try:
                 con.execute("CREATE UNIQUE INDEX IF NOT EXISTS "
                             "key_index ON offset_data(key);")
-            except _IntegrityError, err:
+            except _IntegrityError as err:
                 raise ValueError("Duplicate key? %s" % err)
             con.execute("PRAGMA locking_mode=NORMAL")
             con.execute("UPDATE meta_data SET value = ? WHERE key = ?;",
@@ -489,16 +489,16 @@ class SeqFileRandomAccess(object):
         if alphabet is None:
             def _parse():
                 """Dynamically generated parser function (PRIVATE)."""
-                return i(self._handle).next()
+                return next(i(self._handle))
         else:
             #TODO - Detect alphabet support ONCE at __init__
             def _parse():
                 """Dynamically generated parser function (PRIVATE)."""
                 try:
-                    return i(self._handle, alphabet=alphabet).next()
+                    return next(i(self._handle, alphabet=alphabet))
                 except TypeError:
-                    return SeqIO._force_alphabet(i(self._handle),
-                                                 alphabet).next()
+                    return next(SeqIO._force_alphabet(i(self._handle),
+                                                 alphabet))
         self._parse = _parse
 
     def __iter__(self):
@@ -557,7 +557,7 @@ class SffRandomAccess(SeqFileRandomAccess):
                        "Indexed %i records, expected %i" \
                        % (count, number_of_reads)
                 return
-            except ValueError, err :
+            except ValueError as err :
                 import warnings
                 warnings.warn("Could not parse the SFF index: %s" % err)
                 assert count==0, "Partially populated index"
@@ -847,7 +847,7 @@ class UniprotRandomAccess(SequentialSeqFileRandomAccess):
         </uniprot>
         """ % self.get_raw(offset)
         #TODO - For consistency, this function should not accept a string:
-        return SeqIO.UniprotIO.UniprotIterator(data).next()
+        return next(SeqIO.UniprotIO.UniprotIterator(data))
 
 
 class IntelliGeneticsRandomAccess(SeqFileRandomAccess):
@@ -903,7 +903,7 @@ class TabRandomAccess(SeqFileRandomAccess):
             if not line : break #End of file
             try:
                 key = line.split("\t")[0]
-            except ValueError, err:
+            except ValueError as err:
                 if not line.strip():
                     #Ignore blank lines
                     start_offset = handle.tell()

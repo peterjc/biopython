@@ -21,7 +21,7 @@ class ProbconsCommandline(AbstractCommandline):
     >>> from Bio.Align.Applications import ProbconsCommandline
     >>> probcons_cline = ProbconsCommandline(input="unaligned.fasta",
     ...                                      clustalw=True)
-    >>> print probcons_cline
+    >>> print(probcons_cline)
     probcons -clustalw unaligned.fasta
 
     You would typically run the command line with probcons_cline() or via
@@ -108,10 +108,11 @@ class ProbconsCommandline(AbstractCommandline):
 
 def _test():
     """Run the module's doctests (PRIVATE)."""
-    print "Runing modules doctests..."
+    print("Runing modules doctests...")
     import doctest
     doctest.testmod()
-    print "Done"
+    print("Done")
 
 if __name__ == "__main__":
     _test()
+

@@ -36,7 +36,7 @@ class _RestrictedDict(dict):
         dict.__setitem__(self, key, value)
     def update(self, new_dict):
         #Force this to go via our strict __setitem__ method
-        for (key, value) in new_dict.iteritems():
+        for (key, value) in new_dict.items():
             self[key] = value
 
 class SeqRecord(object):
@@ -71,7 +71,7 @@ class SeqRecord(object):
     ...                         IUPAC.protein),
     ...                    id="YP_025292.1", name="HokC",
     ...                    description="toxic membrane protein")
-    >>> print record
+    >>> print(record)
     ID: YP_025292.1
     Name: HokC
     Description: toxic membrane protein
@@ -83,7 +83,7 @@ class SeqRecord(object):
     a string in a particular file format there is a format method which uses
     Bio.SeqIO internally:
 
-    >>> print record.format("fasta")
+    >>> print(record.format("fasta"))
     >YP_025292.1 toxic membrane protein
     MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF
     <BLANKLINE>
@@ -93,9 +93,9 @@ class SeqRecord(object):
     >>> len(record)
     44
     >>> edited = record[:10] + record[11:]
-    >>> print edited.seq
+    >>> print(edited.seq)
     MKQHKAMIVAIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF
-    >>> print record.seq
+    >>> print(record.seq)
     MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF
     
     """
@@ -131,12 +131,12 @@ class SeqRecord(object):
         You can create a 'blank' SeqRecord object, and then populate the
         attributes later.  
         """
-        if id is not None and not isinstance(id, basestring):
+        if id is not None and not isinstance(id, str):
             #Lots of existing code uses id=None... this may be a bad idea.
             raise TypeError("id argument should be a string")
-        if not isinstance(name, basestring):
+        if not isinstance(name, str):
             raise TypeError("name argument should be a string")
-        if not isinstance(description, basestring):
+        if not isinstance(description, str):
             raise TypeError("description argument should be a string")
         self._seq = seq
         self.id = id
@@ -206,20 +206,20 @@ class SeqRecord(object):
         >>> handle = open("Quality/solexa_faked.fastq", "rU")
         >>> record = SeqIO.read(handle, "fastq-solexa")
         >>> handle.close()
-        >>> print record.id, record.seq
+        >>> print(record.id, record.seq)
         slxa_0001_1_0001_01 ACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTNNNNNN
-        >>> print record.letter_annotations.keys()
+        >>> print(list(record.letter_annotations.keys()))
         ['solexa_quality']
-        >>> print record.letter_annotations["solexa_quality"]
+        >>> print(record.letter_annotations["solexa_quality"])
         [40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5]
 
         The letter_annotations get sliced automatically if you slice the
         parent SeqRecord, for example taking the last ten bases:
 
         >>> sub_record = record[-10:]
-        >>> print sub_record.id, sub_record.seq
+        >>> print(sub_record.id, sub_record.seq)
         slxa_0001_1_0001_01 ACGTNNNNNN
-        >>> print sub_record.letter_annotations["solexa_quality"]
+        >>> print(sub_record.letter_annotations["solexa_quality"])
         [4, 3, 2, 1, 0, -1, -2, -3, -4, -5]
 
         Any python sequence (i.e. list, tuple or string) can be recorded in
@@ -301,38 +301,38 @@ class SeqRecord(object):
 
         Now let's have a quick look at the full record,
 
-        >>> print rec
+        >>> print(rec)
         ID: 1JOY
         Name: EnvZ
         Description: Homodimeric domain of EnvZ from E. coli
         Number of features: 1
         Per letter annotation for: secondary_structure
         Seq('MAAGVKQLADDRTLLMAGVSHDLRTPLTRIRLATEMMSEQDGYLAESINKDIEE...YLR', IUPACProtein())
-        >>> print rec.letter_annotations["secondary_structure"]
+        >>> print(rec.letter_annotations["secondary_structure"])
           S  SSSSSSHHHHHTTTHHHHHHHHHHHHHHHHHHHHHHTHHHHHHHHHHHHHHHHHHHHHTT  
-        >>> print rec.features[0].location
+        >>> print(rec.features[0].location)
         [20:21]
 
         Now let's take a sub sequence, here chosen as the first (fractured)
         alpha helix which includes the histidine phosphorylation site:
 
         >>> sub = rec[11:41]
-        >>> print sub
+        >>> print(sub)
         ID: 1JOY
         Name: EnvZ
         Description: Homodimeric domain of EnvZ from E. coli
         Number of features: 1
         Per letter annotation for: secondary_structure
         Seq('RTLLMAGVSHDLRTPLTRIRLATEMMSEQD', IUPACProtein())
-        >>> print sub.letter_annotations["secondary_structure"]
+        >>> print(sub.letter_annotations["secondary_structure"])
         HHHHHTTTHHHHHHHHHHHHHHHHHHHHHH
-        >>> print sub.features[0].location
+        >>> print(sub.features[0].location)
         [9:10]
 
         You can also of course omit the start or end values, for
         example to get the first ten letters only:
 
-        >>> print rec[:10]
+        >>> print(rec[:10])
         ID: 1JOY
         Name: EnvZ
         Description: Homodimeric domain of EnvZ from E. coli
@@ -342,7 +342,7 @@ class SeqRecord(object):
 
         Or for the last ten letters:
 
-        >>> print rec[-10:]
+        >>> print(rec[-10:])
         ID: 1JOY
         Name: EnvZ
         Description: Homodimeric domain of EnvZ from E. coli
@@ -353,7 +353,7 @@ class SeqRecord(object):
         If you omit both, then you get a copy of the original record (although
         lacking the annotations and dbxrefs):
 
-        >>> print rec[:]
+        >>> print(rec[:])
         ID: 1JOY
         Name: EnvZ
         Description: Homodimeric domain of EnvZ from E. coli
@@ -404,8 +404,7 @@ class SeqRecord(object):
                 else:
                     stop = index.stop
                 if (start < 0 or stop < 0) and parent_length == 0:
-                    raise ValueError, \
-                          "Cannot support negative indices without the sequence length"
+                    raise ValueError("Cannot support negative indices without the sequence length")
                 if start < 0:
                     start = parent_length + start
                 if stop < 0:
@@ -425,11 +424,11 @@ class SeqRecord(object):
 
             #Slice all the values to match the sliced sequence
             #(this should also work with strides, even negative strides):
-            for key, value in self.letter_annotations.iteritems():
+            for key, value in self.letter_annotations.items():
                 answer._per_letter_annotations[key] = value[index]
 
             return answer
-        raise ValueError, "Invalid index"
+        raise ValueError("Invalid index")
 
     def __iter__(self):
         """Iterate over the letters in the sequence.
@@ -439,25 +438,25 @@ class SeqRecord(object):
         >>> from Bio import SeqIO
         >>> record = SeqIO.read(open("Fasta/loveliesbleeding.pro"),"fasta")
         >>> for amino in record:
-        ...     print amino
+        ...     print(amino)
         ...     if amino == "L": break
         X
         A
         G
         L
-        >>> print record.seq[3]
+        >>> print(record.seq[3])
         L
 
         This is just a shortcut for iterating over the sequence directly:
 
         >>> for amino in record.seq:
-        ...     print amino
+        ...     print(amino)
         ...     if amino == "L": break
         X
         A
         G
         L
-        >>> print record.seq[3]
+        >>> print(record.seq[3])
         L
         
         Note that this does not facilitate iteration together with any
@@ -468,13 +467,13 @@ class SeqRecord(object):
         >>> from Bio import SeqIO
         >>> rec = SeqIO.read(open("Quality/solexa_faked.fastq", "rU"),
         ...                  "fastq-solexa")
-        >>> print rec.id, rec.seq
+        >>> print(rec.id, rec.seq)
         slxa_0001_1_0001_01 ACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTNNNNNN
-        >>> print rec.letter_annotations.keys()
+        >>> print(list(rec.letter_annotations.keys()))
         ['solexa_quality']
         >>> for nuc, qual in zip(rec,rec.letter_annotations["solexa_quality"]):
         ...     if qual > 35:
-        ...         print nuc, qual
+        ...         print(nuc, qual)
         A 40
         C 39
         G 38
@@ -532,7 +531,7 @@ class SeqRecord(object):
         ...                         IUPAC.protein),
         ...                    id="YP_025292.1", name="HokC",
         ...                    description="toxic membrane protein, small")
-        >>> print str(record)
+        >>> print(str(record))
         ID: YP_025292.1
         Name: HokC
         Description: toxic membrane protein, small
@@ -542,7 +541,7 @@ class SeqRecord(object):
         In this example you don't actually need to call str explicity, as the
         print command does this automatically:
 
-        >>> print record
+        >>> print(record)
         ID: YP_025292.1
         Name: HokC
         Description: toxic membrane protein, small
@@ -566,7 +565,7 @@ class SeqRecord(object):
             lines.append("/%s=%s" % (a, str(self.annotations[a])))
         if self.letter_annotations:
             lines.append("Per letter annotation for: " \
-                         + ", ".join(self.letter_annotations.keys()))
+                         + ", ".join(list(self.letter_annotations.keys())))
         #Don't want to include the entire sequence,
         #and showing the alphabet is useful:
         lines.append(repr(self.seq))
@@ -589,7 +588,7 @@ class SeqRecord(object):
         ...                 id="NP_418483.1", name="b4059",
         ...                 description="ssDNA-binding protein",
         ...                 dbxrefs=["ASAP:13298", "GI:16131885", "GeneID:948570"])
-        >>> print repr(rec)
+        >>> print(repr(rec))
         SeqRecord(seq=Seq('MASRGVNKVILVGNLGQDPEVRYMPNGGAVANITLATSESWRDKATGEMKEQTE...IPF', ProteinAlphabet()), id='NP_418483.1', name='b4059', description='ssDNA-binding protein', dbxrefs=['ASAP:13298', 'GI:16131885', 'GeneID:948570'])
 
         At the python prompt you can also use this shorthand:
@@ -622,7 +621,7 @@ class SeqRecord(object):
         ...                    description="toxic membrane protein")
         >>> record.format("fasta")
         '>YP_025292.1 toxic membrane protein\nMKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF\n'
-        >>> print record.format("fasta")
+        >>> print(record.format("fasta"))
         >YP_025292.1 toxic membrane protein
         MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF
         <BLANKLINE>
@@ -660,10 +659,10 @@ class SeqRecord(object):
                 handle = BytesIO()
             except ImportError:
                 #Must be on Python 2.5 or older
-                from StringIO import StringIO
+                from io import StringIO
                 handle = StringIO()
         else:
-            from StringIO import StringIO
+            from io import StringIO
             handle = StringIO()
         SeqIO.write(self, handle, format_spec)
         return handle.getvalue()
@@ -682,7 +681,7 @@ class SeqRecord(object):
         """
         return len(self.seq)
 
-    def __nonzero__(self):
+    def __bool__(self):
         """Returns True regardless of the length of the sequence.
 
         This behaviour is for backwards compatibility, since until the
@@ -710,15 +709,15 @@ class SeqRecord(object):
         >>> handle = open("Quality/solexa_faked.fastq", "rU")
         >>> record = SeqIO.read(handle, "fastq-solexa")
         >>> handle.close()
-        >>> print record.id, record.seq
+        >>> print(record.id, record.seq)
         slxa_0001_1_0001_01 ACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTNNNNNN
-        >>> print record.letter_annotations.keys()
+        >>> print(list(record.letter_annotations.keys()))
         ['solexa_quality']
 
         >>> new = record + "ACT"
-        >>> print new.id, new.seq
+        >>> print(new.id, new.seq)
         slxa_0001_1_0001_01 ACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTNNNNNNACT
-        >>> print new.letter_annotations.keys()
+        >>> print(list(new.letter_annotations.keys()))
         []
         
         The new record will attempt to combine the annotation, but for any
@@ -729,7 +728,7 @@ class SeqRecord(object):
         >>> handle = open("GenBank/pBAD30.gb")
         >>> plasmid = SeqIO.read(handle, "gb")
         >>> handle.close()
-        >>> print plasmid.id, len(plasmid)
+        >>> print(plasmid.id, len(plasmid))
         pBAD30 4923
 
         Now let's cut the plasmid into two pieces, and join them back up the
@@ -740,7 +739,7 @@ class SeqRecord(object):
         >>> left = plasmid[:3765]
         >>> right = plasmid[3765:]
         >>> new = right + left
-        >>> print new.id, len(new)
+        >>> print(new.id, len(new))
         pBAD30 4923
         >>> str(new.seq) == str(right.seq + left.seq)
         True
@@ -798,11 +797,11 @@ class SeqRecord(object):
             answer.name = self.name
         if self.description == other.description:
             answer.description = self.description
-        for k,v in self.annotations.iteritems():
+        for k,v in self.annotations.items():
             if k in other.annotations and other.annotations[k] == v:
                 answer.annotations[k] = v
         #Can append matching per-letter-annotation
-        for k,v in self.letter_annotations.iteritems():
+        for k,v in self.letter_annotations.items():
             if k in other.letter_annotations:
                 answer.letter_annotations[k] = v + other.letter_annotations[k]
         return answer
@@ -818,15 +817,15 @@ class SeqRecord(object):
         >>> handle = open("Quality/solexa_faked.fastq", "rU")
         >>> record = SeqIO.read(handle, "fastq-solexa")
         >>> handle.close()
-        >>> print record.id, record.seq
+        >>> print(record.id, record.seq)
         slxa_0001_1_0001_01 ACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTNNNNNN
-        >>> print record.letter_annotations.keys()
+        >>> print(list(record.letter_annotations.keys()))
         ['solexa_quality']
 
         >>> new = "ACT" + record
-        >>> print new.id, new.seq
+        >>> print(new.id, new.seq)
         slxa_0001_1_0001_01 ACTACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTNNNNNN
-        >>> print new.letter_annotations.keys()
+        >>> print(list(new.letter_annotations.keys()))
         []
         """
         if isinstance(other, SeqRecord):
@@ -853,7 +852,7 @@ class SeqRecord(object):
         >>> record = SeqRecord(Seq("acgtACGT", generic_dna), id="Test",
         ...                    description = "Made up for this example")
         >>> record.letter_annotations["phred_quality"] = [1,2,3,4,5,6,7,8]
-        >>> print record.upper().format("fastq")
+        >>> print(record.upper().format("fastq"))
         @Test Made up for this example
         ACGTACGT
         +
@@ -862,7 +861,7 @@ class SeqRecord(object):
 
         Naturally, there is a matching lower method:
         
-        >>> print record.lower().format("fastq")
+        >>> print(record.lower().format("fastq"))
         @Test Made up for this example
         acgtacgt
         +
@@ -884,12 +883,12 @@ class SeqRecord(object):
 
         >>> from Bio import SeqIO
         >>> record = SeqIO.read("Fasta/aster.pro", "fasta")
-        >>> print record.format("fasta")
+        >>> print(record.format("fasta"))
         >gi|3298468|dbj|BAA31520.1| SAMIPF
         GGHVNPAVTFGAFVGGNITLLRGIVYIIAQLLGSTVACLLLKFVTNDMAVGVFSLSAGVG
         VTNALVFEIVMTFGLVYTVYATAIDPKKGSLGTIAPIAIGFIVGANI
         <BLANKLINE>
-        >>> print record.lower().format("fasta")
+        >>> print(record.lower().format("fasta"))
         >gi|3298468|dbj|BAA31520.1| SAMIPF
         gghvnpavtfgafvggnitllrgivyiiaqllgstvaclllkfvtndmavgvfslsagvg
         vtnalvfeivmtfglvytvyataidpkkgslgtiapiaigfivgani
@@ -943,23 +942,23 @@ class SeqRecord(object):
         >>> handle = open("Quality/solexa_faked.fastq", "rU")
         >>> record = SeqIO.read(handle, "fastq-solexa")
         >>> handle.close()
-        >>> print record.id, record.seq
+        >>> print(record.id, record.seq)
         slxa_0001_1_0001_01 ACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTNNNNNN
-        >>> print record.letter_annotations.keys()
+        >>> print(list(record.letter_annotations.keys()))
         ['solexa_quality']
-        >>> print record.letter_annotations["solexa_quality"]
+        >>> print(record.letter_annotations["solexa_quality"])
         [40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5]
 
         Now take the reverse complement,
 
         >>> rc_record = record.reverse_complement(id=record.id+"_rc")
-        >>> print rc_record.id, rc_record.seq
+        >>> print(rc_record.id, rc_record.seq)
         slxa_0001_1_0001_01_rc NNNNNNACGTACGTACGTACGTACGTACGTACGTACGTACGTACGT
 
         Notice that the per-letter-annotations have also been reversed,
         although this may not be appropriate for all cases.
 
-        >>> print rc_record.letter_annotations["solexa_quality"]
+        >>> print(rc_record.letter_annotations["solexa_quality"])
         [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]
 
         Now for the features, we need a different example. Parsing a GenBank
@@ -970,7 +969,7 @@ class SeqRecord(object):
         >>> handle = open("GenBank/pBAD30.gb")
         >>> plasmid = SeqIO.read(handle, "gb")
         >>> handle.close()
-        >>> print plasmid.id, len(plasmid)
+        >>> print(plasmid.id, len(plasmid))
         pBAD30 4923
         >>> plasmid.seq
         Seq('GCTAGCGGAGTGTATACTGGCTTACTATGTTGGCACTGATGAGGGTGTCAGTGA...ATG', IUPACAmbiguousDNA())
@@ -980,7 +979,7 @@ class SeqRecord(object):
         Now, let's take the reverse complement of this whole plasmid:
 
         >>> rc_plasmid = plasmid.reverse_complement(id=plasmid.id+"_rc")
-        >>> print rc_plasmid.id, len(rc_plasmid)
+        >>> print(rc_plasmid.id, len(rc_plasmid))
         pBAD30_rc 4923
         >>> rc_plasmid.seq
         Seq('CATGGGCAAATATTATACGCAAGGCGACAAGGTGCTGATGCCGCTGGCGATTCA...AGC', IUPACAmbiguousDNA())
@@ -991,7 +990,7 @@ class SeqRecord(object):
         second feature (index 1) to the second last feature (index -2), its
         strand has changed, and the location switched round.
 
-        >>> print plasmid.features[1]
+        >>> print(plasmid.features[1])
         type: CDS
         location: [1081:1960]
         strand: -1
@@ -1000,7 +999,7 @@ class SeqRecord(object):
             Key: note, Value: ['araC regulator of the arabinose BAD promoter']
             Key: vntifkey, Value: ['4']
         <BLANKLINE>
-        >>> print rc_plasmid.features[-2]
+        >>> print(rc_plasmid.features[-2])
         type: CDS
         location: [2963:3842]
         strand: 1
@@ -1040,10 +1039,10 @@ class SeqRecord(object):
         >>> from Bio.Alphabet import generic_dna
         >>> rec = SeqRecord(MutableSeq("ACGT", generic_dna), id="Test")
         >>> rec.seq[0] = "T"
-        >>> print rec.id, rec.seq
+        >>> print(rec.id, rec.seq)
         Test TCGT
         >>> rc = rec.reverse_complement(id=True)
-        >>> print rc.id, rc.seq
+        >>> print(rc.id, rc.seq)
         Test ACGA
         """
         from Bio.Seq import MutableSeq #Lazy to avoid circular imports
@@ -1052,15 +1051,15 @@ class SeqRecord(object):
             answer = SeqRecord(self.seq.toseq().reverse_complement())
         else:
             answer = SeqRecord(self.seq.reverse_complement())
-        if isinstance(id, basestring):
+        if isinstance(id, str):
             answer.id = id
         elif id:
             answer.id = self.id
-        if isinstance(name, basestring):
+        if isinstance(name, str):
             answer.name = name
         elif name:
             answer.name = self.name
-        if isinstance(description, basestring):
+        if isinstance(description, str):
             answer.description = description
         elif description:
             answer.description = self.description
@@ -1090,7 +1089,7 @@ class SeqRecord(object):
             answer.letter_annotations = letter_annotations
         elif letter_annotations:
             #Copy the old per letter annotations, reversing them
-            for key, value in self.letter_annotations.iteritems():
+            for key, value in self.letter_annotations.items():
                 answer._per_letter_annotations[key] = value[::-1]
         return answer
 
@@ -1103,21 +1102,22 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..","Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..","Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
     elif os.path.isdir(os.path.join("Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("Tests"))
         doctest.testmod()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
+        print("Done")
 
 if __name__ == "__main__":
     _test()
+

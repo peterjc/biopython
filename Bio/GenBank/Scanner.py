@@ -75,20 +75,20 @@ class InsdcScanner:
             else:
                 line = self.handle.readline()
             if not line:
-                if self.debug : print "End of file"
+                if self.debug : print("End of file")
                 return None
             if line[:self.HEADER_WIDTH]==self.RECORD_START:
-                if self.debug > 1: print "Found the start of a record:\n" + line
+                if self.debug > 1: print("Found the start of a record:\n" + line)
                 break
             line = line.rstrip()
             if line == "//":
-                if self.debug > 1: print "Skipping // marking end of last record"
+                if self.debug > 1: print("Skipping // marking end of last record")
             elif line == "":
-                if self.debug > 1: print "Skipping blank line before record"
+                if self.debug > 1: print("Skipping blank line before record")
             else:
                 #Ignore any header before the first ID/LOCUS line.
                 if self.debug > 1:
-                        print "Skipping header line before record:\n" + line
+                        print("Skipping header line before record:\n" + line)
         self.line = line
         return line
 
@@ -109,13 +109,13 @@ class InsdcScanner:
                 raise ValueError("Premature end of line during sequence data")
             line = line.rstrip()
             if line in self.FEATURE_START_MARKERS:
-                if self.debug : print "Found header table"
+                if self.debug : print("Found header table")
                 break
             #if line[:self.HEADER_WIDTH]==self.FEATURE_START_MARKER[:self.HEADER_WIDTH]:
             #    if self.debug : print "Found header table (?)"
             #    break
             if line[:self.HEADER_WIDTH].rstrip() in self.SEQUENCE_HEADERS:
-                if self.debug : print "Found start of sequence"
+                if self.debug : print("Found start of sequence")
                 break
             if line == "//":
                 raise ValueError("Premature end of sequence data marker '//' found")
@@ -134,7 +134,7 @@ class InsdcScanner:
         Assumes you have already read to the start of the features table.
         """
         if self.line.rstrip() not in self.FEATURE_START_MARKERS:
-            if self.debug : print "Didn't find any feature table"
+            if self.debug : print("Didn't find any feature table")
             return []
         
         while self.line.rstrip() in self.FEATURE_START_MARKERS:
@@ -146,13 +146,13 @@ class InsdcScanner:
             if not line:
                 raise ValueError("Premature end of line during features table")
             if line[:self.HEADER_WIDTH].rstrip() in self.SEQUENCE_HEADERS:
-                if self.debug : print "Found start of sequence"
+                if self.debug : print("Found start of sequence")
                 break
             line = line.rstrip()
             if line == "//":
                 raise ValueError("Premature end of features table, marker '//' found")
             if line in self.FEATURE_END_MARKERS:
-                if self.debug : print "Found end of features"
+                if self.debug : print("Found end of features")
                 line = self.handle.readline()
                 break
             if line[2:self.FEATURE_QUALIFIER_INDENT].strip() == "":
@@ -243,14 +243,14 @@ class InsdcScanner:
         Note that no whitespace is removed.
         """
         #Skip any blank lines
-        iterator = iter(filter(None, lines))
+        iterator = iter([_f for _f in lines if _f])
         try:
-            line = iterator.next()
+            line = next(iterator)
 
             feature_location = line.strip()
             while feature_location[-1:]==",":
                 #Multiline location, still more to come!
-                line = iterator.next()
+                line = next(iterator)
                 feature_location += line.strip()
 
             qualifiers=[]
@@ -270,11 +270,11 @@ class InsdcScanner:
                         if value[-1]!='"' or value!='"':
                             #No closing quote on the first line...
                             while value[-1] != '"':
-                                value += "\n" + iterator.next()
+                                value += "\n" + next(iterator)
                         else:
                             #One single line (quoted)
                             assert value == '"'
-                            if self.debug : print "Quoted line %s:%s" % (key, value)
+                            if self.debug : print("Quoted line %s:%s" % (key, value))
                         #DO NOT remove the quotes...
                         qualifiers.append((key,value))
                     else:
@@ -746,7 +746,7 @@ class EmblScanner(InsdcScanner):
                 getattr(consumer, consumer_dict[line_type])(data)
             else:
                 if self.debug:
-                    print "Ignoring EMBL header line:\n%s" % line
+                    print("Ignoring EMBL header line:\n%s" % line)
         
     def _feed_misc_lines(self, consumer, lines):
         #TODO - Should we do something with the information on the SQ line(s)?
@@ -758,7 +758,7 @@ class EmblScanner(InsdcScanner):
                     line = line[5:].strip()
                     contig_location = line
                     while True:
-                        line = line_iter.next()
+                        line = next(line_iter)
                         if not line:
                             break
                         elif line.startswith("CO   "):
@@ -799,7 +799,7 @@ class _ImgtScanner(EmblScanner):
         Assumes you have already read to the start of the features table.
         """
         if self.line.rstrip() not in self.FEATURE_START_MARKERS:
-            if self.debug : print "Didn't find any feature table"
+            if self.debug : print("Didn't find any feature table")
             return []
         
         while self.line.rstrip() in self.FEATURE_START_MARKERS:
@@ -813,13 +813,13 @@ class _ImgtScanner(EmblScanner):
             if not line:
                 raise ValueError("Premature end of line during features table")
             if line[:self.HEADER_WIDTH].rstrip() in self.SEQUENCE_HEADERS:
-                if self.debug : print "Found start of sequence"
+                if self.debug : print("Found start of sequence")
                 break
             line = line.rstrip()
             if line == "//":
                 raise ValueError("Premature end of features table, marker '//' found")
             if line in self.FEATURE_END_MARKERS:
-                if self.debug : print "Found end of features"
+                if self.debug : print("Found end of features")
                 line = self.handle.readline()
                 break
             if line[2:self.FEATURE_QUALIFIER_INDENT].strip() == "":
@@ -1125,11 +1125,11 @@ class GenBankScanner(InsdcScanner):
         #VERSION (version and gi)
         #REFERENCE (eference_num and reference_bases)
         #ORGANISM (organism and taxonomy)
-        lines = filter(None,lines)
+        lines = [_f for _f in lines if _f]
         lines.append("") #helps avoid getting StopIteration all the time
         line_iter = iter(lines)
         try:
-            line = line_iter.next()
+            line = next(line_iter)
             while True:
                 if not line : break
                 line_type = line[:GENBANK_INDENT].strip()
@@ -1144,13 +1144,13 @@ class GenBankScanner(InsdcScanner):
                     if data.find(' GI:')==-1:
                         consumer.version(data)
                     else:
-                        if self.debug : print "Version [" + data.split(' GI:')[0] + "], gi [" + data.split(' GI:')[1] + "]"
+                        if self.debug : print("Version [" + data.split(' GI:')[0] + "], gi [" + data.split(' GI:')[1] + "]")
                         consumer.version(data.split(' GI:')[0])
                         consumer.gi(data.split(' GI:')[1])
                     #Read in the next line!
-                    line = line_iter.next()
+                    line = next(line_iter)
                 elif line_type == 'REFERENCE':
-                    if self.debug >1 : print "Found reference [" + data + "]"
+                    if self.debug >1 : print("Found reference [" + data + "]")
                     #Need to call consumer.reference_num() and consumer.reference_bases()
                     #e.g.
                     # REFERENCE   1  (bases 1 to 86436)
@@ -1165,11 +1165,11 @@ class GenBankScanner(InsdcScanner):
 
                     #Read in the next line, and see if its more of the reference:
                     while True:
-                        line = line_iter.next()
+                        line = next(line_iter)
                         if line[:GENBANK_INDENT] == GENBANK_SPACER:
                             #Add this continuation to the data string
                             data += " " + line[GENBANK_INDENT:]
-                            if self.debug >1 : print "Extended reference text [" + data + "]"
+                            if self.debug >1 : print("Extended reference text [" + data + "]")
                         else:
                             #End of the reference, leave this text in the variable "line"
                             break
@@ -1179,10 +1179,10 @@ class GenBankScanner(InsdcScanner):
                     while data.find('  ')!=-1:
                         data = data.replace('  ',' ')
                     if data.find(' ')==-1:
-                        if self.debug >2 : print 'Reference number \"' + data + '\"'
+                        if self.debug >2 : print('Reference number \"' + data + '\"')
                         consumer.reference_num(data)
                     else:
-                        if self.debug >2 : print 'Reference number \"' + data[:data.find(' ')] + '\", \"' + data[data.find(' ')+1:] + '\"'
+                        if self.debug >2 : print('Reference number \"' + data[:data.find(' ')] + '\", \"' + data[data.find(' ')+1:] + '\"')
                         consumer.reference_num(data[:data.find(' ')])
                         consumer.reference_bases(data[data.find(' ')+1:])
                 elif line_type == 'ORGANISM':
@@ -1197,7 +1197,7 @@ class GenBankScanner(InsdcScanner):
                     organism_data = data
                     lineage_data = ""
                     while True:
-                        line = line_iter.next()
+                        line = next(line_iter)
                         if line[0:GENBANK_INDENT] == GENBANK_SPACER:
                             if lineage_data or ";" in line:
                                 lineage_data += " " + line[GENBANK_INDENT:]
@@ -1208,21 +1208,21 @@ class GenBankScanner(InsdcScanner):
                             break
                     consumer.organism(organism_data)
                     if lineage_data.strip() == "" and self.debug > 1:
-                        print "Taxonomy line(s) missing or blank"
+                        print("Taxonomy line(s) missing or blank")
                     consumer.taxonomy(lineage_data.strip())
                     del organism_data, lineage_data
                 elif line_type == 'COMMENT':
-                    if self.debug > 1 : print "Found comment"
+                    if self.debug > 1 : print("Found comment")
                     #This can be multiline, and should call consumer.comment() once
                     #with a list where each entry is a line.
                     comment_list=[]
                     comment_list.append(data)
                     while True:
-                        line = line_iter.next()
+                        line = next(line_iter)
                         if line[0:GENBANK_INDENT] == GENBANK_SPACER:
                             data = line[GENBANK_INDENT:]
                             comment_list.append(data)
-                            if self.debug > 2 : print "Comment continuation [" + data + "]"
+                            if self.debug > 2 : print("Comment continuation [" + data + "]")
                         else:
                             #End of the comment
                             break
@@ -1232,7 +1232,7 @@ class GenBankScanner(InsdcScanner):
                     #Its a semi-automatic entry!
                     #Now, this may be a multi line entry...
                     while True:
-                        line = line_iter.next()
+                        line = next(line_iter)
                         if line[0:GENBANK_INDENT] == GENBANK_SPACER:
                             data += ' ' + line[GENBANK_INDENT:]
                         else:
@@ -1242,9 +1242,9 @@ class GenBankScanner(InsdcScanner):
                             break
                 else:
                     if self.debug:
-                        print "Ignoring GenBank header line:\n" % line
+                        print("Ignoring GenBank header line:\n" % line)
                     #Read in next line
-                    line = line_iter.next()
+                    line = next(line_iter)
         except StopIteration:
             raise ValueError("Problem in header")
         
@@ -1259,12 +1259,12 @@ class GenBankScanner(InsdcScanner):
                 if line.find('BASE COUNT')==0:
                     line = line[10:].strip()
                     if line:
-                        if self.debug : print "base_count = " + line
+                        if self.debug : print("base_count = " + line)
                         consumer.base_count(line)
                 if line.find("ORIGIN")==0:
                     line = line[6:].strip()
                     if line:
-                        if self.debug : print "origin_name = " + line
+                        if self.debug : print("origin_name = " + line)
                         consumer.origin_name(line)
                 if line.find("WGS ")==0 :                        
                     line = line[3:].strip()
@@ -1276,7 +1276,7 @@ class GenBankScanner(InsdcScanner):
                     line = line[6:].strip()
                     contig_location = line
                     while True:
-                        line = line_iter.next()
+                        line = next(line_iter)
                         if not line:
                             break
                         elif line[:GENBANK_INDENT]==GENBANK_SPACER:
@@ -1290,7 +1290,7 @@ class GenBankScanner(InsdcScanner):
             raise ValueError("Problem in misc lines before sequence")
         
 if __name__ == "__main__":
-    from StringIO import StringIO
+    from io import StringIO
 
     gbk_example = \
 """LOCUS       SCU49845     5028 bp    DNA             PLN       21-JUN-1999
@@ -1606,59 +1606,59 @@ SQ   Sequence 1859 BP; 609 A; 314 C; 355 G; 581 T; 0 other;
 //
 """
 
-    print "GenBank CDS Iteration"
-    print "====================="
+    print("GenBank CDS Iteration")
+    print("=====================")
 
     g = GenBankScanner()
     for record in g.parse_cds_features(StringIO(gbk_example)):
-        print record
+        print(record)
         
     g = GenBankScanner()
     for record in g.parse_cds_features(StringIO(gbk_example2),
                   tags2id=('gene','locus_tag','product')):
-        print record
+        print(record)
 
     g = GenBankScanner()
     for record in g.parse_cds_features(StringIO(gbk_example + "\n" + gbk_example2),
                                        tags2id=('gene','locus_tag','product')):
-        print record
+        print(record)
 
-    print
-    print "GenBank Iteration"
-    print "================="
+    print()
+    print("GenBank Iteration")
+    print("=================")
     g = GenBankScanner()
     for record in g.parse_records(StringIO(gbk_example),do_features=False):
-        print record.id, record.name, record.description
-        print record.seq
+        print(record.id, record.name, record.description)
+        print(record.seq)
 
     g = GenBankScanner()
     for record in g.parse_records(StringIO(gbk_example),do_features=True):
-        print record.id, record.name, record.description
-        print record.seq
+        print(record.id, record.name, record.description)
+        print(record.seq)
 
     g = GenBankScanner()
     for record in g.parse_records(StringIO(gbk_example2),do_features=False):
-        print record.id, record.name, record.description
-        print record.seq
+        print(record.id, record.name, record.description)
+        print(record.seq)
 
     g = GenBankScanner()
     for record in g.parse_records(StringIO(gbk_example2),do_features=True):
-        print record.id, record.name, record.description
-        print record.seq
+        print(record.id, record.name, record.description)
+        print(record.seq)
 
-    print
-    print "EMBL CDS Iteration"
-    print "=================="
+    print()
+    print("EMBL CDS Iteration")
+    print("==================")
 
     e = EmblScanner()
     for record in e.parse_cds_features(StringIO(embl_example)):
-        print record
+        print(record)
         
-    print
-    print "EMBL Iteration"
-    print "=============="
+    print()
+    print("EMBL Iteration")
+    print("==============")
     e = EmblScanner()
     for record in e.parse_records(StringIO(embl_example),do_features=True):
-        print record.id, record.name, record.description
-        print record.seq
+        print(record.id, record.name, record.description)
+        print(record.seq)
 
