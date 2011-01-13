@@ -18,9 +18,6 @@ These modules provide wrapper classes for command line tools to help you
 construct command line strings by setting the values of each parameter.
 The finished command line strings are then normally invoked via the built-in
 Python module subprocess.
-
-This module also includes some deprecated functionality (function generic_run
-and class ApplicationResult) which should not be used anymore.
 """
 import os, sys
 import io
@@ -53,50 +50,6 @@ _reserved_names = ["and", "del", "from", "not", "while", "as", "elif",
                    "return", "def", "for", "lambda", "try"]
 #These are reserved names due to the way the wrappers work
 _local_reserved_names = ["set_parameter"]
-
-def generic_run(commandline):
-    """Run an application with the given commandline (DEPRECATED).
-
-    This expects a pre-built commandline that derives from 
-    AbstractCommandline, and returns a ApplicationResult object
-    to get results from a program, along with handles of the
-    standard output and standard error.
-
-    WARNING - This will read in the full program output into memory!
-    This may be in issue when the program writes a large amount of
-    data to standard output.
-
-    NOTE - This function is deprecated, and we intend to remove it in
-    future releases of Biopython.
-    We now recommend you invoke subprocess directly, using str(commandline)
-    to turn an AbstractCommandline wrapper into a command line string. This
-    will give you full control of the tool's input and output as well.
-    """
-    import warnings
-    import Bio
-    warnings.warn("Bio.Application.generic_run and the associated "
-                  "Bio.Application.ApplicationResult are deprecated. "
-                  "Please use the Bio.Application based wrappers with "
-                  "the built in Python module subprocess instead, as "
-                  "described in the Biopython Tutorial.",
-                  Bio.BiopythonDeprecationWarning)
-    #We don't need to supply any piped input, but we setup the
-    #standard input pipe anyway as a work around for a python
-    #bug if this is called from a Windows GUI program.  For
-    #details, see http://bugs.python.org/issue1124861
-    child = subprocess.Popen(str(commandline),
-                             stdin=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE,
-                             universal_newlines=True,
-                             shell=(sys.platform!="win32"))
-    #Use .communicate as might get deadlocks with .wait(), see Bug 2804/2806
-    r_out, e_out = child.communicate()
-    # capture error code:
-    error_code = child.returncode
-    return ApplicationResult(commandline, error_code), \
-           File.UndoHandle(io.StringIO(r_out)), \
-           File.UndoHandle(io.StringIO(e_out))
 
 
 class ApplicationError(_ProcessCalledError):
@@ -139,64 +92,6 @@ class ApplicationError(_ProcessCalledError):
         return "ApplicationError(%i, %s, %s, %s)" \
                % (self.returncode, self.cmd, self.stdout, self.stderr)
 
-
-class ApplicationResult:
-    """Make results of a program available through a standard interface (DEPRECATED).
-    
-    This tries to pick up output information available from the program
-    and make it available programmatically.
-
-    NOTE - This class hase been deprecated and we intend to remove it in
-    a future release of Biopython.
-    """
-    def __init__(self, application_cl, return_code):
-        """Intialize with the commandline from the program.
-        """
-        import warnings
-        import Bio
-        warnings.warn("Bio.Application.ApplicationResult and the "
-                      "associated function Bio.Application.generic_run "
-                      "are deprecated. Please use the Bio.Application "
-                      "based wrappers with the built in Python module "
-                      "subprocess instead, as described in the Biopython "
-                      "Tutorial.", Bio.BiopythonDeprecationWarning)
-        self._cl = application_cl
-
-        # provide the return code of the application
-        self.return_code = return_code
-
-        # get the application dependent results we can provide
-        # right now the only results we handle are output files
-        self._results = {}
-
-        for parameter in self._cl.parameters:
-            if "file" in parameter.param_types and \
-               "output" in parameter.param_types:
-                if parameter.is_set:
-                    self._results[parameter.names[-1]] = parameter.value
-
-    def get_result(self, output_name):
-        """Retrieve result information for the given output.
-
-        Supports any of the defined parameters aliases (assuming the
-        parameter is defined as an output).
-        """
-        try:
-            return self._results[output_name]
-        except KeyError as err:
-            #Try the aliases...
-            for parameter in self._cl.parameters:
-                if output_name in parameter.names:
-                    return self._results[parameter.names[-1]]
-            #No, really was a key error:
-            raise err
-
-    def available_results(self):
-        """Retrieve a list of all available results.
-        """
-        result_names = list(self._results.keys())
-        result_names.sort()
-        return result_names
 
 class AbstractCommandline(object):
     """Generic interface for constructing command line strings.
@@ -567,11 +462,10 @@ class _Option(_AbstractParameter):
     is assumed to be a "human readable" name describing the option in one
     word.
 
-    o param_types -- a list of string describing the type of parameter, 
-    which can help let programs know how to use it. Example descriptions
-    include 'input', 'output', 'file'.  Note that if 'file' is included,
-    these argument values will automatically be escaped if the filename
-    contains spaces.
+    o description -- a description of the option.
+
+    o filename -- True if this argument is a filename and should be
+    automatically quoted if it contains spaces.
 
     o checker_function -- a reference to a function that will determine
     if a given value is valid for this parameter. This function can either
@@ -580,8 +474,6 @@ class _Option(_AbstractParameter):
 
     o equate -- should an equals sign be inserted if a value is used?
 
-    o description -- a description of the option.
-
     o is_required -- a flag to indicate if the parameter must be set for
     the program to be run.
 
@@ -589,10 +481,12 @@ class _Option(_AbstractParameter):
 
     o value -- the value of a parameter
     """
-    def __init__(self, names = [], types = [], checker_function = None, 
-                 is_required = False, description = "", equate=True):
+    def __init__(self, names, description, filename=False, checker_function=None,
+                 is_required=False, equate=True):
         self.names = names
-        self.param_types = types
+        assert isinstance(description, str), \
+               "%r for %s" % (description, names[-1])
+        self.is_filename = filename
         self.checker_function = checker_function
         self.description = description
         self.equate = equate
@@ -612,7 +506,7 @@ class _Option(_AbstractParameter):
         # now made explicitly when setting up the option.
         if self.value is None:
             return "%s " % self.names[0]
-        if "file" in self.param_types:
+        if self.is_filename:
             v = _escape_filename(self.value)
         else:
             v = str(self.value)
@@ -635,21 +529,14 @@ class _Switch(_AbstractParameter):
     is assumed to be a "human readable" name describing the option in one
     word.
 
-    o param_types -- a list of string describing the type of parameter, 
-    which can help let programs know how to use it. Example descriptions
-    include 'input', 'output', 'file'.  Note that if 'file' is included,
-    these argument values will automatically be escaped if the filename
-    contains spaces.
-
     o description -- a description of the option.
 
     o is_set -- if the parameter has been set
 
     NOTE - There is no value attribute, see is_set instead,
     """
-    def __init__(self, names = [], types = [], description = ""):
+    def __init__(self, names, description):
         self.names = names
-        self.param_types = types
         self.description = description
         self.is_set = False
         self.is_required = False
@@ -668,10 +555,12 @@ class _Switch(_AbstractParameter):
 class _Argument(_AbstractParameter):
     """Represent an argument on a commandline.
     """
-    def __init__(self, names = [], types = [], checker_function = None, 
-                 is_required = False, description = ""):
+    def __init__(self, names, description, filename=False,
+                 checker_function=None, is_required=False):
         self.names = names
-        self.param_types = types
+        assert isinstance(description, str), \
+               "%r for %s" % (description, names[-1])
+        self.is_filename = filename
         self.checker_function = checker_function
         self.description = description
         self.is_required = is_required
@@ -681,6 +570,8 @@ class _Argument(_AbstractParameter):
     def __str__(self):
         if self.value is None:
             return " "
+        elif self.is_filename:
+            return "%s " % _escape_filename(self.value)
         else:
             return "%s " % self.value
 

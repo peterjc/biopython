@@ -1,4 +1,4 @@
-# Copyright 2009-2010 by Peter Cock.  All rights reserved.
+# Copyright 2009-2011 by Peter Cock.  All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
@@ -23,16 +23,34 @@ sequencing. If this is an issue later on, storing the keys and offsets in a
 temp lookup file might be one idea (e.g. using SQLite or an OBDA style index).
 """
 
+import os
+try:
+    from collections import UserDict as _dict_base
+except ImportError:
+    from UserDict import DictMixin as _dict_base
 import re
+import itertools
+
+try:
+    from sqlite3 import dbapi2 as _sqlite
+    from sqlite3 import IntegrityError as _IntegrityError
+    from sqlite3 import OperationalError as _OperationalError
+except ImportError:
+    #Not expected to be present on Python 2.4, ignore it
+    #and at least offer Bio.SeqIO.index() functionality
+    _sqlite = None
+    pass
+
 from Bio import SeqIO
 from Bio import Alphabet
 
-class _IndexedSeqFileDict(dict):
+class _IndexedSeqFileDict(_dict_base):
     """Read only dictionary interface to a sequential sequence file.
 
-    Keeps the keys in memory, reads the file to access entries as
-    SeqRecord objects using Bio.SeqIO for parsing them. This approach
-    is memory limited, but will work even with millions of sequences.
+    Keeps the keys and associated file offsets in memory, reads the file to
+    access entries as SeqRecord objects using Bio.SeqIO for parsing them.
+    This approach is memory limited, but will work even with millions of
+    sequences.
 
     Note - as with the Bio.SeqIO.to_dict() function, duplicate keys
     (record identifiers by default) are not allowed. If this happens,
@@ -50,42 +68,45 @@ class _IndexedSeqFileDict(dict):
     """
     def __init__(self, filename, format, alphabet, key_function):
         #Use key_function=None for default value
-        dict.__init__(self) #init as empty dict!
-        if format in SeqIO._BinaryFormats:
-            mode = "rb"
-        else:
-            mode = "rU"
-        self._handle = open(filename, mode)
-        self._alphabet = alphabet
-        self._format = format
+        try:
+            proxy_class = _FormatToRandomAccess[format]
+        except KeyError:
+            raise ValueError("Unsupported format '%s'" % format)
+        random_access_proxy = proxy_class(filename, format, alphabet)
+        self._proxy = random_access_proxy
         self._key_function = key_function
         if key_function:
-            offset_iter = ((key_function(k),o) for (k,o) in self._build())
+            offset_iter = ((key_function(k),o,l) for (k,o,l) in random_access_proxy)
         else:
-            offset_iter = self._build()
-        for key, offset in offset_iter:
-            if key in self:
+            offset_iter = random_access_proxy
+        offsets = {}
+        for key, offset, length in offset_iter:
+            #Note - we don't store the length because I want to minimise the
+            #memory requirements. With the SQLite backend the length is kept
+            #and is used to speed up the get_raw method (by about 3 times).
+            if key in offsets:
                 raise ValueError("Duplicate key '%s'" % key)
             else:
-                dict.__setitem__(self, key, offset)
+                offsets[key] = offset
+        self._offsets = offsets
     
-    def _build(self):
-        """Actually scan the file identifying records and offsets (PRIVATE).
-        
-        Returns an iterator giving tuples of record names and their offsets.
-        """
-        pass
-
     def __repr__(self):
-        return "SeqIO.index('%s', '%s', alphabet=%s, key_function=%s)" \
-               % (self._handle.name, self._format,
-                  repr(self._alphabet), self._key_function)
+        return "SeqIO.index(%r, %r, alphabet=%r, key_function=%r)" \
+               % (self._proxy._handle.name, self._proxy._format,
+                  self._proxy._alphabet, self._key_function)
 
     def __str__(self):
         if self:
             return "{%s : SeqRecord(...), ...}" % repr(list(self.keys())[0])
         else:
             return "{}"
+
+    def __contains__(self, key) :
+        return key in self._offsets
+        
+    def __len__(self):
+        """How many records are there?"""
+        return len(self._offsets)
 
     if hasattr(dict, "iteritems"):
         #Python 2, use iteritems but not items etc
@@ -113,10 +134,25 @@ class _IndexedSeqFileDict(dict):
                                       "sequence file you cannot access all the "
                                       "records at once.")
 
+        def keys(self) :
+            """Return a list of all the keys (SeqRecord identifiers)."""
+            #TODO - Stick a warning in here for large lists? Or just refuse?
+            return list(self._offsets.keys())
+
+        def itervalues(self):
+            """Iterate over the SeqRecord) items."""
+            for key in self.__iter__():
+                yield self.__getitem__(key)
+
         def iteritems(self):
             """Iterate over the (key, SeqRecord) items."""
             for key in self.__iter__():
                 yield key, self.__getitem__(key)
+        
+        def iterkeys(self):
+            """Iterate over the keys."""
+            return self.__iter__()
+
     else:
         #Python 3 - define items and values as iterators
         def items(self):
@@ -129,11 +165,25 @@ class _IndexedSeqFileDict(dict):
             for key in self.__iter__():
                 yield self.__getitem__(key)
 
+        def keys(self):
+            """Iterate over the keys."""
+            return self.__iter__()
 
+    def __iter__(self):
+        """Iterate over the keys."""
+        return iter(self._offsets)
+        
     def __getitem__(self, key):
         """x.__getitem__(y) <==> x[y]"""
-        #Should be done by each sub-class
-        raise NotImplementedError("Not implemented for this file format (yet).")
+        #Pass the offset to the proxy
+        record = self._proxy.get(self._offsets[key])
+        if self._key_function:
+            key2 = self._key_function(record.id)
+        else:
+            key2 = record.id
+        if key != key2:
+            raise ValueError("Key did not match (%s vs %s)" % (key, key2))
+        return record
 
     def get(self, k, d=None):
         """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None."""
@@ -149,8 +199,8 @@ class _IndexedSeqFileDict(dict):
 
         NOTE - This functionality is not supported for every file format.
         """
-        #Should be done by each sub-class (if possible)
-        raise NotImplementedError("Not available for this file format.")
+        #Pass the offset to the proxy
+        return self._proxy.get_raw(self._offsets[key])
 
     def __setitem__(self, key, value):
         """Would allow setting or replacing records, but not implemented."""
@@ -185,81 +235,252 @@ class _IndexedSeqFileDict(dict):
                                   "support this.")
 
 
+class _SQLiteManySeqFilesDict(_IndexedSeqFileDict):
+    """Read only dictionary interface to many sequential sequence files.
 
-####################
-# Special indexers #
-####################
+    Keeps the keys, file-numbers and offsets in an SQLite database. To access
+    a record by key, reads from the offset in the approapriate file using
+    Bio.SeqIO for parsing.
+    
+    There are OS limits on the number of files that can be open at once,
+    so a pool are kept. If a record is required from a closed file, then
+    one of the open handles is closed first.
+    """
+    def __init__(self, index_filename, filenames, format, alphabet,
+                 key_function, max_open=10):
+        random_access_proxies = {}
+        #TODO? - Don't keep filename list in memory (just in DB)?
+        #Should save a chunk of memory if dealing with 1000s of files.
+        #Furthermore could compare a generator to the DB on reloading
+        #(no need to turn it into a list)
+        if not _sqlite:
+            #Hack for Python 2.4 (of if Python is compiled without it)
+            from Bio import MissingPythonDependencyError
+            raise MissingPythonDependencyError("Requires sqlite3, which is "
+                                               "included Python 2.5+")
+        if filenames is not None:
+            filenames = list(filenames) #In case it was a generator
+        if os.path.isfile(index_filename):
+            #Reuse the index.
+            con = _sqlite.connect(index_filename)
+            self._con = con
+            #Check the count...
+            try:
+                count, = con.execute("SELECT value FROM meta_data WHERE key=?;",
+                                     ("count",)).fetchone()
+                self._length = int(count)
+                if self._length == -1:
+                    raise ValueError("Unfinished/partial database")
+                count, = con.execute("SELECT COUNT(key) FROM offset_data;").fetchone()
+                if self._length != int(count):
+                    raise ValueError("Corrupt database? %i entries not %i" \
+                                     % (int(count), self._length))
+                self._format, = con.execute("SELECT value FROM meta_data WHERE key=?;",
+                                           ("format",)).fetchone()
+                if format and format != self._format:
+                    raise ValueError("Index file says format %s, not %s" \
+                                     % (self._format, format))
+                self._filenames = [row[0] for row in \
+                                  con.execute("SELECT name FROM file_data "
+                                              "ORDER BY file_number;").fetchall()]
+                if filenames and len(filenames) != len(self._filenames):
+                    raise ValueError("Index file says %i files, not %i" \
+                                     % (len(self.filenames) != len(filenames)))
+                if filenames and filenames != self._filenames:
+                    raise ValueError("Index file has different filenames")
+            except _OperationalError as err:
+                raise ValueError("Not a Biopython index database? %s" % err)
+            #Now we have the format (from the DB if not given to us),
+            try:
+                proxy_class = _FormatToRandomAccess[self._format]
+            except KeyError:
+                raise ValueError("Unsupported format '%s'" % self._format)
+        else:
+            self._filenames = filenames
+            self._format = format
+            if not format or not filenames:
+                raise ValueError("Filenames to index and format required")
+            try:
+                proxy_class = _FormatToRandomAccess[format]
+            except KeyError:
+                raise ValueError("Unsupported format '%s'" % format)
+            #Create the index
+            con = _sqlite.connect(index_filename)
+            self._con = con
+            #print "Creating index"
+            # Sqlite PRAGMA settings for speed
+            con.execute("PRAGMA synchronous='OFF'")
+            con.execute("PRAGMA locking_mode=EXCLUSIVE")
+            #Don't index the key column until the end (faster)
+            #con.execute("CREATE TABLE offset_data (key TEXT PRIMARY KEY, "
+            # "offset INTEGER);")
+            con.execute("CREATE TABLE meta_data (key TEXT, value TEXT);")
+            con.execute("INSERT INTO meta_data (key, value) VALUES (?,?);",
+                        ("count", -1))
+            con.execute("INSERT INTO meta_data (key, value) VALUES (?,?);",
+                        ("format", format))
+            #TODO - Record the alphabet?
+            #TODO - Record the file size and modified date?
+            con.execute("CREATE TABLE file_data (file_number INTEGER, name TEXT);")
+            con.execute("CREATE TABLE offset_data (key TEXT, file_number INTEGER, offset INTEGER, length INTEGER);")
+            count = 0
+            for i, filename in enumerate(filenames):
+                con.execute("INSERT INTO file_data (file_number, name) VALUES (?,?);",
+                            (i, filename))
+                random_access_proxy = proxy_class(filename, format, alphabet)
+                if key_function:
+                    offset_iter = ((key_function(k),i,o,l) for (k,o,l) in random_access_proxy)
+                else:
+                    offset_iter = ((k,i,o,l) for (k,o,l) in random_access_proxy)
+                while True:
+                    batch = list(itertools.islice(offset_iter, 100))
+                    if not batch: break
+                    #print "Inserting batch of %i offsets, %s ... %s" \
+                    # % (len(batch), batch[0][0], batch[-1][0])
+                    con.executemany("INSERT INTO offset_data (key,file_number,offset,length) VALUES (?,?,?,?);",
+                                    batch)
+                    con.commit()
+                    count += len(batch)
+                if len(random_access_proxies) < max_open:
+                    random_access_proxies[i] = random_access_proxy
+                else:
+                    random_access_proxy._handle.close()
+            self._length = count
+            #print "About to index %i entries" % count
+            try:
+                con.execute("CREATE UNIQUE INDEX IF NOT EXISTS "
+                            "key_index ON offset_data(key);")
+            except _IntegrityError as err:
+                raise ValueError("Duplicate key? %s" % err)
+            con.execute("PRAGMA locking_mode=NORMAL")
+            con.execute("UPDATE meta_data SET value = ? WHERE key = ?;",
+                        (count, "count"))
+            con.commit()
+            #print "Index created"
+        self._proxies = random_access_proxies
+        self._max_open = max_open
+        self._alphabet = alphabet
+        self._key_function = key_function
+    
+    def __repr__(self):
+        return "SeqIO.index_db(%r, filename=%r, format=%r, alphabet=%r, key_function=%r)" \
+               % (self._index_filenane, self._filenames, self._format,
+                  self._alphabet, self._key_function)
 
-# Anything where the records cannot be read simply by parsing from
-# the record start. For example, anything requiring information from
-# a file header - e.g. SFF files where we would need to know the
-# number of flows.
+    def __contains__(self, key):
+        return bool(self._con.execute("SELECT key FROM offset_data WHERE key=?;",
+                                      (key,)).fetchone())
 
-class SffDict(_IndexedSeqFileDict) :
-    """Indexed dictionary like access to a Standard Flowgram Format (SFF) file."""
-    def _build(self):
-        """Load any index block in the file, or build it the slow way (PRIVATE)."""
-        if self._alphabet is None:
-            self._alphabet = Alphabet.generic_dna
-        handle = self._handle
-        #Record the what we'll need for parsing a record given its offset
-        header_length, index_offset, index_length, number_of_reads, \
-        self._flows_per_read, self._flow_chars, self._key_sequence \
-            = SeqIO.SffIO._sff_file_header(handle)
-        if index_offset and index_length:
-            #There is an index provided, try this the fast way:
-            try :
-                for name, offset in SeqIO.SffIO._sff_read_roche_index(handle) :
-                    yield name, offset
-                assert len(self) == number_of_reads, \
-                       "Indexed %i records, expected %i" \
-                       % (len(self), number_of_reads)
-                return
-            except ValueError as err :
-                import warnings
-                warnings.warn("Could not parse the SFF index: %s" % err)
-                assert len(self)==0, "Partially populated index"
-                handle.seek(0)
-        else :
-            #TODO - Remove this debug warning?
-            import warnings
-            warnings.warn("No SFF index, doing it the slow way")
-        #Fall back on the slow way!
-        for name, offset in SeqIO.SffIO._sff_do_slow_index(handle) :
-            yield name, offset
-        assert len(self) == number_of_reads, \
-               "Indexed %i records, expected %i" % (len(self), number_of_reads)
+    def __len__(self):
+        """How many records are there?"""
+        return self._length
+        #return self._con.execute("SELECT COUNT(key) FROM offset_data;").fetchone()[0]
 
-    def __getitem__(self, key) :
-        handle = self._handle
-        handle.seek(dict.__getitem__(self, key))
-        return SeqIO.SffIO._sff_read_seq_record(handle,
-                                                self._flows_per_read,
-                                                self._flow_chars,
-                                                self._key_sequence,
-                                                self._alphabet)
+    def __iter__(self):
+        """Iterate over the keys."""
+        for row in self._con.execute("SELECT key FROM offset_data;"):
+            yield str(row[0])
 
+    if hasattr(dict, "iteritems"):
+        #Python 2, use iteritems but not items etc
+        #Just need to override this...
+        def keys(self) :
+            """Return a list of all the keys (SeqRecord identifiers)."""
+            return [str(row[0]) for row in \
+                    self._con.execute("SELECT key FROM offset_data;").fetchall()]
 
-class SffTrimmedDict(SffDict) :
-    def __getitem__(self, key) :
-        handle = self._handle
-        handle.seek(dict.__getitem__(self, key))
-        return SeqIO.SffIO._sff_read_seq_record(handle,
-                                                self._flows_per_read,
-                                                self._flow_chars,
-                                                self._key_sequence,
-                                                self._alphabet,
-                                                trim=True)
+    def __getitem__(self, key):
+        """x.__getitem__(y) <==> x[y]"""
+        #Pass the offset to the proxy
+        row = self._con.execute("SELECT file_number, offset FROM offset_data WHERE key=?;",
+                                (key,)).fetchone()
+        if not row: raise KeyError
+        file_number, offset = row
+        proxies = self._proxies
+        if file_number in proxies:
+            record = proxies[file_number].get(offset)
+        else:
+            if len(proxies) >= self._max_open:
+                #Close an old handle...
+                proxies.popitem()[1]._handle.close()
+            #Open a new handle...
+            proxy = _FormatToRandomAccess[self._format]( \
+                        self._filenames[file_number],
+                        self._format, self._alphabet)
+            record = proxy.get(offset)
+            proxies[file_number] = proxy
+        if self._key_function:
+            key2 = self._key_function(record.id)
+        else:
+            key2 = record.id
+        if key != key2:
+            raise ValueError("Key did not match (%s vs %s)" % (key, key2))
+        return record
 
+    def get(self, k, d=None):
+        """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None."""
+        try:
+            return self.__getitem__(k)
+        except KeyError:
+            return d
 
-###################
-# Simple indexers #
-###################
+    def get_raw(self, key):
+        """Similar to the get method, but returns the record as a raw string.
 
-class SequentialSeqFileDict(_IndexedSeqFileDict):
-    """Indexed dictionary like access to most sequential sequence files."""
-    def __init__(self, filename, format, alphabet, key_function):
-        _IndexedSeqFileDict.__init__(self, filename, format, alphabet, key_function)
+        If the key is not found, a KeyError exception is raised.
+
+        NOTE - This functionality is not supported for every file format.
+        """
+        #Pass the offset to the proxy
+        row = self._con.execute("SELECT file_number, offset, length FROM offset_data WHERE key=?;",
+                                (key,)).fetchone()
+        if not row: raise KeyError
+        file_number, offset, length = row
+        proxies = self._proxies
+        if file_number in proxies:
+            if length:
+                #Shortcut if we have the length
+                h = proxies[file_number]._handle
+                h.seek(offset)
+                return h.read(length)
+            else:
+                return proxies[file_number].get_raw(offset)
+        else:
+            #This code is duplicated from __getitem__ to avoid a function call
+            if len(proxies) >= self._max_open:
+                #Close an old handle...
+                proxies.popitem()[1]._handle.close()
+            #Open a new handle...
+            proxy = _FormatToRandomAccess[self._format]( \
+                        self._filenames[file_number],
+                        self._format, self._alphabet)
+            proxies[file_number] = proxy
+            if length:
+                #Shortcut if we have the length
+                h = proxy._handle
+                h.seek(offset)
+                return h.read(length)
+            else:
+                return proxy.get_raw(offset)
+
+    def close(self):
+        """Close any open file handles."""
+        proxies = self._proxies
+        while proxies:
+            proxies.popitem()[1]._handle.close()
+        
+
+##############################################################################
+
+class SeqFileRandomAccess(object):
+    def __init__(self, filename, format, alphabet):
+        if format in SeqIO._BinaryFormats:
+            mode = "rb"
+        else:
+            mode = "rU"
+        self._handle = open(filename, mode)
+        self._alphabet = alphabet
+        self._format = format
         #Load the parser class/function once an avoid the dict lookup in each
         #__getitem__ call:
         i = SeqIO._FormatToIterator[format]
@@ -280,206 +501,326 @@ class SequentialSeqFileDict(_IndexedSeqFileDict):
                                                  alphabet))
         self._parse = _parse
 
-    def _build(self):
+    def __iter__(self):
+        """Returns (id,offset) tuples."""
+        raise NotImplementedError("Subclass should implement this")
+
+    def get(self, offset):
+        """Returns SeqRecord."""
         handle = self._handle
+        handle.seek(offset)
+        return self._parse()
+
+    def get_raw(self, offset):
+        """Returns string (if implemented for this file format)."""
+        #Should be done by each sub-class (if possible)
+        raise NotImplementedError("Not available for this file format.")
+
+
+
+
+####################
+# Special indexers #
+####################
+
+# Anything where the records cannot be read simply by parsing from
+# the record start. For example, anything requiring information from
+# a file header - e.g. SFF files where we would need to know the
+# number of flows.
+
+class SffRandomAccess(SeqFileRandomAccess):
+    """Random access to a Standard Flowgram Format (SFF) file."""
+    def __init__(self, filename, format, alphabet):
+        SeqFileRandomAccess.__init__(self, filename, format, alphabet)
+        header_length, index_offset, index_length, number_of_reads, \
+        self._flows_per_read, self._flow_chars, self._key_sequence \
+            = SeqIO.SffIO._sff_file_header(self._handle)
+
+    def __iter__(self):
+        """Load any index block in the file, or build it the slow way (PRIVATE)."""
+        if self._alphabet is None:
+            self._alphabet = Alphabet.generic_dna
+        handle = self._handle
+        handle.seek(0)
+        #Alread did this in __init__ but need handle in right place
+        header_length, index_offset, index_length, number_of_reads, \
+        self._flows_per_read, self._flow_chars, self._key_sequence \
+            = SeqIO.SffIO._sff_file_header(handle)
+        if index_offset and index_length:
+            #There is an index provided, try this the fast way:
+            count = 0
+            try :
+                for name, offset in SeqIO.SffIO._sff_read_roche_index(handle) :
+                    yield name, offset, 0
+                    count += 1
+                assert count == number_of_reads, \
+                       "Indexed %i records, expected %i" \
+                       % (count, number_of_reads)
+                return
+            except ValueError as err :
+                import warnings
+                warnings.warn("Could not parse the SFF index: %s" % err)
+                assert count==0, "Partially populated index"
+                handle.seek(0)
+        else :
+            #TODO - Remove this debug warning?
+            import warnings
+            warnings.warn("No SFF index, doing it the slow way")
+        #Fall back on the slow way!
+        count = 0
+        for name, offset in SeqIO.SffIO._sff_do_slow_index(handle) :
+            yield name, offset, 0
+            count += 1
+        assert count == number_of_reads, \
+               "Indexed %i records, expected %i" % (count, number_of_reads)
+
+    def get(self, offset) :
+        handle = self._handle
+        handle.seek(offset)
+        return SeqIO.SffIO._sff_read_seq_record(handle,
+                                                self._flows_per_read,
+                                                self._flow_chars,
+                                                self._key_sequence,
+                                                self._alphabet)
+
+    def get_raw(self, offset):
+        handle = self._handle
+        handle.seek(offset)
+        return SeqIO.SffIO._sff_read_raw_record(handle, self._flows_per_read)
+
+
+class SffTrimedRandomAccess(SffRandomAccess) :
+    def get(self, offset) :
+        handle = self._handle
+        handle.seek(offset)
+        return SeqIO.SffIO._sff_read_seq_record(handle,
+                                                self._flows_per_read,
+                                                self._flow_chars,
+                                                self._key_sequence,
+                                                self._alphabet,
+                                                trim=True)
+
+
+###################
+# Simple indexers #
+###################
+
+class SequentialSeqFileRandomAccess(SeqFileRandomAccess):
+    def __init__(self, filename, format, alphabet):
+        SeqFileRandomAccess.__init__(self, filename, format, alphabet)
         marker = {"ace" : "CO ",
-                  "fasta": ">",
+                  "embl" : "ID ",
+                  "fasta" : ">",
+                  "genbank" : "LOCUS ",
+                  "gb": "LOCUS ",
+                  "imgt" : "ID ",
                   "phd" : "BEGIN_SEQUENCE",
                   "pir" : ">..;",
                   "qual": ">",
-                   }[self._format]
-        marker_re = re.compile("^%s" % marker)
-        marker_offset = len(marker)
-        self._marker_re = marker_re #saved for the get_raw method
-        while True:
-            offset = handle.tell()
-            line = handle.readline()
-            if marker_re.match(line):
-                #Here we can assume the record.id is the first word after the
-                #marker. This is generally fine... but not for GenBank, EMBL, Swiss
-                yield line[marker_offset:].strip().split(None, 1)[0], offset
-            elif not line:
-                #End of file
-                break
-
-    def __getitem__(self, key):
-        """x.__getitem__(y) <==> x[y]"""
+                  "qual": ">",
+                  "swiss" : "ID ",
+                  "uniprot-xml" : "<entry ",
+                   }[format]
+        self._marker = marker
+        self._marker_re = re.compile("^%s" % marker)
+        
+    def __iter__(self):
+        """Returns (id,offset) tuples."""
+        marker_offset = len(self._marker)
+        marker_re = self._marker_re
         handle = self._handle
-        handle.seek(dict.__getitem__(self, key))
-        record = self._parse()
-        if self._key_function:
-            assert self._key_function(record.id) == key, \
-                   "Requested key %s, found record.id %s which has key %s" \
-                   % (repr(key), repr(record.id),
-                      repr(self._key_function(record.id)))
-        else:
-            assert record.id == key, \
-                   "Requested key %s, found record.id %s" \
-                   % (repr(key), repr(record.id))
-        return record
+        handle.seek(0)
+        #Skip and header before first record
+        while True:
+            start_offset = handle.tell()
+            line = handle.readline()
+            if marker_re.match(line) or not line:
+                break
+        #Should now be at the start of a record, or end of the file
+        while marker_re.match(line):
+            #Here we can assume the record.id is the first word after the
+            #marker. This is generally fine... but not for GenBank, EMBL, Swiss
+            id = line[marker_offset:].strip().split(None, 1)[0]
+            while True:
+                line = handle.readline()
+                if marker_re.match(line) or not line:
+                    end_offset = handle.tell() - len(line)
+                    yield id, start_offset, end_offset - start_offset
+                    start_offset = end_offset
+                    break
+        assert not line, repr(line)
 
-    def get_raw(self, key):
+    def get_raw(self, offset):
         """Similar to the get method, but returns the record as a raw string."""
         #For non-trivial file formats this must be over-ridden in the subclass
         handle = self._handle
         marker_re = self._marker_re
-        handle.seek(dict.__getitem__(self, key))
-        data = handle.readline()
+        handle.seek(offset)
+        lines = [handle.readline()]
         while True:
             line = handle.readline()
             if marker_re.match(line) or not line:
                 #End of file, or start of next record => end of this record
                 break
-            data += line
-        return data
+            lines.append(line)
+        return "".join(lines)
 
 
 #######################################
 # Fiddly indexers: GenBank, EMBL, ... #
 #######################################
 
-class GenBankDict(SequentialSeqFileDict):
+class GenBankRandomAccess(SequentialSeqFileRandomAccess):
     """Indexed dictionary like access to a GenBank file."""
-    def _build(self):
+    def __iter__(self):
         handle = self._handle
-        marker_re = re.compile("^LOCUS ")
-        self._marker_re = marker_re #saved for the get_raw method
+        handle.seek(0)
+        marker_re = self._marker_re
+        #Skip and header before first record
         while True:
-            offset = handle.tell()
+            start_offset = handle.tell()
             line = handle.readline()
-            if marker_re.match(line):
-                #We cannot assume the record.id is the first word after LOCUS,
-                #normally the first entry on the VERSION or ACCESSION line is used.
-                key = None
-                done = False
-                while not done:
-                    line = handle.readline()
-                    if line.startswith("ACCESSION "):
-                        key = line.rstrip().split()[1]
-                    elif line.startswith("VERSION "):
-                        version_id = line.rstrip().split()[1]
-                        if version_id.count(".")==1 and version_id.split(".")[1].isdigit():
-                            #This should mimic the GenBank parser...
-                            key = version_id
-                            done = True
-                            break
-                    elif line.startswith("FEATURES ") \
-                    or line.startswith("ORIGIN ") \
-                    or line.startswith("//") \
-                    or marker_re.match(line) \
-                    or not line:
-                        done = True
-                        break
-                if not key:
-                    raise ValueError("Did not find ACCESSION/VERSION lines")
-                yield key, offset
-            elif not line:
-                #End of file
+            if marker_re.match(line) or not line:
                 break
-
-
-class EmblDict(SequentialSeqFileDict):
-    """Indexed dictionary like access to an EMBL file."""
-    def _build(self):
-        handle = self._handle
-        marker_re = re.compile("^ID ")
-        self._marker_re = marker_re #saved for the get_raw method
-        while True:
-            offset = handle.tell()
-            line = handle.readline()
-            if marker_re.match(line):
-                #We cannot assume the record.id is the first word after ID,
-                #normally the SV line is used.
-                if line[2:].count(";") == 6:
-                    #Looks like the semi colon separated style introduced in 2006
-                    parts = line[3:].rstrip().split(";")
-                    if parts[1].strip().startswith("SV "):
-                        #The SV bit gives the version
-                        key = "%s.%s" \
-                              % (parts[0].strip(), parts[1].strip().split()[1])
-                    else:
-                        key = parts[0].strip()
-                elif line[2:].count(";") == 3:
-                    #Looks like the pre 2006 style, take first word only
-                    key = line[3:].strip().split(None,1)[0]
-                else:
-                    raise ValueError('Did not recognise the ID line layout:\n' + line)
-                while True:
-                    line = handle.readline()
-                    if line.startswith("SV "):
-                        key = line.rstrip().split()[1]
-                        break
-                    elif line.startswith("FH ") \
-                    or line.startswith("FT ") \
-                    or line.startswith("SQ ") \
-                    or line.startswith("//") \
-                    or marker_re.match(line) \
-                    or not line:
-                        break
-                yield key, offset
-            elif not line:
-                #End of file
-                break
-
-
-class SwissDict(SequentialSeqFileDict):
-    """Indexed dictionary like access to a SwissProt file."""
-    def _build(self):
-        handle = self._handle
-        marker_re = re.compile("^ID ")
-        self._marker_re = marker_re #saved for the get_raw method
-        while True:
-            offset = handle.tell()
-            line = handle.readline()
-            if marker_re.match(line):
-                #We cannot assume the record.id is the first word after ID,
-                #normally the following AC line is used.
+        #Should now be at the start of a record, or end of the file
+        while marker_re.match(line):
+            #We cannot assume the record.id is the first word after LOCUS,
+            #normally the first entry on the VERSION or ACCESSION line is used.
+            key = None
+            while True:
                 line = handle.readline()
-                assert line.startswith("AC ")
-                key = line[3:].strip().split(";")[0].strip()
-                yield key, offset
-            elif not line:
-                #End of file
-                break
+                if marker_re.match(line) or not line:
+                    if not key:
+                        raise ValueError("Did not find ACCESSION/VERSION lines")
+                    end_offset = handle.tell() - len(line)
+                    yield key, start_offset, end_offset - start_offset
+                    start_offset = end_offset
+                    break
+                elif line.startswith("ACCESSION "):
+                    key = line.rstrip().split()[1]
+                elif line.startswith("VERSION "):
+                    version_id = line.rstrip().split()[1]
+                    if version_id.count(".")==1 and version_id.split(".")[1].isdigit():
+                        #This should mimic the GenBank parser...
+                        key = version_id
+        assert not line, repr(line)
 
 
-class UniprotDict(SequentialSeqFileDict):
-    """Indexed dictionary like access to a UniProt XML file."""
-    def _build(self):
+class EmblRandomAccess(SequentialSeqFileRandomAccess):
+    """Indexed dictionary like access to an EMBL file."""
+    def __iter__(self):
         handle = self._handle
-        marker_re = re.compile("^<entry ") #Assumes start of line!
-        self._marker_re = marker_re #saved for the get_raw method
+        handle.seek(0)
+        marker_re = self._marker_re
+        #Skip any header before first record
         while True:
-            offset = handle.tell()
+            start_offset = handle.tell()
             line = handle.readline()
-            if marker_re.match(line):
-                #We expect the next line to be <accession>xxx</accession>
-                #but allow it to be later on within the <entry>
-                key = None
-                done = False
-                while True:
-                    line = handle.readline()
-                    if line.startswith("<accession>"):
-                        assert "</accession>" in line, line
-                        key = line[11:].split("<")[0]
-                        break
-                    elif "</entry>" in line:
-                        break
-                    elif marker_re.match(line) or not line:
-                        #Start of next record or end of file
-                        raise ValueError("Didn't find end of record")
-                if not key:
-                    raise ValueError("Did not find <accession> line")
-                yield key, offset
-            elif not line:
-                #End of file
+            if marker_re.match(line) or not line:
                 break
+        #Should now be at the start of a record, or end of the file
+        while marker_re.match(line):
+            #We cannot assume the record.id is the first word after ID,
+            #normally the SV line is used.
+            if line[2:].count(";") == 6:
+                #Looks like the semi colon separated style introduced in 2006
+                parts = line[3:].rstrip().split(";")
+                if parts[1].strip().startswith("SV "):
+                    #The SV bit gives the version
+                    key = "%s.%s" \
+                          % (parts[0].strip(), parts[1].strip().split()[1])
+                else:
+                    key = parts[0].strip()
+            elif line[2:].count(";") == 3:
+                #Looks like the pre 2006 style, take first word only
+                key = line[3:].strip().split(None,1)[0]
+            else:
+                raise ValueError('Did not recognise the ID line layout:\n' + line)
+            while True:
+                line = handle.readline()
+                if marker_re.match(line) or not line:
+                    end_offset = handle.tell() - len(line)
+                    yield key, start_offset, end_offset - start_offset
+                    start_offset = end_offset
+                    break
+                elif line.startswith("SV "):
+                    key = line.rstrip().split()[1]
+        assert not line, repr(line)
+
+
+class SwissRandomAccess(SequentialSeqFileRandomAccess):
+    """Random access to a SwissProt file."""
+    def __iter__(self):
+        handle = self._handle
+        handle.seek(0)
+        marker_re = self._marker_re
+        #Skip any header before first record
+        while True:
+            start_offset = handle.tell()
+            line = handle.readline()
+            if marker_re.match(line) or not line:
+                break
+        #Should now be at the start of a record, or end of the file
+        while marker_re.match(line):
+            #We cannot assume the record.id is the first word after ID,
+            #normally the following AC line is used.
+            line = handle.readline()
+            assert line.startswith("AC ")
+            key = line[3:].strip().split(";")[0].strip()
+            while True:
+                line = handle.readline()
+                if marker_re.match(line) or not line:
+                    end_offset = handle.tell() - len(line)
+                    yield key, start_offset, end_offset - start_offset
+                    start_offset = end_offset
+                    break
+        assert not line, repr(line)
+
+
+class UniprotRandomAccess(SequentialSeqFileRandomAccess):
+    """Random access to a UniProt XML file."""
+    def __iter__(self):
+        handle = self._handle
+        handle.seek(0)
+        marker_re = self._marker_re
+        #Skip any header before first record
+        while True:
+            start_offset = handle.tell()
+            line = handle.readline()
+            if marker_re.match(line) or not line:
+                break
+        #Should now be at the start of a record, or end of the file
+        while marker_re.match(line):
+            #We expect the next line to be <accession>xxx</accession>
+            #but allow it to be later on within the <entry>
+            key = None
+            done = False
+            while True:
+                line = handle.readline()
+                if key is None and line.startswith("<accession>"):
+                    assert "</accession>" in line, line
+                    key = line[11:].split("<")[0]
+                elif "</entry>" in line:
+                    end_offset = handle.tell() - len(line) \
+                               + line.find("</entry>") + 8
+                    break
+                elif marker_re.match(line) or not line:
+                    #Start of next record or end of file
+                    raise ValueError("Didn't find end of record")
+            if not key:
+                raise ValueError("Did not find <accession> line")
+            yield key, start_offset, end_offset - start_offset
+            #Find start of next record
+            while not marker_re.match(line) and line:
+                start_offset = handle.tell()
+                line = handle.readline()
+        assert not line, repr(line)
     
-    def get_raw(self, key):
+    def get_raw(self, offset):
         """Similar to the get method, but returns the record as a raw string."""
         handle = self._handle
         marker_re = self._marker_re
-        handle.seek(dict.__getitem__(self, key))
+        handle.seek(offset)
         data = handle.readline()
         while True:
             line = handle.readline()
@@ -493,7 +834,7 @@ class UniprotDict(SequentialSeqFileDict):
             data += line
         return data
 
-    def __getitem__(self, key) :
+    def get(self, offset) :
         #TODO - Can we handle this directly in the parser?
         #This is a hack - use get_raw for <entry>...</entry> and wrap it with
         #the apparently required XML header and footer.
@@ -504,17 +845,21 @@ class UniprotDict(SequentialSeqFileDict):
         http://www.uniprot.org/support/docs/uniprot.xsd">
         %s
         </uniprot>
-        """ % self.get_raw(key)
+        """ % self.get_raw(offset)
         #TODO - For consistency, this function should not accept a string:
         return next(SeqIO.UniprotIO.UniprotIterator(data))
 
 
-class IntelliGeneticsDict(SequentialSeqFileDict):
-    """Indexed dictionary like access to a IntelliGenetics file."""
-    def _build(self):
+class IntelliGeneticsRandomAccess(SeqFileRandomAccess):
+    """Random access to a IntelliGenetics file."""
+    def __init__(self, filename, format, alphabet):
+        SeqFileRandomAccess.__init__(self, filename, format, alphabet)
+        self._marker_re = re.compile("^;")
+
+    def __iter__(self):
         handle = self._handle
-        marker_re = re.compile("^;")
-        self._marker_re = marker_re #saved for the get_raw method
+        handle.seek(0)
+        marker_re = self._marker_re
         while True:
             offset = handle.tell()
             line = handle.readline()
@@ -524,7 +869,7 @@ class IntelliGeneticsDict(SequentialSeqFileDict):
                     line = handle.readline()
                     if line[0] != ";" and line.strip():
                         key = line.split()[0]
-                        yield key, offset
+                        yield key, offset, 0
                         break
                     if not line:
                         raise ValueError("Premature end of file?")
@@ -533,12 +878,27 @@ class IntelliGeneticsDict(SequentialSeqFileDict):
                 break
 
 
-class TabDict(SequentialSeqFileDict):
-    """Indexed dictionary like access to a simple tabbed file."""
-    def _build(self):
+    def get_raw(self, offset):
         handle = self._handle
+        handle.seek(offset)
+        marker_re = self._marker_re
+        lines = []
+        line = handle.readline()
+        while line.startswith(";"):
+            lines.append(line)
+            line = handle.readline()
+        while line and not line.startswith(";"):
+            lines.append(line)
+            line = handle.readline()
+        return "".join(lines)
+
+class TabRandomAccess(SeqFileRandomAccess):
+    """Random access to a simple tabbed file."""
+    def __iter__(self):
+        handle = self._handle
+        handle.seek(0)
+        start_offset = handle.tell()
         while True:
-            offset = handle.tell()
             line = handle.readline()
             if not line : break #End of file
             try:
@@ -546,16 +906,19 @@ class TabDict(SequentialSeqFileDict):
             except ValueError as err:
                 if not line.strip():
                     #Ignore blank lines
+                    start_offset = handle.tell()
                     continue
                 else:
                     raise err
             else:
-                yield key, offset
+                end_offset = handle.tell()
+                yield key, start_offset, end_offset - start_offset
+                start_offset = end_offset
 
-    def get_raw(self, key):
+    def get_raw(self, offset):
         """Like the get method, but returns the record as a raw string."""
         handle = self._handle
-        handle.seek(dict.__getitem__(self, key))
+        handle.seek(offset)
         return handle.readline()
 
 
@@ -563,15 +926,17 @@ class TabDict(SequentialSeqFileDict):
 # Now the FASTQ indexers #
 ##########################
          
-class FastqDict(SequentialSeqFileDict):
-    """Indexed dictionary like access to a FASTQ file (any supported variant).
+class FastqRandomAccess(SeqFileRandomAccess):
+    """Random access to a FASTQ file (any supported variant).
     
     With FASTQ the records all start with a "@" line, but so can quality lines.
     Note this will cope with line-wrapped FASTQ files.
     """
-    def _build(self):
+    def __iter__(self):
         handle = self._handle
-        pos = handle.tell()
+        handle.seek(0)
+        id = None
+        start_offset = handle.tell()
         line = handle.readline()
         if not line:
             #Empty file!
@@ -581,7 +946,7 @@ class FastqDict(SequentialSeqFileDict):
         while line:
             #assert line[0]=="@"
             #This record seems OK (so far)
-            yield line[1:].rstrip().split(None, 1)[0], pos
+            id = line[1:].rstrip().split(None, 1)[0]
             #Find the seq line(s)
             seq_len = 0
             while line:
@@ -596,7 +961,6 @@ class FastqDict(SequentialSeqFileDict):
             while line:
                 if seq_len == qual_len:
                     #Should be end of record...
-                    pos = handle.tell()
                     line = handle.readline()
                     if line and line[0] != "@":
                         ValueError("Problem with line %s" % repr(line))
@@ -606,22 +970,21 @@ class FastqDict(SequentialSeqFileDict):
                     qual_len += len(line.strip())
             if seq_len != qual_len:
                 raise ValueError("Problem with quality section")
+            end_offset = handle.tell() - len(line)
+            yield id, start_offset, end_offset - start_offset
+            start_offset = end_offset
         #print "EOF"
 
-    def get_raw(self, key):
+    def get_raw(self, offset):
         """Similar to the get method, but returns the record as a raw string."""
         #TODO - Refactor this and the __init__ method to reduce code duplication?
         handle = self._handle
-        handle.seek(dict.__getitem__(self, key))
+        handle.seek(offset)
         line = handle.readline()
         data = line
         if line[0] != "@":
             raise ValueError("Problem with FASTQ @ line:\n%s" % repr(line))
         identifier = line[1:].rstrip().split(None, 1)[0]
-        if self._key_function:
-            identifier = self._key_function(identifier)
-        if key != identifier:
-            raise ValueError("Key did not match")
         #Find the seq line(s)
         seq_len = 0
         while line:
@@ -653,24 +1016,24 @@ class FastqDict(SequentialSeqFileDict):
 
 ###############################################################################
 
-_FormatToIndexedDict = {"ace" : SequentialSeqFileDict,
-                        "embl" : EmblDict,
-                        "fasta" : SequentialSeqFileDict,
-                        "fastq" : FastqDict, #Class handles all three variants
-                        "fastq-sanger" : FastqDict, #alias of the above
-                        "fastq-solexa" : FastqDict,
-                        "fastq-illumina" : FastqDict,
-                        "genbank" : GenBankDict,
-                        "gb" : GenBankDict, #alias of the above
-                        "ig" : IntelliGeneticsDict,
-                        "imgt" : EmblDict,
-                        "phd" : SequentialSeqFileDict,
-                        "pir" : SequentialSeqFileDict,
-                        "sff" : SffDict,
-                        "sff-trim" : SffTrimmedDict,
-                        "swiss" : SwissDict,
-                        "tab" : TabDict,
-                        "qual" : SequentialSeqFileDict,
-                        "uniprot-xml" : UniprotDict,
+_FormatToRandomAccess = {"ace" : SequentialSeqFileRandomAccess,
+                        "embl" : EmblRandomAccess,
+                        "fasta" : SequentialSeqFileRandomAccess,
+                        "fastq" : FastqRandomAccess, #Class handles all three variants
+                        "fastq-sanger" : FastqRandomAccess, #alias of the above
+                        "fastq-solexa" : FastqRandomAccess,
+                        "fastq-illumina" : FastqRandomAccess,
+                        "genbank" : GenBankRandomAccess,
+                        "gb" : GenBankRandomAccess, #alias of the above
+                        "ig" : IntelliGeneticsRandomAccess,
+                        "imgt" : EmblRandomAccess,
+                        "phd" : SequentialSeqFileRandomAccess,
+                        "pir" : SequentialSeqFileRandomAccess,
+                        "sff" : SffRandomAccess,
+                        "sff-trim" : SffTrimedRandomAccess,
+                        "swiss" : SwissRandomAccess,
+                        "tab" : TabRandomAccess,
+                        "qual" : SequentialSeqFileRandomAccess,
+                        "uniprot-xml" : UniprotRandomAccess, 
                         }
 

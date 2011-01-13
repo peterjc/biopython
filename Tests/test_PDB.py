@@ -52,20 +52,25 @@ class A_ExceptionTest(unittest.TestCase):
             # Trigger warnings
             p = PDBParser(PERMISSIVE=True)
             p.get_structure("example", "PDB/a_structure.pdb")
+            self.assertEqual(len(all_warns), 14)
             for wrn, msg in zip(all_warns, [
                 # Expected warning messages:
-                'Atom N defined twice in residue <Residue ARG het=  resseq=2 icode= > at line 19.',
-                'disordered atom found with blank altloc before line 31.',
-                "Residue (' ', 4, ' ') redefined at line 41.",
-                "Blank altlocs in duplicate residue SER (' ', 4, ' ') at line 41.",
-                "Residue (' ', 10, ' ') redefined at line 73.",
-                "Residue (' ', 14, ' ') redefined at line 104.",
-                "Residue (' ', 16, ' ') redefined at line 133.",
-                "Residue (' ', 80, ' ') redefined at line 631.",
-                "Residue (' ', 81, ' ') redefined at line 644.",
-                'Atom O defined twice in residue <Residue HOH het=W resseq=67 icode= > at line 820.'
+                "Used element 'N' for Atom (name=N) with given element ''",
+                "Used element 'C' for Atom (name=CA) with given element ''",
+                "Atom names ' CA ' and 'CA  ' differ only in spaces at line 17.",
+                "Used element 'CA' for Atom (name=CA  ) with given element ''",
+                'Atom N defined twice in residue <Residue ARG het=  resseq=2 icode= > at line 21.',
+                'disordered atom found with blank altloc before line 33.',
+                "Residue (' ', 4, ' ') redefined at line 43.",
+                "Blank altlocs in duplicate residue SER (' ', 4, ' ') at line 43.",
+                "Residue (' ', 10, ' ') redefined at line 75.",
+                "Residue (' ', 14, ' ') redefined at line 106.",
+                "Residue (' ', 16, ' ') redefined at line 135.",
+                "Residue (' ', 80, ' ') redefined at line 633.",
+                "Residue (' ', 81, ' ') redefined at line 646.",
+                'Atom O defined twice in residue <Residue HOH het=W resseq=67 icode= > at line 822.'
                 ]):
-                self.assertTrue(msg in str(wrn))
+                self.assertTrue(msg in str(wrn), str(wrn))
         finally:
             warnings.showwarning = orig_showwarning
 
@@ -181,7 +186,7 @@ class ParseTest(unittest.TestCase):
         # Residue ('H_PCA', 1, ' ') contains 8 atoms.
         residue = m0['A'].get_list()[0]
         self.assertEqual(residue.get_id(), ('H_PCA', 1, ' '))
-        self.assertEqual(len(residue), 8)
+        self.assertEqual(len(residue), 9)
         # --- Checking model 1 ---
         m1 = self.structure[1]
         # Model 1 contains 3 chains
@@ -396,9 +401,9 @@ class ParseTest(unittest.TestCase):
         self.assertEqual(len(chain), 1)
         self.assertEqual(" ".join(residue.resname for residue in chain), "PCA")
         self.assertEqual(" ".join(atom.name for atom in chain.get_atoms()),
-                         "N CA CB CG CD OE C O")
+                         "N CA CB CG CD OE C O CA  ")
         self.assertEqual(" ".join(atom.element for atom in chain.get_atoms()),
-                         "N C C C C O C O")
+                         "N C C C C O C O CA")
         #Second model
         model = structure[1]
         self.assertEqual(model.id, 1)
@@ -733,6 +738,69 @@ class Exposure(unittest.TestCase):
         self.assertEqual(1, len(residues[-1].xtra))
         self.assertEqual(38, residues[-1].xtra["EXP_CN"])
 
+class Atom_Element(unittest.TestCase):
+    """induces Atom Element from Atom Name"""
+    
+    def setUp(self):
+        warnings.simplefilter('ignore', PDBConstructionWarning)
+        pdb_filename = "PDB/a_structure.pdb"
+        structure=PDBParser(PERMISSIVE=True).get_structure('X', pdb_filename)
+        warnings.filters.pop()
+        self.residue = structure[0]['A'][('H_PCA', 1, ' ')]
+    
+    def test_AtomElement(self):
+        """ Atom Element """
+        atoms = self.residue.child_list
+
+        self.assertEqual('N', atoms[0].element) # N
+        self.assertEqual('C', atoms[1].element) # Alpha Carbon
+        self.assertEqual('CA', atoms[8].element) # Calcium
+        
+    def test_ions(self):
+        """Element for magnesium is assigned correctly."""
+        pdb_filename = "PDB/ions.pdb"
+        structure=PDBParser(PERMISSIVE=True).get_structure('X', pdb_filename)
+        warnings.filters.pop()
+        # check magnesium atom
+        atoms = structure[0]['A'][('H_ MG', 1, ' ')].child_list
+        self.assertEqual('MG', atoms[0].element)
+        
+class IterationTests(unittest.TestCase):        
+    
+    def setUp(self):
+        self.struc = PDBParser(PERMISSIVE=True).get_structure('X', "PDB/a_structure.pdb")
+        
+    def test_get_chains(self):
+        """Yields chains from different models separately."""
+        chains = [chain.id for chain in self.struc.get_chains()]
+        self.assertEqual(chains, ['A','A', 'B', ' '])
+        
+    def test_get_residues(self):
+        """Yields all residues from all models."""
+        residues = [resi.id for resi in self.struc.get_residues()]
+        self.assertEqual(len(residues), 167)
+
+    def test_get_atoms(self):
+        """Yields all atoms from the structure, excluding duplicates and ALTLOCs which are not parsed."""
+        atoms = ["%12s"%str((atom.id, atom.altloc)) for atom in self.struc.get_atoms()]
+        self.assertEqual(len(atoms), 756)
+
+
+#class RenumberTests(unittest.TestCase):
+#    """Tests renumbering of structures."""
+#    
+#    def setUp(self):
+#        warnings.simplefilter('ignore', PDBConstructionWarning)
+#        pdb_filename = "PDB/1A8O.pdb"
+#        self.structure=PDBParser(PERMISSIVE=True).get_structure('X', pdb_filename)
+#        warnings.filters.pop()
+#        
+#    def test_renumber_residues(self):
+#        """Residues in a structure are renumbered."""
+#        self.structure.renumber_residues()
+#        nums = [resi.id[1] for resi in self.structure[0]['A'].child_list]
+#        print nums
+# 
 # -------------------------------------------------------------
 
 if __name__ == '__main__':

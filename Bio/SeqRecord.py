@@ -1,6 +1,6 @@
 # Copyright 2000-2002 Andrew Dalke.
 # Copyright 2002-2004 Brad Chapman.
-# Copyright 2006-2009 by Peter Cock.
+# Copyright 2006-2010 by Peter Cock.
 # All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
@@ -439,7 +439,7 @@ class SeqRecord(object):
         >>> record = SeqIO.read(open("Fasta/loveliesbleeding.pro"),"fasta")
         >>> for amino in record:
         ...     print(amino)
-        ...     if amino == "L" : break
+        ...     if amino == "L": break
         X
         A
         G
@@ -451,7 +451,7 @@ class SeqRecord(object):
 
         >>> for amino in record.seq:
         ...     print(amino)
-        ...     if amino == "L" : break
+        ...     if amino == "L": break
         X
         A
         G
@@ -551,11 +551,15 @@ class SeqRecord(object):
         Note that long sequences are shown truncated.
         """
         lines = []
-        if self.id : lines.append("ID: %s" % self.id)
-        if self.name : lines.append("Name: %s" % self.name)
-        if self.description : lines.append("Description: %s" % self.description)
-        if self.dbxrefs : lines.append("Database cross-references: " \
-                                       + ", ".join(self.dbxrefs))
+        if self.id:
+            lines.append("ID: %s" % self.id)
+        if self.name:
+            lines.append("Name: %s" % self.name)
+        if self.description:
+            lines.append("Description: %s" % self.description)
+        if self.dbxrefs:
+            lines.append("Database cross-references: " \
+                         + ", ".join(self.dbxrefs))
         lines.append("Number of features: %i" % len(self.features))
         for a in self.annotations:
             lines.append("/%s=%s" % (a, str(self.annotations[a])))
@@ -912,6 +916,183 @@ class SeqRecord(object):
                          annotations = self.annotations.copy(),
                          letter_annotations=self.letter_annotations.copy())
 
+    def reverse_complement(self, id=False, name=False, description=False,
+                           features=True, annotations=False,
+                           letter_annotations=True, dbxrefs=False):
+        """Returns new SeqRecord with reverse complement sequence.
+
+        You can specify the returned record's id, name and description as
+        strings, or True to keep that of the parent, or False for a default.
+
+        You can specify the returned record's features with a list of
+        SeqFeature objects, or True to keep that of the parent, or False to
+        omit them. The default is to keep the original features (with the
+        strand and locations adjusted).
+
+        You can also specify both the returned record's annotations and
+        letter_annotations as dictionaries, True to keep that of the parent,
+        or False to omit them. The default is to keep the original
+        annotations (with the letter annotations reversed).
+
+        To show what happens to the pre-letter annotations, consider an
+        example Solexa variant FASTQ file with a single entry, which we'll
+        read in as a SeqRecord:
+
+        >>> from Bio import SeqIO
+        >>> handle = open("Quality/solexa_faked.fastq", "rU")
+        >>> record = SeqIO.read(handle, "fastq-solexa")
+        >>> handle.close()
+        >>> print(record.id, record.seq)
+        slxa_0001_1_0001_01 ACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTNNNNNN
+        >>> print(list(record.letter_annotations.keys()))
+        ['solexa_quality']
+        >>> print(record.letter_annotations["solexa_quality"])
+        [40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5]
+
+        Now take the reverse complement,
+
+        >>> rc_record = record.reverse_complement(id=record.id+"_rc")
+        >>> print(rc_record.id, rc_record.seq)
+        slxa_0001_1_0001_01_rc NNNNNNACGTACGTACGTACGTACGTACGTACGTACGTACGTACGT
+
+        Notice that the per-letter-annotations have also been reversed,
+        although this may not be appropriate for all cases.
+
+        >>> print(rc_record.letter_annotations["solexa_quality"])
+        [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]
+
+        Now for the features, we need a different example. Parsing a GenBank
+        file is probably the easiest way to get an nice example with features
+        in it...
+
+        >>> from Bio import SeqIO
+        >>> handle = open("GenBank/pBAD30.gb")
+        >>> plasmid = SeqIO.read(handle, "gb")
+        >>> handle.close()
+        >>> print(plasmid.id, len(plasmid))
+        pBAD30 4923
+        >>> plasmid.seq
+        Seq('GCTAGCGGAGTGTATACTGGCTTACTATGTTGGCACTGATGAGGGTGTCAGTGA...ATG', IUPACAmbiguousDNA())
+        >>> len(plasmid.features)
+        13
+
+        Now, let's take the reverse complement of this whole plasmid:
+
+        >>> rc_plasmid = plasmid.reverse_complement(id=plasmid.id+"_rc")
+        >>> print(rc_plasmid.id, len(rc_plasmid))
+        pBAD30_rc 4923
+        >>> rc_plasmid.seq
+        Seq('CATGGGCAAATATTATACGCAAGGCGACAAGGTGCTGATGCCGCTGGCGATTCA...AGC', IUPACAmbiguousDNA())
+        >>> len(rc_plasmid.features)
+        13
+
+        Let's compare the first CDS feature - it has gone from being the
+        second feature (index 1) to the second last feature (index -2), its
+        strand has changed, and the location switched round.
+
+        >>> print(plasmid.features[1])
+        type: CDS
+        location: [1081:1960]
+        strand: -1
+        qualifiers: 
+            Key: label, Value: ['araC']
+            Key: note, Value: ['araC regulator of the arabinose BAD promoter']
+            Key: vntifkey, Value: ['4']
+        <BLANKLINE>
+        >>> print(rc_plasmid.features[-2])
+        type: CDS
+        location: [2963:3842]
+        strand: 1
+        qualifiers: 
+            Key: label, Value: ['araC']
+            Key: note, Value: ['araC regulator of the arabinose BAD promoter']
+            Key: vntifkey, Value: ['4']
+        <BLANKLINE>
+
+        You can check this new location, based on the length of the plasmid:
+
+        >>> len(plasmid) - 1081
+        3842
+        >>> len(plasmid) - 1960
+        2963
+
+        Note that if the SeqFeature annotation includes any strand specific
+        information (e.g. base changes for a SNP), this information is not
+        ammended, and would need correction after the reverse complement.
+
+        Note trying to reverse complement a protein SeqRecord raises an
+        exception:
+
+        >>> from Bio.SeqRecord import SeqRecord
+        >>> from Bio.Seq import Seq
+        >>> from Bio.Alphabet import IUPAC
+        >>> protein_rec = SeqRecord(Seq("MAIVMGR", IUPAC.protein), id="Test")
+        >>> protein_rec.reverse_complement()
+        Traceback (most recent call last):
+           ...
+        ValueError: Proteins do not have complements!
+
+        Also note you can reverse complement a SeqRecord using a MutableSeq:
+
+        >>> from Bio.SeqRecord import SeqRecord
+        >>> from Bio.Seq import MutableSeq
+        >>> from Bio.Alphabet import generic_dna
+        >>> rec = SeqRecord(MutableSeq("ACGT", generic_dna), id="Test")
+        >>> rec.seq[0] = "T"
+        >>> print(rec.id, rec.seq)
+        Test TCGT
+        >>> rc = rec.reverse_complement(id=True)
+        >>> print(rc.id, rc.seq)
+        Test ACGA
+        """
+        from Bio.Seq import MutableSeq #Lazy to avoid circular imports
+        if isinstance(self.seq, MutableSeq):
+            #Currently the MutableSeq reverse complement is in situ
+            answer = SeqRecord(self.seq.toseq().reverse_complement())
+        else:
+            answer = SeqRecord(self.seq.reverse_complement())
+        if isinstance(id, str):
+            answer.id = id
+        elif id:
+            answer.id = self.id
+        if isinstance(name, str):
+            answer.name = name
+        elif name:
+            answer.name = self.name
+        if isinstance(description, str):
+            answer.description = description
+        elif description:
+            answer.description = self.description
+        if isinstance(dbxrefs, list):
+            answer.dbxrefs = dbxrefs
+        elif dbxrefs:
+            #Copy the old dbxrefs
+            answer.dbxrefs = self.dbxrefs[:]
+        if isinstance(features, list):
+            answer.features = features
+        elif features:
+            #Copy the old features, adjusting location and string
+            l = len(answer)
+            answer.features = [f._flip(l) for f in self.features]
+            #The old list should have been sorted by start location,
+            #reversing it will leave it sorted by what is now the end position,
+            #so we need to resort in case of overlapping features.
+            #NOTE - In the common case of gene before CDS (and similar) with
+            #the exact same locations, this will still maintain gene before CDS
+            answer.features.sort(key=lambda x : x.location.start.position)
+        if isinstance(annotations, dict):
+            answer.annotations = annotations
+        elif annotations:
+            #Copy the old annotations,
+            answer.annotations = self.annotations.copy()
+        if isinstance(letter_annotations, dict):
+            answer.letter_annotations = letter_annotations
+        elif letter_annotations:
+            #Copy the old per letter annotations, reversing them
+            for key, value in self.letter_annotations.items():
+                answer._per_letter_annotations[key] = value[::-1]
+        return answer
+
 def _test():
     """Run the Bio.SeqRecord module's doctests (PRIVATE).
 
@@ -928,7 +1109,7 @@ def _test():
         os.chdir(cur_dir)
         del cur_dir
         print("Done")
-    elif os.path.isdir(os.path.join("Tests")) :
+    elif os.path.isdir(os.path.join("Tests")):
         print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("Tests"))

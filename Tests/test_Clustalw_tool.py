@@ -9,7 +9,6 @@ from Bio import MissingExternalDependencyError
 
 import sys
 import os
-import subprocess
 from Bio import Clustalw #old and obsolete
 from Bio.Clustalw import MultipleAlignCL #old and obsolete
 from Bio import SeqIO
@@ -101,7 +100,7 @@ print()
 print("Single sequence")
 input_file = "Fasta/f001"
 assert os.path.isfile(input_file)
-assert len(list(SeqIO.parse(open(input_file),"fasta")))==1
+assert len(list(SeqIO.parse(input_file,"fasta")))==1
 cline = MultipleAlignCL(input_file, command=clustalw_exe)
 try:
     align = Clustalw.do_alignment(cline)
@@ -145,7 +144,7 @@ print("==========================")
 #Create a temp fasta file with a space in the name
 temp_filename_with_spaces = "Clustalw/temp horses.fasta"
 handle = open(temp_filename_with_spaces, "w")
-SeqIO.write(SeqIO.parse(open("Phylip/hennigian.phy"),"phylip"),handle, "fasta")
+SeqIO.write(SeqIO.parse("Phylip/hennigian.phy","phylip"),handle, "fasta")
 handle.close()
 
 #Create a large input file by converting another example file
@@ -155,7 +154,7 @@ handle.close()
 #seems to lockup on Mac OS X, even 20 on Linux (without the fix).
 temp_large_fasta_file = "temp_cw_prot.fasta"
 handle = open(temp_large_fasta_file, "w")
-records = list(SeqIO.parse(open("NBRF/Cw_prot.pir", "rU"), "pir"))[:40]
+records = list(SeqIO.parse("NBRF/Cw_prot.pir", "pir"))[:40]
 SeqIO.write(records, handle, "fasta")
 handle.close()
 del handle, records
@@ -171,7 +170,7 @@ for input_file, output_file, newtree_file in [
     (temp_large_fasta_file, "temp_cw_prot.aln", None),
     ]:
     #Note that ClustalW will map ":" to "_" in it's output file
-    input_records = SeqIO.to_dict(SeqIO.parse(open(input_file),"fasta"),
+    input_records = SeqIO.to_dict(SeqIO.parse(input_file,"fasta"),
                                   lambda rec : rec.id.replace(":","_"))
     if os.path.isfile(output_file):
         os.remove(output_file)
@@ -194,7 +193,7 @@ for input_file, output_file, newtree_file in [
     print("Got an alignment, %i sequences" % (len(align)))
     #The length of the alignment will depend on the version of clustalw
     #(clustalw 2.0.10 and clustalw 1.83 are certainly different).
-    output_records = SeqIO.to_dict(SeqIO.parse(open(output_file),"clustal"))
+    output_records = SeqIO.to_dict(SeqIO.parse(output_file,"clustal"))
     assert set(input_records.keys()) == set(output_records.keys())
     for record in align:
         assert str(record.seq) == str(output_records[record.id].seq)
@@ -230,17 +229,10 @@ for input_file, output_file, newtree_file in [
         cline.align = True
         assert str(eval(repr(cline)))==str(cline)
     #print cline
-    child = subprocess.Popen(str(cline),
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE,
-                             universal_newlines=True,
-                             shell=(sys.platform!="win32"))
-    output, error = child.communicate()
-    return_code = child.returncode
-    assert return_code == 0
+    output, error = cline()
     assert output.strip().startswith("CLUSTAL")
     assert error.strip() == ""
-    align = AlignIO.read(open(output_file), "clustal")
+    align = AlignIO.read(output_file, "clustal")
     assert set(input_records.keys()) == set(output_records.keys())
     for record in align:
         assert str(record.seq) == str(output_records[record.id].seq)
@@ -248,7 +240,6 @@ for input_file, output_file, newtree_file in [
                str(input_records[record.id].seq)
 
     #Clean up...
-    del child
     os.remove(output_file)
 
     #Check the DND file was created.

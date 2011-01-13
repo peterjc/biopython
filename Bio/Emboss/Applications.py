@@ -36,39 +36,39 @@ class _EmbossMinimalCommandLine(AbstractCommandline):
     """
     def __init__(self, cmd=None, **kwargs):
         assert cmd is not None
-        extra_parameters = [\
-           _Switch(["-auto","auto"], [],
+        extra_parameters = [
+           _Switch(["-auto","auto"], 
                    """Turn off prompts.
            
                    Automatic mode disables prompting, so we recommend you set
                    this argument all the time when calling an EMBOSS tool from
                    Biopython.
                    """),
-           _Switch(["-stdout","stdout"], [],
+           _Switch(["-stdout","stdout"],
                    "Write standard output."),
-           _Switch(["-filter","filter"], [],
+           _Switch(["-filter","filter"],
                    "Read standard input, write standard output."),
-           _Switch(["-options","options"], [],
+           _Switch(["-options","options"],
                    """Prompt for standard and additional values.
 
                    If you are calling an EMBOSS tool from within Biopython,
                    we DO NOT recommend using this option.
                    """),
-           _Switch(["-debug","debug"], [],
+           _Switch(["-debug","debug"],
                    "Write debug output to program.dbg."),
-           _Switch(["-verbose","verbose"], [],
+           _Switch(["-verbose","verbose"],
                    "Report some/full command line options"),
-           _Switch(["-help","help"], [],
+           _Switch(["-help","help"],
                    """Report command line options.
 
                    More information on associated and general qualifiers can
                    be found with -help -verbose
                    """),
-           _Switch(["-warning","warning"], [],
+           _Switch(["-warning","warning"],
                    "Report warnings."),
-           _Switch(["-error","error"], [],
+           _Switch(["-error","error"],
                    "Report errors."),
-           _Switch(["-die","die"], [],
+           _Switch(["-die","die"],
                    "Report dying program messages."),
             ]
         try:
@@ -91,9 +91,10 @@ class _EmbossCommandLine(_EmbossMinimalCommandLine):
     """
     def __init__(self, cmd=None, **kwargs):
         assert cmd is not None
-        extra_parameters = [\
-           _Option(["-outfile","outfile"], ["output", "file"], None, 0,
-                   "Output filename"),
+        extra_parameters = [
+            _Option(["-outfile","outfile"],
+                    "Output filename",
+                    filename=True),
             ]
         try:
             #Insert extra parameters - at the start just in case there
@@ -146,295 +147,295 @@ class Primer3Commandline(_EmbossCommandLine):
     
     """
     def __init__(self, cmd="eprimer3", **kwargs):
-        self.parameters = \
-          [_Option(["-sequence","sequence"], ["input"], None, 1,
-                   "Sequence to choose primers from."),
-           _Option(["-task","task"], ["input"], None, 0,
+        self.parameters = [
+           _Option(["-sequence","sequence"],
+                   "Sequence to choose primers from.",
+                   is_required=True),
+           _Option(["-task","task"],
                    "Tell eprimer3 what task to perform."),
-           _Option(["-hybridprobe","hybridprobe"], ["input"], None, 0,
+           _Option(["-hybridprobe","hybridprobe"],
                    "Find an internal oligo to use as a hyb probe."),
-           _Option(["-numreturn","numreturn"], ["input"], None, 0,
+           _Option(["-numreturn","numreturn"],
                    "Maximum number of primer pairs to return."),
-           _Option(["-includedregion","includedregion"], ["input"], None, 0,
+           _Option(["-includedregion","includedregion"],
                    "Subregion of the sequence in which to pick primers."),
-           _Option(["-target","target"], ["input"], None, 0,
+           _Option(["-target","target"],
                    "Sequence to target for flanking primers."),
-           _Option(["-excludedregion","excludedregion"], ["input"], None, 0,
+           _Option(["-excludedregion","excludedregion"],
                    "Regions to exclude from primer picking."),
-           _Option(["-forwardinput","forwardinput"], ["input"], None, 0,
+           _Option(["-forwardinput","forwardinput"],
                    "Sequence of a forward primer to check."),
-           _Option(["-reverseinput","reverseinput"], ["input"], None, 0,
+           _Option(["-reverseinput","reverseinput"],
                    "Sequence of a reverse primer to check."),
-           _Option(["-gcclamp","gcclamp"], ["input"], None, 0,
+           _Option(["-gcclamp","gcclamp"],
                    "The required number of Gs and Cs at the 3' of each primer."),
-           _Option(["-osize","osize"], ["input"], None, 0,
+           _Option(["-osize","osize"],
                    "Optimum length of a primer oligo."),
-           _Option(["-minsize","minsize"], ["input"], None, 0,
+           _Option(["-minsize","minsize"],
                    "Minimum length of a primer oligo."),
-           _Option(["-maxsize","maxsize"], ["input"], None, 0,
+           _Option(["-maxsize","maxsize"],
                    "Maximum length of a primer oligo."),
-           _Option(["-otm","otm"], ["input"], None, 0,
+           _Option(["-otm","otm"],
                    "Optimum melting temperature for a primer oligo."),
-           _Option(["-mintm","mintm"], ["input"], None, 0,
+           _Option(["-mintm","mintm"],
                    "Minimum melting temperature for a primer oligo."),
-           _Option(["-maxtm","maxtm"], ["input"], None, 0,
+           _Option(["-maxtm","maxtm"],
                    "Maximum melting temperature for a primer oligo."),
-           _Option(["-maxdifftm","maxdifftm"], ["input"], None, 0,
-                   "Maximum difference in melting temperatures between forward and " +\
-                   "reverse primers."),
-           _Option(["-ogcpercent","ogcpercent"], ["input"], None, 0,
+           _Option(["-maxdifftm","maxdifftm"],
+                   "Maximum difference in melting temperatures between "
+                   "forward and reverse primers."),
+           _Option(["-ogcpercent","ogcpercent"],
                    "Optimum GC% for a primer."),
-           _Option(["-mingc","mingc"], ["input"], None, 0,
+           _Option(["-mingc","mingc"],
                    "Minimum GC% for a primer."),
-           _Option(["-maxgc","maxgc"], ["input"], None, 0,
+           _Option(["-maxgc","maxgc"],
                    "Maximum GC% for a primer."),
-           _Option(["-saltconc","saltconc"], ["input"], None, 0,
+           _Option(["-saltconc","saltconc"],
                    "Millimolar salt concentration in the PCR."),
-           _Option(["-dnaconc","dnaconc"], ["input"], None, 0,
+           _Option(["-dnaconc","dnaconc"],
                    "Nanomolar concentration of annealing oligos in the PCR."),
-           _Option(["-maxployx","maxployx"], ["input"], None, 0,
+           _Option(["-maxployx","maxployx"],
                    "Maximum allowable mononucleotide repeat length in a primer."),
            #Primer length:
-           _Option(["-productosize","productosize"], ["input"], None, 0,
+           _Option(["-productosize","productosize"],
                    """Optimum size for the PCR product (OBSOLETE).
 
                    Option replaced in EMBOSS 6.1.0 by -psizeopt
                    """),
-           _Option(["-psizeopt", "psizeopt"], ["input"], None, 0, 
+           _Option(["-psizeopt", "psizeopt"], 
                    """Optimum size for the PCR product.
 
                    Option added in EMBOSS 6.1.0, replacing -productosize
                    """),
-           _Option(["-productsizerange","productsizerange"], ["input"], None, 0,
+           _Option(["-productsizerange","productsizerange"],
                    """Acceptable range of length for the PCR product (OBSOLETE).
 
                    Option replaced in EMBOSS 6.1.0 by -prange
                    """),
-           _Option(["-prange", "prange"], ["input"], None, 0, 
+           _Option(["-prange", "prange"], 
                    """Acceptable range of length for the PCR product.
 
                    Option added in EMBOSS 6.1.0, replacing -productsizerange
                    """),
            #Primer temperature:
-           _Option(["-productotm","productotm"], ["input"], None, 0,
+           _Option(["-productotm","productotm"],
                    """Optimum melting temperature for the PCR product (OBSOLETE).
 
                    Option replaced in EMBOSS 6.1.0 by -ptmopt
                    """),
-           _Option(["-ptmopt", "ptmopt"], ["input"], None, 0, 
+           _Option(["-ptmopt", "ptmopt"], 
                    """Optimum melting temperature for the PCR product.
 
                    Option added in EMBOSS 6.1.0, replacing -productotm
                    """),
-           _Option(["-productmintm","productmintm"], ["input"], None, 0,
+           _Option(["-productmintm","productmintm"],
                    """Minimum allowed melting temperature for the amplicon (OBSOLETE)
 
                    Option replaced in EMBOSS 6.1.0 by -ptmmin
                    """),
-           _Option(["-ptmmin", "ptmmin"], ["input"], None, 0, 
+           _Option(["-ptmmin", "ptmmin"], 
                    """Minimum allowed melting temperature for the amplicon."),
 
                    Option added in EMBOSS 6.1.0, replacing -productmintm
                    """),
-           _Option(["-productmaxtm","productmaxtm"], ["input"], None, 0,
+           _Option(["-productmaxtm","productmaxtm"],
                    """Maximum allowed melting temperature for the amplicon (OBSOLETE).
 
                    Option replaced in EMBOSS 6.1.0 by -ptmmax
                    """),
-           _Option(["-ptmmax", "ptmmax"], ["input"], None, 0, 
+           _Option(["-ptmmax", "ptmmax"], 
                    """Maximum allowed melting temperature for the amplicon."),
 
                    Option added in EMBOSS 6.1.0, replacing -productmaxtm
                    """),
            #Note to self, should be -oexcludedregion not -oexcluderegion
-           _Option(["-oexcludedregion", "oexcludedregion"], ["input"], None, 0, 
+           _Option(["-oexcludedregion", "oexcludedregion"], 
                    """Do not pick internal oligos in this region."),
 
                    Option added in EMBOSS 6.1.0, replacing -oligoexcludedregion.
                    """),
-           _Option(["-oligoexcludedregion", "oligoexcludedregion"], ["input"],
-                   None, 0,
+           _Option(["-oligoexcludedregion", "oligoexcludedregion"],
                    """Do not pick internal oligos in this region (OBSOLETE)."),
 
                    Option replaced in EMBOSS 6.1.0 by -oexcluderegion.
                    """),
-           _Option(["-oligoinput","oligoinput"], ["input"], None, 0,
+           _Option(["-oligoinput","oligoinput"],
                    "Sequence of the internal oligo."),
            #Oligo length:
-           _Option(["-oligosize","oligosize"], ["input"], None, 0, 
+           _Option(["-oligosize","oligosize"], 
                    """Optimum length of internal oligo (OBSOLETE).
  
                    Option replaced in EMBOSS 6.1.0 by -osizeopt.
                    """),
-           _Option(["-osizeopt", "osizeopt"], ["input"], None, 0, 
+           _Option(["-osizeopt", "osizeopt"], 
                    """Optimum length of internal oligo.
 
                    Option added in EMBOSS 6.1.0, replaces -oligosize
                    """),
-           _Option(["-oligominsize","oligominsize"], ["input"], None, 0, 
+           _Option(["-oligominsize","oligominsize"], 
                    """Minimum length of internal oligo (OBSOLETE)."),
  
                    Option replaced in EMBOSS 6.1.0 by -ominsize.
                    """),
-           _Option(["-ominsize", "ominsize"], ["input"], None, 0, 
+           _Option(["-ominsize", "ominsize"], 
                    """Minimum length of internal oligo."
 
                    Option added in EMBOSS 6.1.0, replaces -oligominsize
                    """),
-           _Option(["-oligomaxsize","oligomaxsize"], ["input"], None, 0, 
+           _Option(["-oligomaxsize","oligomaxsize"], 
                    """Maximum length of internal oligo (OBSOLETE).
  
                    Option replaced in EMBOSS 6.1.0 by -omaxsize.
                    """),
-           _Option(["-omaxsize", "omaxsize"], ["input"], None, 0, 
+           _Option(["-omaxsize", "omaxsize"], 
                    """Maximum length of internal oligo.
 
                    Option added in EMBOSS 6.1.0, replaces -oligomaxsize
                    """),
            #Oligo GC temperature:
-           _Option(["-oligotm","oligotm"], ["input"], None, 0, 
+           _Option(["-oligotm","oligotm"], 
                    """Optimum melting temperature of internal oligo (OBSOLETE).
  
                    Option replaced in EMBOSS 6.1.0 by -otmopt.
                    """),
-           _Option(["-otmopt", "otmopt"], ["input"], None, 0, 
+           _Option(["-otmopt", "otmopt"], 
                    """Optimum melting temperature of internal oligo.
 
                    Option added in EMBOSS 6.1.0.
                    """),
-           _Option(["-oligomintm","oligomintm"], ["input"], None, 0, 
+           _Option(["-oligomintm","oligomintm"], 
                    """Minimum melting temperature of internal oligo (OBSOLETE).
  
                    Option replaced in EMBOSS 6.1.0 by -otmmin.
                    """),
-           _Option(["-otmmin", "otmmin"], ["input"], None, 0, 
+           _Option(["-otmmin", "otmmin"], 
                    """Minimum melting temperature of internal oligo.
 
                    Option added in EMBOSS 6.1.0, replacing -oligomintm
                    """),
-           _Option(["-oligomaxtm","oligomaxtm"], ["input"], None, 0, 
+           _Option(["-oligomaxtm","oligomaxtm"], 
                    """Maximum melting temperature of internal oligo (OBSOLETE).
  
                    Option replaced in EMBOSS 6.1.0 by -otmmax.
                    """),
-           _Option(["-otmmax", "otmmax"], ["input"], None, 0, 
+           _Option(["-otmmax", "otmmax"], 
                    """Maximum melting temperature of internal oligo.
 
                    Option added in EMBOSS 6.1.0, replacing -oligomaxtm
                    """),
            #Oligo GC percent:
-           _Option(["-oligoogcpercent","oligoogcpercent"], ["input"], None, 0, 
+           _Option(["-oligoogcpercent","oligoogcpercent"], 
                    """Optimum GC% for internal oligo (OBSOLETE).
  
                    Option replaced in EMBOSS 6.1.0 by -ogcopt.
                    """),
-           _Option(["-ogcopt", "ogcopt"], ["input"], None, 0, 
+           _Option(["-ogcopt", "ogcopt"], 
                    """Optimum GC% for internal oligo."
 
                    Option added in EMBOSS 6.1.0, replacing -oligoogcpercent
                    """),
-           _Option(["-oligomingc","oligomingc"], ["input"], None, 0, 
+           _Option(["-oligomingc","oligomingc"], 
                    """Minimum GC% for internal oligo (OBSOLETE).
  
                    Option replaced in EMBOSS 6.1.0 by -ogcmin.
                    """),
-           _Option(["-ogcmin", "ogcmin"], ["input"], None, 0, 
+           _Option(["-ogcmin", "ogcmin"], 
                    """Minimum GC% for internal oligo.
 
                    Option added in EMBOSS 6.1.0, replacing -oligomingc
                    """),
-           _Option(["-oligomaxgc","oligomaxgc"], ["input"], None, 0, 
+           _Option(["-oligomaxgc","oligomaxgc"], 
                    """Maximum GC% for internal oligo.
  
                    Option replaced in EMBOSS 6.1.0 by -ogcmax
                    """),
-           _Option(["-ogcmax", "ogcmax"], ["input"], None, 0, 
+           _Option(["-ogcmax", "ogcmax"], 
                    """Maximum GC% for internal oligo."),
 
                    Option added in EMBOSS 6.1.0, replacing -oligomaxgc
                    """),
            #Oligo salt concentration:
-           _Option(["-oligosaltconc","oligosaltconc"], ["input"], None, 0, 
+           _Option(["-oligosaltconc","oligosaltconc"], 
                    """Millimolar concentration of salt in the hybridisation."),
  
                    Option replaced in EMBOSS 6.1.0 by -osaltconc
                    """),
-           _Option(["-osaltconc", "osaltconc"], ["input"], None, 0, 
+           _Option(["-osaltconc", "osaltconc"], 
                    """Millimolar concentration of salt in the hybridisation."),
 
                    Option added in EMBOSS 6.1.0, replacing -oligosaltconc
                    """),
-           _Option(["-oligodnaconc","oligodnaconc"], ["input"], None, 0, 
+           _Option(["-oligodnaconc","oligodnaconc"], 
                    """Nanomolar concentration of internal oligo in the hybridisation.
  
                    Option replaced in EMBOSS 6.1.0 by -odnaconc
                    """),
-           _Option(["-odnaconc", "odnaconc"], ["input"], None, 0, 
+           _Option(["-odnaconc", "odnaconc"], 
                    """Nanomolar concentration of internal oligo in the hybridisation.
 
                    Option added in EMBOSS 6.1.0, replacing -oligodnaconc
                    """),
            #Oligo self complementarity
-           _Option(["-oligoselfany","oligoselfany"], ["input"], None, 0, 
+           _Option(["-oligoselfany","oligoselfany"], 
                    """Maximum allowable alignment score for self-complementarity (OBSOLETE).
  
                    Option replaced in EMBOSS 6.1.0 by -oanyself
                    """),
-           _Option(["-oanyself", "oanyself"], ["input"], None, 0, 
+           _Option(["-oanyself", "oanyself"], 
                    """Maximum allowable alignment score for self-complementarity."),
 
                    Option added in EMBOSS 6.1.0, replacing -oligoselfany
                    """),
-           _Option(["-oligoselfend","oligoselfend"], ["input"], None, 0, 
-                   """Maximum allowable 3`-anchored global alignment score for " +\
-                   self-complementarity (OBSOLETE).
+           _Option(["-oligoselfend","oligoselfend"], 
+                   """Maximum allowable 3`-anchored global alignment score "
+                   for self-complementarity (OBSOLETE).
  
                    Option replaced in EMBOSS 6.1.0 by -oendself
                    """),
-           _Option(["-oendself", "oendself"], ["input"], None, 0, 
+           _Option(["-oendself", "oendself"], 
                    """Max 3`-anchored self-complementarity global alignment score.
 
                    Option added in EMBOSS 6.1.0, replacing -oligoselfend
                    """),
-           _Option(["-oligomaxpolyx","oligomaxpolyx"], ["input"], None, 0, 
+           _Option(["-oligomaxpolyx","oligomaxpolyx"], 
                    """Maximum length of mononucleotide repeat in internal oligo (OBSOLETE).
 
                    Option replaced in EMBOSS 6.1.0 by -opolyxmax
                    """),
-           _Option(["-opolyxmax", "opolyxmax"], ["input"], None, 0, 
+           _Option(["-opolyxmax", "opolyxmax"], 
                    """Maximum length of mononucleotide repeat in internal oligo."),
 
                    Option added in EMBOSS 6.1.0, replacing -oligomaxpolyx
                    """),
-           _Option(["-mispriminglibraryfile","mispriminglibraryfile"], ["input"], None, 0,
+           _Option(["-mispriminglibraryfile","mispriminglibraryfile"],
                     "File containing library of sequences to avoid amplifying"),
-           _Option(["-maxmispriming","maxmispriming"], ["input"], None, 0,
-                   "Maximum allowed similarity of primers to sequences in " +\
+           _Option(["-maxmispriming","maxmispriming"],
+                   "Maximum allowed similarity of primers to sequences in "
                    "library specified by -mispriminglibrary"),
-           _Option(["-oligomaxmishyb","oligomaxmishyb"], ["input"], None, 0, 
+           _Option(["-oligomaxmishyb","oligomaxmishyb"], 
                    """Maximum alignment score for hybridisation of internal oligo to
                    library specified by -oligomishyblibraryfile (OBSOLETE).
 
                    Option replaced in EMBOSS 6.1.0 by -omishybmax
                    """),
-           _Option(["-omishybmax", "omishybmax"], ["input"], None, 0, 
+           _Option(["-omishybmax", "omishybmax"], 
                    """Maximum alignment score for hybridisation of internal oligo to
                    library specified by -mishyblibraryfile.
 
                    Option added in EMBOSS 6.1.0, replacing -oligomaxmishyb
                    """),
            _Option(["-oligomishyblibraryfile", "oligomishyblibraryfile"],
-                   ["input"], None, 0,
+                  
                     """Library file of seqs to avoid internal oligo hybridisation (OBSOLETE).
 
                    Option replaced in EMBOSS 6.1.0 by -mishyblibraryfile
                    """),
-           _Option(["-mishyblibraryfile", "mishyblibraryfile"], ["input"], None, 0,
+           _Option(["-mishyblibraryfile", "mishyblibraryfile"],
                     """Library file of seqs to avoid internal oligo hybridisation.
 
                    Option added in EMBOSS 6.1.0, replacing -oligomishyblibraryfile
                    """),
-           _Option(["-explainflag","explainflag"], ["input"], None, 0,
+           _Option(["-explainflag","explainflag"],
                    "Produce output tags with eprimer3 statistics"),
            ]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
@@ -444,22 +445,26 @@ class PrimerSearchCommandline(_EmbossCommandLine):
     """Commandline object for the primersearch program from EMBOSS.
     """
     def __init__(self, cmd="primersearch", **kwargs):
-        self.parameters = \
-         [_Option(["-seqall","-sequences","sequences","seqall"], ["input"],
-                  None, 1, "Sequence to look for the primer pairs in."),
+        self.parameters = [
+          _Option(["-seqall","-sequences","sequences","seqall"],
+                  "Sequence to look for the primer pairs in.",
+                  is_required=True),
                   #When this wrapper was written primersearch used -sequences
                   #as the argument name. Since at least EMBOSS 5.0 (and
                   #perhaps earlier) this has been -seqall instead.
-          _Option(["-infile","-primers","primers","infile"], ["input", "file"],
-                  None, 1, "File containing the primer pairs to search for."),
+          _Option(["-infile","-primers","primers","infile"],
+                  "File containing the primer pairs to search for.",
+                  filename=True,
+                  is_required=True),
                   #When this wrapper was written primersearch used -primers
                   #as the argument name. Since at least EMBOSS 5.0 (and
                   #perhaps earlier) this has been -infile instead.
-          _Option(["-mismatchpercent","mismatchpercent"], ["input"], None, 1,
-                  "Allowed percentage mismatch (any integer value, default 0)."),
-          _Option(["-snucleotide","snucleotide"], ["input"], None, 0,
+          _Option(["-mismatchpercent","mismatchpercent"],
+                  "Allowed percentage mismatch (any integer value, default 0).",
+                  is_required=True),
+          _Option(["-snucleotide","snucleotide"],
                   "Sequences are nucleotide (boolean)"),
-          _Option(["-sprotein","sprotein"], ["input"], None, 0,
+          _Option(["-sprotein","sprotein"],
                   "Sequences are protein (boolean)"),
           ]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
@@ -476,32 +481,34 @@ class EProtDistCommandline(_EmbossCommandLine):
         import warnings
         import Bio
         warnings.warn("Bio.Emboss.Application.EProtDistCommandline has been deprecated; please use 'fprotdist' instead (see FProtDistCommandline).", Bio.BiopythonDeprecationWarning)
-        self.parameters = \
-         [_Option(["-msf","msf"], ["input"], None, 1,
-                  "File containing sequences"),
-          _Option(["-method","method"], ["input"], None, 1,
-                  "Choose the method to use"),
-          _Option(["-categ","categ"], ["input"], None, 0,
+        self.parameters = [
+          _Option(["-msf","msf"],
+                  "File containing sequences",
+                  is_required=True),
+          _Option(["-method","method"],
+                  "Choose the method to use",
+                  is_required=True),
+          _Option(["-categ","categ"],
                   "Choose the category to use"),
-          _Option(["-gencode","gencode"], ["input"], None, 0,
+          _Option(["-gencode","gencode"],
                   "Which genetic code"),
-          _Option(["-prob","prob"], ["input"], None, 0,
+          _Option(["-prob","prob"],
                   "Prob change category (1.0=easy)"),
-          _Option(["-tranrate","tranrate"], ["input"], None, 0,
+          _Option(["-tranrate","tranrate"],
                   "Transition/transversion ratio"),
-          _Option(["-freqa","freqa"], ["input"], None, 0,
+          _Option(["-freqa","freqa"],
                   "Frequency for A"),
-          _Option(["-freqc","freqc"], ["input"], None, 0,
+          _Option(["-freqc","freqc"],
                   "Frequency for C"),
-          _Option(["-freqg","freqg"], ["input"], None, 0,
+          _Option(["-freqg","freqg"],
                   "Frequency for G"),
-          _Option(["-freqt","freqt"], ["input"], None, 0,
+          _Option(["-freqt","freqt"],
                   "Frequency for T"),
-          _Option(["-printdata","printdata"], ["input"], None, 0,
+          _Option(["-printdata","printdata"],
                   "Print out the data at start of run"),
-          _Option(["-progress","progress"], ["input"], None, 0,
+          _Option(["-progress","progress"],
                   "Print indications of progress of run"),
-          _Option(["-basefrequency","basefrequency"], ["input"], None, 0,
+          _Option(["-basefrequency","basefrequency"],
                   "Use empirical base frequencies")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -517,38 +524,43 @@ class ENeighborCommandline(_EmbossCommandLine):
         import warnings
         import Bio
         warnings.warn("Bio.Emboss.Application.ENeighborCommandline has been deprecated; please use 'fneighbor' instead (see FNeighborCommandline).", Bio.BiopythonDeprecationWarning)
-        self.parameters = \
-         [_Option(["-infile","infile"], ["input"], None, 1,
-                  "infile value"),
-          _Option(["-trout","trout"], ["input"], None, 1,
-                  "Create a tree file"),
-          _Option(["-treefile","treefile"], ["input"], None, 1,
-                  "Tree file name"),
-          _Option(["-nj","nj"], ["input"], None, 1,
-                  "Neighbor-joining"),
-          _Option(["-noog","noog"], ["input"], None, 1,
-                  "Outgroup root"),
-          _Option(["-outgnum","outgnum"], ["input"], None, 0,
+        self.parameters = [
+          _Option(["-infile","infile"],
+                  "infile value",
+                  is_required=True),
+          _Option(["-trout","trout"],
+                  "Create a tree file",
+                  is_required=True),
+          _Option(["-treefile","treefile"],
+                  "Tree file name",
+                  is_required=True),
+          _Option(["-nj","nj"],
+                  "Neighbor-joining",
+                  is_required=True), #TODO - Check this
+          _Option(["-noog","noog"],
+                  "Outgroup root",
+                  is_required=True), #TODO - Check this
+          _Option(["-outgnum","outgnum"],
                   "number of the outgroup"),
-          _Option(["-randseed","randseed"], ["input"], None, 0,
+          _Option(["-randseed","randseed"],
                   "Random number seed (must be odd)"),
-          _Option(["-datasets","datasets"], ["input"], None, 0,
+          _Option(["-datasets","datasets"],
                   "How many data sets"),
-          _Option(["-drawtree","drawtree"], ["input"], None, 0,
+          _Option(["-drawtree","drawtree"],
                   "Draw tree"),
-          _Option(["-lt","lt"], ["input"], None, 0,
+          _Option(["-lt","lt"],
                   "Lower-triangular data matrix"),
-          _Option(["-ut","ut"], ["input"], None, 0,
+          _Option(["-ut","ut"],
                   "Upper-triangular data matrix"),
-          _Option(["-sr","sr"], ["input"], None, 0,
+          _Option(["-sr","sr"],
                   "Subreplicates"),
-          _Option(["-random","random"], ["input"], None, 0,
+          _Option(["-random","random"],
                   "Randomize input order of species"),
-          _Option(["-multsets","multsets"], ["input"], None, 0,
+          _Option(["-multsets","multsets"],
                   "Analyze multiple data sets"),
-          _Option(["-printdata","printdata"], ["input"], None, 0,
+          _Option(["-printdata","printdata"],
                   "Print out the data at start of run"),
-          _Option(["-progress","progress"], ["input"], None, 0,
+          _Option(["-progress","progress"],
                   "Print indications of progress of run")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -564,45 +576,48 @@ class EProtParsCommandline(_EmbossCommandLine):
         import warnings
         import Bio
         warnings.warn("Bio.Emboss.Application.EProtParsCommandline has been deprecated; please use 'fprotpars' instead (see FProtParsCommandline).", Bio.BiopythonDeprecationWarning)
-        self.parameters = \
-         [_Option(["-msf","msf"], ["input", "file"], None, 1,
-                  "Sequences file to be read in"),
-          _Option(["-besttree","besttree"], ["input"], None, 0,
+        self.parameters = [
+          _Option(["-msf","msf"],
+                  "Sequences file to be read in",
+                  filename=True,
+                  is_required=True),
+          _Option(["-besttree","besttree"],
                   "Search for the best tree"),
-          _Option(["-random","random"], ["input"], None, 0,
+          _Option(["-random","random"],
                   "Randomize input order of species"),
-          _Option(["-norandom","norandom"], ["input"], None, 0,
+          _Option(["-norandom","norandom"],
                   "Do not randomize input order of species"),
-          _Option(["-randseed","randseed"], ["input"], None, 0,
+          _Option(["-randseed","randseed"],
                   "Random number seed (must be odd)"),
-          _Option(["-randtimes","randtimes"], ["input"], None, 0,
+          _Option(["-randtimes","randtimes"],
                   "How many times to randomize"),
-          _Option(["-og","og"], ["input"], None, 0,
+          _Option(["-og","og"],
                   "Use an outgroup root"),
-          _Option(["-noog","noog"], ["input"], None, 0,
+          _Option(["-noog","noog"],
                   "Do not use an outgroup root"),
-          _Option(["-outgnum","outgnum"], ["input"], None, 0,
+          _Option(["-outgnum","outgnum"],
                   "Number of the outgroup"),
-          _Option(["-thresh","thresh"], ["input"], None, 0,
+          _Option(["-thresh","thresh"],
                   "Use Threshold parsimony"),
-          _Option(["-valthresh","valthresh"], ["input"], None, 0,
+          _Option(["-valthresh","valthresh"],
                   "threshold value"),
-          _Option(["-printdata","printdata"], ["input"], None, 0,
+          _Option(["-printdata","printdata"],
                   "Print out the data at start of run"),
-          _Option(["-progress","progress"], ["input"], None, 0,
+          _Option(["-progress","progress"],
                   "Print indications of progress of run"),
-          _Option(["-steps","steps"], ["input"], None, 0,
+          _Option(["-steps","steps"],
                   "Print out steps in each site"),
-          _Option(["-seqatnodes","seqatnodes"], ["input"], None, 0,
+          _Option(["-seqatnodes","seqatnodes"],
                   "Print sequences at all nodes of tree"),
-          _Option(["-drawtree","drawtree"], ["input"], None, 0,
+          _Option(["-drawtree","drawtree"],
                   "Draw tree"),
-          _Option(["-trout","trout"], ["input"], None, 0,
+          _Option(["-trout","trout"],
                   "Create a tree file"),
-          _Option(["-notrout","notrout"], ["input"], None, 0,
+          _Option(["-notrout","notrout"],
                   "Do not create a tree file"),
-          _Option(["-treefile","treefile"], ["output", "file"], None, 0,
-                  "Output treefile name")]
+          _Option(["-treefile","treefile"],
+                  "Output treefile name",
+                  types=["file"])]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
 
@@ -617,32 +632,35 @@ class EConsenseCommandline(_EmbossCommandLine):
         import warnings
         import Bio
         warnings.warn("Bio.Emboss.Application.EConsenseCommandline has been deprecated; please use 'fconsense' instead (see FConsenseCommandline).", Bio.BiopythonDeprecationWarning)
-        self.parameters = \
-         [_Option(["-infile","infile"], ["input", "file"], None, 1,
-                  "file to read in (New Hampshire standard form)"),
-          _Option(["-notrout","notrout"], ["input"], None, 0,
+        self.parameters = [
+          _Option(["-infile","infile"],
+                  "file to read in (New Hampshire standard form)",
+                  filename=True,
+                  is_required=True),
+          _Option(["-notrout","notrout"],
                   "Do not create a tree file"),
-          _Option(["-trout","trout"], ["input"], None, 0,
+          _Option(["-trout","trout"],
                   "Create a tree file"),
-          _Option(["-treefile","treefile"], ["output", "file"], None, 0,
-                  "tree file name"),
-          _Option(["-noog","noog"], ["input"], None, 0,
+          _Option(["-treefile","treefile"],
+                  "tree file name",
+                  filename=True),
+          _Option(["-noog","noog"],
                   "Do not use an outgroup"),
-          _Option(["-og","og"], ["input"], None, 0,
+          _Option(["-og","og"],
                   "Use an outgroup"),
-          _Option(["-outgnum","outgnum"], ["input"], None, 0,
+          _Option(["-outgnum","outgnum"],
                   "number of the outgroup"),
-          _Option(["-nodrawtree","nodrawtree"], ["input"], None, 0,
+          _Option(["-nodrawtree","nodrawtree"],
                   "Do not draw a tree"),
-          _Option(["-drawtree","drawtree"], ["input"], None, 0,
+          _Option(["-drawtree","drawtree"],
                   "Draw tree"),
-          _Option(["-root","root"], ["input"], None, 0,
+          _Option(["-root","root"],
                   "Trees to be treated as Rooted"),
-          _Option(["-progress","progress"], ["input"], None, 0,
+          _Option(["-progress","progress"],
                   "Print indications of the progress of run"),
-          _Option(["-noprintsets","noprintsets"], ["input"], None, 0,
+          _Option(["-noprintsets","noprintsets"],
                   "Do not print out the sets of species"),
-          _Option(["-printsets","printsets"], ["input"], None, 0,
+          _Option(["-printsets","printsets"],
                   "Print out the sets of species")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -658,26 +676,32 @@ class ESeqBootCommandline(_EmbossCommandLine):
         import warnings
         import Bio
         warnings.warn("Bio.Emboss.Application.ESeqBootCommandline has been deprecated; please use 'fseqboot' instead (see FSeqBootCommandline).", Bio.BiopythonDeprecationWarning)
-        self.parameters = \
-         [_Option(["-datafile","datafile"], ["input", "file"], None, 1,
-                  "Input file"),
-          _Option(["-randseed","randseed"], ["input"], None, 1,
-                  "Random number seed (must be odd)"),
-          _Option(["-method","method"], ["input"], None, 1,
-                  "Choose the method"),
-          _Option(["-test","test"], ["input"], None, 1,
-                  "Choose test"),
-          _Option(["-reps","reps"], ["input"], None, 1,
-                  "How many replicates"),
-          _Option(["-inter","inter"], ["input"], None, 0,
+        self.parameters = [
+          _Option(["-datafile","datafile"],
+                  "Input file",
+                  filename=True,
+                  is_required=True),
+          _Option(["-randseed","randseed"],
+                  "Random number seed (must be odd)",
+                  is_required=True),
+          _Option(["-method","method"],
+                  "Choose the method",
+                  is_required=True), #TODO - Options?
+          _Option(["-test","test"],
+                  "Choose test", #TODO - options?
+                  is_required=True),
+          _Option(["-reps","reps"],
+                  "How many replicates",
+                  is_required=True),
+          _Option(["-inter","inter"],
                   "Interleaved input"),
-          _Option(["-enzymes","enzymes"], ["input"], None, 0,
+          _Option(["-enzymes","enzymes"],
                   "Present in input file"),
-          _Option(["-all","all"], ["input"], None, 0,
+          _Option(["-all","all"],
                   "All alleles present at each locus"),
-          _Option(["-printdata","printdata"], ["input"], None, 0,
+          _Option(["-printdata","printdata"],
                   "Print out the data at start of run"),
-          _Option(["-progress","progress"], ["input"], None, 0,
+          _Option(["-progress","progress"],
                   "Print indications of progress of run")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -689,32 +713,35 @@ class FDNADistCommandline(_EmbossCommandLine):
     calulating distance matrices from DNA sequence files.
     """
     def __init__(self, cmd = "fdnadist", **kwargs):
-        self.parameters = \
-        [_Option(["-sequence", "sequence"], ["input"], None, 1,
-                  "seq file to use (phylip)"),
-        _Option(["-method", "method"], ["input"], None, 1,
-                 "sub. model [f,k,j,l,s]"),
-        _Option(["-gamma", "gamma"], ["input"], None, 0,
+        self.parameters = [
+        _Option(["-sequence", "sequence"],
+                "seq file to use (phylip)",
+                filename=True,
+                is_required=True),
+        _Option(["-method", "method"],
+                 "sub. model [f,k,j,l,s]",
+                is_required=True),
+        _Option(["-gamma", "gamma"],
                  "gamma [g, i,n]"),
-        _Option(["-ncategories", "ncategories"], ["input"], None, 0,
+        _Option(["-ncategories", "ncategories"],
                  "number of rate catergories (1-9)"),
-        _Option(["-rate", "rate"], ["input"], None, 0,
+        _Option(["-rate", "rate"],
                  "rate for each category"),
-        _Option(["-categories","categories"], ["input"], None, 0,
+        _Option(["-categories","categories"],
                  "File of substitution rate categories"),
-        _Option(["-weights", "weights"], ["input"], None, 0,
+        _Option(["-weights", "weights"],
                  "weights file"),
-        _Option(["-gammacoefficient", "gammacoefficient"], ["input"], None, 0,
+        _Option(["-gammacoefficient", "gammacoefficient"],
                  "value for gamma (> 0.001)"),
-        _Option(["-invarfrac", "invarfrac"], ["input"], None, 0,
+        _Option(["-invarfrac", "invarfrac"],
                  "proportoin of invariant sites"),
-        _Option(["-ttratio", "ttratio"], ["input"], None, 0,
+        _Option(["-ttratio", "ttratio"],
                  "ts/tv ratio"),
-        _Option(["-freqsfrom", "freqsfrom"], ["input"], None, 0,
+        _Option(["-freqsfrom", "freqsfrom"],
                  "use emprical base freqs"),
-        _Option(["-basefreq", "basefreq"], ["input"], None, 0,
+        _Option(["-basefreq", "basefreq"],
                  "specify basefreqs"),
-        _Option(["-lower", "lower"], ["input"], None, 0,
+        _Option(["-lower", "lower"],
                  "lower triangle matrix (y/N)")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -726,18 +753,20 @@ class FTreeDistCommandline(_EmbossCommandLine):
     calulating distance measures between phylogentic trees.
     """
     def __init__(self, cmd = "ftreedist", **kwargs):
-        self.parameters = \
-        [_Option(["-intreefile", "intreefile"], ["input"], None, 1,
-                  "tree file to score (phylip)"),
-        _Option(["-dtype", "dtype"], ["input"], None, 0,
+        self.parameters = [
+        _Option(["-intreefile", "intreefile"],
+                "tree file to score (phylip)",
+                filename=True,
+                is_required=True),
+        _Option(["-dtype", "dtype"],
                  "distance type ([S]ymetric, [b]ranch score)"),
-        _Option(["-pairing", "pairing"], ["input"], None, 0,
+        _Option(["-pairing", "pairing"],
                  "tree pairing method ([A]djacent pairs, all [p]ossible pairs)"),
-        _Option(["-style", "style"], ["input"], None, 0,
+        _Option(["-style", "style"],
                  "output style - [V]erbose, [f]ill, [s]parse"),
-        _Option(["-noroot", "noroot"], ["input"], None, 0,
+        _Option(["-noroot", "noroot"],
                  "treat trees as rooted [N/y]"),
-        _Option(["-outgrno", "outgrno"], ["input"], None, 0,
+        _Option(["-outgrno", "outgrno"],
                  "which taxon to root the trees with (starts from 0)")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -749,26 +778,28 @@ class FNeighborCommandline(_EmbossCommandLine):
     calulating neighbor-joining or UPGMA trees from distance matrices.
     """
     def __init__(self, cmd = "fneighbor", **kwargs):
-        self.parameters = \
-        [_Option(["-datafile", "datafile"], ["input"], None, 1,
-                  "dist file to use (phylip)"),
-        _Option(["-matrixtype", "matrixtype"], ["input"], None, 0,
+        self.parameters = [
+        _Option(["-datafile", "datafile"],
+                "dist file to use (phylip)",
+                filename=True,
+                is_required=True),
+        _Option(["-matrixtype", "matrixtype"],
                  "is martrix [S]quare pr [u]pper or [l]ower"),
-        _Option(["-treetype", "treetype"], ["input"], None, 0,
+        _Option(["-treetype", "treetype"],
                  "nj or UPGMA tree (n/u)"),
-        _Option(["-outgrno","outgrno" ], ["input"], None, 0,
+        _Option(["-outgrno","outgrno" ],
                  "taxon to use as OG"),
-        _Option(["-jumble", "jumble"], ["input"], None, 0,
+        _Option(["-jumble", "jumble"],
                  "randommise input order (Y/n)"),
-        _Option(["-seed", "seed"], ["input"], None, 0,
+        _Option(["-seed", "seed"],
                  "provide a random seed"),
-        _Option(["-trout", "trout"], ["input"], None, 0,
+        _Option(["-trout", "trout"],
                  "write tree (Y/n)"),
-        _Option(["-outtreefile", "outtreefile"], ["input"], None, 0,
+        _Option(["-outtreefile", "outtreefile"],
                  "filename for output tree"),
-        _Option(["-progress", "progress"], ["input"], None, 0,
+        _Option(["-progress", "progress"],
                  "print progress (Y/n)"),
-        _Option(["-treeprint", "treeprint"], ["input"], None, 0,
+        _Option(["-treeprint", "treeprint"],
                  "print tree (Y/n)")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -780,32 +811,34 @@ class FSeqBootCommandline(_EmbossCommandLine):
     pseudo-sample alignment files.
     """
     def __init__(self, cmd = "fseqboot", **kwargs):
-        self.parameters = \
-        [_Option(["-sequence", "sequence"], ["input"], None, 1,
-                  "seq file to sample (phylip)"),
-        _Option(["-categories", "catergories"], ["input"], None, 0,
+        self.parameters = [
+        _Option(["-sequence", "sequence"],
+                "seq file to sample (phylip)",
+                filename=True,
+                is_required=True),
+        _Option(["-categories", "catergories"],
                  "file of input categories"),
-        _Option(["-weights", "weights"], ["input"], None, 0,
+        _Option(["-weights", "weights"],
                  " weights file"),
-        _Option(["-test", "test"], ["input"], None, 0,
+        _Option(["-test", "test"],
                  "specify operation, default is bootstrap"),
-        _Option(["-regular", "regular"], ["input"], None, 0,
+        _Option(["-regular", "regular"],
                  "absolute number to resample"),
-        _Option(["-fracsample", "fracsample"], ["input"], None, 0,
+        _Option(["-fracsample", "fracsample"],
                  "fraction to resample"),
-        _Option(["-rewriteformat", "rewriteformat"], ["input"], None, 0,
+        _Option(["-rewriteformat", "rewriteformat"],
                  "output format ([P]hyilp, [n]exus, [x]ml"),
-        _Option(["-seqtype", "seqtype"], ["input"], None, 0,
+        _Option(["-seqtype", "seqtype"],
                  "output format ([D]na, [p]rotein, [r]na"),
-        _Option(["-blocksize", "blocksize"], ["input"], None, 0,
+        _Option(["-blocksize", "blocksize"],
                  "print progress (Y/n)"),
-        _Option(["-reps", "reps"], ["input"], None, 0,
+        _Option(["-reps", "reps"],
                  "how many replicates, defaults to 100)"),
-        _Option(["-justweights", "jusweights"], ["input"], None, 0,
+        _Option(["-justweights", "jusweights"],
                  "what to write out [D]atasets of just [w]eights"),
-        _Option(["-seed", "seed"], ["input"], None, 0,
+        _Option(["-seed", "seed"],
                  "specify random seed"),
-        _Option(["-dotdiff", "dotdiff"], ["input"], None, 0,
+        _Option(["-dotdiff", "dotdiff"],
                  "Use dot-differencing? [Y/n]"),]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -820,36 +853,38 @@ class FDNAParsCommandline(_EmbossCommandLine):
     "-auto" is not set to true.
     """
     def __init__(self, cmd = "fdnapars", **kwargs):
-        self.parameters = \
-        [_Option(["-sequence", "sequence"], ["input"], None, 1,
-                  "seq file to use (phylip)"),
-        _Option(["-intreefile", "intreefile"], ["input"], None, 0,
+        self.parameters = [
+        _Option(["-sequence", "sequence"],
+                "seq file to use (phylip)",
+                filename=True,
+                is_required=True),
+        _Option(["-intreefile", "intreefile"],
                  "Phylip tree file"),
-        _Option(["-weights", "weights"], ["input"], None, 0,
+        _Option(["-weights", "weights"],
                  "weights file"),
-        _Option(["-maxtrees", "maxtrees"], ["input"], None, 0,
+        _Option(["-maxtrees", "maxtrees"],
                  "max trees to save during run"),
-        _Option(["-thorough", "thorough"], ["input"], None, 0,
+        _Option(["-thorough", "thorough"],
                  "more thorough search (Y/n)"),
-        _Option(["-rearrange", "rearrange"], ["input"], None, 0,
+        _Option(["-rearrange", "rearrange"],
                  "Rearrange on jsut 1 best tree (Y/n)"),
-        _Option(["-transversion", "transversion"], ["input"], None, 0,
+        _Option(["-transversion", "transversion"],
                  "Use tranversion parsimony (y/N)"),
-        _Option(["-njumble", "njumble"], ["input"], None, 0,
+        _Option(["-njumble", "njumble"],
                  "number of times to randomise input order (default is 0)"),
-        _Option(["-seed", "seed"], ["input"], None, 0,
+        _Option(["-seed", "seed"],
                  "provde random seed"),
-        _Option(["-outgrno", "outgrno"], ["input"], None, 0,
+        _Option(["-outgrno", "outgrno"],
                  "Specify outgroup"),
-        _Option(["-thresh", "thresh"], ["input"], None, 0,
+        _Option(["-thresh", "thresh"],
                  "Use threshold parsimony (y/N)"),
-        _Option(["-threshold", "threshold"], ["input"], None, 0,
+        _Option(["-threshold", "threshold"],
                  "Threshold value"),
-        _Option(["-trout", "trout"], ["input"], None, 0,
+        _Option(["-trout", "trout"],
                  "Write trees to file (Y/n)"),
-        _Option(["-outtreefile", "outtreefile"], ["input"], None, 0,
+        _Option(["-outtreefile", "outtreefile"],
                  "filename for output tree"),
-        _Option(["-dotdiff", "dotdiff"], ["input"], None, 0,
+        _Option(["-dotdiff", "dotdiff"],
                  "Use dot-differencing? [Y/n]")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -864,30 +899,34 @@ class FProtParsCommandline(_EmbossCommandLine):
     "-auto" is not set to true.
     """
     def __init__(self, cmd = "fprotpars", **kwargs):
-        self.parameters = \
-        [_Option(["-sequence", "sequence"], ["input"], None, 1,
-                  "seq file to use (phylip)"),
-        _Option(["-intreefile", "intreefile"], ["input"], None, 0,
+        self.parameters = [
+        _Option(["-sequence", "sequence"],
+                "seq file to use (phylip)",
+                filename=True,
+                is_required=True),
+        _Option(["-intreefile", "intreefile"],
                  "Phylip tree file to score"),
-        _Option(["-outtreefile", "outtreefile"], ["input"], None, 1,
-                 "phylip tree output file"),
-        _Option(["-weights", "weights"], ["input"], None, 0,
+        _Option(["-outtreefile", "outtreefile"],
+                "phylip tree output file",
+                filename=True,
+                is_required=True),
+        _Option(["-weights", "weights"],
                  "weights file"),
-        _Option(["-whichcode", "whichcode"], ["input"], None, 0,
+        _Option(["-whichcode", "whichcode"],
                  "which genetic code, [U,M,V,F,Y]]"),
-        _Option(["-njumble", "njumble"], ["input"], None, 0,
+        _Option(["-njumble", "njumble"],
                  "number of times to randomise input order (default is 0)"),
-        _Option(["-seed", "seed"], ["input"], None, 0,
+        _Option(["-seed", "seed"],
                  "provde random seed"),
-        _Option(["-outgrno", "outgrno"], ["input"], None, 0,
+        _Option(["-outgrno", "outgrno"],
                  "Specify outgroup"),
-        _Option(["-thresh", "thresh"], ["input"], None, 0,
+        _Option(["-thresh", "thresh"],
                  "Use threshold parsimony (y/N)"),
-        _Option(["-threshold", "threshold"], ["input"], None, 0,
+        _Option(["-threshold", "threshold"],
                  "Threshold value"),
-        _Option(["-trout", "trout"], ["input"], None, 0,
+        _Option(["-trout", "trout"],
                  "Write trees to file (Y/n)"),
-        _Option(["-dotdiff", "dotdiff"], ["input"], None, 0,
+        _Option(["-dotdiff", "dotdiff"],
                  "Use dot-differencing? [Y/n]")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -899,34 +938,36 @@ class FProtDistCommandline(_EmbossCommandLine):
     estimate trees from protein sequences using parsimony
     """
     def __init__(self, cmd = "fprotdist", **kwargs):
-        self.parameters = \
-        [_Option(["-sequence", "sequence"], ["input"], None, 1,
-                  "seq file to use (phylip)"),
-        _Option(["-ncategories", "ncategories"], ["input"], None, 0,
+        self.parameters = [
+        _Option(["-sequence", "sequence"],
+                "seq file to use (phylip)",
+                filename=True,
+                is_required=True),
+        _Option(["-ncategories", "ncategories"],
                  "number of rate catergories (1-9)"),
-        _Option(["-rate", "rate"], ["input"], None, 0,
+        _Option(["-rate", "rate"],
                  "rate for each category"),
-        _Option(["-catergories","catergories"], ["input"], None, 0,
+        _Option(["-catergories","catergories"],
                  "file of rates"),
-        _Option(["-weights", "weights"], ["input"], None, 0,
+        _Option(["-weights", "weights"],
                  "weights file"),
-        _Option(["-method", "method"], ["input"], None, 0,
+        _Option(["-method", "method"],
                  "sub. model [j,h,d,k,s,c]"),
-        _Option(["-gamma", "gamma"], ["input"], None, 0,
+        _Option(["-gamma", "gamma"],
                  "gamma [g, i,c]"),
-        _Option(["-gammacoefficient", "gammacoefficient"], ["input"], None, 0,
+        _Option(["-gammacoefficient", "gammacoefficient"],
                  "value for gamma (> 0.001)"),
-        _Option(["-invarcoefficient", "invarcoefficient"], ["input"], None, 0,
+        _Option(["-invarcoefficient", "invarcoefficient"],
                  "float for variation of substitution rate among sites"),
-        _Option(["-aacateg", "aacateg"], ["input"], None, 0,
+        _Option(["-aacateg", "aacateg"],
                  "Choose the category to use [G,C,H]"),
-        _Option(["-whichcode", "whichcode"], ["input"], None, 0,
+        _Option(["-whichcode", "whichcode"],
                  "genetic code [c,m,v,f,y]"),
-        _Option(["-ease", "ease"], ["input"], None, 0,
+        _Option(["-ease", "ease"],
                  "Pob change catergory (float between -0 and 1)"),
-        _Option(["-ttratio", "ttratio"], ["input"], None, 0,
+        _Option(["-ttratio", "ttratio"],
                  "Transition/transversion ratio (0-1)"),
-        _Option(["-basefreq", "basefreq"], ["input"], None, 0,
+        _Option(["-basefreq", "basefreq"],
                  "DNA base frequencies (space seperated list)")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -938,20 +979,22 @@ class FConsenseCommandline(_EmbossCommandLine):
     calculate consensus trees.
     """
     def __init__(self, cmd = "fconsense", **kwargs):
-        self.parameters = \
-        [_Option(["-intreefile", "intreefile"], ["input"], None, 1,
-                  "file with phylip trees to make consensus from"),
-        _Option(["-method", "method"], ["input"], None, 0,
+        self.parameters = [
+        _Option(["-intreefile", "intreefile"],
+                "file with phylip trees to make consensus from",
+                filename=True,
+                is_required=True),
+        _Option(["-method", "method"],
                  "consensus method [s, mr, MRE, ml]"),
-        _Option(["-mlfrac", "mlfrac"], ["input"], None, 0,
+        _Option(["-mlfrac", "mlfrac"],
                  "cut-off freq for a branch to appear in consensus (0.5-1.0)"),
-        _Option(["-root", "root"], ["input"], None, 0,
+        _Option(["-root", "root"],
                  "treat trees as rooted (YES, no)"),
-        _Option(["-outgrno", "outgrno"], ["input"], None, 0,
+        _Option(["-outgrno", "outgrno"],
                  "OTU to use as outgroup (starts from 0)"),
-        _Option(["-trout", "trout"], ["input"], None, 0,
+        _Option(["-trout", "trout"],
                  "treat trees as rooted (YES, no)"),
-        _Option(["-outtreefile", "outtreefile"], ["input"], None, 0,
+        _Option(["-outtreefile", "outtreefile"],
                  "Phylip tree output file (optional)")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -960,24 +1003,31 @@ class WaterCommandline(_EmbossCommandLine):
     """Commandline object for the water program from EMBOSS.
     """
     def __init__(self, cmd="water", **kwargs):
-        self.parameters = \
-         [_Option(["-asequence","asequence"], ["input", "file"], None, 1,
-                  "First sequence to align"),
-         _Option(["-bsequence","bsequence"], ["input", "file"], None, 1,
-                  "Second sequence to align"),
-         _Option(["-gapopen","gapopen"], ["input"], None, 1,
-                 "Gap open penalty"),
-         _Option(["-gapextend","gapextend"], ["input"], None, 1,
-                 "Gap extension penalty"),
-         _Option(["-datafile","datafile"], ["input", "file"], None, 0,
-                 "Matrix file"),
-         _Option(["-similarity","similarity"], ["input"], None, 0,
+        self.parameters = [
+         _Option(["-asequence","asequence"],
+                 "First sequence to align",
+                 filename=True,
+                 is_required=True),
+         _Option(["-bsequence","bsequence"],
+                 "Second sequence to align",
+                 filename=True,
+                 is_required=True),
+         _Option(["-gapopen","gapopen"],
+                 "Gap open penalty",
+                 is_required=True),
+         _Option(["-gapextend","gapextend"],
+                 "Gap extension penalty",
+                 is_required=True),
+         _Option(["-datafile","datafile"],
+                 "Matrix file",
+                 filename=True),
+         _Option(["-similarity","similarity"],
                  "Display percent identity and similarity"),
-         _Option(["-snucleotide","snucleotide"], ["input"], None, 0,
+         _Option(["-snucleotide","snucleotide"],
                  "Sequences are nucleotide (boolean)"),
-         _Option(["-sprotein","sprotein"], ["input"], None, 0,
+         _Option(["-sprotein","sprotein"],
                  "Sequences are protein (boolean)"),
-         _Option(["-aformat","aformat"], ["input"], None, 0,
+         _Option(["-aformat","aformat"],
                  "Display output in a different specified output format")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -986,24 +1036,31 @@ class NeedleCommandline(_EmbossCommandLine):
     """Commandline object for the needle program from EMBOSS.
     """
     def __init__(self, cmd="needle", **kwargs):
-        self.parameters = \
-         [_Option(["-asequence","asequence"], ["input", "file"], None, 1,
-                  "First sequence to align"),
-         _Option(["-bsequence","bsequence"], ["input", "file"], None, 1,
-                  "Second sequence to align"),
-         _Option(["-gapopen","gapopen"], ["input"], None, 1,
-                 "Gap open penalty"),
-         _Option(["-gapextend","gapextend"], ["input"], None, 1,
-                 "Gap extension penalty"),
-         _Option(["-datafile","datafile"], ["input", "file"], None, 0,
-                 "Matrix file"),
-         _Option(["-similarity","similarity"], ["input"], None, 0,
+        self.parameters = [
+         _Option(["-asequence","asequence"],
+                 "First sequence to align",
+                 filename=True,
+                 is_required=True),
+         _Option(["-bsequence","bsequence"],
+                  "Second sequence to align",
+                 filename=True,
+                 is_required=True),
+         _Option(["-gapopen","gapopen"],
+                 "Gap open penalty",
+                 is_required=True),
+         _Option(["-gapextend","gapextend"],
+                 "Gap extension penalty",
+                 is_required=True),
+         _Option(["-datafile","datafile"],
+                 "Matrix file",
+                 filename=True),
+         _Option(["-similarity","similarity"],
                  "Display percent identity and similarity"),
-         _Option(["-snucleotide","snucleotide"], ["input"], None, 0,
+         _Option(["-snucleotide","snucleotide"],
                  "Sequences are nucleotide (boolean)"),
-         _Option(["-sprotein","sprotein"], ["input"], None, 0,
+         _Option(["-sprotein","sprotein"],
                  "Sequences are protein (boolean)"),
-         _Option(["-aformat","aformat"], ["input"], None, 0,
+         _Option(["-aformat","aformat"],
                  "Display output in a different specified output format")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -1013,15 +1070,18 @@ class FuzznucCommandline(_EmbossCommandLine):
     """
     def __init__(self, cmd="fuzznuc", **kwargs):
         self.parameters = [
-         _Option(["-sequence","sequence"], ["input"], None, 1,
-                 "Sequence database USA"),
-         _Option(["-pattern","pattern"], ["input"], None, 1,
-                 "Search pattern, using standard IUPAC one-letter codes"),
-         _Option(["-mismatch","mismatch"], ["input"], None, 1,
-                 "Number of mismatches"),
-         _Option(["-complement","complement"], ["input"], None, 0,
+         _Option(["-sequence","sequence"],
+                 "Sequence database USA",
+                 is_required=True),
+         _Option(["-pattern","pattern"],
+                 "Search pattern, using standard IUPAC one-letter codes",
+                 is_required=True),
+         _Option(["-mismatch","mismatch"],
+                 "Number of mismatches",
+                 is_required=True),
+         _Option(["-complement","complement"],
                  "Search complementary strand"),
-         _Option(["-rformat","rformat"], ["input"], None, 0,
+         _Option(["-rformat","rformat"],
                  "Specify the report format to output in.")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -1031,42 +1091,44 @@ class Est2GenomeCommandline(_EmbossCommandLine):
     """
     def __init__(self, cmd="est2genome", **kwargs):
         self.parameters = [
-         _Option(["-est","est"], ["input"], None, 1,
-                 "EST sequence(s)"),
-         _Option(["-genome","genome"], ["input"], None, 1,
-                 "Genomic sequence"),
-         _Option(["-match","match"], ["input"], None, 0, 
+         _Option(["-est","est"],
+                 "EST sequence(s)",
+                 is_required=True),
+         _Option(["-genome","genome"],
+                 "Genomic sequence",
+                 is_required=True),
+         _Option(["-match","match"], 
                  "Score for matching two bases"),
-         _Option(["-mismatch","mismatch"], ["input"], None, 0,
+         _Option(["-mismatch","mismatch"],
                  "Cost for mismatching two bases"),
-         _Option(["-gappenalty","gappenalty"], ["input"], None, 0,
-                 "Cost for deleting a single base in either sequence, " + \
+         _Option(["-gappenalty","gappenalty"],
+                 "Cost for deleting a single base in either sequence, "
                  "excluding introns"),
-         _Option(["-intronpenalty","intronpenalty"], ["input"], None, 0,
+         _Option(["-intronpenalty","intronpenalty"],
                  "Cost for an intron, independent of length."),
-         _Option(["-splicepenalty","splicepenalty"], ["input"], None, 0,
-                 "Cost for an intron, independent of length " + \
+         _Option(["-splicepenalty","splicepenalty"],
+                 "Cost for an intron, independent of length "
                  "and starting/ending on donor-acceptor sites"),
-         _Option(["-minscore","minscore"], ["input"], None, 0,
+         _Option(["-minscore","minscore"],
                  "Exclude alignments with scores below this threshold score."),
-         _Option(["-reverse","reverse"], ["input"], None, 0,
+         _Option(["-reverse","reverse"],
                  "Reverse the orientation of the EST sequence"),
-         _Option(["-splice","splice"], ["input"], None, 0,
+         _Option(["-splice","splice"],
                  "Use donor and acceptor splice sites."),
-         _Option(["-mode","mode"], ["input"], None, 0,
-                 "This determines the comparion mode. 'both', 'forward' " + \
+         _Option(["-mode","mode"],
+                 "This determines the comparion mode. 'both', 'forward' "
                  "'reverse'"),
-         _Option(["-best","best"], ["input"], None, 0,
+         _Option(["-best","best"],
                  "You can print out all comparisons instead of just the best"),
-         _Option(["-space","space"], ["input"], None, 0,
+         _Option(["-space","space"],
                  "for linear-space recursion."),
-         _Option(["-shuffle","shuffle"], ["input"], None, 0,
+         _Option(["-shuffle","shuffle"],
                  "Shuffle"),
-         _Option(["-seed","seed"], ["input"], None, 0,
+         _Option(["-seed","seed"],
                  "Random number seed"),
-         _Option(["-align","align"], ["input"], None, 0,
+         _Option(["-align","align"],
                  "Show the alignment."),
-         _Option(["-width","width"], ["input"], None, 0,
+         _Option(["-width","width"],
                  "Alignment width")
         ]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
@@ -1077,19 +1139,23 @@ class ETandemCommandline(_EmbossCommandLine):
     """
     def __init__(self, cmd="etandem", **kwargs):
         self.parameters = [
-         _Option(["-sequence","sequence"], ["input", "file"], None, 1,
-                 "Sequence"),
-         _Option(["-minrepeat","minrepeat"], ["input"], None, 1,
-                 "Minimum repeat size"),
-         _Option(["-maxrepeat","maxrepeat"], ["input"], None, 1,
-                 "Maximum repeat size"),
-         _Option(["-threshold","threshold"], ["input"], None, 0,
+         _Option(["-sequence","sequence"],
+                 "Sequence",
+                 filename=True,
+                 is_required=True),
+         _Option(["-minrepeat","minrepeat"],
+                 "Minimum repeat size",
+                 is_required=True),
+         _Option(["-maxrepeat","maxrepeat"],
+                 "Maximum repeat size",
+                 is_required=True),
+         _Option(["-threshold","threshold"],
                  "Threshold score"),
-         _Option(["-mismatch","mismatch"], ["input"], None, 0,
+         _Option(["-mismatch","mismatch"],
                    "Allow N as a mismatch"),
-         _Option(["-uniform","uniform"], ["input"], None, 0,
+         _Option(["-uniform","uniform"],
                    "Allow uniform consensus"),
-         _Option(["-rformat","rformat"], ["output"], None, 0,
+         _Option(["-rformat","rformat"],
                  "Output report format")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -1099,17 +1165,24 @@ class EInvertedCommandline(_EmbossCommandLine):
     """
     def __init__(self, cmd="einverted", **kwargs):
         self.parameters = [
-         _Option(["-sequence","sequence"], ["input", "file"], None, 1,
-                 "Sequence"),
-         _Option(["-gap","gap"], ["input", "file"], None, 1,
-                 "Gap penalty"),
-         _Option(["-threshold","threshold"], ["input"], None, 1,
-                 "Minimum score threshold"),
-         _Option(["-match","match"], ["input"], None, 1,
-                 "Match score"),
-         _Option(["-mismatch","mismatch"], ["input"], None, 1,
-                   "Mismatch score"),
-         _Option(["-maxrepeat","maxrepeat"], ["input"], None, 0,
+         _Option(["-sequence","sequence"],
+                 "Sequence",
+                 filename=True,
+                 is_required=True),
+         _Option(["-gap","gap"],
+                 "Gap penalty",
+                 filename=True,
+                 is_required=True),
+         _Option(["-threshold","threshold"],
+                 "Minimum score threshold",
+                 is_required=True),
+         _Option(["-match","match"],
+                 "Match score",
+                 is_required=True),
+         _Option(["-mismatch","mismatch"],
+                 "Mismatch score",
+                 is_required=True),
+         _Option(["-maxrepeat","maxrepeat"],
                  "Maximum separation between the start and end of repeat"),
          ]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
@@ -1120,18 +1193,25 @@ class PalindromeCommandline(_EmbossCommandLine):
     """
     def __init__(self, cmd="palindrome", **kwargs):
         self.parameters = [
-         _Option(["-sequence","sequence"], ["input", "file"], None, 1,
-                 "Sequence"),
-         _Option(["-minpallen","minpallen"], ["input"], None, 1,
-                 "Minimum palindrome length"),
-         _Option(["-maxpallen","maxpallen"], ["input"], None, 1,
-                 "Maximum palindrome length"),
-         _Option(["-gaplimit","gaplimit"], ["input"], None, 1,
-                 "Maximum gap between repeats"),
-         _Option(["-nummismatches","nummismatches"], ["input"], None, 1,
-                 "Number of mismatches allowed"),
-         _Option(["-overlap","overlap"], ["input"], None, 1,
-                 "Report overlapping matches"),
+         _Option(["-sequence","sequence"],
+                 "Sequence",
+                 filename=True,
+                 is_required=True),
+         _Option(["-minpallen","minpallen"],
+                 "Minimum palindrome length",
+                 is_required=True),
+         _Option(["-maxpallen","maxpallen"],
+                 "Maximum palindrome length",
+                 is_required=True),
+         _Option(["-gaplimit","gaplimit"],
+                 "Maximum gap between repeats",
+                 is_required=True),
+         _Option(["-nummismatches","nummismatches"],
+                 "Number of mismatches allowed",
+                 is_required=True),
+         _Option(["-overlap","overlap"],
+                 "Report overlapping matches",
+                 is_required=True),
          ]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -1141,13 +1221,19 @@ class TranalignCommandline(_EmbossCommandLine):
     """
     def __init__(self, cmd="tranalign", **kwargs):
         self.parameters = [
-         _Option(["-asequence","asequence"], ["input", "file"], None, 1,
-                 "Nucleotide sequences to be aligned."),
-         _Option(["-bsequence","bsequence"], ["input", "file"], None, 1,
-                 "Protein sequence alignment"),
-         _Option(["-outseq","outseq"], ["output", "file"], None, 1,
-                 "Output sequence file."),
-         _Option(["-table","table"], ["input"], None, 0,
+         _Option(["-asequence","asequence"],
+                 "Nucleotide sequences to be aligned.",
+                 filename=True,
+                 is_required=True),
+         _Option(["-bsequence","bsequence"],
+                 "Protein sequence alignment",
+                 filename=True,
+                 is_required=True),
+         _Option(["-outseq","outseq"],
+                 "Output sequence file.",
+                 filename=True,
+                 is_required=True),
+         _Option(["-table","table"],
                  "Code to use")]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -1157,17 +1243,26 @@ class DiffseqCommandline(_EmbossCommandLine):
     """
     def __init__(self, cmd="diffseq", **kwargs):
         self.parameters = [
-         _Option(["-asequence","asequence"], ["input", "file"], None, 1,
-                 "First sequence to compare"),
-         _Option(["-bsequence","bsequence"], ["input", "file"], None, 1,
-                 "Second sequence to compare"),
-         _Option(["-wordsize","wordsize"], ["input"], None, 1,
-                 "Word size to use for comparisons (10 default)"),
-         _Option(["-aoutfeat","aoutfeat"], ["output", "file"], None, 1,
-                "File for output of first sequence's features"),
-         _Option(["-boutfeat","boutfeat"], ["output", "file"], None, 1,
-                "File for output of second sequence's features"),
-         _Option(["-rformat","rformat"], ["output"], None, 0,
+         _Option(["-asequence","asequence"],
+                 "First sequence to compare",
+                 filename=True,
+                 is_required=True),
+         _Option(["-bsequence","bsequence"],
+                 "Second sequence to compare",
+                 filename=True,
+                 is_required=True),
+         _Option(["-wordsize","wordsize"],
+                 "Word size to use for comparisons (10 default)",
+                 is_required=True),
+         _Option(["-aoutfeat","aoutfeat"],
+                 "File for output of first sequence's features",
+                 filename=True,
+                 is_required=True),
+         _Option(["-boutfeat","boutfeat"],
+                 "File for output of second sequence's features",
+                 filename=True,
+                 is_required=True),
+         _Option(["-rformat","rformat"],
                  "Output report file format")
          ]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
@@ -1175,15 +1270,47 @@ class DiffseqCommandline(_EmbossCommandLine):
 
 class IepCommandline(_EmbossCommandLine):
     """Commandline for EMBOSS iep: calculated isoelectric point and charge.
+    
+    Example:
+
+    >>> from Bio.Emboss.Applications import IepCommandline
+    >>> iep_cline = IepCommandline(sequence="proteins.faa",
+    ...                            outfile="proteins.txt")
+    >>> print(iep_cline)
+    iep -outfile=proteins.txt -sequence=proteins.faa
+
+    You would typically run the command line with iep_cline() or via the
+    Python subprocess module, as described in the Biopython tutorial.
     """
     def __init__(self, cmd="iep", **kwargs):
         self.parameters = [
-         _Option(["-sequence","sequence"], ["input", "file"], None, 1,
-                "Protein sequence(s) filename"),
-         _Option(["-amino","amino"], ["input"], None, 0),
-         _Option(["-lysinemodified","lysinemodified"], ["input"], None, 0),
-         _Option(["-disulphides","disulphides"], ["input"], None, 0),
-         _Option(["-notermini","notermini"], ["input"], None, 0),
+         _Option(["-sequence","sequence"],
+                "Protein sequence(s) filename",
+                 filename=True,
+                 is_required=True),
+         _Option(["-amino","amino"],
+                 """Number of N-termini
+                 
+                 Integer 0 (default) or more.
+                 """),
+         _Option(["-carboxyl","carboxyl"],
+                 """Number of C-termini
+                 
+                 Integer 0 (default) or more.
+                 """),
+         _Option(["-lysinemodified","lysinemodified"],
+                 """Number of modified lysines
+
+                 Integer 0 (default) or more.
+                 """),
+         _Option(["-disulphides","disulphides"],
+                 """Number of disulphide bridges
+                 
+                 Integer 0 (default) or more.
+                 """),
+         #Should we implement the -termini switch as well?
+         _Option(["-notermini","notermini"],
+                 "Exclude (True) or include (False) charge at N and C terminus."),
          ]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
 
@@ -1202,13 +1329,15 @@ class SeqretCommandline(_EmbossMinimalCommandLine):
     """
     def __init__(self, cmd="seqret", **kwargs):
         self.parameters = [
-         _Option(["-sequence","sequence"], ["input", "file"], None, 0,
-                 "Input sequence(s) filename"),
-         _Option(["-outseq","outseq"], ["output", "file"], None, 0,
-                 "Output sequence file."),
-         _Option(["-sformat","sformat"], ["input"], None, 0,
+         _Option(["-sequence","sequence"],
+                 "Input sequence(s) filename",
+                 filename=True),
+         _Option(["-outseq","outseq"],
+                 "Output sequence file.",
+                 filename=True),
+         _Option(["-sformat","sformat"],
                  "Input sequence(s) format (e.g. fasta, genbank)"),
-         _Option(["-osformat","osformat"], ["input"], None, 0,
+         _Option(["-osformat","osformat"],
                  "Output sequence(s) format (e.g. fasta, genbank)"),
          ]
         _EmbossMinimalCommandLine.__init__(self, cmd, **kwargs)
@@ -1239,11 +1368,13 @@ class SeqmatchallCommandline(_EmbossCommandLine):
     """
     def __init__(self, cmd="seqmatchall", **kwargs):
         self.parameters = [
-          _Option(["-sequence", "sequence"], ["input", "file"],
-                  None, 1, "Readable set of sequences"),
-          _Option(["-wordsize", "wordsize"], ["input"],
-                  None, 0, "Word size (Integer 2 or more, default 4)"),
-          _Option(["-aformat","aformat"], ["input"], None, 0,
+          _Option(["-sequence", "sequence"],
+                  "Readable set of sequences",
+                  filename=True,
+                  is_required=True),
+          _Option(["-wordsize", "wordsize"],
+                  "Word size (Integer 2 or more, default 4)"),
+          _Option(["-aformat","aformat"],
                   "Display output in a different specified output format"),
         ]
         _EmbossCommandLine.__init__(self, cmd, **kwargs)
@@ -1251,7 +1382,7 @@ class SeqmatchallCommandline(_EmbossCommandLine):
 def _test():
     """Run the Bio.Emboss.Applications module doctests."""
     import doctest
-    doctest.testmod(verbose=1)
+    doctest.testmod()
 
 if __name__ == "__main__":
     #Run the doctests

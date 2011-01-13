@@ -2,169 +2,187 @@
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
-
-"""
-Bio.Application command line for the multiple alignment program DIALIGN2-2.
-
-http://bibiserv.techfak.uni-bielefeld.de/dialign/welcome.html
-
-Citations:
-
-B. Morgenstern (2004). DIALIGN: Multiple DNA and Protein Sequence Alignment
-at BiBiServ. Nucleic Acids Research 32, W33-W36.
-
-Last checked against version: 2.2
+"""Command line wrapper for the multiple alignment program DIALIGN2-2.
 """
 
-from Bio import Application
 from Bio.Application import _Option, _Argument, _Switch, AbstractCommandline
 
 class DialignCommandline(AbstractCommandline):
-    """Command line wrapper for the multiple alignment program DIALIGN2-2."""
+    """Command line wrapper for the multiple alignment program DIALIGN2-2.
+
+    http://bibiserv.techfak.uni-bielefeld.de/dialign/welcome.html
+
+    Example:
+
+    To align a FASTA file (unaligned.fasta) with the output files names
+    aligned.* including a FASTA output file (aligned.fa), use:
+
+    >>> from Bio.Align.Applications import DialignCommandline
+    >>> dialign_cline = DialignCommandline(input="unaligned.fasta",
+    ...                                    fn="aligned", fa=True)
+    >>> print(dialign_cline)
+    dialign2-2 -fa -fn aligned unaligned.fasta
+
+    You would typically run the command line with dialign_cline() or via
+    the Python subprocess module, as described in the Biopython tutorial.
+    
+    Citation:
+
+    B. Morgenstern (2004). DIALIGN: Multiple DNA and Protein Sequence
+    Alignment at BiBiServ. Nucleic Acids Research 32, W33-W36.
+
+    Last checked against version: 2.2
+    """
     def __init__(self, cmd="dialign2-2", **kwargs):
         self.program_name = cmd
         self.parameters = \
             [
-            _Switch(["-afc", "afc"], ["input"],
-                    "Creates additional output file '*.afc' " + \
-                    "containing data of all fragments considered " + \
+            _Switch(["-afc", "afc"],
+                    "Creates additional output file '*.afc' "
+                    "containing data of all fragments considered "
                     "for alignment WARNING: this file can be HUGE !"),
-            _Switch(["-afc_v", "afc_v"], ["input"],
-                    "Like '-afc' but verbose: fragments are explicitly " + \
+            _Switch(["-afc_v", "afc_v"],
+                    "Like '-afc' but verbose: fragments are explicitly "
                     "printed. WARNING: this file can be EVEN BIGGER !"),
-            _Switch(["-anc", "anc"], ["input"],
-                    "Anchored alignment. Requires a file <seq_file>.anc " + \
+            _Switch(["-anc", "anc"],
+                    "Anchored alignment. Requires a file <seq_file>.anc "
                     "containing anchor points."),
-            _Switch(["-cs", "cs"], ["input"],
-                    "If segments are translated, not only the `Watson " + \
+            _Switch(["-cs", "cs"],
+                    "If segments are translated, not only the `Watson "
                     "strand' but also the `Crick strand' is looked at."),
-            _Switch(["-cw", "cw"], ["input"],
+            _Switch(["-cw", "cw"],
                     "Additional output file in CLUSTAL W format."),
-            _Switch(["-ds", "ds"], ["input"],
-                    "`dna alignment speed up' - non-translated nucleic acid " + \
-                    "fragments are taken into account only if they start " + \
-                    "with at least two matches. Speeds up DNA alignment at " + \
+            _Switch(["-ds", "ds"],
+                    "`dna alignment speed up' - non-translated nucleic acid "
+                    "fragments are taken into account only if they start "
+                    "with at least two matches. Speeds up DNA alignment at "
                     "the expense of sensitivity."),
-            _Switch(["-fa", "fa"], ["input"],
+            _Switch(["-fa", "fa"],
                     "Additional output file in FASTA format."),
-            _Switch(["-ff", "ff"], ["input"],
-                    "Creates file *.frg containing information about all " + \
-                    "fragments that are part of the respective optimal " + \
-                    "pairwise alignmnets plus information about " + \
+            _Switch(["-ff", "ff"],
+                    "Creates file *.frg containing information about all "
+                    "fragments that are part of the respective optimal "
+                    "pairwise alignmnets plus information about "
                     "consistency in the multiple alignment"),
-            _Option(["-fn", "fn"], ["input"],
-                    None,
-                    0,
+            _Option(["-fn", "fn"],
                     "Output files are named <out_file>.<extension>.",
-                    0),
-            _Switch(["-fop", "fop"], ["input"],
-                    "Creates file *.fop containing coordinates of all " + \
+                    equate=False),
+            _Switch(["-fop", "fop"],
+                    "Creates file *.fop containing coordinates of all "
                     "fragments that are part of the respective pairwise alignments."),
-            _Switch(["-fsm", "fsm"], ["input"],
-                    "Creates file *.fsm containing coordinates of all " + \
+            _Switch(["-fsm", "fsm"],
+                    "Creates file *.fsm containing coordinates of all "
                     "fragments that are part of the final alignment"),
-            _Switch(["-iw", "iw"], ["input"],
-                    "Overlap weights switched off (by default, overlap " + \
-                    "weights are used if up to 35 sequences are aligned). " + \
-                    "This option speeds up the alignment but may lead " + \
+            _Switch(["-iw", "iw"],
+                    "Overlap weights switched off (by default, overlap "
+                    "weights are used if up to 35 sequences are aligned). "
+                    "This option speeds up the alignment but may lead "
                     "to reduced alignment quality."),
-            _Switch(["-lgs", "lgs"], ["input"],
-                    "`long genomic sequences' - combines the following " + \
-                    "options: -ma, -thr 2, -lmax 30, -smin 8, -nta, -ff, " + \
+            _Switch(["-lgs", "lgs"],
+                    "`long genomic sequences' - combines the following "
+                    "options: -ma, -thr 2, -lmax 30, -smin 8, -nta, -ff, "
                     "-fop, -ff, -cs, -ds, -pst "),
-            _Switch(["-lgs_t", "lgs_t"], ["input"],
-                    "Like '-lgs' but with all segment pairs assessed " + \
-                    "at the peptide level (rather than 'mixed alignments' " + \
-                    "as with the '-lgs' option). Therefore faster than " + \
+            _Switch(["-lgs_t", "lgs_t"],
+                    "Like '-lgs' but with all segment pairs assessed "
+                    "at the peptide level (rather than 'mixed alignments' "
+                    "as with the '-lgs' option). Therefore faster than "
                     "-lgs but not very sensitive for non-coding regions."),
-            _Option(["-lmax", "lmax"], ["input"],
-                    lambda x: isinstance(x, int),
-                    0,
-                    "Maximum fragment length = x  (default: x = 40 or " + \
-                    "x = 120 for `translated' fragments). Shorter x " + \
+            _Option(["-lmax", "lmax"],
+                    "Maximum fragment length = x  (default: x = 40 or "
+                    "x = 120 for `translated' fragments). Shorter x "
                     "speeds up the program but may affect alignment quality.",
-                    0),
-            _Switch(["-lo", "lo"], ["input"],
-                    "(Long Output) Additional file *.log with information " + \
-                    "about fragments selected for pairwise alignment and " + \
+                    checker_function=lambda x: isinstance(x, int),
+                    equate=False),
+            _Switch(["-lo", "lo"],
+                    "(Long Output) Additional file *.log with information "
+                    "about fragments selected for pairwise alignment and "
                     "about consistency in multi-alignment proceedure."),
-            _Switch(["-ma", "ma"], ["input"],
-                    "`mixed alignments' consisting of P-fragments and " + \
+            _Switch(["-ma", "ma"],
+                    "`mixed alignments' consisting of P-fragments and "
                     "N-fragments if nucleic acid sequences are aligned."),
-            _Switch(["-mask", "mask"], ["input"],
-                    "Residues not belonging to selected fragments are " + \
-                    "replaced by `*' characters in output alignment " + \
+            _Switch(["-mask", "mask"],
+                    "Residues not belonging to selected fragments are "
+                    "replaced by `*' characters in output alignment "
                     "(rather than being printed in lower-case characters)"),
-            _Switch(["-mat", "mat"], ["input"],
-                    "Creates file *mat with substitution counts derived " + \
+            _Switch(["-mat", "mat"],
+                    "Creates file *mat with substitution counts derived "
                     "from the fragments that have been selected for alignment."),
-            _Switch(["-mat_thr", "mat_thr"], ["input"],
-                    "Like '-mat' but only fragments with weight score " + \
+            _Switch(["-mat_thr", "mat_thr"],
+                    "Like '-mat' but only fragments with weight score "
                     "> t are considered"),
-            _Switch(["-max_link", "max_link"], ["input"],
-                    "'maximum linkage' clustering used to construct " + \
+            _Switch(["-max_link", "max_link"],
+                    "'maximum linkage' clustering used to construct "
                     "sequence tree (instead of UPGMA)."),
-            _Switch(["-min_link", "min_link"], ["input"],
+            _Switch(["-min_link", "min_link"],
                     "'minimum linkage' clustering used."),
-            _Option(["-mot", "mot"], ["input"],
-                    None, 
-                    0,
+            _Option(["-mot", "mot"],
                     "'motif' option.",
-                    0),
-            _Switch(["-msf", "msf"], ["input"],
+                    equate=False),
+            _Switch(["-msf", "msf"],
                     "Separate output file in MSF format."),
-            _Switch(["-n", "n"], ["input"],
-                    "Input sequences are nucleic acid sequences. " + \
+            _Switch(["-n", "n"],
+                    "Input sequences are nucleic acid sequences. "
                     "No translation of fragments."),
-            _Switch(["-nt", "nt"], ["input"],
-                    "Input sequences are nucleic acid sequences and " + \
-                    "`nucleic acid segments' are translated to `peptide " + \
+            _Switch(["-nt", "nt"],
+                    "Input sequences are nucleic acid sequences and "
+                    "`nucleic acid segments' are translated to `peptide "
                     "segments'."),
-            _Switch(["-nta", "nta"], ["input"],
-                    "`no textual alignment' - textual alignment suppressed. " + \
-                    "This option makes sense if other output files are of " + \
-                    "intrest -- e.g. the fragment files created with -ff, " + \
+            _Switch(["-nta", "nta"],
+                    "`no textual alignment' - textual alignment suppressed. "
+                    "This option makes sense if other output files are of "
+                    "intrest -- e.g. the fragment files created with -ff, "
                     "-fop, -fsm or -lo."),
-            _Switch(["-o", "o"], ["input"],
-                    "Fast version, resulting alignments may be slightly " + \
+            _Switch(["-o", "o"],
+                    "Fast version, resulting alignments may be slightly "
                     "different."),
-            _Switch(["-ow", "ow"], ["input"],
-                    "Overlap weights enforced (By default, overlap weights " + \
-                    "are used only if up to 35 sequences are aligned since " + \
+            _Switch(["-ow", "ow"],
+                    "Overlap weights enforced (By default, overlap weights "
+                    "are used only if up to 35 sequences are aligned since "
                     "calculating overlap weights is time consuming)."),
-            _Switch(["-pst", "pst"], ["input"],
-                    "'print status'. Creates and updates a file *.sta with " + \
-                    "information about the current status of the program " + \
-                    "run.  This option is recommended if large data sets " + \
-                    "are aligned since it allows the user to estimate the " + \
+            _Switch(["-pst", "pst"],
+                    "'print status'. Creates and updates a file *.sta with "
+                    "information about the current status of the program "
+                    "run.  This option is recommended if large data sets "
+                    "are aligned since it allows the user to estimate the "
                     "remaining running time."),
-            _Switch(["-smin", "smin"], ["input"],
-                    "Minimum similarity value for first residue pair " + \
-                    "(or codon pair) in fragments. Speeds up protein " + \
-                    "alignment or alignment of translated DNA fragments " + \
+            _Switch(["-smin", "smin"],
+                    "Minimum similarity value for first residue pair "
+                    "(or codon pair) in fragments. Speeds up protein "
+                    "alignment or alignment of translated DNA fragments "
                     "at the expense of sensitivity."),
-            _Option(["-stars", "stars"], ["input"],
-                    lambda x: x in range(0,10),
-                    0,
-                    "Maximum number of `*' characters indicating degree " + \
-                    "of local similarity among sequences. By default, no " + \
+            _Option(["-stars", "stars"],
+                    "Maximum number of `*' characters indicating degree "
+                    "of local similarity among sequences. By default, no "
                     "stars are used but numbers between 0 and 9, instead.",
-                    0),
-            _Switch(["-stdo", "stdo"], ["input"],
+                    checker_function = lambda x: x in range(0,10),
+                    equate=False),
+            _Switch(["-stdo", "stdo"],
                     "Results written to standard output."),
-            _Switch(["-ta", "ta"], ["input"],
-                    "Standard textual alignment printed (overrides " + \
-                    "suppression of textual alignments in special " + \
+            _Switch(["-ta", "ta"],
+                    "Standard textual alignment printed (overrides "
+                    "suppression of textual alignments in special "
                     "options, e.g. -lgs)"),
-            _Option(["-thr", "thr"], ["input"],
-                    lambda x: isinstance(x, int),
-                    0,
+            _Option(["-thr", "thr"],
                     "Threshold T = x.",
-                    0),
-            _Switch(["-xfr", "xfr"], ["input"],
-                    "'exclude fragments' - list of fragments can be " + \
+                    checker_function = lambda x: isinstance(x, int),
+                    equate=False),
+            _Switch(["-xfr", "xfr"],
+                    "'exclude fragments' - list of fragments can be "
                     "specified that are NOT considered for pairwise alignment"),
-            _Argument(["input"], ["input", "file"], None, 1,
-                      "Input file name. Must be FASTA format")
+            _Argument(["input"],
+                      "Input file name. Must be FASTA format",
+                      filename=True,
+                      is_required=True),
             ]
         AbstractCommandline.__init__(self, cmd, **kwargs)
+
+def _test():
+    """Run the module's doctests (PRIVATE)."""
+    print("Runing modules doctests...")
+    import doctest
+    doctest.testmod()
+    print("Done")
+
+if __name__ == "__main__":
+    _test()
+

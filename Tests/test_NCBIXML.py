@@ -16,7 +16,8 @@ class TestNCBIXML(unittest.TestCase):
 
         filename = 'xbt001.xml'
         datafile = os.path.join("Blast", filename)
-        records = NCBIXML.parse(open(datafile))
+        handle = open(datafile)
+        records = NCBIXML.parse(handle)
         record = next(records)
 
         alignments = record.alignments
@@ -1389,14 +1390,19 @@ class TestNCBIXML(unittest.TestCase):
         self.assertTrue(alignment.hsps[0].expect > E_VALUE_THRESH)
 
         self.assertRaises(StopIteration, records.__next__)
-        record = NCBIXML.read(open(datafile))
+        handle.close()
+
+        handle = open(datafile)
+        record = NCBIXML.read(handle)
+        handle.close()
 
     def test_xbt002(self):
         "Parsing BLASTN 2.2.12, gi|1348916|gb|G26684.1|G26684 (xbt002)"
 
         filename = 'xbt002.xml'
         datafile = os.path.join("Blast", filename)
-        records = NCBIXML.parse(open(datafile))
+        handle = open(datafile)
+        records = NCBIXML.parse(handle)
         record = next(records)
         alignments = record.alignments
 
@@ -1413,52 +1419,71 @@ class TestNCBIXML(unittest.TestCase):
         self.assertTrue(alignments[1].hsps[0].expect > E_VALUE_THRESH)
 
         self.assertRaises(StopIteration, records.__next__)
-        record = NCBIXML.read(open(datafile))
+        handle.close()
+
+        handle = open(datafile)
+        record = NCBIXML.read(handle)
+        handle.close()
 
     def test_xbt003(self):
         "Parsing BLASTX 2.2.12, gi|1347369|gb|G25137.1|G25137 (xbt003)"
 
         filename = 'xbt003.xml'
         datafile = os.path.join("Blast", filename)
-        records = NCBIXML.parse(open(datafile))
+
+        handle = open(datafile)
+        records = NCBIXML.parse(handle)
         record = next(records)
         alignments = record.alignments
         self.assertEqual(record.query_id, "gi|1347369|gb|G25137.1|G25137")
         self.assertEqual(len(alignments), 78)
         self.assertEqual(sum([len(a.hsps) for a in alignments]), 84)
-
         self.assertRaises(StopIteration, records.__next__)
-        record = NCBIXML.read(open(datafile))
+        handle.close()
+
+        handle = open(datafile)
+        record = NCBIXML.read(handle)
+        handle.close()
 
     def test_xbt004(self):
         "Parsing TBLASTN 2.2.12, gi|729325|sp|P39483|DHG2_BACME (xbt004)"
 
         filename = 'xbt004.xml'
         datafile = os.path.join("Blast", filename)
-        records = NCBIXML.parse(open(datafile))
+
+        handle = open(datafile)
+        records = NCBIXML.parse(handle)
         record = next(records)
         alignments = record.alignments
         self.assertEqual(record.query_id, "gi|729325|sp|P39483|DHG2_BACME")
         self.assertEqual(len(alignments), 100)
         self.assertEqual(sum([len(a.hsps) for a in alignments]), 127)
-
         self.assertRaises(StopIteration, records.__next__)
-        record = NCBIXML.read(open(datafile))
+        handle.close()
+
+        handle = open(datafile)
+        record = NCBIXML.read(handle)
+        handle.close()
 
     def test_xbt005(self):
         "Parsing TBLASTX 2.2.12, gi|1348853|gb|G26621.1|G26621, BLOSUM80 (xbt005)"
 
         filename = 'xbt005.xml'
         datafile = os.path.join("Blast", filename)
-        records = NCBIXML.parse(open(datafile))
+
+        handle = open(datafile)
+        records = NCBIXML.parse(handle)
         record = next(records)
         alignments = record.alignments
         self.assertEqual(record.query_id, "gi|1348853|gb|G26621.1|G26621")
         self.assertEqual(len(alignments), 10)
         self.assertEqual(sum([len(a.hsps) for a in alignments]), 102)
-
         self.assertRaises(StopIteration, records.__next__)
-        record = NCBIXML.read(open(datafile))
+        handle.close()
+
+        handle = open(datafile)
+        record = NCBIXML.read(handle)
+        handle.close()
 
     def test_xbt006(self):
         "Parsing BLASTP 2.2.18+, gi|160837788|ref|NP_075631.2| (xbt006)"
@@ -1466,7 +1491,9 @@ class TestNCBIXML(unittest.TestCase):
 
         filename = 'xbt006.xml'
         datafile = os.path.join("Blast", filename)
-        records = NCBIXML.parse(open(datafile))
+
+        handle = open(datafile)
+        records = NCBIXML.parse(handle)
 
         record = next(records)
         alignments = record.alignments
@@ -1519,14 +1546,19 @@ class TestNCBIXML(unittest.TestCase):
         self.assertTrue(alignments[9].hsps[1].expect > E_VALUE_THRESH)
 
         self.assertRaises(StopIteration, records.__next__)
-        record = NCBIXML.read(open(datafile))
+        handle.close()
+
+        handle = open(datafile)
+        record = NCBIXML.read(handle)
+        handle.close()
 
     def test_xbt007(self):
         "Parsing BLASTP 2.2.18+, SwissProt Q08386 and P07175, no hits (xbt007)"
 
         filename = 'xbt007.xml'
         datafile = os.path.join("Blast", filename)
-        records = NCBIXML.parse(open(datafile))
+        handle = open(datafile)
+        records = NCBIXML.parse(handle)
         record = next(records)
         self.assertEqual(record.query_id, "gi|585505|sp|Q08386|MOPB_RHOCA")
         alignments = record.alignments
@@ -1534,21 +1566,27 @@ class TestNCBIXML(unittest.TestCase):
         record = next(records)
         self.assertEqual(record.query_id, "gi|129628|sp|P07175.1|PARA_AGRTU")
         self.assertEqual(len(record.alignments), 0)
-
         self.assertRaises(StopIteration, records.__next__)
+        handle.close()
 
     def test_xbt008(self):
         "Parsing BLASTP 2.2.18, Fake query (xbt008)"
 
         filename = 'xbt008.xml'
         datafile = os.path.join("Blast", filename)
-        records = NCBIXML.parse(open(datafile))
+
+        handle = open(datafile)
+        records = NCBIXML.parse(handle)
         record = next(records)
         self.assertEqual(record.query_id, "lcl|1_0")
         alignments = record.alignments
         self.assertEqual(len(alignments), 0)
         self.assertRaises(StopIteration, records.__next__)
-        record = NCBIXML.read(open(datafile))
+        handle.close()
+
+        handle = open(datafile)
+        record = NCBIXML.read(handle)
+        handle.close()
 
     def test_xbt009(self):
         "Parsing BLASTX 2.2.22+, multiple queries against NR (xbt009)"
@@ -1556,7 +1594,9 @@ class TestNCBIXML(unittest.TestCase):
 
         filename = 'xbt009.xml'
         datafile = os.path.join("Blast", filename)
-        records = NCBIXML.parse(open(datafile))
+
+        handle = open(datafile)
+        records = NCBIXML.parse(handle)
 
         record = next(records)
         self.assertEqual(record.application, "BLASTX")
@@ -1670,6 +1710,7 @@ class TestNCBIXML(unittest.TestCase):
         self.assertEqual(len(record.alignments[9].hsps), 1)
 
         self.assertRaises(StopIteration, records.__next__)
+        handle.close()
 
     def test_xbt010(self):
         "Parsing BLASTP 2.2.22+, multiple queries against NR (xbt010)"
@@ -1677,7 +1718,9 @@ class TestNCBIXML(unittest.TestCase):
 
         filename = 'xbt010.xml'
         datafile = os.path.join("Blast", filename)
-        records = NCBIXML.parse(open(datafile))
+
+        handle = open(datafile)
+        records = NCBIXML.parse(handle)
 
         record = next(records)
         self.assertEqual(record.application, "BLASTP")
@@ -1707,6 +1750,7 @@ class TestNCBIXML(unittest.TestCase):
         self.assertEqual(record.query_letters, 473)
 
         self.assertRaises(StopIteration, records.__next__)
+        handle.close()
 
     def test_xbt011(self):
         "Parsing PSI-BLASTP 2.2.18, single query which converges in 3 iterations (xbt011)"
@@ -1717,7 +1761,9 @@ class TestNCBIXML(unittest.TestCase):
 
         filename = 'xbt011.xml'
         datafile = os.path.join("Blast", filename)
-        records = NCBIXML.parse(open(datafile))
+
+        handle = open(datafile)
+        records = NCBIXML.parse(handle)
 
         record = next(records)
         self.assertEqual(record.application, "BLASTP")
@@ -1817,6 +1863,7 @@ class TestNCBIXML(unittest.TestCase):
         #TODO - Can we detect the convergence status:
         #<Iteration_message>CONVERGED</Iteration_message>
         self.assertRaises(StopIteration, records.__next__)
+        handle.close()
 
 
 if __name__ == "__main__":

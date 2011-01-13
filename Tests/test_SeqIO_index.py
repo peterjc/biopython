@@ -1,21 +1,35 @@
-# Copyright 2009-2010 by Peter Cock.  All rights reserved.
+# Copyright 2009-2011 by Peter Cock.  All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 
-"""Additional unit tests for Bio.SeqIO.index(...) function."""
+"""Unit tests for Bio.SeqIO.index(...) and index_db() functions."""
 import sys
 if sys.version_info[0] >= 3:
     from Bio import MissingExternalDependencyError
     raise MissingExternalDependencyError(\
         "Skipping since currently this is very slow on Python 3.")
-    
+
+try:
+    import sqlite3
+except ImportError:
+    #Try and run what tests we can on Python 2.4
+    #where we don't expect this to be installed.
+    sqlite3 = None
+
 import os
 import unittest
 from io import StringIO
+try:
+    #This is in Python 2.6+, but we need it on Python 3
+    from io import BytesIO
+except ImportError:
+    BytesIO = StringIO
+
+
 from Bio.SeqRecord import SeqRecord
 from Bio import SeqIO
-from Bio.SeqIO._index import _FormatToIndexedDict
+from Bio.SeqIO._index import _FormatToRandomAccess
 from Bio.Alphabet import generic_protein, generic_nucleotide, generic_dna
 
 from seq_tests_common import compare_record
@@ -27,19 +41,98 @@ def add_prefix(key):
 class IndexDictTests(unittest.TestCase):
     """Cunning unit test where methods are added at run time."""
     def simple_check(self, filename, format, alphabet):
+        """Check indexing (without a key function)."""
         if format in SeqIO._BinaryFormats:
             mode = "rb"
         else :
             mode = "r"
+
         id_list = [rec.id for rec in \
                    SeqIO.parse(open(filename, mode), format, alphabet)]
-        #Without key_function
+
         rec_dict = SeqIO.index(filename, format, alphabet)
         self.check_dict_methods(rec_dict, id_list, id_list)
-        #Check with key_function
+
+        if not sqlite3:
+            return
+
+        #In memory,
+        rec_dict = SeqIO.index_db(":memory:", [filename], format, alphabet)
+        self.check_dict_methods(rec_dict, id_list, id_list)
+        #check error conditions
+        self.assertRaises(ValueError, SeqIO.index_db,
+                          ":memory:", format="dummy")
+        self.assertRaises(ValueError, SeqIO.index_db,
+                          ":memory:", filenames=["dummy"])
+
+        #Saving to file...
+        index_tmp = filename + ".idx"
+        #To disk,
+        rec_dict = SeqIO.index_db(index_tmp, [filename], format, alphabet)
+        self.check_dict_methods(rec_dict, id_list, id_list)
+        rec_dict.close()
+        del rec_dict
+        #Now reload it...
+        rec_dict = SeqIO.index_db(index_tmp, [filename], format, alphabet)
+        self.check_dict_methods(rec_dict, id_list, id_list)
+        rec_dict.close()
+        del rec_dict
+        #Now reload without passing filenames and format
+        rec_dict = SeqIO.index_db(index_tmp, alphabet=alphabet)
+        self.check_dict_methods(rec_dict, id_list, id_list)
+        rec_dict.close()
+        del rec_dict
+        os.remove(index_tmp)
+    
+    def key_check(self, filename, format, alphabet):
+        """Check indexing with a key function."""
+        if format in SeqIO._BinaryFormats:
+            mode = "rb"
+        else :
+            mode = "r"
+
+        id_list = [rec.id for rec in \
+                   SeqIO.parse(open(filename, mode), format, alphabet)]
+
         key_list = [add_prefix(id) for id in id_list]
         rec_dict = SeqIO.index(filename, format, alphabet, add_prefix)
         self.check_dict_methods(rec_dict, key_list, id_list)
+
+        if not sqlite3:
+            return
+
+        #In memory,
+        rec_dict = SeqIO.index_db(":memory:", [filename], format, alphabet,
+                                  add_prefix)
+        self.check_dict_methods(rec_dict, key_list, id_list)
+        #check error conditions
+        self.assertRaises(ValueError, SeqIO.index_db,
+                          ":memory:", format="dummy",
+                          key_function=add_prefix)
+        self.assertRaises(ValueError, SeqIO.index_db,
+                          ":memory:", filenames=["dummy"],
+                          key_function=add_prefix)
+
+        #Saving to file...
+        index_tmp = filename + ".key.idx"
+        rec_dict = SeqIO.index_db(index_tmp, [filename], format, alphabet,
+                                  add_prefix)
+        self.check_dict_methods(rec_dict, key_list, id_list)
+        rec_dict.close()
+        del rec_dict
+        #Now reload it...
+        rec_dict = SeqIO.index_db(index_tmp, [filename], format, alphabet,
+                                  add_prefix)
+        self.check_dict_methods(rec_dict, key_list, id_list)
+        rec_dict.close()
+        del rec_dict
+        #Now reload without passing filenames and format
+        rec_dict = SeqIO.index_db(index_tmp, alphabet=alphabet,
+                                  key_function=add_prefix)
+        self.check_dict_methods(rec_dict, key_list, id_list)
+        rec_dict.close()
+        del rec_dict
+        os.remove(index_tmp)
         #Done
     
     def check_dict_methods(self, rec_dict, keys, ids):
@@ -74,11 +167,11 @@ class IndexDictTests(unittest.TestCase):
             #Python 3
             assert not hasattr(rec_dict, "iteritems")
             for key, rec in rec_dict.items():
-                self.assertTrue(key in id_list)
+                self.assertTrue(key in keys)
                 self.assertTrue(isinstance(rec, SeqRecord))
                 self.assertTrue(rec.id in ids)
             for rec in rec_dict.values():
-                self.assertTrue(key in id_list)
+                self.assertTrue(key in keys)
                 self.assertTrue(isinstance(rec, SeqRecord))
                 self.assertTrue(rec.id in ids)
         #Check the following fail
@@ -92,10 +185,9 @@ class IndexDictTests(unittest.TestCase):
 
     def get_raw_check(self, filename, format, alphabet):
         if format in SeqIO._BinaryFormats:
-            #This means SFF at the moment, which does not get
-            #implement the get_raw method
-            return
-        handle = open(filename, "rU")
+            handle = open(filename, "rb")
+        else:
+            handle = open(filename, "rU")
         raw_file = handle.read()
         handle.close()
         #Also checking the key_function here
@@ -112,13 +204,51 @@ class IndexDictTests(unittest.TestCase):
             raw = rec_dict.get_raw(key)
             self.assertTrue(raw.strip())
             self.assertTrue(raw in raw_file)
-            if format in ["ig", "uniprot-xml"]:
-               #These have a header structure and can't be parsed
-               #individually (at least, not right now).
-               continue
             rec1 = rec_dict[key]
-            rec2 = SeqIO.read(StringIO(raw), format, alphabet)
+            #Following isn't very elegant, but it lets me test the
+            #__getitem__ SFF code is working.
+            if format in SeqIO._BinaryFormats:
+                handle = BytesIO(raw)
+            else:
+                handle = StringIO(raw)
+            if format == "sff":
+                rec2 = SeqIO.SffIO._sff_read_seq_record(handle,
+                            rec_dict._proxy._flows_per_read,
+                            rec_dict._proxy._flow_chars,
+                            rec_dict._proxy._key_sequence,
+                            rec_dict._proxy._alphabet,
+                            trim=False)
+            elif format == "sff-trim":
+                rec2 = SeqIO.SffIO._sff_read_seq_record(handle,
+                            rec_dict._proxy._flows_per_read,
+                            rec_dict._proxy._flow_chars,
+                            rec_dict._proxy._key_sequence,
+                            rec_dict._proxy._alphabet,
+                            trim=True)
+            elif format == "uniprot-xml":
+                self.assertTrue(raw.startswith("<entry "))
+                self.assertTrue(raw.endswith("</entry>"))
+                #Currently the __getitem__ method uses this
+                #trick too, but we hope to fix that later
+                raw = """<?xml version='1.0' encoding='UTF-8'?>
+                <uniprot xmlns="http://uniprot.org/uniprot"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://uniprot.org/uniprot
+                http://www.uniprot.org/support/docs/uniprot.xsd">
+                %s
+                </uniprot>
+                """ % raw
+                handle = StringIO(raw)
+                rec2 = SeqIO.read(handle, format, alphabet)
+            else:
+                rec2 = SeqIO.read(handle, format, alphabet)
             self.assertEqual(True, compare_record(rec1, rec2))
+
+    if sqlite3:
+        def test_duplicates_index_db(self):
+            """Index file with duplicate identifers with Bio.SeqIO.index_db()"""
+            self.assertRaises(ValueError, SeqIO.index_db, ":memory:",
+                              ["Fasta/dups.fasta"], "fasta")
 
     def test_duplicates_index(self):
         """Index file with duplicate identifers with Bio.SeqIO.index()"""
@@ -184,7 +314,7 @@ tests = [
     ("Roche/paired.sff", "sff-trim", None),
     ]
 for filename, format, alphabet in tests:
-    assert format in _FormatToIndexedDict
+    assert format in _FormatToRandomAccess
 
     #TODO - remove this hack once we drop Python 2.4
     if format=="uniprot-xml" and SeqIO.UniprotIO.ElementTree is None:
@@ -193,15 +323,21 @@ for filename, format, alphabet in tests:
     
     def funct(fn,fmt,alpha):
         f = lambda x : x.simple_check(fn, fmt, alpha)
-        f.__doc__ = "Index %s file %s" % (fmt, fn)
+        f.__doc__ = "Index %s file %s defaults" % (fmt, fn)
         return f
-    setattr(IndexDictTests, "test_%s_%s" \
+    setattr(IndexDictTests, "test_%s_%s_simple" \
             % (filename.replace("/","_").replace(".","_"), format),
             funct(filename, format, alphabet))
     del funct
 
-    if format in SeqIO._BinaryFormats:
-        continue
+    def funct(fn,fmt,alpha):
+        f = lambda x : x.key_check(fn, fmt, alpha)
+        f.__doc__ = "Index %s file %s with key function" % (fmt, fn)
+        return f
+    setattr(IndexDictTests, "test_%s_%s_keyf" \
+            % (filename.replace("/","_").replace(".","_"), format),
+            funct(filename, format, alphabet))
+    del funct
 
     def funct(fn,fmt,alpha):
         f = lambda x : x.get_raw_check(fn, fmt, alpha)

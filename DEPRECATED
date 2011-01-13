@@ -14,15 +14,17 @@ This means we will continue to support Python 2.4 for at least two further
 releases, and at least one year (whichever takes longer), before dropping
 support for Python 2.4. This can be delayed given feedback from our users
 (e.g. if this proves to be a problem in combination with other libraries).
-An explicit warning was added to setup.py for Biopython 1.55.
+An explicit warning was added to setup.py for Biopython 1.55 and 1.56.
 
 Bio.Encodings
 =============
-Explicitly declared obsolete in Release 1.55, and deprecated in Release 1.56.
+Explicitly declared obsolete in Release 1.55, deprecated in Release 1.56, and
+removed in Release 1.57.
 
 Bio.PropertyManager
 ===================
-Explicitly declared obsolete in Release 1.55, and deprecated in Release 1.56.
+Explicitly declared obsolete in Release 1.55, deprecated in Release 1.56, and
+removed in Release 1.57.
 
 Bio.InterPro
 ============
@@ -46,7 +48,7 @@ Bio.Restriction.DNAUtils and check_bases
 This module (originally in C) offered complement and antiparallel functions
 (duplicating functionality in Bio.Seq) and a rather odd function called
 check_bases (also available as Bio.Restriction.Restriction.check_bases).
-Deprecated in Release 1.53.
+Deprecated in Release 1.53, removed in Release 1.57.
 
 Bio.Blast.NCBIStandalone
 ========================
@@ -85,9 +87,10 @@ in Release 1.51, and removed in Release 1.55. Please use psycopg2 instead.
 
 Bio.Application.generic_run and ApplicationResult
 =================================================
-Declared obsolete in Release 1.51, and deprecated in Release 1.53.
-Please use the Python subprocess module instead, of as of Release 1.55 the
-application wrappers can be used directly to execute the command.
+Declared obsolete in Release 1.51, deprecated in Release 1.53, and removed in
+Release 1.57. Please use the Python subprocess module instead, or as of
+Release 1.55 the application wrappers can be used directly to execute the
+command.
 
 Bio.Entrez.efetch and rettype="genbank"
 =======================================
@@ -109,14 +112,20 @@ from Bio.SwissProt.
 
 Bio.Prosite and Bio.Enzyme
 ==========================
-Declared obsolete in Release 1.50, and deprecated in Release 1.53.
-Most of the functionality has moved to Bio.ExPASy.Prosite and
+Declared obsolete in Release 1.50, deprecated in Release 1.53, and removed in
+Release 1.57. Most of the functionality has moved to Bio.ExPASy.Prosite and
 Bio.ExPASy.Enzyme, respectively.
 
-Bio.EZRetrieve, Bio.NetCatch, Bio.File.SGMLHandle, Bio.FilteredReader
-=====================================================================
-Declared obsolete in Release 1.50, deprecated in Release 1.52, removed in
+Bio.EZRetrieve, Bio.NetCatch, Bio.FilteredReader
+================================================
+Declared obsolete in Release 1.50, deprecated in Release 1.52, and removed in
 Release 1.56.
+
+Bio.File
+========
+Bio.File.SGMLHandle was declared obsolete in Release 1.50, deprecated in
+Release 1.52, and removed in Release 1.56. Bio.File.SGMLStripper was deprecated
+in Release 1.57.
 
 Bio.Graphics.GenomeDiagram and colour/color, centre/center
 ==========================================================
@@ -147,15 +156,16 @@ Release 1.55 final, accessing the .data property gives a DeprecationWarning.
 
 Bio.Transcribe and Bio.Translate
 ================================
-Declared obsolete in Release 1.49, deprecated in Release 1.51.
-Please use the methods or functions in Bio.Seq instead.
+Declared obsolete in Release 1.49, deprecated in Release 1.51, and removed
+in Release 1.57. Please use the methods or functions in Bio.Seq instead.
 
 Bio.mathfns, Bio.stringfns and Bio.listfns (and their C code variants)
 ==========================================
 Declared obsolete in Release 1.49. Bio.mathfns and Bio.stringfns were
 deprecated in Release 1.50, Bio.listfns was deprecated in Release 1.53.
 The three C implementations were all removed in Release 1.53. Bio.mathfns
-and Bio.stringfns were removed in Release 1.55.
+and Bio.stringfns were removed in Release 1.55. Bio.listfns was removed in
+Release 1.57.
 
 Bio.distance (and Bio.cdistance)
 ================================
@@ -380,8 +390,9 @@ The functions 'forward_complement' and 'antiparallel' in Bio.GFF.easy have
 been deprecated as of Release 1.31, and removed in Release 1.43.
 Use the functions 'complement' and 'reverse_complement' in Bio.Seq instead.
 
-The whole of the old Bio.GFF module was deprecated in Release 1.53
-(with the intention of reusing this name space for a GFF parser).
+The whole of the old Bio.GFF module was deprecated in Release 1.53, and removed
+in Release 1.57 (with the intention of reusing this name space for a GFF
+parser).
 
 Bio.sequtils
 ============
@@ -424,20 +435,22 @@ Bio.utils
 Functions 'translate', 'translate_to_stop', 'back_translate', 'transcribe',
 and 'back_transcribe' were deprecated in Release 1.49, and removed in Release
 1.53. Function 'ungap' was deprecated in Release 1.53. Use Bio.Seq instead.
-The whole of Bio.utils was declared obsolete in Release 1.55, and deprecated
-in Biopython 1.56.
+The whole of Bio.utils was declared obsolete in Release 1.55, deprecated in
+Release 1.56, and removed in Release 1.57.
 
 Bio.Motif
 =========
 CompareAceParser and CompareAceConsumer from Bio.Motif.Parsers.AlignAce were
-declared obsolete in Release 1.53, and deprecated in Release 1.55 final.
+declared obsolete in Release 1.53, deprecated in Release 1.55 final, and removed
+in Release 1.57.
 AlignAceConsumer, AlignAceParser, and AlignAceScanner were declared obsolete
 in Release 1.53 and deprecated in Release 1.55 final; their functionality is
 now available through a read() function in Bio.Motif.Parsers.AlignAce.
-MEMEParser, _MEMEScanner, _MEMEConsumer, _MASTConsumer, MASTParser, _MASTScanner,
-and MASTRecord were declared obsolete in Release 1.54 and deprecated in Release
-1.55 final; their functionality is now available through a read() function in
-Bio.Motif.Parsers.MEME and Bio.Motif.Parsers.MAST, respectively.
+MEMEParser, _MEMEScanner, _MEMEConsumer, _MASTConsumer, MASTParser,
+_MASTScanner, and MASTRecord were declared obsolete in Release 1.54 and
+deprecated in Release 1.55 final; their functionality is now available through
+a read() function in Bio.Motif.Parsers.MEME and Bio.Motif.Parsers.MAST,
+respectively.
 
 Bio.Compass
 ===========
@@ -465,3 +478,13 @@ Bio.UniGene were declared obsolete in Release 1.54, and deprecated in Release
 1.55 final. Their functionality is now available through a read() and a parse()
 function in Bio.UniGene.
 
+Bio.SubsMat
+===========
+The methods letter_sum and all_letters_sum were removed from the SeqMat class in
+Bio.SubsMat in Release 1.57.
+
+Bio.Align
+=========
+The methods get_column and add_sequence of the MultipleSeqAlignment class were
+deprecated in Release 1.57. The Alignment class in Bio.Align.Generic and its
+method get_seq_by_num were deprecated in Release 1.57.

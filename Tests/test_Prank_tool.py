@@ -89,7 +89,7 @@ class PrankApplication(unittest.TestCase):
         """Simple round-trip through app with infile, output in NEXUS
         output.?.??? files written to cwd - no way to redirect
         """
-        records = list(SeqIO.parse(open(self.infile1),"fasta"))
+        records = list(SeqIO.parse(self.infile1,"fasta"))
         #Try using keyword argument,
         cmdline = PrankCommandline(prank_exe, d=self.infile1, noxml=True)
         #Try using a property,
@@ -99,17 +99,11 @@ class PrankApplication(unittest.TestCase):
         self.assertEqual(str(cmdline), prank_exe + \
                          " -d=Fasta/fa01 -f=17 -noxml -notree")
         self.assertEqual(str(eval(repr(cmdline))), str(cmdline))
-        child = subprocess.Popen(str(cmdline),
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE,
-                                 universal_newlines=True,
-                                 shell=(sys.platform!="win32"))
-        return_code = child.wait()
-        self.assertEqual(return_code, 0)
-        self.assertTrue("Total time" in child.stdout.read())
-        self.assertEqual(child.stderr.read(), "")
+        stdout, stderr = cmdline()
+        self.assertTrue("Total time" in stdout)
+        self.assertEqual(stderr, "")
         try:
-            align = AlignIO.read(open("output.2.nex"), "nexus")
+            align = AlignIO.read("output.2.nex", "nexus")
             for old, new in zip(records, align):
                 #Old versions of Prank reduced name to 9 chars
                 self.assertTrue(old.id==new.id or old.id[:9]==new.id)
@@ -120,7 +114,6 @@ class PrankApplication(unittest.TestCase):
             #See bug 3119,
             #Bio.Nexus can't parse output from prank v100701 (1 July 2010)
             pass
-        del child
 
     def test_Prank_complex_command_line(self):
         """Round-trip with complex command line."""
@@ -169,12 +162,12 @@ class PrankConversion(unittest.TestCase):
                         in message, message)
         self.assertEqual(error, "")
         self.assertTrue(os.path.isfile(filename))
-        old = AlignIO.read(open(self.input), "fasta")
+        old = AlignIO.read(self.input, "fasta")
         #Hack...
         if format=="phylip":
             for record in old:
                 record.id = record.id[:10]
-        new = AlignIO.read(open(filename), format)
+        new = AlignIO.read(filename, format)
         assert len(old) == len(new)
         for old_r, new_r in zip(old, new):
             self.assertEqual(old_r.id, new_r.id)

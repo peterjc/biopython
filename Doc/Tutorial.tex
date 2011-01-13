@@ -80,7 +80,7 @@ Biopython Tutorial and Cookbook}
 
 \author{Jeff Chang, Brad Chapman, Iddo Friedberg, Thomas Hamelryck, \\
 Michiel de Hoon, Peter Cock, Tiago Antao, Eric Talevich, Bartek Wilczy\'{n}ski}
-\date{Last Update -- 28 October 2010 (Biopython 1.55+)}
+\date{Last Update -- 3 January 2011 (Biopython 1.56+)}
 
 %Hack to get the logo at the start of the HTML front page:
 %(hopefully this isn't going to be too wide for most people)
@@ -305,6 +305,9 @@ and HTML formats
 
   \item \emph{Why doesn't} \verb|Bio.SeqIO.index()| \emph{work? The module imports fine but there is no index function!} \\
   You need Biopython 1.52 or later.
+  
+  \item \emph{Why doesn't} \verb|Bio.SeqIO.index_db()| \emph{work? The module imports fine but there is no \texttt{index\_db} function!} \\
+  You need Biopython 1.57 or later (and a Python with SQLite3 support).
   
   \item \emph{Where is the} \verb|MultipleSeqAlignment| \emph{object? The} \verb|Bio.Align| \emph{module imports fine but this class isn't there!} \\
   You need Biopython 1.54 or later. Alternatively, the older \verb|Bio.Align.Generic.Alignment| class supports some of its functionality, but using this is now discouraged.
@@ -1719,6 +1722,67 @@ Bio.SeqFeature.ExactPosition(5)
 
 That is all of the nitty gritty about dealing with fuzzy positions in Biopython. It has been designed so that dealing with fuzziness is not that much more complicated than dealing with exact positions, and hopefully you find that true!
 
+\subsection{Sequence}
+
+A \verb|SeqFeature| object doesn't directly contain a sequence, instead its location (see Section~\ref{sec:locations}) describes how to get this from the parent sequence. For example consider a (short) gene sequence with location 5:18 on the reverse strand, which in GenBank/EMBL notation using 1-based counting would be \texttt{complement(4..18)}, like this:
+
+\begin{verbatim}
+from Bio import Seq
+from Bio.SeqFeature import SeqFeature, FeatureLocation
+example_parent = Seq("ACCGAGACGGCAAAGGCTAGCATAGGTATGAGACTTCCTTCCTGCCAGTGCTGAGGAACTGGGAGCCTAC")
+example_feature = example_feature = SeqFeature(FeatureLocation(5, 18), type="gene", strand=-1)
+\end{verbatim}
+
+You could take the parent sequence, slice it to extract 5:18, and then take the reverse complement:
+
+\begin{verbatim}
+feature_seq = example_parent[5:18].reverse_complement()
+\end{verbatim}
+
+This is a simple example so this isn't too bad -- however once you have to deal with compound features (joins) this is rather messy. Instead, the \verb|SeqFeature| object has an \verb|extract| method to take care of all this:
+
+\begin{verbatim}
+feature_seq = example_feature.extract(example_parent)
+\end{verbatim}
+
+The \verb|extract| method was added in Biopython 1.53, and in Biopython 1.56 the \verb|SeqFeature| was further extended to give its length as that of the region of sequence it describes.
+
+\begin{verbatim}
+>>> print example_feature.extract(example_parent)
+AGCCTTTGCCGTC
+>>> print len(example_feature.extract(example_parent))
+13
+>>> print len(example_feature)
+13
+\end{verbatim}
+
+\section{Location testing}
+
+As of Biopython 1.56, you can use the Python keyword \verb|in| with a
+\verb|SeqFeature| to see if the base/residue for a parent coordinate is
+within the feature or not.
+
+For example, suppose you have a SNP of interest and you want to know which
+features this SNP is within, and lets suppose this SNP is at index 4350
+(Python counting!). Here is a simple brute force solution where we just
+check all the features one by one in a loop:
+
+\begin{verbatim}
+>>> from Bio import SeqIO
+>>> my_snp = 4350
+>>> record = SeqIO.read("NC_005816.gb", "genbank")
+>>> for feature in record.features:
+...     if my_snp in feature:
+...         print feature.type, feature.qualifiers.get('db_xref')
+...
+source ['taxon:229193']
+gene ['GeneID:2767712']
+CDS ['GI:45478716', 'GeneID:2767712']
+\end{verbatim}
+
+Note that gene and CDS features from GenBank or EMBL files defined with joins
+are the union of the exons -- they do not cover any introns.
+
 \section{References}
 
 Another common annotation related to a sequence is a reference to a journal or other published work dealing with the sequence. We have a fairly simple way of representing a Reference in Biopython -- we have a \verb|Bio.SeqFeature.Reference| class that stores the relevant information about a reference as attributes of an object.
@@ -2130,7 +2194,7 @@ print second_record.id
 print second_record.description
 \end{verbatim}
 
-Note that if you try and use \verb|.next()| and there are no more results, you'll either get back the special Python object \verb|None| or a \verb|StopIteration| exception.
+Note that if you try and use \verb|.next()| and there are no more results, you'll get the special \verb|StopIteration| exception.
 
 One special case to consider is when your sequence files have multiple records, but you only want the first one.  In this situation the following code is very concise:
 
@@ -2441,7 +2505,29 @@ Length 394
 ['Acyltransferase', 'Flavonoid biosynthesis', 'Transferase']
 \end{verbatim}
 
-\section{Sequence files as Dictionaries -- In memory}
+\section{Sequence files as Dictionaries}
+
+We're now going to introduce three related functions in the \verb|Bio.SeqIO|
+module which allow dictionary like random access to a multi-sequence file.
+There is a trade off here between flexibility and memory usage. In summary:
+\begin{itemize}
+\item \verb|Bio.SeqIO.to_dict()| is the most flexible but also the most
+memory demanding option (see Section~\ref{SeqIO:to_dict}). This is basically
+a helper function to build a normal Python \verb|dictionary| with each entry
+held as a \verb|SeqRecord| object in memory, allowing you to modify the
+records.
+\item \verb|Bio.SeqIO.index()| is a useful middle ground, acting like a
+read only dictionary and parsing sequences into \verb|SeqRecord| objects
+on demand (see Section~\ref{sec:SeqIO-index}).
+\item \verb|Bio.SeqIO.index_db()| also acts like a read only dictionary
+but stores the identifiers and file offsets in a file on disk (as an
+SQLite3 database), meaning it has very low memory requirements (see
+Section~\ref{sec:SeqIO-index-db}), but will be a little bit slower.
+\end{itemize}
+See the discussion for an broad overview
+(Section~\ref{sec:SeqIO-indexing-discussion}).
+
+\subsection{Sequence files as Dictionaries -- In memory}
 \label{SeqIO:to_dict}
 
 The next thing that we'll do with our ubiquitous orchid files is to show how
@@ -2589,7 +2675,7 @@ As the previous couple of examples tried to illustrate, using
 everything in memory, the size of file you can work with is limited by your
 computer's RAM. In general, this will only work on small to medium files.
 
-For very large files, Biopython 1.52 introduced an alternative,
+For large files, Biopython 1.52 introduced an alternative,
 \verb|Bio.SeqIO.index()|, which works a little differently. Although
 it still returns a dictionary like object, this does \emph{not} keep
 \emph{everything} in memory. Instead, it just records where each record
@@ -2701,26 +2787,60 @@ There is a longer example in Section~\ref{sec:SeqIO-sort} using the
 \verb|SeqIO.index()| function to sort a large sequence file (without
 loading everything into memory at once).
 
+\section{Sequence files as Dictionaries -- Database indexed files}
+\label{sec:SeqIO-index-db}
+
+Biopython 1.57 introduced an alternative, \verb|Bio.SeqIO.index_db()|, which
+can work on even extremely large files since it stores the record information
+as a file on disk (using an SQLite3 database) rather than in memory.
+
 \subsection{Discussion}
+\label{sec:SeqIO-indexing-discussion}
 
-While using \verb|Bio.SeqIO.index()| is much more memory-efficient than
-using a simple dictionary of records, the record keys and the offsets are
-still in memory. This works fine even for millions of sequences. However,
-if you have tens of millions of sequences, then you \emph{will} need
-\emph{lots} of RAM (and a 64bit version of Python in order to use more
-than 4GB of RAM). Future versions of Biopython may support storing the
-index on disk (e.g. in an SQLite database) rather than in memory in order
-to work better with such extreme cases.
+So, which of these methods should you use and why? It depends on what you are
+trying to do (and how much data you are dealing with). However, in general
+picking \verb|Bio.SeqIO.index()| is a good starting point. If you are dealing
+with millions of records, multiple files, or repeated analyses, then look at
+\verb|Bio.SeqIO.index_db()|.
 
-Although the main benefit of using \verb|Bio.SeqIO.index()| is to reduce
-memory requirements, you will also find building the index is much faster
-than using \verb|Bio.SeqIO.to_dict()| and \verb|Bio.SeqIO.parse()| (as the
-indexing only scans the file quickly looking for the start of each record).
+Reasons to choose \verb|Bio.SeqIO.to_dict()| over either
+\verb|Bio.SeqIO.index()| or \verb|Bio.SeqIO.index_db()| boil down to a need
+for flexibility despite its high memory needs. The advantage of storing the
+\verb|SeqRecord| objects in memory is they can be changed, added to, or
+removed at will. In addition to the downside of high memory consumption,
+indexing can also take longer because all the recorda must be fully parsed.
 
-The main drawback is less flexibility. You cannot specify the keys with quite
-the same freedom as you can with \verb|Bio.SeqIO.to_dict()|. Also, these
-indexed dictionaries are \emph{read only}, so you cannot add or remove
-entries as you could with a real Python dictionary.
+Both \verb|Bio.SeqIO.index()| and \verb|Bio.SeqIO.index_db()| only parse
+records on demand. When indexing, they scan the file once looking for the
+start of each record and do as little work as possible to extract the
+identifier.
+
+Reasons to choose \verb|Bio.SeqIO.index()| over \verb|Bio.SeqIO.index_db()|
+include:
+\begin{itemize}
+\item Faster to build the index
+\item Slightly faster access as SeqRecord objects (but the difference is only
+really noticable for simple to parse file formats).
+\item Can use any immutable Python object as the dictionary keys (e.g. a
+tuple of strings, or a frozen set) not just strings.
+\item Don't need to worry about the index database being out of date if the
+sequence file being indexed has changed.
+\end{itemize}
+
+Reasons to choose \verb|Bio.SeqIO.index_db()| over \verb|Bio.SeqIO.index()|
+include:
+\begin{itemize}
+\item Not memory limited -- this is already important with files from second
+generation sequencing where 10s of millions of sequences are common, and
+using \verb|Bio.SeqIO.index()| can require more than 4GB of RAM and therefore
+a 64bit version of Python.
+\item Because the index is kept on disk, it can be reused. Although building
+the index database file takes longer, if you have a script which will be
+rerun on the same datafiles in future, this could save time in the long run.
+\item Indexing multiple files together
+\item The \verb|get_raw()| method can be much faster, since for most file
+formats the length of each record is stored as well as its offset.
+\end{itemize}
 
 \section{Writing Sequence Files}
 
@@ -12306,27 +12426,13 @@ The dictionary is of the form \verb|{(i1,j1):n1, (i1,j2):n2,...,(ik,jk):nk}| whe
 
     \item
 \begin{verbatim}
-__init__(self,data=None,alphabet=None,
-         mat_type=NOTYPE,mat_name='',build_later=0):
+__init__(self,data=None,alphabet=None, mat_name='', build_later=0):
 \end{verbatim}
 
     \begin{enumerate}
 
       \item \verb|data|: can be either a dictionary, or another SeqMat instance.
       \item \verb|alphabet|: a Bio.Alphabet instance. If not provided, construct an alphabet from data.
-
-      \item \verb|mat_type|: type of matrix generated. One of the following:
-
-      \begin{description}
-        \item[NOTYPE]     No type defined
-        \item[ACCREP]     Accepted Replacements Matrix
-        \item[OBSFREQ]    Observed Frequency Matrix
-        \item[EXPFREQ]    Expsected Frequency Matrix
-        \item[SUBS]       Substitution Matrix      
-        \item[LO]         Log Odds Matrix
-      \end{description}
-
-      \verb|mat_type| is provided automatically by some of SubsMat's functions.
 
       \item \verb|mat_name|: matrix name, such as "BLOSUM62" or "PAM250"
 

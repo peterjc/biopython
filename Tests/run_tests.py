@@ -52,8 +52,15 @@ DOCTEST_MODULES = ["Bio.Alphabet",
                    "Bio.SeqIO.QualityIO",
                    "Bio.SeqIO.SffIO",
                    "Bio.SeqUtils",
+                   "Bio.Sequencing.Applications._Novoalign",
                    "Bio.Align",
                    "Bio.Align.Generic",
+                   "Bio.Align.Applications._Clustalw",
+                   "Bio.Align.Applications._Mafft",
+                   "Bio.Align.Applications._Muscle",
+                   "Bio.Align.Applications._Probcons",
+                   "Bio.Align.Applications._Prank",
+                   "Bio.Align.Applications._TCoffee",
                    "Bio.AlignIO",
                    "Bio.AlignIO.StockholmIO",
                    "Bio.Blast.Applications",
@@ -74,8 +81,15 @@ try:
 except ImportError:
     pass
 
-#Skip Bio.Seq doctest under Python 3.0, see http://bugs.python.org/issue7490
-if sys.version_info[0:2] == (3,1):
+try:
+    import sqlite3
+    del sqlite3
+except ImportError:
+    #Missing on Jython or Python 2.4
+    DOCTEST_MODULES.remove("Bio.SeqIO")
+
+#Skip Bio.Seq doctest under Python 3, see http://bugs.python.org/issue7490
+if sys.version_info[0] == 3:
     DOCTEST_MODULES.remove("Bio.Seq")
 
 system_lang = os.environ.get('LANG', 'C') #Cache this
@@ -225,6 +239,7 @@ class ComparisonTestCase(unittest.TestCase):
                 assert expected_line == output_line, \
                       "\nOutput  : %s\nExpected: %s" \
                       % (repr(output_line), repr(expected_line))
+        expected.close()
 
     def generate_output(self):
         """Generate the golden output for the specified test.
@@ -284,6 +299,8 @@ class TestRunner(unittest.TextTestRunner):
         # test changed this, e.g. to help with detecting command line tools)
         global system_lang
         os.environ['LANG']=system_lang
+        # Note the current directory:
+        cur_dir = os.path.abspath(".")
         # Run the actual test inside a try/except to catch import errors.
         # Have to do a nested try because try/except/except/finally requires
         # python 2.5+
@@ -308,7 +325,19 @@ class TestRunner(unittest.TextTestRunner):
                     suite = doctest.DocTestSuite(module)
                     del module
                 suite.run(result)
-                if result.wasSuccessful():
+                if cur_dir != os.path.abspath("."):
+                    sys.stderr.write("FAIL\n")
+                    result.stream.write(result.separator1+"\n")
+                    result.stream.write("ERROR: %s\n" % name)
+                    result.stream.write(result.separator2+"\n")
+                    result.stream.write("Current directory changed\n")
+                    result.stream.write("Was: %s\n" % cur_dir)
+                    result.stream.write("Now: %s\n" % os.path.abspath("."))
+                    os.chdir(cur_dir)
+                    if not result.wasSuccessful():
+                        result.printErrors()
+                    return False
+                elif result.wasSuccessful():
                     sys.stderr.write("ok\n")
                     return True
                 else:

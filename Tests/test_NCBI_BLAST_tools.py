@@ -1,4 +1,4 @@
-# Copyright 2009 by Peter Cock.  All rights reserved.
+# Copyright 2009-2010 by Peter Cock.  All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
@@ -16,7 +16,7 @@ from Bio.Blast import Applications
 
 # TODO - On windows, can we use the ncbi.ini file?
 wanted = ["blastx", "blastp", "blastn", "tblastn", "tblastx",
-          "rpsblast", "rpstblastn", "psiblast"]
+          "rpsblast", "rpstblastn", "psiblast", "blast_formatter"]
 exe_names = {}
 
 if sys.platform=="win32":
@@ -49,19 +49,24 @@ for folder in likely_dirs:
                                  shell=(sys.platform!="win32"))
         output, error = child.communicate()
         if child.returncode==0 and "ERROR: Invalid argument: -h" not in output:
+            #Special case, blast_formatter from BLAST 2.2.23+ (i.e. BLAST+)
+            #has mandatory argument -rid, but no -archive. We don't support it.
+            if name == "blast_formatter" and " -archive " not in output:
+                continue
             exe_names[name] = exe_name
         #else :
         #    print "Rejecting", exe_name
         del exe_name, name
 
-if len(exe_names) < len(wanted) :
+#We can cope with blast_formatter being missing, only added in BLAST 2.2.24+
+if len(set(exe_names).difference(["blast_formatter"])) < len(wanted)-1 :
     raise MissingExternalDependencyError("Install the NCBI BLAST+ command line "
                                          "tools if you want to use the "
                                          "Bio.Blast.Applications wrapper.")
 
 
 class Pairwise(unittest.TestCase):
-    def test_blasp(self):
+    def test_blastp(self):
         """Pairwise BLASTP search"""
         global exe_names
         cline = Applications.NcbiblastpCommandline(exe_names["blastp"],
@@ -211,7 +216,10 @@ class CheckCompleteArgList(unittest.TestCase):
                      ",".join(sorted(missing))))
 
         #An almost trivial example to test any validation
-        cline = wrapper(exe, query="dummy")
+        if "-query" in names:
+            cline = wrapper(exe, query="dummy")
+        elif "-archive" in names:
+            cline = wrapper(exe, archive="dummy")
         str(cline)
 
     def test_blastx(self):
@@ -245,6 +253,11 @@ class CheckCompleteArgList(unittest.TestCase):
     def test_rpstblastn(self):
         """Check all rpstblastn arguments are supported"""
         self.check("rpstblastn", Applications.NcbirpstblastnCommandline)
+
+    if "blast_formatter" in exe_names:
+        def test_blast_formatter(self):
+            """Check all blast_formatter arguments are supported"""
+            self.check("blast_formatter", Applications.NcbiblastformatterCommandline)
 
 
 if __name__ == "__main__":

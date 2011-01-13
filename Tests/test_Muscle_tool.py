@@ -140,6 +140,7 @@ class MuscleApplication(unittest.TestCase):
         #TODO - Why doesn't this work with MUSCLE 3.6 on the Mac?
         #It may be another bug fixed in MUSCLE 3.7 ...
         result, stdout, stderr = generic_run(cmdline)
+        #NOTE: generic_run has been removed from Biopython
         self.assertEqual(result.return_code, 0)
         self.assertEqual(stdout.read(), "")
         self.assertTrue("ERROR" not in stderr.read())
@@ -154,7 +155,7 @@ class SimpleAlignTest(unittest.TestCase):
     def test_simple_fasta(self):
         input_file = "Fasta/f002"
         self.assertTrue(os.path.isfile(input_file))
-        records = list(SeqIO.parse(open(input_file),"fasta"))
+        records = list(SeqIO.parse(input_file,"fasta"))
         #Prepare the command...
         cmdline = MuscleCommandline(muscle_exe)
         cmdline.set_parameter("in", input_file)
@@ -164,6 +165,7 @@ class SimpleAlignTest(unittest.TestCase):
         cmdline.set_parameter("maxiters", 2)
         self.assertEqual(str(cmdline).rstrip(), "muscle -in Fasta/f002 -maxiters 2 -stable")
         result, out_handle, err_handle = generic_run(cmdline)
+        #NOTE: generic_run has been removed from Biopython
         print err_handle.read()
         print out_handle.read()
         align = AlignIO.read(out_handle, "fasta")
@@ -177,7 +179,7 @@ class SimpleAlignTest(unittest.TestCase):
         """Simple muscle call using Clustal output with a MUSCLE header"""
         input_file = "Fasta/f002"
         self.assertTrue(os.path.isfile(input_file))
-        records = list(SeqIO.parse(open(input_file),"fasta"))
+        records = list(SeqIO.parse(input_file,"fasta"))
         records.sort(key = lambda rec: rec.id)
         #Prepare the command... use Clustal output (with a MUSCLE header)
         cmdline = MuscleCommandline(muscle_exe, input=input_file, clw = True)
@@ -205,7 +207,7 @@ class SimpleAlignTest(unittest.TestCase):
         """Simple muscle call using strict Clustal output"""
         input_file = "Fasta/f002"
         self.assertTrue(os.path.isfile(input_file))
-        records = list(SeqIO.parse(open(input_file),"fasta"))
+        records = list(SeqIO.parse(input_file,"fasta"))
         records.sort(key = lambda rec: rec.id)
         #Prepare the command...
         cmdline = MuscleCommandline(muscle_exe)
@@ -236,10 +238,8 @@ class SimpleAlignTest(unittest.TestCase):
         """Simple muscle call using long file"""
         #Create a large input file by converting some of another example file
         temp_large_fasta_file = "temp_cw_prot.fasta"
-        handle = open(temp_large_fasta_file, "w")
-        records = list(SeqIO.parse(open("NBRF/Cw_prot.pir", "rU"), "pir"))[:40]
-        SeqIO.write(records, handle, "fasta")
-        handle.close()
+        records = list(SeqIO.parse("NBRF/Cw_prot.pir", "pir"))[:40]
+        SeqIO.write(records, temp_large_fasta_file, "fasta")
         #Prepare the command...
         cmdline = MuscleCommandline(muscle_exe)
         cmdline.set_parameter("in", temp_large_fasta_file)
@@ -279,7 +279,7 @@ class SimpleAlignTest(unittest.TestCase):
         """Simple alignment using stdin"""
         input_file = "Fasta/f002"
         self.assertTrue(os.path.isfile(input_file))
-        records = list(SeqIO.parse(open(input_file),"fasta"))
+        records = list(SeqIO.parse(input_file,"fasta"))
         #Prepare the command... use Clustal output (with a MUSCLE header)
         cline = MuscleCommandline(muscle_exe, clw=True)
         self.assertEqual(str(cline).rstrip(), muscle_exe + " -clw")
@@ -309,7 +309,7 @@ class SimpleAlignTest(unittest.TestCase):
         output_html = "temp_f002.html"
         output_clwstrict = "temp_f002.clw"
         self.assertTrue(os.path.isfile(input_file))
-        records = list(SeqIO.parse(open(input_file),"fasta"))
+        records = list(SeqIO.parse(input_file,"fasta"))
         records.sort(key = lambda rec: rec.id)
         #Prepare the command... use Clustal output (with a MUSCLE header)
         cmdline = MuscleCommandline(muscle_exe, input=input_file,
@@ -335,11 +335,13 @@ class SimpleAlignTest(unittest.TestCase):
         for old, new in zip(records, align):
             self.assertEqual(old.id, new.id)
         del child
-        html = open(output_html,"rU").read().strip().upper()
+        handle = open(output_html,"rU")
+        html = handle.read().strip().upper()
+        handle.close()
         self.assertTrue(html.startswith("<HTML"))
         self.assertTrue(html.endswith("</HTML>"))
         #ClustalW strict:
-        align = AlignIO.read(open(output_clwstrict), "clustal")
+        align = AlignIO.read(output_clwstrict, "clustal")
         align.sort()
         self.assertEqual(len(records),len(align))
         for old, new in zip(records, align):

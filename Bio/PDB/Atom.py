@@ -5,14 +5,12 @@
 
 """Atom class, used in Structure objects."""
 
-import warnings
-
 import numpy
 
 from Bio.PDB.Entity import DisorderedEntityWrapper
 from Bio.PDB.PDBExceptions import PDBConstructionWarning
 from Bio.PDB.Vector import Vector
-
+from Bio.Data import IUPACData
 
 class Atom:
     def __init__(self, name, coord, bfactor, occupancy, altloc, fullname, serial_number,
@@ -46,6 +44,7 @@ class Atom:
 
         @param element: atom element, e.g. "C" for Carbon, "HG" for mercury,
         @type fullname: uppercase string (or None if unknown)
+     
         """
         self.level="A"
         # Reference to the residue 
@@ -66,15 +65,45 @@ class Atom:
         self.serial_number=serial_number
         # Dictionary that keeps addictional properties
         self.xtra={}
-        if not element:
-            warnings.warn("Atom object (name=%s) without element" % name,
-                          PDBConstructionWarning)
-            element = "?"
-            print(name, "--> ?")
-        elif len(element)>2 or element != element.upper() or element != element.strip():
-            raise ValueError(element)
-        self.element=element
+        assert not element or element == element.upper(), element
+        self.element = self._assign_element(element)
+        self.mass = self._assign_atom_mass()
         
+    def _assign_element(self, element):
+        """Tries to guess element from atom name if not recognised."""
+        if not element or element.capitalize() not in IUPACData.atom_weights:
+            # Inorganic elements have their name shifted left by one position 
+            #  (is a convention in PDB, but not part of the standard).
+            if self.fullname[0] != " ":
+                putative_element = self.name.strip()
+            else:
+                # Hs may have digit in [0]
+                if self.name[0].isdigit():
+                    putative_element = self.name[1]
+                else:
+                    putative_element = self.name[0]
+            
+            if putative_element.capitalize() in IUPACData.atom_weights:
+                msg = "Used element %r for Atom (name=%s) with given element %r" \
+                      % (putative_element, self.name, element)
+                element = putative_element
+            else:
+                msg = "Could not assign element %r for Atom (name=%s) with given element %r" \
+                      % (self.name, element)
+                element = ""
+            import warnings
+            warnings.warn(msg, PDBConstructionWarning)
+                
+        return element
+        
+    def _assign_atom_mass(self):
+        # Needed for Bio/Struct/Geometry.py C.O.M. function
+        if self.element:
+            return IUPACData.atom_weights[self.element.capitalize()]
+        else:
+            return float('NaN')
+
+
     # Special methods   
 
     def __repr__(self):
