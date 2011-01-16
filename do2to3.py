@@ -33,33 +33,39 @@ import lib2to3.main
 from io import StringIO
 
 
-def run2to3(filename):
+def run2to3(filenames):
     stderr = sys.stderr
     handle = StringIO()
     try:
         #Want to capture stderr (otherwise too noisy)
         sys.stderr = handle
-        #TODO - Configurable options per file?
-        args = ["--nofix=long", "--no-diffs", "-n", "-w"]
-        e = lib2to3.main.main("lib2to3.fixes", args + [filename])
-        if e != 0:
-            sys.stderr = stderr
-            sys.stderr.write(handle.get_value())
-            os.remove(filename) #Don't want a half edited file!
-            raise RuntimeError("Error %i from 2to3 on %s" \
-                               % (e, filename))
-        #And again for any doctests,
-        e = lib2to3.main.main("lib2to3.fixes", args + ["-d", filename])
-        if e != 0:
-            sys.stderr = stderr
-            sys.stderr.write(handle.get_value())
-            os.remove(filename) #Don't want a half edited file!
-            raise RuntimeError("Error %i from 2to3 (doctests) on %s" \
-                               % (e, filename))
+        while filenames:
+            filename = filenames.pop(0)
+            #TODO - Configurable options per file?
+            args = ["--nofix=long", "--no-diffs", "-n", "-w"]
+            e = lib2to3.main.main("lib2to3.fixes", args + [filename])
+            if e != 0:
+                sys.stderr = stderr
+                sys.stderr.write(handle.get_value())
+                os.remove(filename) #Don't want a half edited file!
+                raise RuntimeError("Error %i from 2to3 on %s" \
+                                   % (e, filename))
+            #And again for any doctests,
+            e = lib2to3.main.main("lib2to3.fixes", args + ["-d", filename])
+            if e != 0:
+                sys.stderr = stderr
+                sys.stderr.write(handle.get_value())
+                os.remove(filename) #Don't want a half edited file!
+                raise RuntimeError("Error %i from 2to3 (doctests) on %s" \
+                                   % (e, filename))
     except KeyboardInterrupt:
         sys.stderr = stderr
         sys.stderr.write("Interrupted during %s\n" % filename)
         os.remove(filename) #Don't want a half edited file!
+        for filename in filenames:
+            if os.path.isfile(filename):
+                #Don't want uncoverted files left behind:
+                os.remove(filename)
         sys.exit(1)
     finally:
         #Restore stderr
@@ -89,6 +95,9 @@ def do_update(py2folder, py3folder, verbose=False):
                 print("Removing %s" % new)
                 os.remove(new)
     #Check all the Python 2 original files have been copied/converted
+    #Note we need to do all the conversions *after* copying the files
+    #so that 2to3 can detect local imports successfully.
+    to_convert = []
     for dirpath, dirnames, filenames in os.walk(py2folder):
         if verbose: print("Processing %s" % dirpath)
         relpath = os.path.relpath(dirpath, py2folder)
@@ -122,10 +131,13 @@ def do_update(py2folder, py3folder, verbose=False):
             shutil.copy2(old, new)
             if f.endswith(".py"):
                 #Also run 2to3 on it
-                print("Converting %s" % new)
-                run2to3(new)
+                to_convert.append(new)
+                if verbose: print("Will convert %s" % new)
             else:
                 if verbose: print("Updated %s" % new)
+    if to_convert:
+        print("Have %i python files to convert" % len(to_convert))
+        run2to3(to_convert)
 
             
 def main(python2_source, python3_source,
