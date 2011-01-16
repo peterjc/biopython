@@ -41,6 +41,7 @@ def run2to3(filenames):
         sys.stderr = handle
         while filenames:
             filename = filenames.pop(0)
+            print("Converting %s" % filename)
             #TODO - Configurable options per file?
             args = ["--nofix=long", "--no-diffs", "-n", "-w"]
             e = lib2to3.main.main("lib2to3.fixes", args + [filename])
