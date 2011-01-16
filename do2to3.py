@@ -14,9 +14,8 @@ This calls the lib2to3 library functions to convert the Biopython source code
 from Python 2 to Python 3, tracking changes to files so that unchanged files
 need not be reconverted making development much easier (i.e. if you edit one
 source file, doing 'python setup.py install' will only reconvert the one file).
-This is done by recording the md5 checksum of the Python 2 source, and the
-converted Python 3 version. This should be clever enough to reconvert files
-as needed when switching branches (common during development).
+This is done by the last modified date stamps (which will be updated by git if
+you switch branches).
 
 NOTE - This is intended to be run under Python 3 (not under Python 2), but
 care has been taken to make it run under Python 2 enough to give a clear error
