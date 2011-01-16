@@ -29,11 +29,8 @@ if sys.version_info[0] < 3:
 
 import shutil
 import os
-import subprocess
-import lib2to3
 import lib2to3.main
 from io import StringIO
-from hashlib import md5
 
 
 def run2to3(filename):
@@ -48,77 +45,58 @@ def run2to3(filename):
         if e != 0:
             sys.stderr = stderr
             sys.stderr.write(handle.get_value())
-            raise RuntimeError("Error %i from 2to3")
+            os.remove(filename) #Don't want a half edited file!
+            raise RuntimeError("Error %i from 2to3 on %s" \
+                               % (e, filename))
         #And again for any doctests,
         e = lib2to3.main.main("lib2to3.fixes", args + ["-d", filename])
         if e != 0:
             sys.stderr = stderr
             sys.stderr.write(handle.get_value())
-            raise RuntimeError("Error %i from 2to3 (doctests)")
+            os.remove(filename) #Don't want a half edited file!
+            raise RuntimeError("Error %i from 2to3 (doctests) on %s" \
+                               % (e, filename))
+    except KeyboardInterrupt:
+        sys.stderr = stderr
+        sys.stderr.write("Interrupted during %s\n" % filename)
+        os.remove(filename) #Don't want a half edited file!
+        sys.exit(1)
     finally:
         #Restore stderr
         sys.stderr = stderr
 
-def file_md5(filename):
-    handle = open(filename, "rb")
-    answer = md5(handle.read()).hexdigest()
-    handle.close()
-    return answer
 
-def load_md5_cache(filename):
-    old = dict()
-    new = dict()
-    handle = open(filename)
-    for line in handle:
-        line = line.rstrip()
-        if not line or line.startswith("#"): continue
-        parts = line.rstrip().split("\t")
-        if len(parts) == 2:
-            old[parts[0]]=parts[1]
-        elif len(parts) == 3:
-            old[parts[0]]=parts[1]
-            new[parts[0]]=parts[2]
-    handle.close()
-    return old, new
-        
-def save_md5_cache(filename, old, new):
-    handle = open(filename, "w")
-    handle.write("#This is an automatically generated file.\n")
-    handle.write("#Each line is tab separated, starting with a filename,\n")
-    handle.write("#followed by the original file's md5 and (for Python\n")
-    handle.write("#files only) the converted file's md5 checksum.\n")
-    handle.write("#These checksums are used to avoid re-converting any\n")
-    handle.write("#unchanged Python files with 2to3 via setup.py\n")
-    for f, m in old.items():
-        if f in new:
-            handle.write("%s\t%s\t%s\n" % (f,m,new[f]))
-        else:
-            handle.write("%s\t%s\n" % (f,m))
-    handle.close()
-
-def do_update(py2folder, py3folder, md5cache, verbose=False):
-    if os.path.isfile(md5cache):
-        old_md5, new_md5 = load_md5_cache(md5cache)
-        #Check and remove any stale values
-        for f in old_md5:
-            if not os.path.isfile(os.path.join(py2folder, f))\
-            or not os.path.isfile(os.path.join(py3folder, f)):
-                del old_md5[f]
-        for f in new_md5:
-            if not os.path.isfile(os.path.join(py2folder, f))\
-            or not os.path.isfile(os.path.join(py3folder, f)):
-                del new_md5[f]
-        save_md5_cache(md5cache, old_md5, new_md5)
-    else:
-        old_md5 = dict()
-        new_md5 = dict()
+def do_update(py2folder, py3folder, verbose=False):
     if not os.path.isdir(py2folder):
         raise ValueError("Python 2 folder %r does not exist" % py2folder)
     if not os.path.isdir(py3folder):
         os.mkdir(py3folder)
+    #First remove any files from the 3to2 conversion which no
+    #longer existing the Python 2 origin (only expected to happen
+    #on a development machine).
+    for dirpath, dirnames, filenames in os.walk(py3folder):
+        relpath = os.path.relpath(dirpath, py3folder)
+        for d in dirnames:
+            new = os.path.join(py3folder, relpath, d)
+            old = os.path.join(py2folder, relpath, d)
+            if not os.path.isdir(old):
+                print("Removing %s" % new)
+                shutil.rmtree(new)
+        for f in filenames:
+            new = os.path.join(py3folder, relpath, f)
+            old = os.path.join(py2folder, relpath, f)
+            if not os.path.isfile(old):
+                print("Removing %s" % new)
+                os.remove(new)
+    #Check all the Python 2 original files have been copied/converted
     for dirpath, dirnames, filenames in os.walk(py2folder):
         if verbose: print("Processing %s" % dirpath)
         relpath = os.path.relpath(dirpath, py2folder)
+        #This is just to give cleaner filenames
+        if relpath[:2] == "/.":
+            relpath = relpath[2:]
+        elif relpath == ".":
+            relpath = ""
         for d in dirnames:
             new = os.path.join(py3folder, relpath, d)
             if not os.path.isdir(new):
@@ -127,56 +105,45 @@ def do_update(py2folder, py3folder, md5cache, verbose=False):
             if f.startswith("."):
                 #Ignore hidden files
                 continue
-            elif f.endswith("~") or f.endswith(".bak") or f.endswith(".swp"):
+            elif f.endswith("~") or f.endswith(".bak") \
+            or f.endswith(".swp"):
                 #Ignore backup files
                 continue
             elif f.endswith(".pyc") or f.endswith("$py.class"):
                 #Ignore compiled python
                 continue
-            rel = os.path.join(relpath, f)
-            if rel[:2] == "./":
-                #This is just to give cleaner filenames
-                rel = rel[2:]
-            old = os.path.join(py2folder, rel)
-            m = file_md5(old)
-            new = os.path.join(py3folder, rel)
-            if rel in old_md5 and m == old_md5[rel] \
-            and os.path.isfile(new) and file_md5(new) == new_md5.get(rel, m):
-                if verbose: print("Unchanged: %s" % new)
+            old = os.path.join(py2folder, relpath, f)
+            new = os.path.join(py3folder, relpath, f)
+            if os.path.isfile(new) \
+            and os.stat(new).st_mtime >= os.stat(old).st_mtime:
+                if verbose: print("Current: %s" % new)
                 continue
-            #Python, C code, data files, etc - copy
+            #Python, C code, data files, etc - copy with date stamp etc
             shutil.copy2(old, new)
             if f.endswith(".py"):
                 #Also run 2to3 on it
                 print("Converting %s" % new)
                 run2to3(new)
-                new_md5[rel] = file_md5(new)
             else:
                 if verbose: print("Updated %s" % new)
-                assert rel not in new_md5
-            old_md5[rel] = m
-            #Bit heavy handed to resave after each conversion/copy,
-            #but useful if the task is interrupted and resumed later.
-            save_md5_cache(md5cache, old_md5, new_md5)
+
             
-def main(children=["Bio", "BioSQL", "Tests", "Scripts", "Doc"]):
-    #Want to use different folders for Python 3.1, 3.2, etc
+def main(python2_source, python3_source,
+         children=["Bio", "BioSQL", "Tests", "Scripts", "Doc"]):
+    #Note want to use different folders for Python 3.1, 3.2, etc
     #since the 2to3 libraries have changed so the conversion
     #may differ slightly.
-    python3_source = "build/py%i.%i" % sys.version_info[:2]
-    md5_cache_template = python3_source + "_%s.md5"
-
-    if not os.path.isdir("build"):
-        os.mkdir("build")
+    print("The 2to3 library will be called automatically now,")
+    print("and the converted files cached under %s" % python3_source)
     if not os.path.isdir(python3_source):
         os.mkdir(python3_source)
-
     for child in children:
         print("Processing %s" % child)
-        do_update(child,
-                  os.path.join(python3_source, child),
-                  md5_cache_template % child)
+        do_update(os.path.join(python2_source, child),
+                  os.path.join(python3_source, child))
     print("Python 2to3 processing done.")
               
 if __name__ == "__main__":
-    main()
+    python2_source = "."
+    python3_source = "build/py%i.%i" % sys.version_info[:2]
+    main(python2_source, python3_source)

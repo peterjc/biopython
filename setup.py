@@ -23,6 +23,7 @@ http://biopython.org/wiki/Mailing_lists
 """
 import sys
 import os
+import shutil
 
 def get_yes_or_no(question, default):
     if default:
@@ -51,15 +52,19 @@ if sys.version_info[:2] < (2, 4):
           + "yet).  Python %d.%d detected" % sys.version_info[:2])
     sys.exit(-1)
 elif sys.version_info[:2] == (2,4):
-    print ("WARNING - This is the last Biopython release to support Python 2.4")
+    print ("WARNING - Biopython no longer officially supports Python 2.4")
 elif sys.version_info[0] == 3:
-    print("Biopython does not yet officially support Python 3, but you can")
-    print("help test it. The 2to3 library will be called automatically now,")
-    print("and the converted files cached under the build subdirectory.")
+    print("WARNING - Biopython does not yet officially support Python 3")
     import do2to3
-    do2to3.main()
     python3_source = "build/py%i.%i" % sys.version_info[:2]
-    assert os.path.isdir(python3_source)
+    if "clean" in sys.argv:
+        if os.path.isdir(python3_source):
+            shutil.rmtree(python3_source)
+        del python3_source #so we don't try to change to it below
+    else:
+        if not os.path.isdir("build"):
+            os.mkdir("build")
+        do2to3.main(".", python3_source)
     
 from distutils.core import setup
 from distutils.core import Command
