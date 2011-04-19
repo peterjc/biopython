@@ -22,7 +22,7 @@ for each query sequence:
     >>> for search in SearchIO.parse("Blast/xbt010.xml", "blast-xml"):
     ...     print search.query_id, len(search)
     gi|3298468|dbj|BAA31520.1| 10
-    gi|2781234|pdb|1JLY|B 9
+    gi|2781234|pdb|1JLY|B 10
     gi|4959044|gb|AAD34209.1|AF069992_1 10
     gi|671626|emb|CAA85685.1| 10
 
@@ -33,7 +33,7 @@ Bio.SeqIO and Bio.AlignIO etc):
     >>> from Bio import SearchIO
     >>> search = SearchIO.read("Blast/xbt001.xml", "blast-xml")
     >>> print search.query_id, len(search)
-    gi|49176427|ref|NP_418280.3| 12
+    gi|49176427|ref|NP_418280.3| 212
 
 If you need random access to the search results by query ID, use the index
 function which returns a read-only dictionary like object (following the
@@ -44,7 +44,7 @@ convention used in Bio.SeqIO):
     >>> len(searches)
     4
     >>> print len(searches["gi|2781234|pdb|1JLY|B"])
-    9
+    10
 
 File Formats
 ============
@@ -80,7 +80,7 @@ def parse(handle, format):
     >>> for search in SearchIO.parse("Blast/xbt010.xml", "blast-xml"):
     ...     print "Query", search.query_id, "matches", len(search)
     Query gi|3298468|dbj|BAA31520.1| matches 10
-    Query gi|2781234|pdb|1JLY|B matches 9
+    Query gi|2781234|pdb|1JLY|B matches 10
     Query gi|4959044|gb|AAD34209.1|AF069992_1 matches 10
     Query gi|671626|emb|CAA85685.1| matches 10
 
@@ -141,7 +141,7 @@ def read(handle, format):
     >>> print "Query", search.query_id
     Query gi|49176427|ref|NP_418280.3|
     >>> print "Has matches to %i database entries" % len(search)
-    Has matches to 12 database entries
+    Has matches to 212 database entries
 
     If the handle contains no results, or more than one result,
     an exception is raised.  For example:
@@ -187,7 +187,7 @@ def index(filename, format):
     >>> len(searches)
     4
     >>> print len(searches["gi|2781234|pdb|1JLY|B"])
-    9
+    10
     """
     #Quick in memory implementation to make doctests pass
     #See the Bio.SeqIO module for what I have in mind here.
