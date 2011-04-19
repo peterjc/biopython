@@ -8,13 +8,11 @@
 from _objects import SearchResult
 
 def BlastXmlIterator(handle):
-    if handle.name == "Blast/xbt001.xml":
-        yield SearchResult("gi|49176427|ref|NP_418280.3|", 12)
-    elif handle.name == "Blast/xbt010.xml":
-        yield SearchResult("gi|3298468|dbj|BAA31520.1|", 10)
-        yield SearchResult("gi|2781234|pdb|1JLY|B", 9)
-        yield SearchResult("gi|4959044|gb|AAD34209.1|AF069992_1", 10)
-        yield SearchResult("gi|671626|emb|CAA85685.1|", 10)
-    else:
-        raise NotImplementedError(handle)
+    from Bio.Blast.NCBIXML import parse
+    for index, record in enumerate(parse(handle)):
+        #Note this heuristic may need updating for NCBI BLAST 2.2.25+
+        query_id = record.query_id
+        if str(index+1) == query_id:
+            query_id = record.query.split(None,1)[0]
+        yield SearchResult(query_id, len(record.alignments))
 
