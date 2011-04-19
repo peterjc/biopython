@@ -46,15 +46,27 @@ convention used in Bio.SeqIO):
     >>> print len(searches["gi|2781234|pdb|1JLY|B"])
     9
 
-"""
+File Formats
+============
+When specifying the file format, use lowercase strings.  The same format
+names are also used in Bio.AlignIO and include:
 
-class SearchResult(object):
-    """Placeholder object to store search results for one query."""
-    def __init__(self, query_id, hits):
-        self.query_id = query_id
-        self.hits = hits
-    def __len__(self):
-        return self.hits #Will be a list later...
+ - blast-xml - NCBI BLAST XML
+ - fasta-m10 - For the pairswise alignments output by Bill Pearson's FASTA
+               tools when used with the -m 10 command line option for machine
+               readable output.
+
+Note that while Bio.SearchIO will read all the above file formats, it cannot
+yet write to any of them.
+"""
+from _objects import SearchResult
+import FastaIO
+import BlastIO
+
+_FormatToIterator = {
+                     "blast-xml" : BlastIO.BlastXmlIterator,
+                     "fasta-m10" : FastaIO.FastaM10Iterator,
+                     }
 
 def parse(handle, format):
     """Parse a file containing a search results.
@@ -87,23 +99,33 @@ def parse(handle, format):
     single search query), use the Bio.SearchIO.read(handle, format) function
     instead.
     """
-    #This is a place holder hack to get the doctests to pass
-    #(my attempt at test driven development)
-    if handle == "Blast/xbt001.xml":
-        yield SearchResult("gi|49176427|ref|NP_418280.3|", 12)
-    elif handle == "Blast/xbt010.xml":
-        yield SearchResult("gi|3298468|dbj|BAA31520.1|", 10)
-        yield SearchResult("gi|2781234|pdb|1JLY|B", 9)
-        yield SearchResult("gi|4959044|gb|AAD34209.1|AF069992_1", 10)
-        yield SearchResult("gi|671626|emb|CAA85685.1|", 10)
-    elif handle == "Fasta/output003.m10":
-        yield SearchResult("gi|152973837|ref|YP_001338874.1|", 1)
-        yield SearchResult("gi|152973838|ref|YP_001338875.1|", 0)
-        yield SearchResult("gi|152973839|ref|YP_001338876.1|", 0)
-        yield SearchResult("gi|152973840|ref|YP_001338877.1|", 1)
-        yield SearchResult("gi|152973841|ref|YP_001338878.1|", 1)
+    handle_close = False
+
+    if isinstance(handle, basestring):
+        handle = open(handle, "rU")
+        #TODO - On Python 2.5+ use with statement to close handle
+        handle_close = True
+
+    #Try and give helpful error messages:
+    if not isinstance(format, basestring):
+        raise TypeError("Need a string for the file format (lower case)")
+    if not format:
+        raise ValueError("Format required (lower case string)")
+    if format != format.lower():
+        raise ValueError("Format string '%s' should be lower case" % format)
+
+    #Map the file format to a sequence iterator:
+    if format in _FormatToIterator:
+        i = _FormatToIterator[format](handle)
     else:
-        raise NotImplementedError(handle)
+        raise ValueError("Unknown format '%s'" % format)
+
+    #This imposes some overhead... wait until we drop Python 2.4 to fix it
+    for a in i:
+        yield a
+    if handle_close:
+        handle.close()
+
 
 def read(handle, format):
     """Parse a file containing a single search result.
