@@ -9,7 +9,10 @@ class SearchResult(object):
     """Placeholder object to store search results for one query."""
     def __init__(self, query_id, hits):
         self.query_id = query_id
-        self.hits = hits
-    def __len__(self):
-        return self.hits #Will be a list later...
+        self._hits = hits
 
+    def __len__(self):
+        return len(self._hits)
+
+    def __iter__(self):
+        return iter(self._hits)

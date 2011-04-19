@@ -89,11 +89,15 @@ def parse(handle, format):
     >>> from Bio import SearchIO
     >>> for search in SearchIO.parse("Fasta/output003.m10", "fasta-m10"):
     ...     print "Query", search.query_id, "matches", len(search)
+    ...     for match in search: print match
     Query gi|152973837|ref|YP_001338874.1| matches 1
+    gi|10955263|ref|NP_052604.1|
     Query gi|152973838|ref|YP_001338875.1| matches 0
     Query gi|152973839|ref|YP_001338876.1| matches 0
     Query gi|152973840|ref|YP_001338877.1| matches 1
+    gi|10955265|ref|NP_052606.1|
     Query gi|152973841|ref|YP_001338878.1| matches 1
+    gi|10955264|ref|NP_052605.1|
 
     If however your file has one and only one result (i.e. there was just a
     single search query), use the Bio.SearchIO.read(handle, format) function
@@ -158,8 +162,19 @@ def read(handle, format):
 
     >>> from Bio import SearchIO
     >>> search = SearchIO.parse("Blast/xbt010.xml", "blast-xml").next()
-    >>> print "First query's ID", search.query_id
-    First query's ID gi|3298468|dbj|BAA31520.1|
+    >>> print "First query's ID", search.query_id, "matches", len(search)
+    First query's ID gi|3298468|dbj|BAA31520.1| matches 10
+    >>> for match in search: print match
+    gi|3298468|dbj|BAA31520.1|
+    gi|227434194|gb|ACP28878.1|
+    gi|223541319|gb|EEF42870.1|
+    gi|225441155|ref|XP_002267788.1|
+    gi|209892837|gb|ACI95283.1|
+    gi|21284370|gb|AAB51393.2|
+    gi|22858917|gb|AAN05780.1|
+    gi|21284372|gb|AAB51394.2|
+    gi|38198150|emb|CAE53881.1|
+    gi|162809290|dbj|BAF95576.1|
 
     Use the Bio.SearchIO.parse(handle, format) function if you want to read
     multiple results from the handle.

@@ -66,5 +66,5 @@ def FastaM10Iterator(handle):
                 break
             elif line.startswith(">>"):
                 matches.append(line[2:].split(None,1)[0])
-        yield SearchResult(query_id, len(matches)) 
+        yield SearchResult(query_id, matches)
 

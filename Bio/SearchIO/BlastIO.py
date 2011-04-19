@@ -14,5 +14,10 @@ def BlastXmlIterator(handle):
         query_id = record.query_id
         if str(index+1) == query_id:
             query_id = record.query.split(None,1)[0]
-        yield SearchResult(query_id, len(record.alignments))
+        matches = []
+        for alignment in record.alignments:
+            match_id = alignment.hit_id
+            #Expect to need heuristic here too...
+            matches.append(match_id)
+        yield SearchResult(query_id, matches)
 
