@@ -257,6 +257,7 @@ PACKAGES = [
     'Bio.Restriction',
     'Bio.Restriction._Update',
     'Bio.SCOP',
+    'Bio.SearchIO',
     'Bio.SeqIO',
     'Bio.SeqUtils',
     'Bio.Sequencing',
