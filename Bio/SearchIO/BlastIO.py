@@ -72,12 +72,16 @@ def BlastStandardTabularIterator(handle):
             raise ValueError("Only %i columns in line %r" \
                              % (len(parts), line))
         if query_id == parts[0]:
-            if parts[1] not in matches:
-                matches.append(parts[1])
+            if parts[1] in [m.match_id for m in matches]:
+                #Need a proper way to add an HSP/alignment...
+                #...for now we're just storing the e-value
+                matches[-1]._aligns.append(parts[10])
+            else:
+                matches.append(TopMatches(parts[1], [parts[10]]))
         else:
             if query_id is not None:
-                yield SearchResult(query_id, [TopMatches(m,[None]) for m in matches])
+                yield SearchResult(query_id, matches)
             query_id = parts[0]
-            matches = [parts[1]]
+            matches = [TopMatches(parts[1], [parts[10]])]
     if query_id is not None:
-        yield SearchResult(query_id, [TopMatches(m,[None]) for m in matches])
+        yield SearchResult(query_id, matches)
