@@ -51,10 +51,12 @@ File Formats
 When specifying the file format, use lowercase strings.  The same format
 names are also used in Bio.AlignIO and include:
 
- - blast-xml - NCBI BLAST XML
- - fasta-m10 - For the pairswise alignments output by Bill Pearson's FASTA
-               tools when used with the -m 10 command line option for machine
-               readable output.
+ - blast-stdtab - NCBI BLAST standard 12 column tabular
+ - blast-text   - NCBI BLAST pairwise text (obsolete)
+ - blast-xml    - NCBI BLAST XML
+ - fasta-m10    - For the pairswise alignments output by Bill Pearson's FASTA
+                  tools when used with the -m 10 command line option for machine
+                  readable output.
 
 Note that while Bio.SearchIO will read all the above file formats, it cannot
 yet write to any of them.
@@ -65,7 +67,8 @@ import BlastIO
 
 _FormatToIterator = {
                      "blast-xml" : BlastIO.BlastXmlIterator,
-                     "blast-text" : BlastIO.BlastPairwiseTextIterator, 
+                     "blast-text" : BlastIO.BlastPairwiseTextIterator,
+                     "blast-stdtab" : BlastIO.BlastStandardTabularIterator,
                      "fasta-m10" : FastaIO.FastaM10Iterator,
                      }
 

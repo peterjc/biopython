@@ -3,7 +3,18 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 #
-"""Bio.SearchIO support for NCBI BLAST output."""
+"""Bio.SearchIO support for NCBI BLAST output.
+
+Rather than accessing the Bio.SearchIO.BlastIO module directly, you are
+expected to access its functionality via the top level functions of
+Bio.SearchIO under the format names "blast-xml", "blast-stdtab" and
+"blast-text".
+
+Note that these different BLAST output formats contain somewhat different
+information. In particular, the standard 12 column tabular output does not
+contain information about queries with no hits, and does not contain the
+pairwise alignments of the hits either.
+"""
 
 from _objects import SearchResult
 
@@ -50,3 +61,23 @@ def BlastPairwiseTextIterator(handle):
             matches = matches_d
         yield SearchResult(query_id, matches)
                             
+def BlastStandardTabularIterator(handle):
+    query_id = None
+    matches = []
+    for line in handle:
+        if line.startswith("#"):
+            continue
+        parts = line.rstrip("\n").split("\t")
+        if len(parts) < 12:
+            raise ValueError("Only %i columns in line %r" \
+                             % (len(parts), line))
+        if query_id == parts[0]:
+            if parts[1] not in matches:
+                matches.append(parts[1])
+        else:
+            if query_id is not None:
+                yield SearchResult(query_id, matches)
+            query_id = parts[0]
+            matches = [parts[1]]
+    if query_id is not None:
+        yield SearchResult(query_id, matches)
