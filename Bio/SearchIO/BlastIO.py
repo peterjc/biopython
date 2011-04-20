@@ -16,7 +16,7 @@ contain information about queries with no hits, and does not contain the
 pairwise alignments of the hits either.
 """
 
-from _objects import SearchResult
+from _objects import SearchResult, TopMatches
 
 def BlastXmlIterator(handle):
     from Bio.Blast.NCBIXML import parse
@@ -29,7 +29,7 @@ def BlastXmlIterator(handle):
             match_id = alignment.hit_id
             #Expect to need heuristic here too...
             matches.append(match_id)
-        yield SearchResult(query_id, matches)
+        yield SearchResult(query_id, [TopMatches(m,[None]) for m in matches])
 
 def BlastPairwiseTextIterator(handle):
     from Bio.Blast.NCBIStandalone import BlastParser, Iterator
@@ -59,7 +59,7 @@ def BlastPairwiseTextIterator(handle):
             matches = matches_a
         else:
             matches = matches_d
-        yield SearchResult(query_id, matches)
+        yield SearchResult(query_id, [TopMatches(m,[None]) for m in matches])
                             
 def BlastStandardTabularIterator(handle):
     query_id = None
@@ -76,8 +76,8 @@ def BlastStandardTabularIterator(handle):
                 matches.append(parts[1])
         else:
             if query_id is not None:
-                yield SearchResult(query_id, matches)
+                yield SearchResult(query_id, [TopMatches(m,[None]) for m in matches])
             query_id = parts[0]
             matches = [parts[1]]
     if query_id is not None:
-        yield SearchResult(query_id, matches)
+        yield SearchResult(query_id, [TopMatches(m,[None]) for m in matches])

@@ -61,7 +61,7 @@ names are also used in Bio.AlignIO and include:
 Note that while Bio.SearchIO will read all the above file formats, it cannot
 yet write to any of them.
 """
-from _objects import SearchResult
+from _objects import SearchResult, TopMatches
 import FastaIO
 import BlastIO
 
