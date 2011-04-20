@@ -5,6 +5,11 @@
 #
 """Bio.SearchIO objects (private)."""
 
+from Bio.Alphabet import single_letter_alphabet
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+from Bio.Align import MultipleSeqAlignment
+
 class SearchResult(object):
     """Placeholder object to store search results for one query.
 
@@ -57,13 +62,31 @@ class TopMatches(object):
         return iter(self._hits)
 
 class MatchHit(object):
-    """Placeholder object to store a single HSPs/alignment.
+    """Placeholder object to store a single HSPs/alignment without sequence.
 
-    Initially we'll just store the ID and e-value, but a subclass of this
-    and the multiple sequence alignment class seems useful for holding a
-    pairwise alignment.
+    Initially we'll just store the ID and e-value, but there is a subclass of
+    this and the MultipleSeqAlignment class for holding a pairwise alignment.
     """
     def __init__(self, query_id, match_id, evalue):
         self.query_id = query_id
         self.match_id = match_id
         self.evalue = evalue
+
+class MatchHitAlignment(MultipleSeqAlignment, MatchHit):
+    """Placeholder object to store a single HSPs/alignment with sequence.
+
+    This is both a MatchHit object from Bio.SearchIO, and a pairwise
+    MultipleSeqAlignment object which can be used with Bio.AlignIO too.
+    """
+    #TODO - What about general annotation on a MultipleSeqAlignment?
+    def __init__(self, query_id, match_id, evalue,
+                 aligned_query, aligned_match,
+                 alphabet=single_letter_alphabet):
+        MatchHit.__init__(self, query_id, match_id, evalue)
+        query = SeqRecord(Seq(aligned_query, alphabet),
+                          id=query_id, name="query",
+                          description="")
+        match = SeqRecord(Seq(aligned_match, alphabet),
+                          id=match_id, name="match",
+                          description="")
+        MultipleSeqAlignment.__init__(self, [query, match], alphabet)

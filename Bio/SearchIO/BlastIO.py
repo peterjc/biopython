@@ -16,7 +16,7 @@ contain information about queries with no hits, and does not contain the
 pairwise alignments of the hits either.
 """
 
-from _objects import SearchResult, TopMatches, MatchHit
+from _objects import SearchResult, TopMatches, MatchHit, MatchHitAlignment
 
 def BlastXmlIterator(handle):
     from Bio.Blast.NCBIXML import parse
@@ -28,7 +28,9 @@ def BlastXmlIterator(handle):
         for alignment in record.alignments:
             match_id = alignment.hit_id
             #Expect to need heuristic here too...
-            hits = [MatchHit(query_id, match_id, h.expect) \
+            #TODO - Pick sensible alphabet
+            hits = [MatchHitAlignment(query_id, match_id, h.expect,
+                                      h.query, h.sbjct) \
                     for h in alignment.hsps]
             matches.append(TopMatches(query_id, match_id, hits))
         yield SearchResult(query_id, matches)
@@ -51,7 +53,9 @@ def BlastPairwiseTextIterator(handle):
                 match_id = alignment.title[1:].split(None,1)[0]
             else:
                 match_id = alignment.title.split(None,1)[0]
-            hits = [MatchHit(query_id, match_id, h.expect) \
+            #TODO - Pick sensible alphabet
+            hits = [MatchHitAlignment(query_id, match_id, h.expect,
+                                      h.query, h.sbjct) \
                     for h in alignment.hsps]
             matches.append(TopMatches(query_id, match_id, hits))
         yield SearchResult(query_id, matches)

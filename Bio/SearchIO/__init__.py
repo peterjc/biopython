@@ -58,6 +58,17 @@ a BLAST pairwise alignment plain text file for a single query:
     Match gi|585500|sp|P37732|MODD_AZOVI has 1 hits
     Match gi|2507168|sp|P08838|PT1_BACSU has 1 hits
     Match gi|729786|sp|Q05355|HYDL_STRHA has 1 hits
+
+For some file formats, like BLAST XML and the pairwise plain text, you get the
+aligned sequences for each hit:
+
+    >>> for hit in match: print hit
+    SingleLetterAlphabet() alignment with 2 rows and 62 columns
+    AIEAGVAKLLSSFEKSLNLDPAEVLRGLSLRTSARNAWACKVWS...EGQ gi|585505|sp|Q08386|MOPB_RHOCA
+    AVELGGEIRFSTELQSFEQDPAGVTAVIKSRRSGEHTTVRADYL...IGQ gi|729786|sp|Q05355|HYDL_STRHA
+
+For other file formats, like the standard 12 column BLAST tabular output, the
+aligned sequences are not given.
      
 If you need random access to the search results by query ID, use the index
 function which returns a read-only dictionary like object (following the
