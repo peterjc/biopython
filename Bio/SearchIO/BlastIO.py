@@ -16,7 +16,7 @@ contain information about queries with no hits, and does not contain the
 pairwise alignments of the hits either.
 """
 
-from _objects import SearchResult, TopMatches
+from _objects import SearchResult, TopMatches, MatchHit
 
 def BlastXmlIterator(handle):
     from Bio.Blast.NCBIXML import parse
@@ -28,8 +28,10 @@ def BlastXmlIterator(handle):
         for alignment in record.alignments:
             match_id = alignment.hit_id
             #Expect to need heuristic here too...
-            matches.append(match_id)
-        yield SearchResult(query_id, [TopMatches(m,[None]) for m in matches])
+            hits = [MatchHit(query_id, match_id, h.expect) \
+                    for h in alignment.hsps]
+            matches.append(TopMatches(query_id, match_id, hits))
+        yield SearchResult(query_id, matches)
 
 def BlastPairwiseTextIterator(handle):
     from Bio.Blast.NCBIStandalone import BlastParser, Iterator
@@ -49,8 +51,9 @@ def BlastPairwiseTextIterator(handle):
                 match_id = alignment.title[1:].split(None,1)[0]
             else:
                 match_id = alignment.title.split(None,1)[0]
-            hits = [h.expect for h in alignment.hsps]
-            matches.append(TopMatches(match_id, hits))
+            hits = [MatchHit(query_id, match_id, h.expect) \
+                    for h in alignment.hsps]
+            matches.append(TopMatches(query_id, match_id, hits))
         yield SearchResult(query_id, matches)
                             
 def BlastStandardTabularIterator(handle):
@@ -63,17 +66,20 @@ def BlastStandardTabularIterator(handle):
         if len(parts) < 12:
             raise ValueError("Only %i columns in line %r" \
                              % (len(parts), line))
+        match_id = parts[1]
         if query_id == parts[0]:
-            if parts[1] in [m.match_id for m in matches]:
+            hit = MatchHit(query_id, match_id, parts[10])
+            if match_id in [m.match_id for m in matches]:
                 #Need a proper way to add an HSP/alignment...
                 #...for now we're just storing the e-value
-                matches[-1]._aligns.append(parts[10])
+                matches[-1]._hits.append(hit)
             else:
-                matches.append(TopMatches(parts[1], [parts[10]]))
+                matches.append(TopMatches(query_id, match_id, [hit]))
         else:
             if query_id is not None:
                 yield SearchResult(query_id, matches)
             query_id = parts[0]
-            matches = [TopMatches(parts[1], [parts[10]])]
+            hit = MatchHit(query_id, match_id, parts[10])
+            matches = [TopMatches(query_id, match_id, [hit])]
     if query_id is not None:
         yield SearchResult(query_id, matches)
