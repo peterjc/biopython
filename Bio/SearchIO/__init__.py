@@ -47,12 +47,12 @@ a BLAST pairwise alignment plain text file for a single query:
     ...     print "Match %s has %i hits" % (match.match_id, len(match))
     Match gi|585505|sp|Q08386|MOPB_RHOCA has 1 hits
     Match gi|585504|sp|Q08385|MOPA_RHOCA has 1 hits
-    Match gi|585492|sp|P37733|MODA_AZOVI has 1 hits
+    Match gi|585492|sp|P37733|MODA_AZOVI has 2 hits
     Match gi|1709070|sp|P46930|MODE_ECOLI has 1 hits
     Match gi|1709071|sp|P45324|MODE_HAEIN has 1 hits
-    Match gi|585502|sp|P04952|MOP1_CLOPA has 1 hits
-    Match gi|127241|sp|P08854|MOP2_CLOPA has 1 hits
-    Match gi|585503|sp|P38366|MOP3_CLOPA has 1 hits
+    Match gi|585502|sp|P04952|MOP1_CLOPA has 2 hits
+    Match gi|127241|sp|P08854|MOP2_CLOPA has 2 hits
+    Match gi|585503|sp|P38366|MOP3_CLOPA has 2 hits
     Match gi|1170996|sp|P45183|MOP_HAEIN has 1 hits
     Match gi|1709069|sp|P09833|MODC_ECOLI has 1 hits
     Match gi|585500|sp|P37732|MODD_AZOVI has 1 hits
@@ -258,7 +258,7 @@ def index(filename, format):
     >>> len(searches)
     7
     >>> print len(searches["gi|5052071|gb|AF067555.1|AF067555"])
-    10
+    1
 
     """
     #Quick in memory implementation to make doctests pass

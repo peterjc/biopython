@@ -37,29 +37,21 @@ def BlastPairwiseTextIterator(handle):
         query_id = record.query_id
         if query_id is None:
             query_id = record.query.split(None,1)[0]
-        #Get matches in the table of one line descriptions
-        matches_d = [description.title.split(None,1)[0] \
-                     for description in record.descriptions]
         #Get matches in the pairwise alignments section
-        matches_a = []
+        #(Ignore the separate one line descriptions given before this)
+        matches = []
         for alignment in record.alignments:
             if alignment.hit_id:
-                matches_a.append(alignment.hit_id)
+                match_id = alignment.hit_id
             elif alignment.hit_def:
-                matches_a.append(alignment.hit_def)
+                match_id = alignment.hit_def
             elif alignment.title.startswith(">"):
-                matches_a.append(alignment.title[1:].split(None,1)[0])
+                match_id = alignment.title[1:].split(None,1)[0]
             else:
-                matches_a.append(alignment.title.split(None,1)[0])
-        #Check they agree
-        m = min(len(matches_a), len(matches_d))
-        assert matches_a[:m] == matches_d[:m], (query_id, matches_a, matches_d)
-        #Take whichever is longer (controlled by different limits)
-        if len(matches_a) > len(matches_d):
-            matches = matches_a
-        else:
-            matches = matches_d
-        yield SearchResult(query_id, [TopMatches(m,[None]) for m in matches])
+                match_id = alignment.title.split(None,1)[0]
+            hits = [h.expect for h in alignment.hsps]
+            matches.append(TopMatches(match_id, hits))
+        yield SearchResult(query_id, matches)
                             
 def BlastStandardTabularIterator(handle):
     query_id = None
