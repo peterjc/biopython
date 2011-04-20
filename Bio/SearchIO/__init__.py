@@ -65,6 +65,7 @@ import BlastIO
 
 _FormatToIterator = {
                      "blast-xml" : BlastIO.BlastXmlIterator,
+                     "blast-text" : BlastIO.BlastPairwiseTextIterator, 
                      "fasta-m10" : FastaIO.FastaM10Iterator,
                      }
 
@@ -83,6 +84,22 @@ def parse(handle, format):
     Query gi|2781234|pdb|1JLY|B matches 10
     Query gi|4959044|gb|AAD34209.1|AF069992_1 matches 10
     Query gi|671626|emb|CAA85685.1| matches 10
+
+    Or, parsing an obsolete BLAST pairwise text file:
+
+    >>> from Bio import SearchIO
+    >>> for search in SearchIO.parse("Blast/bt078.txt", "blast-text"):
+    ...     print "Query", search.query_id, "matches", len(search)
+    ...     for match in search: print match
+    Query gi|6273291|gb|AF191665.1|AF191665 matches 0
+    Query gi|6273290|gb|AF191664.1|AF191664 matches 0
+    Query gi|6273289|gb|AF191663.1|AF191663 matches 0
+    Query gi|6273287|gb|AF191661.1|AF191661 matches 2
+    dbj|BAE48041.1|
+    emb|CAJ32483.1|
+    Query gi|6273286|gb|AF191660.1|AF191660 matches 0
+    Query gi|6273285|gb|AF191659.1|AF191659 matches 0
+    Query gi|6273284|gb|AF191658.1|AF191658 matches 0
 
     Or, parsing a FASTA -m 10 file:
 
@@ -197,12 +214,24 @@ def read(handle, format):
 def index(filename, format):
     """Random access to search results.
 
+    e.g. Using BLAST XML,
+
     >>> from Bio import SearchIO
     >>> searches = SearchIO.index("Blast/xbt010.xml", "blast-xml")
     >>> len(searches)
     4
     >>> print len(searches["gi|2781234|pdb|1JLY|B"])
     10
+
+    Or using the obsolete BLAST pairwise plain text,
+
+    >>> from Bio import SearchIO
+    >>> searches = SearchIO.index("Blast/bt081.txt", "blast-text")
+    >>> len(searches)
+    7
+    >>> print len(searches["gi|5052071|gb|AF067555.1|AF067555"])
+    10
+
     """
     #Quick in memory implementation to make doctests pass
     #See the Bio.SeqIO module for what I have in mind here.
