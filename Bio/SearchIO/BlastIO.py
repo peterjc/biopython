@@ -10,9 +10,8 @@ from _objects import SearchResult
 def BlastXmlIterator(handle):
     from Bio.Blast.NCBIXML import parse
     for index, record in enumerate(parse(handle)):
-        #Note this heuristic may need updating for NCBI BLAST 2.2.25+
         query_id = record.query_id
-        if str(index+1) == query_id:
+        if query_id in ["%i" % (index+1), "Query_%i" % (index+1)]:
             query_id = record.query.split(None,1)[0]
         matches = []
         for alignment in record.alignments:
