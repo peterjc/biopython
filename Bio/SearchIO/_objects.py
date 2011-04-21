@@ -71,6 +71,9 @@ class SearchResult(object):
                 raise ValueError("Query ID doesn't agree")
         self._matches = matches
 
+    def __repr__(self):
+        return "SearchResult(%r, %i matches)" % (self.query_id, len(self))
+
     def __len__(self):
         return len(self._matches)
 
@@ -111,6 +114,10 @@ class TopMatches(object):
         #return "%s [%i alignments]" % (self.match_id, len(self))
         return self.match_id
 
+    def __repr__(self):
+        return "TopMatches(%r, %r, %i hits)" \
+               % (self.query_id, self.match_id, len(self))
+
     def __len__(self):
         return len(self._hits)
 
@@ -127,6 +134,10 @@ class MatchHit(object):
         self.query_id = query_id
         self.match_id = match_id
         self.evalue = evalue
+
+    def __repr__(self):
+        return "MatchHit(%r, %r, %r)" \
+               % (self.query_id, self.match_id, self.evalue)
 
 class MatchHitAlignment(MultipleSeqAlignment, MatchHit):
     """Placeholder object to store a single HSPs/alignment with sequence.
