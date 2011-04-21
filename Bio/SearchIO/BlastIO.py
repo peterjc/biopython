@@ -18,9 +18,23 @@ pairwise alignments of the hits either.
 
 from _objects import SearchResult, TopMatches, MatchHit, MatchHitAlignment
 
+def _evil_hack(iterator):
+    """Copes with BLAST+ XML where querys are wrongly split up (PRIVATE)."""
+    prev = None
+    for rec in iterator:
+        if prev is not None and prev.query_id == rec.query_id:
+            prev.alignments.extend(rec.alignments)
+            prev.descriptions.extend(rec.descriptions)
+        else:
+            if prev is not None:
+                yield prev
+            prev = rec
+    if prev is not None:
+        yield prev
+
 def BlastXmlIterator(handle):
     from Bio.Blast.NCBIXML import parse
-    for index, record in enumerate(parse(handle)):
+    for index, record in enumerate(_evil_hack(parse(handle))):
         query_id = record.query_id
         if query_id in ["%i" % (index+1), "Query_%i" % (index+1)]:
             query_id = record.query.split(None,1)[0]
