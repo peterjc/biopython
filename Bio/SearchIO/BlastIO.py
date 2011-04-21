@@ -11,9 +11,31 @@ Bio.SearchIO under the format names "blast-xml", "blast-stdtab" and
 "blast-text".
 
 Note that these different BLAST output formats contain somewhat different
-information. In particular, the standard 12 column tabular output does not
-contain information about queries with no hits, and does not contain the
-pairwise alignments of the hits either.
+information. Observe this small BLASTP search using the XML output:
+
+    >>> from Bio import SearchIO
+    >>> filename = "Blast/blastp_four_human_vs_rhodopsin.xml"
+    >>> for search in SearchIO.parse(filename, "blast-xml"):
+    ...     print search.query_id, len(search)
+    sp|Q9BS26|ERP44_HUMAN 0
+    sp|Q9NSY1|BMP2K_HUMAN 0
+    sp|P06213|INSR_HUMAN 0
+    sp|P08100|OPSD_HUMAN 6
+
+Now using the same search results but as tabular output:
+
+    >>> from Bio import SearchIO
+    >>> filename = "Blast/blastp_four_human_vs_rhodopsin.tabular"
+    >>> for search in SearchIO.parse(filename, "blast-stdtab"):
+    ...     print search.query_id, len(search)
+    sp|P08100|OPSD_HUMAN 6
+
+Notice the tabular output does not contain information about queries with no
+matches. In fact, this used to happen with the XML output on older versions
+of BLAST too.
+
+Also, the standard 12 column tabular output does not contain the pairwise
+alignments of the hits either.
 """
 
 from _objects import SearchResult, TopMatches, MatchHit, MatchHitAlignment
@@ -101,3 +123,32 @@ def BlastStandardTabularIterator(handle):
             matches = [TopMatches(query_id, match_id, [hit])]
     if query_id is not None:
         yield SearchResult(query_id, matches)
+
+def _test():
+    """Run the Bio.SearchIO.BlastIO module's doctests (PRIVATE).
+
+    This will try and locate the unit tests directory, and run the doctests
+    from there in order that the relative paths used in the examples work.
+    """
+    import doctest
+    import os
+    if os.path.isdir(os.path.join("..","..","Tests")):
+        print "Runing doctests..."
+        cur_dir = os.path.abspath(os.curdir)
+        os.chdir(os.path.join("..","..","Tests"))
+        doctest.testmod()
+        os.chdir(cur_dir)
+        del cur_dir
+        print "Done"
+    elif os.path.isdir(os.path.join("Tests")):
+        print "Runing doctests..."
+        cur_dir = os.path.abspath(os.curdir)
+        os.chdir(os.path.join("Tests"))
+        doctest.testmod()
+        os.chdir(cur_dir)
+        del cur_dir
+        print "Done"
+
+if __name__ == "__main__":
+    _test()
+
