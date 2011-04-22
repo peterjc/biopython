@@ -8,7 +8,7 @@
 #TODO - Once this is fully working, it can be called by Bio.AlignIO.FastaIO
 #whose parser currently ignores queries with no hits.
 
-from _objects import SearchResult, TopMatches, MatchHit
+from _objects import SearchResult, TopMatches, HSP
 
 
 def FastaM10Iterator(handle):
@@ -66,7 +66,7 @@ def FastaM10Iterator(handle):
                 break
             elif line.startswith(">>"):
                 match_id = line[2:].split(None,1)[0]
-                hits = [MatchHit(query_id, match_id, "e?")]
-                matches.append(TopMatches(query_id, match_id, hits))
+                hsps = [HSP(query_id, match_id, "e?")]
+                matches.append(TopMatches(query_id, match_id, hsps))
         yield SearchResult(query_id, matches)
 

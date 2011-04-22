@@ -35,10 +35,10 @@ matches. In fact, this used to happen with the XML output on older versions
 of BLAST too.
 
 Also, the standard 12 column tabular output does not contain the pairwise
-alignments of the hits either.
+alignments of the HSPs either.
 """
 
-from _objects import SearchResult, TopMatches, MatchHit, MatchHitAlignment
+from _objects import SearchResult, TopMatches, HSP, HSPAlignment
 
 def _evil_hack(iterator):
     """Copes with BLAST+ XML where querys are wrongly split up (PRIVATE)."""
@@ -65,10 +65,10 @@ def BlastXmlIterator(handle):
             match_id = alignment.hit_id
             #Expect to need heuristic here too...
             #TODO - Pick sensible alphabet
-            hits = [MatchHitAlignment(query_id, match_id, h.expect,
-                                      h.query, h.sbjct) \
+            hsps = [HSPAlignment(query_id, match_id, h.expect,
+                                 h.query, h.sbjct) \
                     for h in alignment.hsps]
-            matches.append(TopMatches(query_id, match_id, hits))
+            matches.append(TopMatches(query_id, match_id, hsps))
         yield SearchResult(query_id, matches)
 
 def BlastPairwiseTextIterator(handle):
@@ -90,10 +90,10 @@ def BlastPairwiseTextIterator(handle):
             else:
                 match_id = alignment.title.split(None,1)[0]
             #TODO - Pick sensible alphabet
-            hits = [MatchHitAlignment(query_id, match_id, h.expect,
-                                      h.query, h.sbjct) \
+            hsps = [HSPAlignment(query_id, match_id, h.expect,
+                                 h.query, h.sbjct) \
                     for h in alignment.hsps]
-            matches.append(TopMatches(query_id, match_id, hits))
+            matches.append(TopMatches(query_id, match_id, hsps))
         yield SearchResult(query_id, matches)
                             
 def BlastStandardTabularIterator(handle):
@@ -108,19 +108,19 @@ def BlastStandardTabularIterator(handle):
                              % (len(parts), line))
         match_id = parts[1]
         if query_id == parts[0]:
-            hit = MatchHit(query_id, match_id, parts[10])
+            hsp = HSP(query_id, match_id, parts[10])
             if match_id in [m.match_id for m in matches]:
                 #Need a proper way to add an HSP/alignment...
                 #...for now we're just storing the e-value
-                matches[-1]._hits.append(hit)
+                matches[-1]._hsps.append(hsp)
             else:
-                matches.append(TopMatches(query_id, match_id, [hit]))
+                matches.append(TopMatches(query_id, match_id, [hsp]))
         else:
             if query_id is not None:
                 yield SearchResult(query_id, matches)
             query_id = parts[0]
-            hit = MatchHit(query_id, match_id, parts[10])
-            matches = [TopMatches(query_id, match_id, [hit])]
+            hsp = HSP(query_id, match_id, parts[10])
+            matches = [TopMatches(query_id, match_id, [hsp])]
     if query_id is not None:
         yield SearchResult(query_id, matches)
 

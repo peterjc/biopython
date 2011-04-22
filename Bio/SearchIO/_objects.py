@@ -91,23 +91,23 @@ class SearchResult(object):
     
 
 class TopMatches(object):
-    """Placeholder object to store HSPs/alignments for one match.
+    """Placeholder object to store HSPs (pairwise alignments) for one match.
 
     Contains one or more pairwise HSPs/alignments (although these may just
     have co-ordinates and a score, but not the sequences).
     """
-    def __init__(self, query_id, match_id, hits):
+    def __init__(self, query_id, match_id, hsps):
         self.query_id = query_id
         self.match_id = match_id
-        self._hits = hits
-        if not hits:
-            raise ValueError("Expect at least one HSP/alignment")
-        for hit in hits:
-            if not isinstance(hit, MatchHit):
-                raise TypeError("Expected a MatchHit, not %r" % hit)
-            if hit.query_id != query_id:
+        self._hsps = hsps
+        if not hsps:
+            raise ValueError("Expect at least one HSP (pairwise alignment)")
+        for hsp in hsps:
+            if not isinstance(hsp, HSP):
+                raise TypeError("Expected an HSP, not %r" % hit)
+            if hsp.query_id != query_id:
                 raise ValueError("Query ID doesn't agree")
-            if hit.match_id != match_id:
+            if hsp.match_id != match_id:
                 raise ValueError("Match ID doesn't agree")
 
     def __str__(self):
@@ -119,13 +119,14 @@ class TopMatches(object):
                % (self.query_id, self.match_id, len(self))
 
     def __len__(self):
-        return len(self._hits)
+        return len(self._hsps)
 
     def __iter__(self):
-        return iter(self._hits)
+        return iter(self._hsps)
 
-class MatchHit(object):
-    """Placeholder object to store a single HSPs/alignment without sequence.
+
+class HSP(object):
+    """High-scoring segment pair (HSP), without sequence.
 
     Initially we'll just store the ID and e-value, but there is a subclass of
     this and the MultipleSeqAlignment class for holding a pairwise alignment.
@@ -139,17 +140,17 @@ class MatchHit(object):
         return "MatchHit(%r, %r, %r)" \
                % (self.query_id, self.match_id, self.evalue)
 
-class MatchHitAlignment(MultipleSeqAlignment, MatchHit):
-    """Placeholder object to store a single HSPs/alignment with sequence.
-
-    This is both a MatchHit object from Bio.SearchIO, and a pairwise
+class HSPAlignment(MultipleSeqAlignment, HSP):
+    """High-scoring segment pair (HSP), with aligned sequences.
+    
+    This is both an HSP object from Bio.SearchIO, and a pairwise
     MultipleSeqAlignment object which can be used with Bio.AlignIO too.
     """
     #TODO - What about general annotation on a MultipleSeqAlignment?
     def __init__(self, query_id, match_id, evalue,
                  aligned_query, aligned_match,
                  alphabet=single_letter_alphabet):
-        MatchHit.__init__(self, query_id, match_id, evalue)
+        HSP.__init__(self, query_id, match_id, evalue)
         query = SeqRecord(Seq(aligned_query, alphabet),
                           id=query_id, name="query",
                           description="")
