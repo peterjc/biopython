@@ -146,15 +146,18 @@ import ClustalIO
 import NexusIO
 import PhylipIO
 import EmbossIO
-import FastaIO
 
 #Convention for format names is "mainname-subtype" in lower case.
 #Please use the same names as BioPerl and EMBOSS where possible.
 
+_FormatParsedBySearchIO = [
+                     "fasta-m10",
+                     ]
+
 _FormatToIterator = {#"fasta" is done via Bio.SeqIO
+                     #"fasta-m10" is done via Bio.SearchIO
                      "clustal" : ClustalIO.ClustalIterator,
                      "emboss" : EmbossIO.EmbossIterator,
-                     "fasta-m10" : FastaIO.FastaM10Iterator,
                      "nexus" : NexusIO.NexusIterator,
                      "phylip" : PhylipIO.PhylipIterator,
                      "stockholm" : StockholmIO.StockholmIterator,
@@ -217,7 +220,8 @@ def write(alignments, handle, format):
                     "Expect a list or iterator of Alignment objects.")
             SeqIO.write(alignment, handle, format)
             count += 1
-    elif format in _FormatToIterator or format in SeqIO._FormatToIterator:
+    elif format in _FormatToIterator or format in SeqIO._FormatToIterator \
+    or format in _FormatParsedBySearchIO:
         raise ValueError("Reading format '%s' is supported, but not writing" \
                          % format)
     else:
@@ -366,6 +370,13 @@ def parse(handle, format, seq_count=None, alphabet=None):
         i = _SeqIO_to_alignment_iterator(handle, format,
                                             alphabet=alphabet,
                                             seq_count=seq_count)
+    elif format in _FormatParsedBySearchIO:
+        #Handle this via the SearchIO parser
+        if seq_count is not None and seq_count != 2:
+            raise ValueError("seq_count=%r, should be 2 for pairwise" \
+                             % seq_count)
+        from Bio.SearchIO import _alignment_iterator
+        i = _alignment_iterator(handle, format, alphabet)
     else:
         raise ValueError("Unknown format '%s'" % format)
 

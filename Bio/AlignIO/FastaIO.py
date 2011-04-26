@@ -27,6 +27,13 @@ from Interfaces import AlignmentIterator
 from Bio.Alphabet import single_letter_alphabet, generic_dna, generic_protein
 from Bio.Alphabet import Gapped
 
+import warnings
+from Bio import BiopythonDeprecationWarning
+warnings.warn("Bio.AlignIO.Fasta is deprecated, having been replaced by "
+              "Bio.SearchIO.FastaIO. Please use the Bio.AlignIO or "
+              "Bio.SearchIO framework for parsing FASTA -m 10 output.",
+              BiopythonDeprecationWarning)
+
 # TODO - Turn this into a doctest
 class FastaM10Iterator(AlignmentIterator):
     """Alignment iterator for the FASTA tool's pairwise alignment output.

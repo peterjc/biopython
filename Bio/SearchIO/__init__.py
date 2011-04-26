@@ -235,6 +235,27 @@ def parse(handle, format):
     if handle_close:
         handle.close()
 
+#This is a generator function!
+def _alignment_iterator(handle, format, alphabet=None):
+    """MultipleSeqAlignment iterator for AlignIO (PRIVATE).
+
+    Arguments:
+     - handle    - handle to the file.
+     - format    - string describing the file format.
+     - alphabet  - optional Alphabet object, useful when the sequence type
+                   cannot be automatically inferred from the file itself
+                   (e.g. fasta, phylip, clustal)
+    """
+    #Map the file format to a sequence iterator:
+    if format in _FormatToIterator:
+        #TODO - pass alphabet
+        i = _FormatToIterator[format](handle)
+    else:
+        raise ValueError("Unknown format '%s'" % format)
+    for a in i:
+        if isinstance(a, HSPAlignment):
+            yield a
+    raise StopIteration
 
 def read(handle, format):
     """Parse a file containing a single search result.
