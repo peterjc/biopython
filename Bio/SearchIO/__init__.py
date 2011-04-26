@@ -84,8 +84,7 @@ convention used in Bio.SeqIO):
 
 File Formats
 ============
-When specifying the file format, use lowercase strings.  The same format
-names are also used in Bio.AlignIO and include:
+When specifying the file format, use lowercase strings:
 
  - blast-stdtab - NCBI BLAST standard 12 column tabular
  - blast-text   - NCBI BLAST pairwise text (obsolete)
@@ -96,6 +95,9 @@ names are also used in Bio.AlignIO and include:
 
 Note that while Bio.SearchIO will read all the above file formats, it cannot
 yet write to any of them.
+
+Bio.AlignIO supports parsing some of the same format names (e.g. fasta-m10)
+giving access to the pairwise alignments only (ignoring queries with no hits).
 """
 from _objects import SearchResult, TopMatches, HSP
 import FastaIO
