@@ -219,10 +219,9 @@ def parse(handle, format):
             result = SearchResult(a.query_id,
                                   [TopMatches(a.query_id, a.match_id, [a])])
         elif result.query_id == a.query_id:
-            #Combine this as it is for the same query
-            if a.match_id == result[-1].match_id:
-                result[-1].append(a)
-            else:
+            try:
+                result[a.match_id].append(a)
+            except KeyError:
                 result.append(TopMatches(a.query_id, a.match_id, [a]))
         else:
             #New query, so old query is finished now
