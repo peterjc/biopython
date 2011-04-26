@@ -99,7 +99,9 @@ yet write to any of them.
 Bio.AlignIO supports parsing some of the same format names (e.g. fasta-m10)
 giving access to the pairwise alignments only (ignoring queries with no hits).
 """
-from _objects import SearchResult, TopMatches, HSP
+
+from _objects import SearchResult, TopMatches, HSP, HSPAlignment
+
 import FastaIO
 import BlastIO
 
