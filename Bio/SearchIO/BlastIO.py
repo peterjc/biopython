@@ -110,9 +110,7 @@ def BlastStandardTabularIterator(handle):
         if query_id == parts[0]:
             hsp = HSP(query_id, match_id, parts[10])
             if match_id in [m.match_id for m in matches]:
-                #Need a proper way to add an HSP/alignment...
-                #...for now we're just storing the e-value
-                matches[-1]._hsps.append(hsp)
+                matches[-1].append(hsp)
             else:
                 matches.append(TopMatches(query_id, match_id, [hsp]))
         else:

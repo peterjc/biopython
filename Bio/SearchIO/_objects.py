@@ -89,6 +89,32 @@ class SearchResult(object):
                     return m
             raise KeyError(value)
     
+    def append(self, item):
+        """Add a TopMatches or HSP object to the results."""
+        try:
+            if item.query_id != self.query_id:
+                raise ValueError("Query ID %r does not equal %r" \
+                                 % (item.query_id, self.query_id))
+        except AttributeError:
+            raise TypeError("Object should have query_id, e.g. HSP")
+        if isinstance(item, TopMatches):
+            for m in self:
+                if item.match_id == m.match_id:
+                    raise ValueError("Match ID %r already present" \
+                                     % item.match_id)
+            self._matches.append(item)
+        elif isinstance(item, HSP):
+            for m in self:
+                if item.match_id == m.match_id:
+                    m.append(item)
+                    return
+            #Must create container...
+            self._matches.append(TopMatches(item.query_id,
+                                            item.match_id,
+                                            [item]))
+        else:
+            raise TypeError
+    
 
 class TopMatches(object):
     """Placeholder object to store HSPs (pairwise alignments) for one match.
@@ -124,6 +150,18 @@ class TopMatches(object):
     def __iter__(self):
         return iter(self._hsps)
 
+    def append(self, item):
+        """Add an HSP object to the results."""
+        if not isinstance(item, HSP):
+            raise TypeError
+        if item.query_id != self.query_id:
+            raise ValueError("Query ID %r does not equal %r" \
+                             % (item.query_id, self.query_id))
+        if item.match_id != self.match_id:
+            raise ValueError("Match ID %r does not equal %r" \
+                             % (item.match_id, self.match_id))
+        self._hsps.append(item)
+ 
 
 class HSP(object):
     """High-scoring segment pair (HSP), without sequence.
