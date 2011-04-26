@@ -18,6 +18,68 @@ This module does NOT cover the generic "fasta" file format originally
 developed as an input format to the FASTA tools.  The Bio.AlignIO and
 Bio.SeqIO both use the Bio.SeqIO.FastaIO module to deal with these files,
 which can also be used to store a multiple sequence alignments.
+
+Here is an example using Bio.SearchIO to loop over a five query file where
+some queries have no hits:
+
+    >>> from Bio import SearchIO
+    >>> for result in SearchIO.parse("Fasta/output003.m10", "fasta-m10"):
+    ...     print "Query %s has %i matches" % (result.query_id, len(result))
+    Query gi|152973837|ref|YP_001338874.1| has 1 matches
+    Query gi|152973838|ref|YP_001338875.1| has 0 matches
+    Query gi|152973839|ref|YP_001338876.1| has 0 matches
+    Query gi|152973840|ref|YP_001338877.1| has 1 matches
+    Query gi|152973841|ref|YP_001338878.1| has 1 matches
+
+If we use Bio.AlignIO we don't see the queries with no matches, and since there
+is just one HSP per match, we get three alignments only:
+
+    >>> from Bio import AlignIO
+    >>> for i, result in enumerate(AlignIO.parse("Fasta/output003.m10", "fasta-m10")):
+    ...     print i
+    ...     print result
+    0
+    SingleLetterAlphabet() alignment with 2 rows and 55 columns
+    ISISNNKDQYEELQKEQGERDLKTVDQLVRIAAAGGGLRLSAST...IAA gi|152973837|ref|YP_001338874.1|
+    VRLTAEEDQ--EIRKRAAECG-KTVSGFLRAAALGKKVNSLTDD...LGA gi|10955263|ref|NP_052604.1|
+    1
+    SingleLetterAlphabet() alignment with 2 rows and 22 columns
+    DDAEHLFRTLSSR-LDALQDGN gi|152973840|ref|YP_001338877.1|
+    DDRANLFEFLSEEGITITEDNN gi|10955265|ref|NP_052606.1|
+    2
+    SingleLetterAlphabet() alignment with 2 rows and 63 columns
+    VFGSFEQPKGEHLSGQVSEQ--RDTAFADQNEQVIRHLKQEIEH...QAM gi|152973841|ref|YP_001338878.1|
+    VYTSFN---GEKFSSYTLNKVTKTDEYNDLSELSASFFKKNFDK...KGI gi|10955264|ref|NP_052605.1|
+
+And here is what it looks like with the low level iterator (which you probably
+won't ever need to use):
+
+    >>> from Bio.SearchIO.FastaIO import FastaM10Iterator
+    >>> handle = open("Fasta/output003.m10")
+    >>> for i, result in enumerate(FastaM10Iterator(handle)):
+    ...     print i
+    ...     if isinstance(result, basestring):
+    ...         print "%s has no matches" % result
+    ...     else:
+    ...         print result
+    0
+    SingleLetterAlphabet() alignment with 2 rows and 55 columns
+    ISISNNKDQYEELQKEQGERDLKTVDQLVRIAAAGGGLRLSAST...IAA gi|152973837|ref|YP_001338874.1|
+    VRLTAEEDQ--EIRKRAAECG-KTVSGFLRAAALGKKVNSLTDD...LGA gi|10955263|ref|NP_052604.1|
+    1
+    gi|152973838|ref|YP_001338875.1| has no matches
+    2
+    gi|152973839|ref|YP_001338876.1| has no matches
+    3
+    SingleLetterAlphabet() alignment with 2 rows and 22 columns
+    DDAEHLFRTLSSR-LDALQDGN gi|152973840|ref|YP_001338877.1|
+    DDRANLFEFLSEEGITITEDNN gi|10955265|ref|NP_052606.1|
+    4
+    SingleLetterAlphabet() alignment with 2 rows and 63 columns
+    VFGSFEQPKGEHLSGQVSEQ--RDTAFADQNEQVIRHLKQEIEH...QAM gi|152973841|ref|YP_001338878.1|
+    VYTSFN---GEKFSSYTLNKVTKTDEYNDLSELSASFFKKNFDK...KGI gi|10955264|ref|NP_052605.1|
+    >>> handle.close()
+
 """
 
 #TODO - Once this is fully working, it can be called by Bio.AlignIO.FastaIO
@@ -30,7 +92,7 @@ from Bio.AlignIO.Interfaces import AlignmentIterator
 from Bio.Alphabet import single_letter_alphabet, generic_dna, generic_protein
 from Bio.Alphabet import Gapped
 
-from _objects import HSP
+from _objects import HSPAlignment
 
 
 # TODO - Turn this into a doctest
@@ -44,21 +106,12 @@ class FastaM10Iterator(AlignmentIterator):
 
          W.R. Pearson & D.J. Lipman PNAS (1988) 85:2444-2448
 
-    This class is intended to be used via the Bio.AlignIO.parse() function
-    by specifying the format as "fasta-m10" as shown in the following code:
-
-        from Bio import AlignIO
-        handle = ...
-        for a in AlignIO.parse(handle, "fasta-m10"):
-            assert len(a) == 2, "Should be pairwise!"
-            print "Alignment length %i" % a.get_alignment_length()
-            for record in a:
-                print record.seq, record.name, record.id
+    This class is intended to be used via the Bio.SearchIO and Bio.AlignIO
+    functions by specifying the format as "fasta-m10".
 
     Note that this is not a full blown parser for all the information
     in the FASTA output - for example, most of the header and all of the
-    footer is ignored.  Also, the alignments are not batched according to
-    the input queries.
+    footer is ignored.
 
     Also note that there can be up to about 30 letters of flanking region
     included in the raw FASTA output as contextual information.  This is NOT
@@ -70,7 +123,11 @@ class FastaM10Iterator(AlignmentIterator):
         """Reads from the handle to construct and return the next alignment.
 
         This returns the pairwise alignment of query and match/library
-        sequences as an MultipleSeqAlignment object containing two rows.
+        sequences as an HSPAlignment object (a subclass of the
+        MultipleSeqAlignment object) which containings two rows.
+
+        If the next query has no results however, a string is returned (the
+        query ID).
         """
         handle = self.handle
 
@@ -305,7 +362,12 @@ class FastaM10Iterator(AlignmentIterator):
                 record.seq.alphabet = Gapped(record.seq.alphabet, "-")
 
         #return alignment
-        return HSP(alignment[0].id, alignment[1].id, "e?")
+        query_id = self._query_descr.split(None,1)[0].strip(",")
+        match_id = match_descr.split(None,1)[0].strip(",")
+        evalue = query_annotation.get("fa_expect", None)
+        return HSPAlignment(query_id, match_id, evalue,
+                            query_align_seq, match_align_seq,
+                            alphabet)
 
     def _skip_file_header(self, line):
         """Helper function for the main parsing code.
@@ -473,4 +535,32 @@ class FastaM10Iterator(AlignmentIterator):
             dictionary[tag] = value
             line = self.handle.readline()
         return line
-    
+
+
+def _test():
+    """Run the Bio.SearchIO.BlastIO module's doctests (PRIVATE).
+
+    This will try and locate the unit tests directory, and run the doctests
+    from there in order that the relative paths used in the examples work.
+    """
+    import doctest
+    import os
+    if os.path.isdir(os.path.join("..","..","Tests")):
+        print "Runing doctests..."
+        cur_dir = os.path.abspath(os.curdir)
+        os.chdir(os.path.join("..","..","Tests"))
+        doctest.testmod()
+        os.chdir(cur_dir)
+        del cur_dir
+        print "Done"
+    elif os.path.isdir(os.path.join("Tests")):
+        print "Runing doctests..."
+        cur_dir = os.path.abspath(os.curdir)
+        os.chdir(os.path.join("Tests"))
+        doctest.testmod()
+        os.chdir(cur_dir)
+        del cur_dir
+        print "Done"
+
+if __name__ == "__main__":
+    _test()
