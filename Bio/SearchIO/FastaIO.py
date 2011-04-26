@@ -8,7 +8,7 @@
 #TODO - Once this is fully working, it can be called by Bio.AlignIO.FastaIO
 #whose parser currently ignores queries with no hits.
 
-from _objects import SearchResult, TopMatches, HSP
+from _objects import HSP
 
 
 def FastaM10Iterator(handle):
@@ -50,11 +50,10 @@ def FastaM10Iterator(handle):
         !! No library sequences with E() < 0.5
         """
         query_id = line.split(">>>",1)[1].split(None,1)[0]
-        matches = []
         while True:
             line = handle.readline()
             if line.startswith("!! No library sequences with"):
-                assert not matches, (query_id, matches)
+                yield query_id
                 break
             elif ">>><<<" in line or not line:
                 #End of file!
@@ -66,7 +65,5 @@ def FastaM10Iterator(handle):
                 break
             elif line.startswith(">>"):
                 match_id = line[2:].split(None,1)[0]
-                hsps = [HSP(query_id, match_id, "e?")]
-                matches.append(TopMatches(query_id, match_id, hsps))
-        yield SearchResult(query_id, matches)
+                yield HSP(query_id, match_id, "e?")
 

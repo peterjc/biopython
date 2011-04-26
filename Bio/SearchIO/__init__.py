@@ -101,6 +101,28 @@ from _objects import SearchResult, TopMatches, HSP
 import FastaIO
 import BlastIO
 
+"""Note to developers: Low level iterators
+
+I want to be able to use the same parsers for pairwise alignments in both
+Bio.AlignIO (HSPs only) and Bio.SearchIO (including negative results). Also,
+for any one query there could be 100s of matches - which means a rather large
+query result object for SearchIO, but for AlignIO we can iterate over these
+without having to load them all into memory. Therefore, my plan is...
+
+Each low level iterator will return HSP objects, or for queries with no
+matches just the query name (string).
+
+So, for AlignIO, we just loop over the iterator, and return any objects which
+are pairwise alignments (HSPAlignment is both HSP and MultipleSeqAlignment),
+and ignore plain HSP objects (no pairwise alignment) or strings (no hits).
+For SearchIO, we loop over the iterator, batching by query_id. Although this
+batching code is non-trivial, it only needs to be done here at the top level,
+and not repeated in each individual parser.
+
+TODO - We can cope with getting a string of the query_id at the start of each
+new query, but is this a good idea? Should decided one way or the other and
+enforce it.
+"""
 _FormatToIterator = {
                      "blast-xml" : BlastIO.BlastXmlIterator,
                      "blast-text" : BlastIO.BlastPairwiseTextIterator,
@@ -180,9 +202,29 @@ def parse(handle, format):
     else:
         raise ValueError("Unknown format '%s'" % format)
 
-    #This imposes some overhead... wait until we drop Python 2.4 to fix it
+    result = None
     for a in i:
-        yield a
+        if isinstance(a, basestring):
+            #Query with no hits
+            if result is not None:
+                #Also means end of the previous query
+                yield result
+            result = SearchResult(a, [])
+        elif result is None:
+            #New query, cache it and see if it has more hits...
+            result = SearchResult(a.query_id,
+                                  [TopMatches(a.query_id, a.match_id, [a])])
+        elif result.query_id == a.query_id:
+            #Combine this as it is for the same query
+            result.append(a)
+        else:
+            #New query, so old query is finished now
+            yield result
+            #Cache new query and see if it has more hits...
+            result = SearchResult(a.query_id,
+                                  [TopMatches(a.query_id, a.match_id, [a])])
+    if result is not None:
+        yield result
     if handle_close:
         handle.close()
 
