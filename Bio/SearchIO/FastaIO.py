@@ -113,15 +113,14 @@ def _extract_alignment_region(alignment_seq_with_flanking, annotation):
         start = int(annotation['al_start']) \
               - display_start
         end   = int(annotation['al_stop']) \
-              - display_start \
-              + align_stripped.count("-") + 1
+              - display_start + 1
     else:
         #FASTA has flipped this sequence...
         start = display_start \
               - int(annotation['al_start'])
         end   = display_start \
-              - int(annotation['al_stop']) \
-              + align_stripped.count("-") + 1
+              - int(annotation['al_stop']) + 1
+    end += align_stripped.count("-")
     assert 0 <= start and start < end and end <= len(align_stripped), \
            "Problem with sequence start/stop,\n%s[%i:%i]\n%s" \
            % (alignment_seq_with_flanking, start, end, annotation)
@@ -149,6 +148,7 @@ def FastaM10Iterator(handle):
     part of the alignment itself, and is not included in the resulting
     MultipleSeqAlignment objects returned.
     """
+    state_PREAMBLE = -1
     state_NONE = 0
     state_QUERY_HEADER = 1
     state_ALIGN_HEADER = 2
@@ -162,12 +162,19 @@ def FastaM10Iterator(handle):
         evalue = align_tags.get("fa_expect", None)
         q = "?" #Just for printing len(q) in debug below
         m = "?" #Just for printing len(m) in debug below
+        tool = global_tags.get("tool", "").upper()
         try:
             q = _extract_alignment_region(query_seq, query_tags)
-            m = _extract_alignment_region(match_seq, match_tags)
+            if tool in ["TFASTX"] and len(match_seq) == len(q):
+                m = match_seq
+                #Quick hack until I can work out how -, * and / characters
+                #and the apparent mix of aa and bp coordindates works.
+            else:
+                m = _extract_alignment_region(match_seq, match_tags)
             assert len(q) == len(m)
         except AssertionError, err:
             print "Darn... amino acids vs nucleotide coordinates?"
+            print tool
             print query_seq
             print query_tags
             print q, len(q)
@@ -178,9 +185,10 @@ def FastaM10Iterator(handle):
             raise err
         return HSPAlignment(query_id, match_id, evalue, q, m)
 
-    state = state_NONE
+    state = state_PREAMBLE
     query_id = None
     match_id = None
+    global_tags = {}
     header_tags = {}
     align_tags = {}
     query_tags = {}
@@ -318,6 +326,15 @@ def FastaM10Iterator(handle):
             match_seq += line.strip()
         elif state == state_ALIGN_CONS:
             cons_seq += line.strip("\n")
+        elif state == state_PREAMBLE:
+            if line.startswith("#"):
+                global_tags["command"] = line[1:].strip()
+            elif line.startswith(" version "):
+                global_tags["version"] = line[9:].strip()
+            elif " compares a " in line:
+                global_tags["tool"] = line[:line.find(" compares a ")].strip()
+            elif " searches a " in line:
+                global_tags["tool"] = line[:line.find(" searches a ")].strip()
         else:
             pass
 
