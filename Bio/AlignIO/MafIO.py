@@ -10,11 +10,12 @@ You are expected to use this module via the Bio.AlignIO functions(or the
 Bio.SeqIO functions if you want to work directly with the gapped sequences).
 
 """
+from Bio.Alphabet import single_letter_alphabet
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align.Generic import Alignment
 from Bio.Align import MultipleSeqAlignment
-from Interfaces import AlignmentIterator, SequentialAlignmentWriter
+from Interfaces import SequentialAlignmentWriter
 
 class MafWriter(SequentialAlignmentWriter):
     """Accepts a MultipleSeqAlignment object, writes a MAF file.
@@ -69,84 +70,26 @@ class MafWriter(SequentialAlignmentWriter):
 
         return recs_out
 
-class MafIterator(AlignmentIterator):
-    """Returns iterator over specified handle, of MultipleSeqAlignment objects.
-    
-    More later.
-    """
-    
-    def _fetch_bundle(self):
-        in_a_bundle = False
-        bundle = []
-        
-        for line in self.handle:     
-            if line[0] == "#":
-                pass
-            elif line[0] == "a":
-                in_a_bundle = True
-                bundle = [line]
-            elif in_a_bundle:
-                if not line.strip():
-                    break
-                else:
-                    bundle.append(line)
 
-        return bundle
-
-    @staticmethod
-    def _parse_bundle(bundle):
-        # "s" line field names for making dicts
-        _s_line_fields = ("start", "size", "strand", "srcSize", "text")
-
-        # stores the "a" line and all "s" lines
-        bundle_ids = []
-        bundle_s_lines = {}
-        bundle_a_line = None
-
-        # parse everything
-        for line in bundle:
-            if line[0] == "s":
-                line_split = line.strip().split()
-
-                if len(line_split) <> 7:
-                    raise ValueError("Error parsing alignment - 's' line must have 7 fields")
-
-                idn = line_split[1]
-                bundle_ids.append(idn)
-                bundle_s_lines[idn] = dict(zip(_s_line_fields, line_split[2:]))
-            elif line[0] == "a":
-                if bundle_a_line != None:
-                    raise ValueError("Error parsing alignment - multiple 'a' lines in one bundle")
-
-                bundle_a_line = dict([x.split("=") for x in line.strip().split()[1:]])
-                
-                if len([x for x in bundle_a_line.iterkeys() if x not in ("score", "pass")]) > 0:
-                    raise ValueError("Error parsing alignment - invalid key in 'a' line")
-
-            ##TODO
-            # parse 'i' 'q' 'e' lines?
-
-        if len(bundle_ids) <> len(set(bundle_ids)):
-            raise ValueError("Error parsing alignment - duplicate ID in one bundle")
-
-        return(bundle_a_line, bundle_s_lines, bundle_ids)
-
-    def _build_alignment(self, parsed_bundle):
-        #Build the rows as SeqRecords
-        records = []
-        for idn in parsed_bundle[2]:
-            species_data = parsed_bundle[1][idn]
-            anno = {"start": int(species_data["start"]),
-                    "srcSize": int(species_data["srcSize"]),
-                    "strand": species_data["strand"],
-                    "size": int(species_data["size"])}
-
-            sequence = species_data["text"]
+def MafIterator(handle, seq_count=None, alphabet=single_letter_alphabet):
+    """MAF alignment parser, to be called via the Bio.AlignIO API."""
+    annotations = {}
+    records = []
+    for line in handle:
+        #Put most common test first
+        if line[:2] == "s ":
+            #src (ID), start, size, strand, srcSize, text (sequence)
+            fields = line[2:].strip().split()
+            anno = {"start": int(fields[1]),
+                    "strand": fields[3],
+                    "size": int(fields[2]),
+                    "srcSize": int(fields[4])}
+            sequence = fields[5]
             #Interpret a dot/period to mean same the first sequence
             if "." in sequence:
-                if idn == parsed_bundle[2][0]:
+                if not records:
                     raise ValueError("Found dot/period in first sequence of alignment")
-                ref = parsed_bundle[1][parsed_bundle[2][0]]["text"]
+                ref = str(records[0].seq)
                 new = []
                 for (s, r) in zip(sequence, ref):
                     if s == ".":
@@ -154,78 +97,44 @@ class MafIterator(AlignmentIterator):
                     else:
                         new.append(s)
                 sequence = "".join(new)
-
-            record = SeqRecord(Seq(sequence, self.alphabet),
-                               id = idn,
-                               name = idn,
-                               description = "",
-                               annotations = anno)
-
-            records.append(record)
-
-        # build the multiple alignment object
-        alignment = MultipleSeqAlignment(records, self.alphabet)
-        #TODO - Introduce an annotated alignment class?
-        #See also Bio/AlignIO/FastaIO.py for same requirement.        
-        #For now, store the annotation a new private property:
-        alignment._annotations = parsed_bundle[0]
-        return alignment
-
-    def next(self):
-        try:
-            _ = self._header
-        except AttributeError:
-            def _check_nextline_header():
-                line = self.handle.readline()
-
-                if line[:15] == "##maf version=1":
-                    self._header = line.strip()
-                    
-                    return True
-                else:
-                    return line
-            
-            line = _check_nextline_header()
-            
-            if line == True:
-                pass            
-            elif not line:
-                raise StopIteration
-            elif line[:5] == "track":
-                import shlex
-                
-                _valid_track_keys = ("name", "mafDot", "visibility", "frames", "speciesOrder", "description")
-
-                parsed_track_line = dict(x.split("=") for x in shlex.split(line)[1:])
-
-                invalid_keys = [x for x in parsed_track_line.keys() if x not in _valid_track_keys]
-                
-                if len(invalid_keys) > 0:
-                    raise ValueError("Error parsing MAF header -- invalid keys: %s" % (" ".join (invalid_keys,)))           
-                    
-                self._track = parsed_track_line
-                
-                if "speciesOrder" in self._track:
-                    self._track["speciesOrder"] = self._track["speciesOrder"].split(" ")
-                    
-                    if len(self._track["speciesOrder"]) <> len(set(self._track["speciesOrder"])):
-                        raise ValueError("Error parsing MAF header -- duplicate entry in speciesOrder")
-                
-                # next line better be the header!
-                line = _check_nextline_header()
-
-            if line != True:
-                raise ValueError("Did not find MAF header")
-
-        # handoff to bundle fetcher
-        bundle = self._fetch_bundle()
-
-        if len(bundle) == 0:
-            raise StopIteration
-
-        # handoff to bundle parser
-        parsed_bundle = self._parse_bundle(bundle)
-
-        # handoff to alignment builder
-        return self._build_alignment(parsed_bundle)
+            records.append(SeqRecord(Seq(sequence, alphabet),
+                                     id=fields[0],
+                                     name=fields[0],
+                                     description="",
+                                     annotations=anno))
+        elif line[0] == "a":
+            #New alignment, return any old one
+            if records:
+                if seq_count is not None:
+                    assert len(records) == seq_count
+                alignment = MultipleSeqAlignment(records, alphabet)
+                #TODO - Introduce an annotated alignment class?
+                #See also Bio/AlignIO/FastaIO.py for same requirement.        
+                #For now, store the annotation a new private property:
+                alignment._annotations = annotations
+                yield alignment
+            #Reset ready for the new alignment
+            records = []
+            annotations = dict(x.split("=") for x in line[1:].strip().split())
+        elif line[0] == "#" or not line.strip():
+            #Ignore comments or blank lines
+            pass
+        elif line.startswith("e ") \
+        or line.startswith("i ") \
+        or line.startswith("q "):
+            #Not implemented yet
+            pass
+        elif line.startswith("track "):
+            #Should really only be the first line of the file... check this?
+            pass
+        else:
+            raise ValueError('Unexpected line:\n%s' % line)
+    #End of the file
+    if records:
+        #Don't forget the final alignment!
+        if seq_count is not None:
+            assert len(records) == seq_count
+        alignment = MultipleSeqAlignment(records, alphabet)
+        alignment._annotations = annotations
+        yield alignment
 
