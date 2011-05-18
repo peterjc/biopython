@@ -132,14 +132,8 @@ class MafIterator(AlignmentIterator):
         return(bundle_a_line, bundle_s_lines, bundle_ids)
 
     def _build_alignment(self, parsed_bundle):
-        # build the multiple alignment object
-        alignment = MultipleSeqAlignment([], self.alphabet)
-
-        #TODO - Introduce an annotated alignment class?
-        #See also Bio/AlignIO/FastaIO.py for same requirement.        
-        #For now, store the annotation a new private property:
-        alignment._annotations = parsed_bundle[0]
-
+        #Build the rows as SeqRecords
+        records = []
         for idn in parsed_bundle[2]:
             species_data = parsed_bundle[1][idn]
             anno = {"start": int(species_data["start"]),
@@ -167,8 +161,14 @@ class MafIterator(AlignmentIterator):
                                description = "",
                                annotations = anno)
 
-            alignment.append(record)
+            records.append(record)
 
+        # build the multiple alignment object
+        alignment = MultipleSeqAlignment(records, self.alphabet)
+        #TODO - Introduce an annotated alignment class?
+        #See also Bio/AlignIO/FastaIO.py for same requirement.        
+        #For now, store the annotation a new private property:
+        alignment._annotations = parsed_bundle[0]
         return alignment
 
     def next(self):
@@ -228,3 +228,4 @@ class MafIterator(AlignmentIterator):
 
         # handoff to alignment builder
         return self._build_alignment(parsed_bundle)
+
