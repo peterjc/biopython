@@ -15,6 +15,43 @@ from Bio.Alphabet import single_letter_alphabet
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqIO.Interfaces import SequentialSequenceWriter
+from _lazy import LazySeqRecord
+
+class LazySeqRecordFasta(LazySeqRecord):
+
+    def _load_id(self):
+        """Load the ID from a FASTA file."""
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        assert line.startswith(">")
+        return line[1:].split(None,1)[0]
+
+    def _load_name(self):
+        """Load the name from a FASTA file."""
+        return self._load_id()
+    
+    def _load_description(self):
+        """Load the description from a FASTA file."""
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        assert line.startswith(">")
+        return line[1:].rstrip()
+
+    def _load_seq(self):
+        """Load the (sub)sequence from a FASTA file."""
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        assert line.startswith(">")
+        lines = []
+        while line:
+            line = h.readline()
+            if line.startswith(">"):
+                break
+            lines.extend(line.strip().split())
+        return "".join(lines)[self._start:self._stop]
 
 #This is a generator function!
 def FastaIterator(handle, alphabet = single_letter_alphabet, title2ids = None):
@@ -154,7 +191,7 @@ if __name__ == "__main__":
     #ftp://ftp.ncbi.nlm.nih.gov/genomes/Bacteria/Nanoarchaeum_equitans
     fna_filename = "NC_005213.fna"
     faa_filename = "NC_005213.faa"
-
+    
     def genbank_name_function(text):
         text, descr = text.split(None,1)
         id = text.split("|")[3]

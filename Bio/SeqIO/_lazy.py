@@ -1,0 +1,130 @@
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+
+class LazySeqRecord(SeqRecord):
+    def __init__(self, handle, offset, raw_len, seq_len, index, alphabet):
+        self._handle = handle
+        self._offset = offset
+        self._raw_len = raw_len
+        self._seq_len = seq_len
+        self._start, self._stop, step = index.indices(seq_len)
+        if step != 1:
+            raise ValueError
+        self._alphabet = alphabet
+    
+    def __len__(self):
+        #start, end, step = self._index.indices(self._seq_len)
+        #return (end - step) // step
+        l = self._stop - self._start
+        assert l >= 0, l
+        return l
+
+    def __getitem__(self, index):
+        if isinstance(index, slice):
+            if index.step is None or index.step == 1:
+                if index.start >= 0:
+                    new_start = min(self._start + index.start, self._seq_len)
+                else:
+                    new_start = max(0, self._stop + index.start)
+                if index.stop >= 0:
+                    new_stop = min(self._start + index.stop, self._seq_len)
+                else:
+                    new_stop = max(0, self._stop + index.stop)
+                return self.__class__(self._handle, self._offset, self._raw_len,
+                                      self._seq_len, slice(new_start, new_stop),
+                                      self._alphabet)
+            else:
+                #Can we cope with a step as well? Problem is slice of slice...
+                raise NotImplementedError
+        elif isinstance(index, int):
+            #Extract single letter of sequence...
+            #TODO - Call lazy load if not cached
+            return self.seq[index]
+        else:
+            raise ValueError, "Invalid index"
+    
+    def _get_seq(self):
+        try:
+            return self._seq
+        except AttributeError:
+            #Load it now
+            s = Seq(self._load_seq(), self._alphabet)
+            self._seq = s
+            return s
+    seq = property(fget=_get_seq,
+                   fset=SeqRecord._set_seq, #Defined in base classes
+                   doc="The sequence itself, as a Seq or MutableSeq object.")
+
+    def _get_id(self):
+        try:
+            return self._id
+        except AttributeError:
+            #Load it now
+            temp = self._load_id()
+            self._id = temp
+            return temp
+    def _set_id(self, value):
+        self._id = value
+    id = property(fget=_get_id,
+                  fset=_set_id,
+                  doc="The sequence identifier (string)")
+
+    def _get_name(self):
+        try:
+            return self._name
+        except AttributeError:
+            #Load it now
+            temp = self._load_name()
+            self._id = temp
+            return temp
+    def _set_name(self, value):
+        self._name = value
+    name = property(fget=_get_name,
+                    fset=_set_name,
+                    doc="The sequence name (string)")
+
+    def _get_description(self):
+        try:
+            return self._description
+        except AttributeError:
+            #Load it now
+            temp = self._load_description()
+            self._description = temp
+            return temp
+    def _set_description(self, value):
+        self._description = value
+    description = property(fget=_get_description,
+                           fset=_set_description,
+                           doc="The sequence description (string)")
+
+    def _get_annotations(self):
+        try:
+            return self._annotations
+        except AttributeError:
+            #Load it now
+            temp = self._load_annotations()
+            self._annotations = temp
+            return temp
+    def _set_annotations(self, value):
+        if not isinstance(value, dict):
+            raise TypeError
+        self._annotations = value
+    annotations = property(fget=_get_annotations,
+                           fset=_set_annotations,
+                           doc="General annotation (dict)")
+
+    def _load_seq(self):
+        """Extracts the (sub)sequence from the file."""
+        raise NotImplementedError
+
+    def _load_id(self):
+        raise NotImplementedError
+
+    def _load_name(self):
+        return ""
+
+    def _load_description(self):
+        return ""
+
+    def _load_annotations(self):
+        return {}
