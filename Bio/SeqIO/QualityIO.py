@@ -364,13 +364,16 @@ are approximately equal.
 """
 __docformat__ = "epytext en" #Don't just use plain text in epydoc API pages!
 
+from math import log
+import warnings
+from Bio import BiopythonWarning
+
 from Bio.Alphabet import single_letter_alphabet
 from Bio.Seq import Seq, UnknownSeq
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqIO.Interfaces import SequentialSequenceWriter
-from math import log
-import warnings
-from Bio import BiopythonWarning
+from _lazy import LazySeqRecord
+
 
 
 # define score offsets. See discussion for differences between Sanger and
@@ -1773,6 +1776,44 @@ def PairedFastaQualIterator(fasta_handle, qual_handle, alphabet = single_letter_
         yield f_rec
     #Done
     
+class _LazySeqRecordFastq(LazySeqRecord):
+    """Base class for lazy loading SeqRecord proxy for FASTQ files (PRIVATE)."""
+
+    def _load_id(self):
+        """Load the ID from a FASTQ file."""
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        assert line.startswith("@")
+        return line[1:].split(None,1)[0]
+
+    def _load_name(self):
+        """Load the name from a FASTQ file."""
+        return self._load_id()
+    
+    def _load_description(self):
+        """Load the description from a FASTQ file."""
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        assert line.startswith("@")
+        return line[1:].rstrip()
+
+    def _load_seq(self):
+        """Load the (sub)sequence from a FASTQ file."""
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        assert line.startswith("@")
+        lines = []
+        while line:
+            line = h.readline()
+            if line.startswith("+"):
+                break
+            lines.extend(line.strip().split())
+        return "".join(lines)[self._start:self._stop]
+#TODO - Extend Lazy proxy for per-letter-annotation, then do subclasses for
+#the different FASTQ variants.
 
 def _test():
     """Run the Bio.SeqIO module's doctests.

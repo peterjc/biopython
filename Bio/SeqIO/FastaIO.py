@@ -18,6 +18,7 @@ from Bio.SeqIO.Interfaces import SequentialSequenceWriter
 from _lazy import LazySeqRecord
 
 class LazySeqRecordFasta(LazySeqRecord):
+    """Lazy loading SeqRecord proxy for FASTA files."""
 
     def _load_id(self):
         """Load the ID from a FASTA file."""

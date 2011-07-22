@@ -2,17 +2,21 @@ import unittest
 from StringIO import StringIO
 
 from Bio import SeqIO
+from Bio.Alphabet import generic_protein, generic_nucleotide
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
+
 from Bio.SeqIO.FastaIO import LazySeqRecordFasta
-from Bio.Alphabet import generic_protein, generic_nucleotide
+from Bio.SeqIO.QualityIO import _LazySeqRecordFastq
 
 class TestSimpleRead(unittest.TestCase):
         
-    def test_easy(self):
-        r = SeqIO.read("Fasta/centaurea.nu", "fasta", generic_nucleotide)
+    def test_easy_fasta(self):
+        """FASTA single entry."""
+        filename = "Fasta/centaurea.nu"
+        r = SeqIO.read(filename, "fasta", generic_nucleotide)
         
-        h = open("Fasta/centaurea.nu")
+        h = open(filename)
         p = LazySeqRecordFasta(h, 0, None, len(r), slice(None, None, None),
                                r.seq.alphabet)
         self.compare(p, r)
@@ -24,6 +28,45 @@ class TestSimpleRead(unittest.TestCase):
             p1 = p[s]
             r1 = p[s]
             self.compare(p1, r1)
+        h.close()
+
+    def test_first_fasta(self):
+        """FASTA first entry."""
+        filename = "Quality/example.fasta"
+        r = SeqIO.parse(filename, "fasta", generic_nucleotide).next()
+        
+        h = open(filename)
+        p = LazySeqRecordFasta(h, 0, None, len(r), slice(None, None, None),
+                               r.seq.alphabet)
+        self.compare(p, r)
+
+        for s in [slice(5,10),
+                  slice(10,20,1),
+                  slice(5,-5),
+                  ]:
+            p1 = p[s]
+            r1 = p[s]
+            self.compare(p1, r1)
+        h.close()
+
+    def test_first_fastq(self):
+        """FASTQ first entry."""
+        filename = "Quality/example.fastq"
+        r = SeqIO.parse(filename, "fastq", generic_nucleotide).next()
+        
+        h = open(filename)
+        p = _LazySeqRecordFastq(h, 0, None, len(r), slice(None, None, None),
+                               r.seq.alphabet)
+        self.compare(p, r)
+
+        for s in [slice(5,10),
+                  slice(10,20,1),
+                  slice(5,-5),
+                  ]:
+            p1 = p[s]
+            r1 = p[s]
+            self.compare(p1, r1)
+        h.close()
     
     def compare(self, p, r):
         self.assertEqual(len(p), len(r))
