@@ -113,6 +113,19 @@ class LazySeqRecord(SeqRecord):
                            fset=_set_annotations,
                            doc="General annotation (dict)")
 
+    def _get_per_letter_annotations(self):
+        try:
+            return self._per_letter_annotations
+        except AttributeError:
+            #Load it now
+            temp = self._load_per_letter_annotations()
+            SeqRecord._set_per_letter_annotations(self, temp) #validates it!
+            return temp
+    letter_annotations = property( \
+        fget=_get_per_letter_annotations,
+        fset=SeqRecord._set_per_letter_annotations,
+        doc = SeqRecord.letter_annotations.__doc__)
+
     def _load_seq(self):
         """Extracts the (sub)sequence from the file."""
         raise NotImplementedError
@@ -127,4 +140,7 @@ class LazySeqRecord(SeqRecord):
         return ""
 
     def _load_annotations(self):
+        return {}
+
+    def _load_per_letter_annotations(self):
         return {}

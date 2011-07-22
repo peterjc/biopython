@@ -1778,6 +1778,16 @@ def PairedFastaQualIterator(fasta_handle, qual_handle, alphabet = single_letter_
     
 class _LazySeqRecordFastq(LazySeqRecord):
     """Base class for lazy loading SeqRecord proxy for FASTQ files (PRIVATE)."""
+    _score_offset = None
+    _q_mapping = None
+    _q_name = None
+    
+    def __init__(self, handle, offset, raw_len, seq_len, index, alphabet):
+        LazySeqRecord.__init__(self, handle, offset, raw_len, seq_len, index, alphabet)
+        q_mapping = dict()
+        for letter in range(0, 255):
+            q_mapping[chr(letter)] = letter - self._score_offset
+        self._q_mapping = q_mapping
 
     def _load_id(self):
         """Load the ID from a FASTQ file."""
@@ -1812,6 +1822,35 @@ class _LazySeqRecordFastq(LazySeqRecord):
                 break
             lines.extend(line.strip().split())
         return "".join(lines)[self._start:self._stop]
+    
+    def _load_per_letter_annotations(self):
+        #TODO - Rewrite this for speed!
+        h = self._handle
+        h.seek(self._offset)
+        title, seq, quality_string = FastqGeneralIterator(h).next()
+        quality_string = quality_string[self._start:self._stop]
+        q_mapping = self._q_mapping
+        qualities = [q_mapping[letter] for letter in quality_string]
+        if qualities and (min(qualities) < 0 or max(qualities) > 93):
+            raise ValueError("Invalid character in quality string")
+        return {self._q_name:qualities}
+
+class LazySeqRecordFastqSanger(_LazySeqRecordFastq):
+    """Lazy loading SeqRecord proxy for Sanger FASTQ files."""
+    _score_offset = SANGER_SCORE_OFFSET
+    _q_name = "phred_quality"
+
+class LazySeqRecordFastqSolexa(_LazySeqRecordFastq):
+    """Lazy loading SeqRecord proxy for Solexa FASTQ files."""
+    _score_offset = SOLEXA_SCORE_OFFSET
+    _q_name = "solexa_quality"
+
+class LazySeqRecordFastqIlluina(_LazySeqRecordFastq):
+    """Lazy loading SeqRecord proxy for Illumina FASTQ files."""
+    _score_offset = SOLEXA_SCORE_OFFSET
+    _q_name = "phred_quality"
+
+
 #TODO - Extend Lazy proxy for per-letter-annotation, then do subclasses for
 #the different FASTQ variants.
 

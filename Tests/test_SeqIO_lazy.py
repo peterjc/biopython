@@ -7,7 +7,7 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
 from Bio.SeqIO.FastaIO import LazySeqRecordFasta
-from Bio.SeqIO.QualityIO import _LazySeqRecordFastq
+from Bio.SeqIO.QualityIO import LazySeqRecordFastqSanger, LazySeqRecordFastqSolexa
 
 class TestSimpleRead(unittest.TestCase):
         
@@ -50,13 +50,13 @@ class TestSimpleRead(unittest.TestCase):
         h.close()
 
     def test_first_fastq(self):
-        """FASTQ first entry."""
+        """FASTQ Sanger first entry."""
         filename = "Quality/example.fastq"
         r = SeqIO.parse(filename, "fastq", generic_nucleotide).next()
         
         h = open(filename)
-        p = _LazySeqRecordFastq(h, 0, None, len(r), slice(None, None, None),
-                               r.seq.alphabet)
+        p = LazySeqRecordFastqSanger(h, 0, None, len(r), slice(None, None, None),
+                                     r.seq.alphabet)
         self.compare(p, r)
 
         for s in [slice(5,10),
@@ -67,13 +67,33 @@ class TestSimpleRead(unittest.TestCase):
             r1 = p[s]
             self.compare(p1, r1)
         h.close()
-    
+
+    def test_first_fastq_solexa(self):
+        """FASTQ Solexa first entry."""
+        filename = "Quality/solexa_example.fastq"
+        r = SeqIO.parse(filename, "fastq-solexa", generic_nucleotide).next()
+        
+        h = open(filename)
+        p = LazySeqRecordFastqSolexa(h, 0, None, len(r), slice(None, None, None),
+                                     r.seq.alphabet)
+        self.compare(p, r)
+
+        for s in [slice(5,10),
+                  slice(10,20,1),
+                  slice(5,-5),
+                  ]:
+            p1 = p[s]
+            r1 = p[s]
+            self.compare(p1, r1)
+        h.close()
+
     def compare(self, p, r):
         self.assertEqual(len(p), len(r))
         self.assertEqual(p.id, r.id)
         self.assertEqual(p.name, r.name)
         self.assertEqual(p.description, r.description)
         self.assertEqual(p.annotations, r.annotations)
+        self.assertEqual(p.letter_annotations, r.letter_annotations)
         self.assertEqual(str(p.seq), str(r.seq))
 
 if __name__ == "__main__":
