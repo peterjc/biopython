@@ -16,8 +16,9 @@ class TestSimpleRead(unittest.TestCase):
         filename = "Fasta/centaurea.nu"
         r = SeqIO.read(filename, "fasta", generic_nucleotide)
         
-        h = open(filename)
-        p = LazySeqRecordFasta(h, 0, None, len(r), slice(None, None, None),
+        h = open(filename, "rU")
+        h.read()
+        p = LazySeqRecordFasta(h, 0, h.tell(), len(r), slice(None, None, None),
                                r.seq.alphabet)
         self.compare(p, r)
 
@@ -36,6 +37,7 @@ class TestSimpleRead(unittest.TestCase):
         r = SeqIO.parse(filename, "fasta", generic_nucleotide).next()
         
         h = open(filename)
+        h.seek(6) #random
         p = LazySeqRecordFasta(h, 0, None, len(r), slice(None, None, None),
                                r.seq.alphabet)
         self.compare(p, r)
@@ -66,6 +68,7 @@ class TestSimpleRead(unittest.TestCase):
             p1 = p[s]
             r1 = p[s]
             self.compare(p1, r1)
+        self.assertEqual(p.format("fastq"), r.format("fastq"))
         h.close()
 
     def test_first_fastq_solexa(self):
@@ -74,7 +77,8 @@ class TestSimpleRead(unittest.TestCase):
         r = SeqIO.parse(filename, "fastq-solexa", generic_nucleotide).next()
         
         h = open(filename)
-        p = LazySeqRecordFastqSolexa(h, 0, None, len(r), slice(None, None, None),
+        h.seek(19) #random
+        p = LazySeqRecordFastqSolexa(h, 0, 120, len(r), slice(None, None, None),
                                      r.seq.alphabet)
         self.compare(p, r)
         
@@ -85,6 +89,8 @@ class TestSimpleRead(unittest.TestCase):
             p1 = p[s]
             r1 = p[s]
             self.compare(p1, r1)
+        self.assertEqual(p.format("fastq-solexa"), '@SLXA-B3_649_FC8437_R1_1_1_610_79\nGATGTGCAATACCTTTGTAGAGGAA\n+SLXA-B3_649_FC8437_R1_1_1_610_79\nYYYYYYYYYYYYYYYYYYWYWYYSU\n')
+        self.assertEqual(r.format("fastq-solexa"), '@SLXA-B3_649_FC8437_R1_1_1_610_79\nGATGTGCAATACCTTTGTAGAGGAA\n+\nYYYYYYYYYYYYYYYYYYWYWYYSU\n')
         h.close()
 
     def compare(self, p, r):
@@ -97,6 +103,7 @@ class TestSimpleRead(unittest.TestCase):
         self.assertEqual(len(p.features), len(r.features))
         self.assertEqual(p.dbxrefs, r.dbxrefs)
         self.assertEqual(str(p.seq), str(r.seq))
+        #self.assertEqual(p.format("fasta"), r.format("fasta"))
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner(verbosity = 2)

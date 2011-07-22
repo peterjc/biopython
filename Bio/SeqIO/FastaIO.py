@@ -19,6 +19,7 @@ from _lazy import LazySeqRecord
 
 class LazySeqRecordFasta(LazySeqRecord):
     """Lazy loading SeqRecord proxy for FASTA files."""
+    _raw_formats = ["fasta"]
 
     def _load_id(self):
         """Load the ID from a FASTA file."""
@@ -53,6 +54,7 @@ class LazySeqRecordFasta(LazySeqRecord):
                 break
             lines.extend(line.strip().split())
         return "".join(lines)[self._start:self._stop]
+    
 
 #This is a generator function!
 def FastaIterator(handle, alphabet = single_letter_alphabet, title2ids = None):
