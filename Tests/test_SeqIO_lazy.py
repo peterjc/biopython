@@ -77,7 +77,7 @@ class TestSimpleRead(unittest.TestCase):
         p = LazySeqRecordFastqSolexa(h, 0, None, len(r), slice(None, None, None),
                                      r.seq.alphabet)
         self.compare(p, r)
-
+        
         for s in [slice(5,10),
                   slice(10,20,1),
                   slice(5,-5),
@@ -94,6 +94,8 @@ class TestSimpleRead(unittest.TestCase):
         self.assertEqual(p.description, r.description)
         self.assertEqual(p.annotations, r.annotations)
         self.assertEqual(p.letter_annotations, r.letter_annotations)
+        self.assertEqual(len(p.features), len(r.features))
+        self.assertEqual(p.dbxrefs, r.dbxrefs)
         self.assertEqual(str(p.seq), str(r.seq))
 
 if __name__ == "__main__":

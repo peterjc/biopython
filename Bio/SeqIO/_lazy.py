@@ -38,7 +38,6 @@ class LazySeqRecord(SeqRecord):
                 raise NotImplementedError
         elif isinstance(index, int):
             #Extract single letter of sequence...
-            #TODO - Call lazy load if not cached
             return self.seq[index]
         else:
             raise ValueError, "Invalid index"
@@ -126,6 +125,38 @@ class LazySeqRecord(SeqRecord):
         fset=SeqRecord._set_per_letter_annotations,
         doc = SeqRecord.letter_annotations.__doc__)
 
+    def _get_features(self):
+        try:
+            return self._features
+        except AttributeError:
+            #Load it now
+            temp = self._load_features()
+            self._features = temp
+            return temp
+    def _set_features(self, value):
+        if not isinstance(value, list):
+            raise TypeError
+        self._features = value
+    features = property(fget=_get_features,
+                        fset=_set_features,
+                        doc="Features (list of SeqFeature objects)")
+
+    def _get_dbxrefs(self):
+        try:
+            return self._dbxrefs
+        except AttributeError:
+            #Load it now
+            temp = self._load_dbxrefs()
+            self._dbxrefs = temp
+            return temp
+    def _set_dbxrefs(self, value):
+        if not isinstance(value, list):
+            raise TypeError
+        self._dbxrefs = value
+    dbxrefs = property(fget=_get_features,
+                       fset=_set_features,
+                       doc="Database cross-references (list)")
+
     def _load_seq(self):
         """Extracts the (sub)sequence from the file."""
         raise NotImplementedError
@@ -144,3 +175,9 @@ class LazySeqRecord(SeqRecord):
 
     def _load_per_letter_annotations(self):
         return {}
+
+    def _load_features(self):
+        return []
+
+    def _load_dbxrefs(self):
+        return []
