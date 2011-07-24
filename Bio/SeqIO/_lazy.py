@@ -50,6 +50,12 @@ class LazySeqRecord(SeqRecord):
             raise ValueError
         self._index = index
         self._alphabet = alphabet
+
+    def toseqrecord(self):
+        """Turn the LazySeqRecord into a traditional in memory SeqRecord."""
+        return SeqRecord(self.seq, self.id, self.name, self.description,
+                         self.dbxrefs, self.features, self.annotations,
+                         self.letter_annotations)
     
     def __len__(self):
         if self._seq_len is None:
@@ -78,7 +84,7 @@ class LazySeqRecord(SeqRecord):
                                       self._alphabet, self._seq_len)
             else:
                 #Can we cope with a step as well? Problem is slice of slice...
-                raise NotImplementedError
+                return self.toseqrecord()[index]
         elif isinstance(index, int):
             #Extract single letter of sequence...
             return self.seq[index]
@@ -175,7 +181,13 @@ class LazySeqRecord(SeqRecord):
             return self._dbxrefs
         except AttributeError:
             #Load it now
-            temp = self._load_dbxrefs()
+            if self._seq_len is None:
+                self._seq_len = self._load_len()
+            if (0, self._seq_len, 1) == self._index.indices(self._seq_len):
+                temp = self._load_dbxrefs()
+            else:
+                #Slicing the SeqRecord would discard the cross references,
+                temp = []
             self._dbxrefs = temp
             return temp
     def _set_dbxrefs(self, value):

@@ -28,9 +28,12 @@ class TestSimpleRead(unittest.TestCase):
         for s in [slice(5,10),
                   slice(10,20,1),
                   slice(5,-5),
+                  slice(5,-5,-1),
+                  slice(5,-5,3),
+                  slice(5,-5,-3),
                   ]:
+            r1 = r[s]
             p1 = p[s]
-            r1 = p[s]
             self.compare(p1, r1)
         self.assertEqual(p.format("fasta"), r.format("fasta"))
         h.close()
@@ -51,9 +54,12 @@ class TestSimpleRead(unittest.TestCase):
         for s in [slice(5,10),
                   slice(10,20,1),
                   slice(5,-5),
+                  slice(5,-5,-1),
+                  slice(5,-5,3),
+                  slice(5,-5,-3),
                   ]:
+            r1 = r[s]
             p1 = p[s]
-            r1 = p[s]
             self.compare(p1, r1)
         h.close()
 
@@ -76,9 +82,12 @@ class TestSimpleRead(unittest.TestCase):
         for s in [slice(5,10),
                   slice(10,20,1),
                   slice(5,-5),
+                  slice(5,-5,-1),
+                  slice(5,-5,3),
+                  slice(5,-5,-3),
                   ]:
+            r1 = r[s]
             p1 = p[s]
-            r1 = p[s]
             self.compare(p1, r1)
         self.assertEqual(p.format("fastq"), r.format("fastq"))
         h.close()
@@ -103,6 +112,9 @@ class TestSimpleRead(unittest.TestCase):
         for s in [slice(5,10),
                   slice(10,20,1),
                   slice(5,-5),
+                  slice(5,-5,-1),
+                  slice(5,-5,3),
+                  slice(5,-5,-3),
                   ]:
             p1 = p[s]
             r1 = p[s]
@@ -126,9 +138,12 @@ class TestSimpleRead(unittest.TestCase):
         for s in [slice(5,10),
                   slice(10,20,1),
                   slice(5,-5),
+                  slice(5,-5,-1),
+                  slice(5,-5,3),
+                  slice(5,-5,-3),
                   ]:
+            r1 = r[s]
             p1 = p[s]
-            r1 = p[s]
             self.compare(p1, r1)
         h.close()
 
@@ -152,6 +167,8 @@ class TestSimpleRead(unittest.TestCase):
         self.assertEqual(len(p.seq), len(r.seq))
         self.assertEqual(str(p.seq), str(r.seq))
         #self.assertEqual(p.format("fasta"), r.format("fasta"))
+        #self.assertEqual(str(p[2:-2].seq), str(r[2:-2].seq))
+        #self.assertEqual(str(p[2:-2:-1].seq), str(r[2:-2:-1].seq))
 
     def compare_many(self, filename, format, alphabet):
         r_list = list(SeqIO.parse(filename, format, alphabet))
