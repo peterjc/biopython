@@ -1048,7 +1048,6 @@ from Bio._py3k import _bytes_to_string, _as_bytes, _as_string
 
 class LazySeqRecordGenBank(LazySeqRecord):
     """Lazy loading SeqRecord proxy for GenBank files."""
-    _raw_formats = ["gb", "genbank"]
     _marker_re = re.compile("^LOCUS ")
 
     def _load_id(self):

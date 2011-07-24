@@ -22,7 +22,6 @@ class TestSimpleRead(unittest.TestCase):
         p = LazySeqRecordFasta(h, 0, h.tell(), len(r), slice(None, None, None),
                                r.seq.alphabet)
         self.compare(p, r)
-
         for s in [slice(5,10),
                   slice(10,20,1),
                   slice(5,-5),
@@ -30,6 +29,7 @@ class TestSimpleRead(unittest.TestCase):
             p1 = p[s]
             r1 = p[s]
             self.compare(p1, r1)
+        self.assertEqual(p.format("fasta"), r.format("fasta"))
         h.close()
 
     def test_first_fasta(self):
@@ -90,8 +90,7 @@ class TestSimpleRead(unittest.TestCase):
             p1 = p[s]
             r1 = p[s]
             self.compare(p1, r1)
-        self.assertEqual(p.format("fastq-solexa"), '@SLXA-B3_649_FC8437_R1_1_1_610_79\nGATGTGCAATACCTTTGTAGAGGAA\n+SLXA-B3_649_FC8437_R1_1_1_610_79\nYYYYYYYYYYYYYYYYYYWYWYYSU\n')
-        self.assertEqual(r.format("fastq-solexa"), '@SLXA-B3_649_FC8437_R1_1_1_610_79\nGATGTGCAATACCTTTGTAGAGGAA\n+\nYYYYYYYYYYYYYYYYYYWYWYYSU\n')
+        self.assertEqual(p.format("fastq-solexa"), r.format("fastq-solexa"))
         h.close()
 
     def test_easy_genbank(self):

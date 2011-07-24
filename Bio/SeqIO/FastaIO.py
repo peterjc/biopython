@@ -149,7 +149,6 @@ class FastaWriter(SequentialSequenceWriter):
 
 class LazySeqRecordFasta(LazySeqRecord):
     """Lazy loading SeqRecord proxy for FASTA files."""
-    _raw_formats = ["fasta"]
 
     def _load_id(self):
         """Load the ID from a FASTA file."""

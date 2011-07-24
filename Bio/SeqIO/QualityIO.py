@@ -1839,19 +1839,16 @@ class LazySeqRecordFastqSanger(_LazySeqRecordFastq):
     """Lazy loading SeqRecord proxy for Sanger FASTQ files."""
     _score_offset = SANGER_SCORE_OFFSET
     _q_name = "phred_quality"
-    _raw_formats = ["fastq", "fastq-sanger"]
 
 class LazySeqRecordFastqSolexa(_LazySeqRecordFastq):
     """Lazy loading SeqRecord proxy for Solexa FASTQ files."""
     _score_offset = SOLEXA_SCORE_OFFSET
     _q_name = "solexa_quality"
-    _raw_formats = ["fastq-solexa"]
 
 class LazySeqRecordFastqIlluina(_LazySeqRecordFastq):
     """Lazy loading SeqRecord proxy for Illumina FASTQ files."""
     _score_offset = SOLEXA_SCORE_OFFSET
     _q_name = "phred_quality"
-    _raw_formats = ["fastq-illumina"]
 
 
 #TODO - Extend Lazy proxy for per-letter-annotation, then do subclasses for
