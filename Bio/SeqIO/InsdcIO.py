@@ -1042,6 +1042,124 @@ class ImgtWriter(EmblWriter):
     QUALIFIER_INDENT_TMP = "FT   %s                    " # 25 if %s is empty
     FEATURE_HEADER = "FH   Key                 Location/Qualifiers\n"
 
+from _lazy import LazySeqRecord
+import re
+from Bio._py3k import _bytes_to_string, _as_bytes, _as_string
+
+class LazySeqRecordGenBank(LazySeqRecord):
+    """Lazy loading SeqRecord proxy for GenBank files."""
+    _raw_formats = ["gb", "genbank"]
+    _marker_re = re.compile("^LOCUS ")
+
+    def _load_id(self):
+        """Load the ID from a GenBank file.
+
+        In hindsight it was a bad idea (see also the SeqIO index code), but
+        we do not simply take the SeqRecord's id from the LOCUS line.
+        """
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        key = None
+        dot_char = _as_bytes(".")
+        accession_marker = _as_bytes("ACCESSION ")
+        version_marker = _as_bytes("VERSION ")
+        marker_re = self._marker_re
+        assert marker_re.match(line), line
+        #TODO - break loop at FEATURES table
+        while True:
+            line = h.readline()
+            if marker_re.match(line) or not line:
+                break
+            elif line.startswith(accession_marker):
+                key = line.rstrip().split()[1]
+            elif line.startswith(version_marker):
+                version_id = line.rstrip().split()[1]
+                if version_id.count(dot_char)==1 and version_id.split(dot_char)[1].isdigit():
+                    #This should mimic the GenBank parser...
+                    key = version_id
+        if not key:
+            raise ValueError("Did not find ACCESSION/VERSION lines")
+        else:
+            return key
+
+    def _load_name(self):
+        """Load the name from a GenBank file."""
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        assert self._marker_re.match(line), line
+        return line.split(None,2)[1]
+    
+    def _load_description(self):
+        """Load the description from a GenBank file."""
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        key = None
+        dot_char = _as_bytes(".")
+        def_marker = _as_bytes("DEFINITION ")
+        marker_re = self._marker_re
+        assert marker_re.match(line), line
+        lines = []
+        #TODO - break loop at FEATURES table
+        while True:
+            line = h.readline()
+            if marker_re.match(line) or not line:
+                break
+            elif line.startswith(def_marker):
+                lines.append(line[10:].strip())
+        return " ".join(lines)
+
+    def _load_dbxrefs(self):
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        key = None
+        dot_char = _as_bytes(".")
+        db_marker = _as_bytes("DBLINK ")
+        marker_re = self._marker_re
+        assert marker_re.match(line), line
+        lines = []
+        #TODO - break loop at FEATURES table
+        while True:
+            line = h.readline()
+            if marker_re.match(line) or not line:
+                break
+            elif line.startswith(db_marker):
+                lines.append(line[10:].strip())
+        return lines
+
+    def _load_annotations(self):
+        raise NotImplementedError
+
+    def _load_features(self):
+        raise NotImplementedError
+
+    def _load_seq(self):
+        """Load the (sub)sequence from a GenBank file."""
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        marker_re = self._marker_re
+        origin_marker = _as_bytes("ORIGIN")
+        assert marker_re.match(line), line
+        while True:
+            line = h.readline()
+            if marker_re.match(line) or not line:
+                return ""
+            elif line.startswith(origin_marker):
+                break
+        lines = []
+        while True:
+            line = h.readline()
+            if line.startswith("//"):
+                break
+            else:
+                lines.extend(line.upper().split()[1:])
+        return "".join(lines)[self._start:self._stop]
+
+
 if __name__ == "__main__":
     print "Quick self test"
     import os
