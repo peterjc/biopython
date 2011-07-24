@@ -1806,7 +1806,7 @@ class _LazySeqRecordFastq(LazySeqRecord):
         assert line.startswith("@")
         return line[1:].rstrip()
 
-    def _load_seq(self):
+    def _load_seq(self, index):
         """Load the (sub)sequence from a FASTQ file."""
         h = self._handle
         h.seek(self._offset)
@@ -1818,14 +1818,14 @@ class _LazySeqRecordFastq(LazySeqRecord):
             if line.startswith("+"):
                 break
             lines.extend(line.strip().split())
-        return "".join(lines)[self._start:self._stop]
+        return "".join(lines)[index]
     
-    def _load_per_letter_annotations(self):
+    def _load_per_letter_annotations(self, index):
         #TODO - Rewrite this for speed!
         h = self._handle
         h.seek(self._offset)
         title, seq, quality_string = FastqGeneralIterator(h).next()
-        quality_string = quality_string[self._start:self._stop]
+        quality_string = quality_string[index]
         q_mapping = self._q_mapping
         qualities = [q_mapping[letter] for letter in quality_string]
         if qualities and (min(qualities) < 0 or max(qualities) > 93):

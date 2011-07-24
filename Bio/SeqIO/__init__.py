@@ -564,9 +564,8 @@ def _lazy_parse(filename, format, alphabet):
     random_access = _FormatToRandomAccess[format](filename, format, alphabet)
     handle = random_access._handle
     for seq_id, offset, raw_len in random_access:
-        seq_len = len(random_access.get(offset)) #testing hack, loads SeqRecord!
         yield lazy(handle, offset, raw_len, seq_id,
-                   slice(None,None), alphabet, seq_len)
+                   slice(None,None), alphabet)
     #Can't always close the handle now - any of the LazySeqRecord objects
     #might still be using it.
 

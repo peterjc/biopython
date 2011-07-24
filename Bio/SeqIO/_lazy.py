@@ -45,32 +45,33 @@ class LazySeqRecord(SeqRecord):
         self._offset = offset
         self._raw_len = raw_len
         self.id = id
-        if not seq_len:
-            raise NotImplementedError("On the TODO list!")
         self._seq_len = seq_len
-        self._start, self._stop, step = index.indices(seq_len)
-        if step != 1:
+        if index.step != 1 and index.step is not None:
             raise ValueError
+        self._index = index
         self._alphabet = alphabet
     
     def __len__(self):
-        #start, end, step = self._index.indices(self._seq_len)
-        #return (end - step) // step
-        l = self._stop - self._start
-        assert l >= 0, l
-        return l
+        if self._seq_len is None:
+            self._seq_len = self._load_full_len()
+        start, end, step = self._index.indices(self._seq_len)
+        assert step == 1
+        return (end - start) // step
 
     def __getitem__(self, index):
         if isinstance(index, slice):
+            if self._seq_len is None:
+                self._seq_len = self._load_len()
+            start, stop, step = self._index.indices(self._seq_len)
             if index.step is None or index.step == 1:
                 if index.start >= 0:
-                    new_start = min(self._start + index.start, self._seq_len)
+                    new_start = min(start + index.start, self._seq_len)
                 else:
                     new_start = max(0, self._stop + index.start)
                 if index.stop >= 0:
-                    new_stop = min(self._start + index.stop, self._seq_len)
+                    new_stop = min(start + index.stop, self._seq_len)
                 else:
-                    new_stop = max(0, self._stop + index.stop)
+                    new_stop = max(0, stop + index.stop)
                 return self.__class__(self._handle,
                                       self._offset, self._raw_len,
                                       self.id, slice(new_start, new_stop),
@@ -89,7 +90,7 @@ class LazySeqRecord(SeqRecord):
             return self._seq
         except AttributeError:
             #Load it now
-            s = Seq(self._load_seq(), self._alphabet)
+            s = Seq(self._load_seq(self._index), self._alphabet)
             self._seq = s
             return s
     seq = property(fget=_get_seq,
@@ -145,7 +146,7 @@ class LazySeqRecord(SeqRecord):
             return self._per_letter_annotations
         except AttributeError:
             #Load it now
-            temp = self._load_per_letter_annotations()
+            temp = self._load_per_letter_annotations(self._index)
             SeqRecord._set_per_letter_annotations(self, temp) #validates it!
             return temp
     letter_annotations = property( \
@@ -158,7 +159,7 @@ class LazySeqRecord(SeqRecord):
             return self._features
         except AttributeError:
             #Load it now
-            temp = self._load_features()
+            temp = self._load_features(self._index)
             self._features = temp
             return temp
     def _set_features(self, value):
@@ -185,24 +186,37 @@ class LazySeqRecord(SeqRecord):
                        fset=_set_dbxrefs,
                        doc="Database cross-references (list)")
 
-    def _load_seq(self):
+    def _load_full_len(self):
+        """Extracts the full sequence length from the file."""
+        #Default implementation, bit of a hack.
+        #For some formats this can be done very efficiently.
+        #e.g. GenBank files should have length in their LOCUS line
+        return len(self._load_seq(slice(None,None)))
+        
+    def _load_seq(self, index):
         """Extracts the (sub)sequence from the file."""
         raise NotImplementedError
 
     def _load_name(self):
+        """Extracts name from the file."""
         return ""
 
     def _load_description(self):
+        """Extracts description from the file."""
         return ""
 
     def _load_annotations(self):
+        """Extracts annotations from the file."""
         return {}
 
-    def _load_per_letter_annotations(self):
+    def _load_per_letter_annotations(self, index):
+        """Extracts per-letter-annotation for (sub)sequence from the file."""
         return {}
 
-    def _load_features(self):
+    def _load_features(self, index):
+        """Extracts features for (sub)sequence from the file."""
         return []
 
     def _load_dbxrefs(self):
+        """Extracts database cross references from the file."""
         return []

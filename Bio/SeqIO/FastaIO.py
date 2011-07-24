@@ -166,7 +166,7 @@ class LazySeqRecordFasta(LazySeqRecord):
         assert line.startswith(">")
         return line[1:].rstrip()
 
-    def _load_seq(self):
+    def _load_seq(self, index):
         """Load the (sub)sequence from a FASTA file."""
         h = self._handle
         h.seek(self._offset)
@@ -178,7 +178,7 @@ class LazySeqRecordFasta(LazySeqRecord):
             if line.startswith(">"):
                 break
             lines.extend(line.strip().split())
-        return "".join(lines)[self._start:self._stop]
+        return "".join(lines)[index]
 
 
 if __name__ == "__main__":

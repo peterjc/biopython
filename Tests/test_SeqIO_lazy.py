@@ -23,8 +23,7 @@ class TestSimpleRead(unittest.TestCase):
         p = LazySeqRecordFasta(h, 0, h.tell(),
                                r.id,
                                slice(None, None, None),
-                               r.seq.alphabet,
-                               len(r))
+                               r.seq.alphabet)
         self.compare(p, r)
         for s in [slice(5,10),
                   slice(10,20,1),
@@ -46,8 +45,7 @@ class TestSimpleRead(unittest.TestCase):
         p = LazySeqRecordFasta(h, 0, None,
                                r.id,
                                slice(None, None, None),
-                               r.seq.alphabet,
-                               len(r))
+                               r.seq.alphabet)
         self.compare(p, r)
 
         for s in [slice(5,10),
@@ -72,8 +70,7 @@ class TestSimpleRead(unittest.TestCase):
         p = LazySeqRecordFastqSanger(h, 0, None,
                                      r.id,
                                      slice(None, None, None),
-                                     r.seq.alphabet,
-                                     len(r))
+                                     r.seq.alphabet)
         self.compare(p, r)
 
         for s in [slice(5,10),
@@ -100,8 +97,7 @@ class TestSimpleRead(unittest.TestCase):
         p = LazySeqRecordFastqSolexa(h, 0, 120,
                                      r.id,
                                      slice(None, None, None),
-                                     r.seq.alphabet,
-                                     len(r))
+                                     r.seq.alphabet)
         self.compare(p, r)
         
         for s in [slice(5,10),
@@ -124,8 +120,7 @@ class TestSimpleRead(unittest.TestCase):
         p = LazySeqRecordGenBank(h, 0, h.tell(),
                                  r.id,
                                  slice(None, None, None),
-                                 r.seq.alphabet,
-                                 len(r))
+                                 r.seq.alphabet)
         self.compare(p, r)
 
         for s in [slice(5,10),
