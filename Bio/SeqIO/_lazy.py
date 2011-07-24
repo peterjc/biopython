@@ -6,9 +6,30 @@ class LazySeqRecord(SeqRecord):
     def __init__(self, handle, offset, raw_len, seq_len, index, alphabet):
         """Create LazySeqRecord which will access file on demand.
 
-        NOTE: The subclass implementations of __init__ must NOT move the
-        read position on the handle!
+        handle - input file handle
+        offset - position in the handle where this record starts
+        raw_len - length of raw record in the file (optional?)
+        seq_len - length of the (full) sequence, see index argument
+        index - slice object describing which part of sequence wanted
+        alphabet - alphabet to use for the sequence (optional?)
+
+        The idea of having the index as part of the LazySeqRecord is to allow
+        fast slicing and (in principle) this gives us a way to be clever about
+        slicing the sequence, per-letter-annotation or features. e.g. When
+        asked to load the features, we only need to return those within the
+        slice. This is aimed to fit in with indexed access to big files, such
+        as SAM/BAM (see samtools), GFF (perhaps using tabix, see samtools), or
+        even FASTA in principle (see samtools FASTA indexing which requires
+        uniform line wrapping).
         """
+        #NOTE: The subclass implementations of __init__ should not access the
+        #handle (for speed). In practice if using a for loop (etc) with a lazy
+        #SeqIO parser, the user will access methods of the current record which
+        #will move the read position. This means the iterator has to cope with
+        #the read position moving during the each yield statement. We could use
+        #a separate handle for the lazy records and the parser I suppose... but
+        #one handle for each lazy record is a bad idea.
+        #
         #TODO - Computing the sequence length up front is often expensive
         #(slow), but if access this on demand needs more infrastructure
         #to handle start/end for __getitem__, __len__, etc.
