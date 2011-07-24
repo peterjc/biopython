@@ -17,44 +17,6 @@ from Bio.SeqRecord import SeqRecord
 from Bio.SeqIO.Interfaces import SequentialSequenceWriter
 from _lazy import LazySeqRecord
 
-class LazySeqRecordFasta(LazySeqRecord):
-    """Lazy loading SeqRecord proxy for FASTA files."""
-    _raw_formats = ["fasta"]
-
-    def _load_id(self):
-        """Load the ID from a FASTA file."""
-        h = self._handle
-        h.seek(self._offset)
-        line = h.readline()
-        assert line.startswith(">")
-        return line[1:].split(None,1)[0]
-
-    def _load_name(self):
-        """Load the name from a FASTA file."""
-        return self._load_id()
-    
-    def _load_description(self):
-        """Load the description from a FASTA file."""
-        h = self._handle
-        h.seek(self._offset)
-        line = h.readline()
-        assert line.startswith(">")
-        return line[1:].rstrip()
-
-    def _load_seq(self):
-        """Load the (sub)sequence from a FASTA file."""
-        h = self._handle
-        h.seek(self._offset)
-        line = h.readline()
-        assert line.startswith(">")
-        lines = []
-        while line:
-            line = h.readline()
-            if line.startswith(">"):
-                break
-            lines.extend(line.strip().split())
-        return "".join(lines)[self._start:self._stop]
-    
 
 #This is a generator function!
 def FastaIterator(handle, alphabet = single_letter_alphabet, title2ids = None):
@@ -183,6 +145,46 @@ class FastaWriter(SequentialSequenceWriter):
                 self.handle.write(data[i:i+self.wrap] + "\n")
         else:
             self.handle.write(data + "\n")
+
+
+class LazySeqRecordFasta(LazySeqRecord):
+    """Lazy loading SeqRecord proxy for FASTA files."""
+    _raw_formats = ["fasta"]
+
+    def _load_id(self):
+        """Load the ID from a FASTA file."""
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        assert line.startswith(">")
+        return line[1:].split(None,1)[0]
+
+    def _load_name(self):
+        """Load the name from a FASTA file."""
+        return self._load_id()
+    
+    def _load_description(self):
+        """Load the description from a FASTA file."""
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        assert line.startswith(">")
+        return line[1:].rstrip()
+
+    def _load_seq(self):
+        """Load the (sub)sequence from a FASTA file."""
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        assert line.startswith(">")
+        lines = []
+        while line:
+            line = h.readline()
+            if line.startswith(">"):
+                break
+            lines.extend(line.strip().split())
+        return "".join(lines)[self._start:self._stop]
+
 
 if __name__ == "__main__":
     print "Running quick self test"
