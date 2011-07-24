@@ -1842,7 +1842,7 @@ class LazySeqRecordFastqSolexa(_LazySeqRecordFastq):
     _score_offset = SOLEXA_SCORE_OFFSET
     _q_name = "solexa_quality"
 
-class LazySeqRecordFastqIlluina(_LazySeqRecordFastq):
+class LazySeqRecordFastqIllumina(_LazySeqRecordFastq):
     """Lazy loading SeqRecord proxy for Illumina FASTQ files."""
     _score_offset = SOLEXA_SCORE_OFFSET
     _q_name = "phred_quality"
