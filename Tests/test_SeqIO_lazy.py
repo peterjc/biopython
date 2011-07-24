@@ -21,9 +21,10 @@ class TestSimpleRead(unittest.TestCase):
         h = open(filename, "rU")
         h.read()
         p = LazySeqRecordFasta(h, 0, h.tell(),
-                               r.id, len(r),
+                               r.id,
                                slice(None, None, None),
-                               r.seq.alphabet)
+                               r.seq.alphabet,
+                               len(r))
         self.compare(p, r)
         for s in [slice(5,10),
                   slice(10,20,1),
@@ -43,9 +44,10 @@ class TestSimpleRead(unittest.TestCase):
         h = open(filename)
         h.seek(6) #random
         p = LazySeqRecordFasta(h, 0, None,
-                               r.id, len(r),
+                               r.id,
                                slice(None, None, None),
-                               r.seq.alphabet)
+                               r.seq.alphabet,
+                               len(r))
         self.compare(p, r)
 
         for s in [slice(5,10),
@@ -68,9 +70,10 @@ class TestSimpleRead(unittest.TestCase):
         
         h = open(filename)
         p = LazySeqRecordFastqSanger(h, 0, None,
-                                     r.id, len(r),
+                                     r.id,
                                      slice(None, None, None),
-                                     r.seq.alphabet)
+                                     r.seq.alphabet,
+                                     len(r))
         self.compare(p, r)
 
         for s in [slice(5,10),
@@ -95,9 +98,10 @@ class TestSimpleRead(unittest.TestCase):
         h = open(filename)
         h.seek(19) #random
         p = LazySeqRecordFastqSolexa(h, 0, 120,
-                                     r.id, len(r),
+                                     r.id,
                                      slice(None, None, None),
-                                     r.seq.alphabet)
+                                     r.seq.alphabet,
+                                     len(r))
         self.compare(p, r)
         
         for s in [slice(5,10),
@@ -118,9 +122,10 @@ class TestSimpleRead(unittest.TestCase):
         h = open(filename, "rU")
         h.read()
         p = LazySeqRecordGenBank(h, 0, h.tell(),
-                                 r.id, len(r),
+                                 r.id,
                                  slice(None, None, None),
-                                 r.seq.alphabet)
+                                 r.seq.alphabet,
+                                 len(r))
         self.compare(p, r)
 
         for s in [slice(5,10),

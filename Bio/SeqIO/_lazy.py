@@ -4,16 +4,16 @@ from Bio.SeqRecord import SeqRecord
 class LazySeqRecord(SeqRecord):
 
     def __init__(self, handle, offset, raw_len,
-                 id, seq_len, index, alphabet):
+                 id, index, alphabet, seq_len=None):
         """Create LazySeqRecord which will access file on demand.
 
         handle - input file handle
         offset - position in the handle where this record starts
         raw_len - length of raw record in the file (optional?)
         id - string to be used as the SeqRecord's id
-        seq_len - length of the (full) sequence, see index argument
         index - slice object describing which part of sequence wanted
         alphabet - alphabet to use for the sequence (optional?)
+        seq_len - length of the (full) sequence, see index argument (optional)
 
         The idea of having the index as part of the LazySeqRecord is to allow
         fast slicing and (in principle) this gives us a way to be clever about
@@ -45,6 +45,8 @@ class LazySeqRecord(SeqRecord):
         self._offset = offset
         self._raw_len = raw_len
         self.id = id
+        if not seq_len:
+            raise NotImplementedError("On the TODO list!")
         self._seq_len = seq_len
         self._start, self._stop, step = index.indices(seq_len)
         if step != 1:
@@ -69,10 +71,10 @@ class LazySeqRecord(SeqRecord):
                     new_stop = min(self._start + index.stop, self._seq_len)
                 else:
                     new_stop = max(0, self._stop + index.stop)
-                return self.__class__(self._handle, self._offset, self._raw_len,
-                                      self.id, self._seq_len,
-                                      slice(new_start, new_stop),
-                                      self._alphabet)
+                return self.__class__(self._handle,
+                                      self._offset, self._raw_len,
+                                      self.id, slice(new_start, new_stop),
+                                      self._alphabet, self._seq_len)
             else:
                 #Can we cope with a step as well? Problem is slice of slice...
                 raise NotImplementedError

@@ -1782,8 +1782,8 @@ class _LazySeqRecordFastq(LazySeqRecord):
     _q_mapping = None
     _q_name = None
     
-    def __init__(self, handle, offset, raw_len, id, seq_len, index, alphabet):
-        LazySeqRecord.__init__(self, handle, offset, raw_len, id, seq_len, index, alphabet)
+    def __init__(self, handle, offset, raw_len, id, index, alphabet, seq_len=None):
+        LazySeqRecord.__init__(self, handle, offset, raw_len, id, index, alphabet, seq_len)
         #TODO - Do this at module level
         q_mapping = dict()
         for letter in range(0, 255):
