@@ -14,11 +14,15 @@ the sequences as SeqRecord objects.
 See also Bio.SeqIO.UniprotIO.py which supports the "uniprot-xml" format.
 """
 
+import re
+
 from Bio import Seq
 from Bio import SeqRecord
 from Bio import Alphabet
 from Bio import SeqFeature
 from Bio import SwissProt
+from _lazy import LazySeqRecord
+from Bio._py3k import _as_bytes
 
 def _make_position(location_string, offset=0):
     """Turn a Swiss location position into a SeqFeature position object (PRIVATE).
@@ -135,6 +139,107 @@ def SwissIterator(handle):
         if swiss_record.keywords:
             record.annotations['keywords'] = swiss_record.keywords
         yield record
+
+class LazySeqRecordSwiss(LazySeqRecord):
+    """Lazy loading SeqRecord proxy for SwissProt text files."""
+    _marker_re = re.compile("^ID   ")
+
+    def _load_full_len(self):
+        """Load the sequence length of a Swiss text entry."""
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        assert self._marker_re.match(line), line
+        cols = line[5:].split()
+        if len(cols) == 5:
+            return int(cols[3])
+        elif len(cols) == 4:
+            return int(cols[2])
+        else:
+            raise ValueError("ID line has unrecognised format:\n"+line)
+
+    def _load_name(self):
+        """Load the name from a Swiss text file.
+
+        Takes the first entry of the ID line.
+        """
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        assert self._marker_re.match(line), line
+        return line[5:].split(None,1)[0]
+    
+    def _load_description(self):
+        """Load the description from a Swiss text file."""
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        de_marker = _as_bytes("DE   ")
+        marker_re = self._marker_re
+        assert marker_re.match(line), line
+        lines = []
+        #TODO - break loop at FEATURES table
+        while True:
+            line = h.readline()
+            if marker_re.match(line) or not line:
+                break
+            elif line.startswith(de_marker):
+                lines.append(line[5:].strip())
+        return " ".join(lines)
+
+    def _load_dbxrefs(self):
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        key = None
+        dr_marker = _as_bytes("DR   ")
+        marker_re = self._marker_re
+        assert marker_re.match(line), line
+        dbxrefs = []
+        #TODO - break loop at FEATURES table
+        while True:
+            line = h.readline()
+            if marker_re.match(line) or not line:
+                break
+            elif line.startswith(dr_marker):
+                i = line.find(' [')
+                if i >= 0:
+                    line = line[:i]
+                cols = line[5:].rstrip(".").split('; ')
+                new = ":".join(cols[0:2])
+                if new not in dbxrefs:
+                    dbxrefs.append(new)
+        return dbxrefs
+
+    def _load_annotations(self):
+        return {} #TODO
+
+    def _load_features(self, index):
+        return [] #TODO, even introduce LazySeqFeature object?
+
+    def _load_seq(self, index):
+        """Load the (sub)sequence from a GenBank file."""
+        h = self._handle
+        h.seek(self._offset)
+        line = h.readline()
+        marker_re = self._marker_re
+        sq_marker = _as_bytes("SQ   ")
+        assert marker_re.match(line), line
+        while True:
+            line = h.readline()
+            if marker_re.match(line) or not line:
+                return ""
+            elif line.startswith(sq_marker):
+                break
+        lines = []
+        while True:
+            line = h.readline()
+            if line.startswith("//"):
+                break
+            else:
+                lines.extend(line.split())
+        return "".join(lines)[index]
+
 
 if __name__ == "__main__":
     print "Quick self test..."

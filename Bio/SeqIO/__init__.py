@@ -546,6 +546,7 @@ def _lazy_parse(filename, format, alphabet):
                                     LazySeqRecordFastqSolexa, \
                                     LazySeqRecordFastqIllumina
     from InsdcIO import LazySeqRecordGenBank
+    from SwissIO import LazySeqRecordSwiss
 
     _FormatToLazySeqRecord = {
         "fasta" : LazySeqRecordFasta,
@@ -555,6 +556,7 @@ def _lazy_parse(filename, format, alphabet):
         "fastq-illumina" : LazySeqRecordFastqIllumina,
         "genbank" : LazySeqRecordGenBank,
         "gb" : LazySeqRecordGenBank, #alias of the above
+        "swiss" : LazySeqRecordSwiss,
         }
 
     if format not in _FormatToRandomAccess \

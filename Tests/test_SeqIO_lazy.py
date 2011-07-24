@@ -151,6 +151,10 @@ class TestSimpleRead(unittest.TestCase):
         """GenBank many entries."""
         self.compare_many("GenBank/cor6_6.gb", "gb", generic_nucleotide)
 
+    def test_many_swiss(self):
+        """Swiss many entries."""
+        self.compare_many("SwissProt/multi_ex.txt", "swiss", generic_protein)
+
     def compare(self, p, r):
         self.assertEqual(len(p), len(r))
         self.assertEqual(p.id, r.id)
@@ -163,6 +167,7 @@ class TestSimpleRead(unittest.TestCase):
         if p.features:
             #Skip testing on GenBank
             self.assertEqual(len(p.features), len(r.features))
+        self.assertEqual(len(p.dbxrefs), len(r.dbxrefs))
         self.assertEqual(p.dbxrefs, r.dbxrefs)
         self.assertEqual(len(p.seq), len(r.seq))
         self.assertEqual(str(p.seq), str(r.seq))
