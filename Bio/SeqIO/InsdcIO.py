@@ -1063,8 +1063,6 @@ class LazySeqRecordGenBank(LazySeqRecord):
         h = self._handle
         h.seek(self._offset)
         line = h.readline()
-        key = None
-        dot_char = _as_bytes(".")
         def_marker = _as_bytes("DEFINITION ")
         marker_re = self._marker_re
         assert marker_re.match(line), line
@@ -1082,8 +1080,6 @@ class LazySeqRecordGenBank(LazySeqRecord):
         h = self._handle
         h.seek(self._offset)
         line = h.readline()
-        key = None
-        dot_char = _as_bytes(".")
         db_marker = _as_bytes("DBLINK ")
         marker_re = self._marker_re
         assert marker_re.match(line), line
