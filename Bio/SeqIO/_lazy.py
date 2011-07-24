@@ -3,12 +3,14 @@ from Bio.SeqRecord import SeqRecord
 
 class LazySeqRecord(SeqRecord):
 
-    def __init__(self, handle, offset, raw_len, seq_len, index, alphabet):
+    def __init__(self, handle, offset, raw_len,
+                 id, seq_len, index, alphabet):
         """Create LazySeqRecord which will access file on demand.
 
         handle - input file handle
         offset - position in the handle where this record starts
         raw_len - length of raw record in the file (optional?)
+        id - string to be used as the SeqRecord's id
         seq_len - length of the (full) sequence, see index argument
         index - slice object describing which part of sequence wanted
         alphabet - alphabet to use for the sequence (optional?)
@@ -22,6 +24,12 @@ class LazySeqRecord(SeqRecord):
         even FASTA in principle (see samtools FASTA indexing which requires
         uniform line wrapping).
         """
+        #Note that the id string is supplied as part of the __init__ args for
+        #two reasons. First, this is probably the most accessed attribute, so
+        #there is little benefit to making it lazy (hunch). Second, I want to
+        #reuse the iteration support developed in Bio/SeqIO/_index.py which
+        #already returns id, offset, raw_len tuples.
+        #
         #NOTE: The subclass implementations of __init__ should not access the
         #handle (for speed). In practice if using a for loop (etc) with a lazy
         #SeqIO parser, the user will access methods of the current record which
@@ -36,6 +44,7 @@ class LazySeqRecord(SeqRecord):
         self._handle = handle
         self._offset = offset
         self._raw_len = raw_len
+        self.id = id
         self._seq_len = seq_len
         self._start, self._stop, step = index.indices(seq_len)
         if step != 1:
@@ -61,7 +70,8 @@ class LazySeqRecord(SeqRecord):
                 else:
                     new_stop = max(0, self._stop + index.stop)
                 return self.__class__(self._handle, self._offset, self._raw_len,
-                                      self._seq_len, slice(new_start, new_stop),
+                                      self.id, self._seq_len,
+                                      slice(new_start, new_stop),
                                       self._alphabet)
             else:
                 #Can we cope with a step as well? Problem is slice of slice...
@@ -83,20 +93,6 @@ class LazySeqRecord(SeqRecord):
     seq = property(fget=_get_seq,
                    fset=SeqRecord._set_seq, #Defined in base classes
                    doc="The sequence itself, as a Seq or MutableSeq object.")
-
-    def _get_id(self):
-        try:
-            return self._id
-        except AttributeError:
-            #Load it now
-            temp = self._load_id()
-            self._id = temp
-            return temp
-    def _set_id(self, value):
-        self._id = value
-    id = property(fget=_get_id,
-                  fset=_set_id,
-                  doc="The sequence identifier (string)")
 
     def _get_name(self):
         try:
@@ -189,9 +185,6 @@ class LazySeqRecord(SeqRecord):
 
     def _load_seq(self):
         """Extracts the (sub)sequence from the file."""
-        raise NotImplementedError
-
-    def _load_id(self):
         raise NotImplementedError
 
     def _load_name(self):

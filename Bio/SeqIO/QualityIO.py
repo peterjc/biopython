@@ -1782,24 +1782,21 @@ class _LazySeqRecordFastq(LazySeqRecord):
     _q_mapping = None
     _q_name = None
     
-    def __init__(self, handle, offset, raw_len, seq_len, index, alphabet):
-        LazySeqRecord.__init__(self, handle, offset, raw_len, seq_len, index, alphabet)
+    def __init__(self, handle, offset, raw_len, id, seq_len, index, alphabet):
+        LazySeqRecord.__init__(self, handle, offset, raw_len, id, seq_len, index, alphabet)
+        #TODO - Do this at module level
         q_mapping = dict()
         for letter in range(0, 255):
             q_mapping[chr(letter)] = letter - self._score_offset
         self._q_mapping = q_mapping
 
-    def _load_id(self):
-        """Load the ID from a FASTQ file."""
+    def _load_name(self):
+        """Load the name from a FASTQ file."""
         h = self._handle
         h.seek(self._offset)
         line = h.readline()
         assert line.startswith("@")
         return line[1:].split(None,1)[0]
-
-    def _load_name(self):
-        """Load the name from a FASTQ file."""
-        return self._load_id()
     
     def _load_description(self):
         """Load the description from a FASTQ file."""

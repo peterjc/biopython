@@ -19,7 +19,9 @@ class TestSimpleRead(unittest.TestCase):
         
         h = open(filename, "rU")
         h.read()
-        p = LazySeqRecordFasta(h, 0, h.tell(), len(r), slice(None, None, None),
+        p = LazySeqRecordFasta(h, 0, h.tell(),
+                               r.id, len(r),
+                               slice(None, None, None),
                                r.seq.alphabet)
         self.compare(p, r)
         for s in [slice(5,10),
@@ -39,7 +41,9 @@ class TestSimpleRead(unittest.TestCase):
         
         h = open(filename)
         h.seek(6) #random
-        p = LazySeqRecordFasta(h, 0, None, len(r), slice(None, None, None),
+        p = LazySeqRecordFasta(h, 0, None,
+                               r.id, len(r),
+                               slice(None, None, None),
                                r.seq.alphabet)
         self.compare(p, r)
 
@@ -58,7 +62,9 @@ class TestSimpleRead(unittest.TestCase):
         r = SeqIO.parse(filename, "fastq", generic_nucleotide).next()
         
         h = open(filename)
-        p = LazySeqRecordFastqSanger(h, 0, None, len(r), slice(None, None, None),
+        p = LazySeqRecordFastqSanger(h, 0, None,
+                                     r.id, len(r),
+                                     slice(None, None, None),
                                      r.seq.alphabet)
         self.compare(p, r)
 
@@ -79,7 +85,9 @@ class TestSimpleRead(unittest.TestCase):
         
         h = open(filename)
         h.seek(19) #random
-        p = LazySeqRecordFastqSolexa(h, 0, 120, len(r), slice(None, None, None),
+        p = LazySeqRecordFastqSolexa(h, 0, 120,
+                                     r.id, len(r),
+                                     slice(None, None, None),
                                      r.seq.alphabet)
         self.compare(p, r)
         
@@ -100,7 +108,9 @@ class TestSimpleRead(unittest.TestCase):
         
         h = open(filename, "rU")
         h.read()
-        p = LazySeqRecordGenBank(h, 0, h.tell(), len(r), slice(None, None, None),
+        p = LazySeqRecordGenBank(h, 0, h.tell(),
+                                 r.id, len(r),
+                                 slice(None, None, None),
                                  r.seq.alphabet)
         self.compare(p, r)
 

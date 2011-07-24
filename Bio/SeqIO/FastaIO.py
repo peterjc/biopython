@@ -150,17 +150,13 @@ class FastaWriter(SequentialSequenceWriter):
 class LazySeqRecordFasta(LazySeqRecord):
     """Lazy loading SeqRecord proxy for FASTA files."""
 
-    def _load_id(self):
-        """Load the ID from a FASTA file."""
+    def _load_name(self):
+        """Load the name from a FASTA file."""
         h = self._handle
         h.seek(self._offset)
         line = h.readline()
         assert line.startswith(">")
         return line[1:].split(None,1)[0]
-
-    def _load_name(self):
-        """Load the name from a FASTA file."""
-        return self._load_id()
     
     def _load_description(self):
         """Load the description from a FASTA file."""

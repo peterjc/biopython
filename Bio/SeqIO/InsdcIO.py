@@ -1050,38 +1050,6 @@ class LazySeqRecordGenBank(LazySeqRecord):
     """Lazy loading SeqRecord proxy for GenBank files."""
     _marker_re = re.compile("^LOCUS ")
 
-    def _load_id(self):
-        """Load the ID from a GenBank file.
-
-        In hindsight it was a bad idea (see also the SeqIO index code), but
-        we do not simply take the SeqRecord's id from the LOCUS line.
-        """
-        h = self._handle
-        h.seek(self._offset)
-        line = h.readline()
-        key = None
-        dot_char = _as_bytes(".")
-        accession_marker = _as_bytes("ACCESSION ")
-        version_marker = _as_bytes("VERSION ")
-        marker_re = self._marker_re
-        assert marker_re.match(line), line
-        #TODO - break loop at FEATURES table
-        while True:
-            line = h.readline()
-            if marker_re.match(line) or not line:
-                break
-            elif line.startswith(accession_marker):
-                key = line.rstrip().split()[1]
-            elif line.startswith(version_marker):
-                version_id = line.rstrip().split()[1]
-                if version_id.count(dot_char)==1 and version_id.split(dot_char)[1].isdigit():
-                    #This should mimic the GenBank parser...
-                    key = version_id
-        if not key:
-            raise ValueError("Did not find ACCESSION/VERSION lines")
-        else:
-            return key
-
     def _load_name(self):
         """Load the name from a GenBank file."""
         h = self._handle
@@ -1130,10 +1098,10 @@ class LazySeqRecordGenBank(LazySeqRecord):
         return lines
 
     def _load_annotations(self):
-        raise {} #TODO
+        return {} #TODO
 
     def _load_features(self):
-        raise [] #TODO, even introduce LazySeqFeature object?
+        return [] #TODO, even introduce LazySeqFeature object?
 
     def _load_seq(self):
         """Load the (sub)sequence from a GenBank file."""
