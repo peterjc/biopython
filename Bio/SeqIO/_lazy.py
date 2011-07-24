@@ -5,6 +5,14 @@ class LazySeqRecord(SeqRecord):
     _raw_formats = [] #optimisation for the format method
 
     def __init__(self, handle, offset, raw_len, seq_len, index, alphabet):
+        """Create LazySeqRecord which will access file on demand.
+
+        NOTE: The subclass implementations of __init__ must NOT move the
+        read position on the handle!
+        """
+        #TODO - Computing the sequence length up front is often expensive
+        #(slow), but if access this on demand needs more infrastructure
+        #to handle start/end for __getitem__, __len__, etc.
         self._handle = handle
         self._offset = offset
         self._raw_len = raw_len
