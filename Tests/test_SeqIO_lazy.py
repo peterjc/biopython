@@ -9,6 +9,7 @@ from Bio.SeqRecord import SeqRecord
 from Bio.SeqIO.FastaIO import LazySeqRecordFasta
 from Bio.SeqIO.QualityIO import LazySeqRecordFastqSanger, LazySeqRecordFastqSolexa
 from Bio.SeqIO.InsdcIO import LazySeqRecordGenBank
+from Bio.SeqIO import _lazy_parse as lazy_parse
 
 class TestSimpleRead(unittest.TestCase):
         
@@ -56,6 +57,10 @@ class TestSimpleRead(unittest.TestCase):
             self.compare(p1, r1)
         h.close()
 
+    def test_many_fasta(self):
+        """FASTA many entries."""
+        self.compare_many("Quality/example.fasta", "fasta", generic_nucleotide)
+
     def test_first_fastq(self):
         """FASTQ Sanger first entry."""
         filename = "Quality/example.fastq"
@@ -77,6 +82,10 @@ class TestSimpleRead(unittest.TestCase):
             self.compare(p1, r1)
         self.assertEqual(p.format("fastq"), r.format("fastq"))
         h.close()
+
+    def test_many_fastq(self):
+        """FASTQ many entries."""
+        self.compare_many("Quality/example.fastq", "fastq", generic_nucleotide)
 
     def test_first_fastq_solexa(self):
         """FASTQ Solexa first entry."""
@@ -123,6 +132,10 @@ class TestSimpleRead(unittest.TestCase):
             self.compare(p1, r1)
         h.close()
 
+    def test_many_genbank(self):
+        """GenBank many entries."""
+        self.compare_many("GenBank/cor6_6.gb", "gb", generic_nucleotide)
+
     def compare(self, p, r):
         self.assertEqual(len(p), len(r))
         self.assertEqual(p.id, r.id)
@@ -139,6 +152,14 @@ class TestSimpleRead(unittest.TestCase):
         self.assertEqual(len(p.seq), len(r.seq))
         self.assertEqual(str(p.seq), str(r.seq))
         #self.assertEqual(p.format("fasta"), r.format("fasta"))
+
+    def compare_many(self, filename, format, alphabet):
+        r_list = list(SeqIO.parse(filename, format, alphabet))
+        p_list = list(lazy_parse(filename, format, alphabet))
+        self.assertEqual(len(r_list), len(p_list))
+        for r, p in zip(r_list, p_list):
+            self.compare(p, r)
+
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner(verbosity = 2)

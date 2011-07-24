@@ -538,6 +538,39 @@ def parse(handle, format, alphabet=None):
     if handle_close:
         handle.close()
 
+def _lazy_parse(filename, format, alphabet):
+    #Lazy imports!
+    from _index import _FormatToRandomAccess
+    from FastaIO import LazySeqRecordFasta
+    from QualityIO import LazySeqRecordFastqSanger, \
+                                    LazySeqRecordFastqSolexa, \
+                                    LazySeqRecordFastqIllumina
+    from InsdcIO import LazySeqRecordGenBank
+
+    _FormatToLazySeqRecord = {
+        "fasta" : LazySeqRecordFasta,
+        "fastq" : LazySeqRecordFastqSanger,
+        "fastq-sanger" : LazySeqRecordFastqSanger, #alias of the above
+        "fastq-solexa" : LazySeqRecordFastqSolexa,
+        "fastq-illumina" : LazySeqRecordFastqIllumina,
+        "genbank" : LazySeqRecordGenBank,
+        "gb" : LazySeqRecordGenBank, #alias of the above
+        }
+
+    if format not in _FormatToRandomAccess \
+    or format not in _FormatToLazySeqRecord:
+        raise NotImplementedError
+    lazy = _FormatToLazySeqRecord[format]
+    random_access = _FormatToRandomAccess[format](filename, format, alphabet)
+    handle = random_access._handle
+    for seq_id, offset, raw_len in random_access:
+        seq_len = len(random_access.get(offset)) #testing hack, loads SeqRecord!
+        yield lazy(handle, offset, raw_len, seq_id,
+                   seq_len,
+                   slice(None,None), alphabet)
+    #Can't always close the handle now - any of the LazySeqRecord objects
+    #might still be using it.
+
 #This is a generator function
 def _iterate_via_AlignIO(handle, format, alphabet):
     """Iterate over all records in several alignments (PRIVATE)."""
