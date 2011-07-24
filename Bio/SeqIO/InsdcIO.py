@@ -1130,10 +1130,10 @@ class LazySeqRecordGenBank(LazySeqRecord):
         return lines
 
     def _load_annotations(self):
-        raise NotImplementedError
+        raise {} #TODO
 
     def _load_features(self):
-        raise NotImplementedError
+        raise [] #TODO, even introduce LazySeqFeature object?
 
     def _load_seq(self):
         """Load the (sub)sequence from a GenBank file."""

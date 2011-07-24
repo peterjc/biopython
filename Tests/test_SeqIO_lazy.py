@@ -118,15 +118,13 @@ class TestSimpleRead(unittest.TestCase):
         self.assertEqual(p.id, r.id)
         self.assertEqual(p.name, r.name)
         self.assertEqual(p.description, r.description)
-        try:
+        if p.annotations:
+            #Skip testing on GenBank
             self.assertEqual(p.annotations, r.annotations)
-        except NotImplementedError:
-            pass
         self.assertEqual(p.letter_annotations, r.letter_annotations)
-        try:
+        if p.features:
+            #Skip testing on GenBank
             self.assertEqual(len(p.features), len(r.features))
-        except NotImplementedError:
-            pass
         self.assertEqual(p.dbxrefs, r.dbxrefs)
         self.assertEqual(len(p.seq), len(r.seq))
         self.assertEqual(str(p.seq), str(r.seq))
