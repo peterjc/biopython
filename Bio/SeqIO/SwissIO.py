@@ -175,13 +175,15 @@ class LazySeqRecordSwiss(LazySeqRecord):
         h.seek(self._offset)
         line = h.readline()
         de_marker = _as_bytes("DE   ")
+        ft_marker = _as_bytes("FT   ")
+        sq_marker = _as_bytes("SQ   ")
         marker_re = self._marker_re
         assert marker_re.match(line), line
         lines = []
-        #TODO - break loop at FEATURES table
         while True:
             line = h.readline()
-            if marker_re.match(line) or not line:
+            if marker_re.match(line) or not line \
+            or line.startswith(ft_marker) or line.startswith(sq_marker):
                 break
             elif line.startswith(de_marker):
                 lines.append(line[5:].strip())
@@ -191,15 +193,16 @@ class LazySeqRecordSwiss(LazySeqRecord):
         h = self._handle
         h.seek(self._offset)
         line = h.readline()
-        key = None
         dr_marker = _as_bytes("DR   ")
+        ft_marker = _as_bytes("FT   ")
+        sq_marker = _as_bytes("SQ   ")
         marker_re = self._marker_re
         assert marker_re.match(line), line
         dbxrefs = []
-        #TODO - break loop at FEATURES table
         while True:
             line = h.readline()
-            if marker_re.match(line) or not line:
+            if marker_re.match(line) or not line \
+            or line.startswith(ft_marker) or line.startswith(sq_marker):
                 break
             elif line.startswith(dr_marker):
                 i = line.find(' [')
