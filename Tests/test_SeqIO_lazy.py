@@ -167,8 +167,8 @@ class TestSimpleRead(unittest.TestCase):
         self.assertEqual(len(p.seq), len(r.seq))
         self.assertEqual(str(p.seq), str(r.seq))
         #self.assertEqual(p.format("fasta"), r.format("fasta"))
-        #self.assertEqual(str(p[2:-2].seq), str(r[2:-2].seq))
-        #self.assertEqual(str(p[2:-2:-1].seq), str(r[2:-2:-1].seq))
+        self.assertEqual(str(p[2:-2].seq), str(r[2:-2].seq))
+        self.assertEqual(str(p[2:-2:-1].seq), str(r[2:-2:-1].seq))
 
     def compare_many(self, filename, format, alphabet):
         r_list = list(SeqIO.parse(filename, format, alphabet))
