@@ -166,8 +166,8 @@ class LazySeqRecord(SeqRecord):
         if not isinstance(value, list):
             raise TypeError
         self._dbxrefs = value
-    dbxrefs = property(fget=_get_features,
-                       fset=_set_features,
+    dbxrefs = property(fget=_get_dbxrefs,
+                       fset=_set_dbxrefs,
                        doc="Database cross-references (list)")
 
     def _load_seq(self):
