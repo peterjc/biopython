@@ -176,6 +176,24 @@ class TestSimpleRead(unittest.TestCase):
         self.assertEqual(len(r_list), len(p_list))
         for r, p in zip(r_list, p_list):
             self.compare(p, r)
+        #Explicitly move the handle about...
+        if len(r_list) >= 3:
+            iterator = lazy_parse(filename, format, alphabet)
+            r0 = iterator.next()
+            r1 = iterator.next()
+            self.assertEqual(r0.name, r_list[0].name)
+            self.assertEqual(r1.name, r_list[1].name)
+            self.assertEqual(len(r0), len(r_list[0]))
+            #Handle should now be at r0/r1 boundary...
+            self.assertEqual(r0.description, r_list[0].description)
+            #Handle should now be in middle of r0...
+            #...so might return r1 as next record
+            r2 = iterator.next()
+            if r2.id == r_list[1].id:
+                self.assertTrue(False, "Iteration distrupted!")                
+            self.assertEqual(r2.id, r_list[2].id)
+            self.compare(r2, r_list[2])
+            
 
 
 if __name__ == "__main__":
