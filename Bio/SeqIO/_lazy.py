@@ -17,12 +17,12 @@ class LazySeqRecord(SeqRecord):
     def __format__(self, format_spec):
         #Can we just read the raw read from the disk?
         if format_spec in self._raw_formats and self._raw_len:
-            print "Speedy %s" % format_spec
+            #print "Speedy %s" % format_spec
             h = self._handle
             h.seek(self._offset)
             return h.read(self._raw_len)
         else:
-            print "Slow %s, not in %r" % (format_spec, self._raw_formats)
+            #print "Slow %s, not in %r" % (format_spec, self._raw_formats)
             return SeqRecord.__format__(self, format_spec)
     
     def __len__(self):
