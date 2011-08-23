@@ -224,6 +224,7 @@ PACKAGES = [
     'Bio.GA.Selection',
     'Bio.GenBank',
     'Bio.Geo',
+    'Bio.GFF',
     'Bio.Graphics',
     'Bio.Graphics.GenomeDiagram',
     'Bio.HMM',
