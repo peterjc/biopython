@@ -7,8 +7,8 @@ import pprint
 import StringIO
 
 from Bio import SeqIO
-from BCBio import GFF
-from BCBio.GFF import (GFF3Writer, GFFExaminer, GFFParser, DiscoGFFParser)
+from Bio import GFF
+from Bio.GFF import GFF3Writer, GFFExaminer, GFFParser, DiscoGFFParser
 
 class MapReduceGFFTest(unittest.TestCase):
     """Tests GFF parsing using a map-reduce framework for parallelization.
