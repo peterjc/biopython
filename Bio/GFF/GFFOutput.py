@@ -117,11 +117,17 @@ class GFF3Writer:
             ftype = feature.type
         else:
             ftype = "sequence_feature"
+        start = str(feature.location.nofuzzy_start + 1) # 1-based indexing
+        end = str(feature.location.nofuzzy_end)
+        if start > end:
+            #TODO - features wrapping origin of circular genome
+            raise ValueError("GFF3 requires start <= end, have %r" \
+                           % feature.location)
         parts = [str(rec_id),
                  feature.qualifiers.get("source", ["feature"])[0],
                  ftype,
-                 str(feature.location.nofuzzy_start + 1), # 1-based indexing
-                 str(feature.location.nofuzzy_end),
+                 start,
+                 end,
                  feature.qualifiers.get("score", ["."])[0],
                  strand,
                  str(feature.qualifiers.get("phase", ["."])[0]),
@@ -129,7 +135,7 @@ class GFF3Writer:
         out_handle.write("\t".join(parts) + "\n")
         for sub_feature in feature.sub_features:
             id_handler = self._write_feature(sub_feature, rec_id, out_handle,
-                    id_handler, quals["ID"][0])
+                                             id_handler, quals["ID"][0])
         return id_handler
 
     def _format_keyvals(self, keyvals):
