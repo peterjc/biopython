@@ -22,13 +22,6 @@ import collections
 import urllib
 import itertools
 
-# Make defaultdict compatible with versions of python older than 2.4
-try:
-    collections.defaultdict
-except AttributeError:
-    import _utils
-    collections.defaultdict = _utils.defaultdict
-
 from Bio.Seq import Seq, UnknownSeq
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqFeature import SeqFeature, FeatureLocation
