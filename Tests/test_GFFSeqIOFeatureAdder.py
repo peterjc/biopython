@@ -19,7 +19,7 @@ class MapReduceGFFTest(unittest.TestCase):
                 "c_elegans_WS199_shortened_gff.txt")
         self._disco_host = "http://localhost:7000"
     
-    def t_local_map_reduce(self):
+    def test_local_map_reduce(self):
         """General map reduce framework without parallelization.
         """
         cds_limit_info = dict(
@@ -31,7 +31,7 @@ class MapReduceGFFTest(unittest.TestCase):
         test_rec = rec_dict['I']
         assert len(test_rec.features) == 32
 
-    def t_disco_map_reduce(self):
+    def test_disco_map_reduce(self):
         """Map reduce framework parallelized using disco.
         """
         # this needs to be more generalized but fails okay with no disco
@@ -114,7 +114,7 @@ class GFF3Test(unittest.TestCase):
         seq_handle.close()
         return seq_dict
     
-    def t_possible_limits(self):
+    def test_possible_limits(self):
         """Calculate possible queries to limit a GFF file.
         """
         gff_examiner = GFFExaminer()
@@ -122,7 +122,7 @@ class GFF3Test(unittest.TestCase):
         print
         pprint.pprint(possible_limits)
 
-    def t_parent_child(self):
+    def test_parent_child(self):
         """Summarize parent-child relationships in a GFF file.
         """
         gff_examiner = GFFExaminer()
@@ -130,7 +130,7 @@ class GFF3Test(unittest.TestCase):
         print
         pprint.pprint(pc_map)
 
-    def t_flat_features(self):
+    def test_flat_features(self):
         """Check addition of flat non-nested features to multiple records.
         """
         seq_dict = self._get_seq_dict()
@@ -145,7 +145,7 @@ class GFF3Test(unittest.TestCase):
         assert len(rec_dict['I'].features) == 4
         assert len(rec_dict['X'].features) == 5
 
-    def t_nested_features(self):
+    def test_nested_features(self):
         """Check three-deep nesting of features with gene, mRNA and CDS.
         """
         seq_dict = self._get_seq_dict()
@@ -165,7 +165,7 @@ class GFF3Test(unittest.TestCase):
         # 15 final CDS regions
         assert len(final_rec.features[0].sub_features[0].sub_features) == 15
 
-    def t_nested_multiparent_features(self):
+    def test_nested_multiparent_features(self):
         """Verify correct nesting of features with multiple parents.
         """
         seq_dict = self._get_seq_dict()
@@ -188,7 +188,7 @@ class GFF3Test(unittest.TestCase):
         assert len(cur_subs[1].sub_features) == 6
         assert cur_subs[0].sub_features[0] is cur_subs[1].sub_features[0]
 
-    def t_no_dict_error(self):
+    def test_no_dict_error(self):
         """Ensure an error is raised when no dictionary to map to is present.
         """
         parser = GFFParser(create_missing=False)
@@ -200,14 +200,14 @@ class GFF3Test(unittest.TestCase):
         except KeyError:
             pass
 
-    def t_unknown_seq(self):
+    def test_unknown_seq(self):
         """Prepare unknown base sequences with the correct length.
         """
         rec_dict = SeqIO.to_dict(GFF.parse(self._test_gff_file))
         assert len(rec_dict["I"].seq) == 12766937
         assert len(rec_dict["X"].seq) == 17718531
 
-    def t_gff_annotations(self):
+    def test_gff_annotations(self):
         """Check GFF annotations placed on an entire sequence.
         """
         parser = GFFParser()
@@ -217,7 +217,7 @@ class GFF3Test(unittest.TestCase):
         assert final_rec.annotations['source'] == ['Expr_profile']
         assert final_rec.annotations['expr_profile'] == ['B0019.1']
     
-    def t_gff3_iterator(self):
+    def test_gff3_iterator(self):
         """Iterated parsing in GFF3 files with nested features.
         """
         parser = GFFParser()
@@ -227,7 +227,7 @@ class GFF3Test(unittest.TestCase):
         assert len(recs) == 6
         assert len(recs[0].features) == 59
     
-    def t_gff3_iterator_limit(self):
+    def test_gff3_iterator_limit(self):
         """Iterated interface using a limit query on GFF3 files.
         """
         cds_limit_info = dict(
@@ -244,7 +244,7 @@ class GFF3Test(unittest.TestCase):
         for sub_test in tfeature.sub_features:
             assert sub_test.type == "CDS", sub_test
 
-    def t_gff3_noval_attrib(self):
+    def test_gff3_noval_attrib(self):
         """Parse GFF3 file from NCBI with a key/value pair with no value.
         """
         parser = GFFParser()
@@ -253,7 +253,7 @@ class GFF3Test(unittest.TestCase):
         t_feature = rec_dict.values()[0].features[0]
         assert t_feature.qualifiers["pseudo"] == ["true"]
 
-    def t_gff3_multiple_ids(self):
+    def test_gff3_multiple_ids(self):
         """Deal with GFF3 with non-unique ID attributes, using NCBI example.
         """
         parser = GFFParser()
@@ -265,7 +265,7 @@ class GFF3Test(unittest.TestCase):
         for f in t_features:
             assert len(f.sub_features) == 3
 
-    def t_simple_parsing(self):
+    def test_simple_parsing(self):
         """Parse GFF into a simple line by line dictionary without nesting.
         """
         parser = GFFParser()
@@ -278,7 +278,7 @@ class GFF3Test(unittest.TestCase):
                 ['yk1055g06.5', 'OSTF085G5_1']
         assert line_info['location'] == [4582718, 4583189]
 
-    def t_extra_comma(self):
+    def test_extra_comma(self):
         """Correctly handle GFF3 files with extra trailing commas.
         """
         tfile = os.path.join(self._test_dir, "mouse_extra_comma.gff3")
@@ -294,7 +294,7 @@ class GFF3Test(unittest.TestCase):
                     assert len(sub.qualifiers["Parent"]) == 1
         assert tested, "Did not find sub-feature to test"
 
-    def t_novalue_key(self):
+    def test_novalue_key(self):
         """Handle GFF3 files with keys and no values.
         """
         tfile = os.path.join(self._test_dir, "glimmer_nokeyval.gff3")
@@ -318,7 +318,7 @@ class SolidGFFTester(unittest.TestCase):
         self._test_gff_file = os.path.join(self._test_dir,
                 "F3-unique-3.v2.gff")
 
-    def t_basic_solid_parse(self):
+    def test_basic_solid_parse(self):
         """Basic parsing of SOLiD GFF results files.
         """
         parser = GFFParser()
@@ -334,7 +334,7 @@ class SolidGFFTester(unittest.TestCase):
         assert test_feature.qualifiers['g'] == ['T2203031313223113212']
         assert len(test_feature.qualifiers['q']) == 20
     
-    def t_solid_iterator(self):
+    def test_solid_iterator(self):
         """Iterated parsing in a flat file without nested features.
         """
         parser = GFFParser()
@@ -345,7 +345,7 @@ class SolidGFFTester(unittest.TestCase):
         assert len(feature_sizes) == 112
         assert max(feature_sizes) == 1
 
-    def t_line_adjust(self):
+    def test_line_adjust(self):
         """Adjust lines during parsing to fix potential GFF problems.
         """
         def adjust_fn(results):
@@ -374,7 +374,7 @@ class GFF2Tester(unittest.TestCase):
         self._wb_alt_file = os.path.join(self._test_dir,
                 "wormbase_gff2_alt.txt")
 
-    def t_basic_attributes(self):
+    def test_basic_attributes(self):
         """Parse out basic attributes of GFF2 from Ensembl GTF.
         """
         limit_info = dict(
@@ -393,7 +393,7 @@ class GFF2Tester(unittest.TestCase):
         assert test_feature.qualifiers['transcript_name'] == ['NR_001477.2']
         assert test_feature.qualifiers['exon_number'] == ['1']
 
-    def t_tricky_semicolons(self):
+    def test_tricky_semicolons(self):
         """Parsing of tricky semi-colon positions in WormBase GFF2.
         """
         limit_info = dict(
@@ -407,7 +407,7 @@ class GFF2Tester(unittest.TestCase):
         assert test_feature.qualifiers['Note'] == \
           ['Clone cTel33B; Genbank AC199162', 'Clone cTel33B; Genbank AC199162']
 
-    def t_jgi_gff(self):
+    def test_jgi_gff(self):
         """Parsing of JGI formatted GFF2, nested using transcriptId and proteinID
         """
         rec_dict = SeqIO.to_dict(GFF.parse(self._jgi_file))
@@ -420,7 +420,7 @@ class GFF2Tester(unittest.TestCase):
         assert sfeature.qualifiers['proteinId'] == ['873']
         assert sfeature.qualifiers['phase'] == ['0']
 
-    def t_ensembl_nested_features(self):
+    def test_ensembl_nested_features(self):
         """Test nesting of features with GFF2 files using transcript_id.
         """
         rec_dict = SeqIO.to_dict(GFF.parse(self._ensembl_file))
@@ -428,7 +428,7 @@ class GFF2Tester(unittest.TestCase):
         t_feature = rec_dict["I"].features[0]
         assert len(t_feature.sub_features) == 32
 
-    def t_wormbase_nested_features(self):
+    def test_wormbase_nested_features(self):
         """Test nesting of features with GFF2 files using Transcript only.
         """
         rec_dict = SeqIO.to_dict(GFF.parse(self._wormbase_file))
@@ -443,7 +443,7 @@ class GFF2Tester(unittest.TestCase):
         assert tfeature.qualifiers["WormPep"][0] == "WP:CE40797"
         assert len(tfeature.sub_features) == 46
 
-    def t_wb_cds_nested_features(self):
+    def test_wb_cds_nested_features(self):
         """Nesting of GFF2 features with a flat CDS key value pair.
         """
         rec_dict = SeqIO.to_dict(GFF.parse(self._wb_alt_file))
@@ -454,7 +454,7 @@ class GFF2Tester(unittest.TestCase):
         assert tfeature.id == "cr01.sctg102.wum.2.1"
         assert len(tfeature.sub_features) == 7
 
-    def t_gff2_iteration(self):
+    def test_gff2_iteration(self):
         """Test iterated features with GFF2 files, breaking without parents.
         """
         recs = []
@@ -472,7 +472,7 @@ class DirectivesTest(unittest.TestCase):
         self._test_dir = os.path.join(os.getcwd(), "GFF")
         self._gff_file = os.path.join(self._test_dir, "hybrid1.gff3")
 
-    def t_basic_directives(self):
+    def test_basic_directives(self):
         """Parse out top level meta-data supplied in a GFF3 file.
         """
 
@@ -485,7 +485,7 @@ class DirectivesTest(unittest.TestCase):
         assert anns['sequence-region'] == [('foo', '1', '100'), ('chr17',
             '62467934', '62469545')]
 
-    def t_fasta_directive(self):
+    def test_fasta_directive(self):
         """Parse FASTA sequence information contained in a GFF3 file.
         """
         recs = SeqIO.to_dict(GFF.parse(self._gff_file))
@@ -493,7 +493,7 @@ class DirectivesTest(unittest.TestCase):
         test_rec = recs['chr17']
         assert str(test_rec.seq) == "GATTACAGATTACA"
     
-    def t_examiner_with_fasta(self):
+    def test_examiner_with_fasta(self):
         """Perform high level examination of files with FASTA directives.
         """
         examiner = GFFExaminer()
@@ -517,7 +517,7 @@ class OutputTest(unittest.TestCase):
                 "c_elegans_WS199_ann_gff.txt")
         self._wormbase_file = os.path.join(self._test_dir, "wormbase_gff2.txt")
 
-    def t_gff3_to_gff3(self):
+    def test_gff3_to_gff3(self):
         """Read in and write out GFF3 without any loss of information.
         """
         recs = SeqIO.to_dict(GFF.parse(self._test_gff_file))
@@ -532,7 +532,7 @@ class OutputTest(unittest.TestCase):
         for i, orig_f in enumerate(orig_rec.features):
             assert str(orig_f) == str(re_rec.features[i])
 
-    def t_gff2_to_gff3(self):
+    def test_gff2_to_gff3(self):
         """Read in GFF2 and write out as GFF3.
         """
         recs = SeqIO.to_dict(GFF.parse(self._wormbase_file))
@@ -563,7 +563,7 @@ def testing_suite():
     """
     test_suite = unittest.TestSuite()
     test_loader = unittest.TestLoader()
-    test_loader.testMethodPrefix = 't_'
+    test_loader.testMethodPrefix = 'test_'
     tests = [GFF3Test, MapReduceGFFTest, SolidGFFTester, GFF2Tester,
              DirectivesTest, OutputTest]
     #tests = [GFF3Test]
