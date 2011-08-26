@@ -148,14 +148,7 @@ def _gff_line_map(line, params):
                     break
         if should_do:
             assert len(parts) >= 8, line
-            # not python2.4 compatible but easier to understand
-            #gff_parts = [(None if p == '.' else p) for p in parts]
-            gff_parts = []
-            for p in parts:
-                if p == ".":
-                    gff_parts.append(None)
-                else:
-                    gff_parts.append(p)
+            gff_parts = [(None if p == '.' else p) for p in parts]
             gff_info = dict()
             # collect all of the base qualifiers for this item
             if len(parts) > 8:
@@ -658,7 +651,9 @@ class GFFParser(_AbstractMapReduceGFF):
             yield out_info.get_results()
 
 class DiscoGFFParser(_AbstractMapReduceGFF):
-    """GFF Parser with parallelization through Disco (http://discoproject.org.
+    """GFF Parser with parallelization through Disco.
+
+    See http://discoproject.org
     """
     def __init__(self, disco_host, create_missing=True):
         """Initialize parser.
