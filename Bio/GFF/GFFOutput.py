@@ -18,7 +18,7 @@ class _IdHandler:
         """
         gen_id = self._get_standard_id(quals)
         if gen_id is None:
-            while 1:
+            while True:
                 gen_id = "%s%s" % (self._prefix, self._counter)
                 if gen_id not in self._seen_ids:
                     break
@@ -96,8 +96,12 @@ class GFF3Writer:
             strand = '+'
         elif feature.strand == -1:
             strand = '-'
-        else:
+        elif feature.strand is None:
             strand = '.'
+        elif feature.strand == 0:
+            strand = '?'
+        else:
+            raise ValueError("SeqFeature with invalid strand: %r" % feature)
         # remove any standard features from the qualifiers
         quals = feature.qualifiers.copy()
         for std_qual in ["source", "score", "phase"]:
