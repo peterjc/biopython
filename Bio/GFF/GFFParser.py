@@ -414,14 +414,22 @@ class _AbstractMapReduceGFF:
         """Identify duplicated ID attributes in potential nested parents.
 
         According to the GFF3 spec ID attributes are supposed to be unique
-        for a file, but this is not always true in practice. This looks
+        for a file (unless being used to describe a feature split over
+        multiple locations), but this is not always true in practice (e.g.
+        the same ID used for both a gene and a CDS feature). This looks
         for duplicates, and provides unique IDs sorted by locations.
         """
+        #TODO - Must allow repeated IDs of the same feature type (in GFF3)
         multi_ids = collections.defaultdict(list)
         for parent in parents:
             multi_ids[parent['id']].append(parent)
         multi_ids = [(mid, parents) for (mid, parents) in multi_ids.items()
                 if len(parents) > 1]
+        if multi_ids:
+            warnings.warn("Duplicated identifiers found:\n%s" \
+                          % "\n".join("%s with %i cases" % (k,len(v)) \
+                          for k,v in multi_ids),
+                          BiopythonParserWarning)
         multi_remap = dict()
         for mid, parents in multi_ids:
             multi_remap[mid] = _MultiIDRemapper(mid, parents)
