@@ -21,7 +21,9 @@ import re
 import collections
 import urllib
 import itertools
+import warnings
 
+from Bio import BiopythonParserWarning
 from Bio.Seq import Seq, UnknownSeq
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqFeature import SeqFeature, FeatureLocation
@@ -180,6 +182,9 @@ def _gff_line_map(line, params):
                     # remove the ID, which is not useful
                     for p in gff_info['quals']['Parent']:
                         if p == gff_info['id']:
+                            warnings.warn("Self referential parent/child %r" % p,
+                                          BiopythonParserWarning)
+                            #TODO - Should we delete the parent= tag but leave ID?
                             gff_info['id'] = ''
                             del gff_info['quals']['ID']
                             break
