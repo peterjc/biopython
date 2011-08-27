@@ -612,12 +612,43 @@ class GFFParser(_AbstractMapReduceGFF):
             target_lines=None):
         """Generate SeqRecord and SeqFeatures from GFF file lines.
         """
+
+        class FakeHandle:
+            """Ugly solution to mixing iteration and readline (PRIVATE)."""
+            def __init__(self, line_iter, buffer = []):
+                """Create FakeHandle
+
+                Argument line_iter could be a file handle, and will be
+                treated as an iterator. Optional argument buffer is a
+                list of strings to be emptied before line_iter.
+                """
+                self._buffer = buffer
+                self._iter = line_iter
+            def read(self):
+                return "".join(self._buffer) + "".join(l for l in self._iter)
+            def readline(self):
+                if self._buffer:
+                    return self._buffer.pop(0)
+                try:
+                    return self._iter.next()
+                except StopIteration:
+                    return ""
+
         params = self._examiner._get_local_params(limit_info)
         out_info = _GFFParserLocalOut((target_lines is not None and
                 target_lines > 1))
         found_seqs = False
         for line in line_iter:
-            results = self._map_fn(line, params)
+            try:
+                results = self._map_fn(line, params)
+            except Exception:
+                if line[0] == ">":
+                    #GFF3 recommends a FASTA directive, but optional
+                    out_info.add('fasta',
+                                 list(SeqIO.parse(FakeHandle(line_iter, [line]), "fasta")))
+                    found_seqs = True
+                    break
+                raise #with original stack trace
             if self._line_adjust_fn and results:
                 if results[0][0] not in ['directive']:
                     results = [(results[0][0],
@@ -630,23 +661,11 @@ class GFFParser(_AbstractMapReduceGFF):
                         target_lines > 1))
             if (results and results[0][0] == 'directive' and 
                     results[0][1] == 'FASTA'):
-                found_seqs = True
+                #found_seqs = True
+                out_info.add('fasta',
+                             list(SeqIO.parse(FakeHandle(line_iter), "fasta")))
                 break
 
-        class FakeHandle:
-            def __init__(self, line_iter):
-                self._iter = line_iter
-            def read(self):
-                return "".join(l for l in self._iter)
-            def readline(self):
-                try:
-                    return self._iter.next()
-                except StopIteration:
-                    return ""
-
-        if found_seqs:
-            fasta_recs = self._parse_fasta(FakeHandle(line_iter))
-            out_info.add('fasta', fasta_recs)
         if out_info.has_items():
             yield out_info.get_results()
 
@@ -691,6 +710,8 @@ class DiscoGFFParser(_AbstractMapReduceGFF):
 
 def parse(gff_files, base_dict=None, limit_info=None, target_lines=None):
     """High level interface to parse GFF files into SeqRecords and SeqFeatures.
+
+    This is an iterator returning SeqRecord objects.
     """
     parser = GFFParser()
     for rec in parser.parse_in_parts(gff_files, base_dict, limit_info,
