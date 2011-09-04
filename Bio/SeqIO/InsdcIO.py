@@ -180,7 +180,7 @@ def _insdc_location_string_ignoring_strand_and_subfeatures(location, rec_length)
                + ".." + \
                _insdc_feature_position_string(location.end)
 
-def _insdc_feature_location_string(feature, rec_length):
+def _insdc_feature_location_string(location, rec_length):
     """Build a GenBank/EMBL location string from a SeqFeature (PRIVATE).
 
     There is a choice of how to show joins on the reverse complement strand,
@@ -201,34 +201,28 @@ def _insdc_feature_location_string(feature, rec_length):
     no strand (either 0 or None) while the child features should have either
     strand +1 or -1 as appropriate, and be listed in the order given here.
     """
-
-    if not feature.sub_features:
+    if not hasattr(location, "parts"):
         #Non-recursive.
-        #assert feature.location_operator == "", \
-        #       "%s has no subfeatures but location_operator %s" \
-        #       % (repr(feature), feature.location_operator)
-        location = _insdc_location_string_ignoring_strand_and_subfeatures(feature.location, rec_length)
-        if feature.strand == -1:
-            location = "complement(%s)" % location
-        return location
+        loc = _insdc_location_string_ignoring_strand_and_subfeatures(location, rec_length)
+        if location.strand == -1:
+            loc = "complement(%s)" % loc
+        return loc
     # As noted above, treat reverse complement strand features carefully:
-    if feature.strand == -1:
-        for f in feature.sub_features:
-            if f.strand != -1:
+    # TODO - As part of moving from sub_features to CompoundLocation we can fix this wart!
+    if location.strand == -1:
+        for loc in location.parts:
+            if loc.strand != -1:
                 raise ValueError("Inconsistent strands: %r for parent, %r for child" \
-                                 % (feature.strand, f.strand))
+                                 % (location.strand, loc.strand))
         return "complement(%s(%s))" \
-               % (feature.location_operator,
-                  ",".join(_insdc_location_string_ignoring_strand_and_subfeatures(f.location, rec_length) \
-                           for f in feature.sub_features))
-    #if feature.strand == +1:
-    #    for f in feature.sub_features:
-    #        assert f.strand == +1
+               % (location.operator,
+                  ",".join(_insdc_location_string_ignoring_strand_and_subfeatures(loc, rec_length) \
+                           for loc in location.parts))
     #This covers typical forward strand features, and also an evil mixed strand:
-    assert feature.location_operator != ""
-    return  "%s(%s)" % (feature.location_operator,
-                        ",".join([_insdc_feature_location_string(f, rec_length) \
-                                  for f in feature.sub_features]))
+    assert location.operator
+    return  "%s(%s)" % (location.operator,
+                        ",".join([_insdc_feature_location_string(loc, rec_length) \
+                                  for loc in location.parts]))
 
 
 class _InsdcWriter(SequentialSequenceWriter):
@@ -290,7 +284,7 @@ class _InsdcWriter(SequentialSequenceWriter):
     def _write_feature(self, feature, record_length):
         """Write a single SeqFeature object to features table."""
         assert feature.type, feature
-        location = _insdc_feature_location_string(feature, record_length)
+        location = _insdc_feature_location_string(feature.location, record_length)
         f_type = feature.type.replace(" ","_")
         line = (self.QUALIFIER_INDENT_TMP  % f_type)[:self.QUALIFIER_INDENT] \
                + self._wrap_location(location) + "\n"

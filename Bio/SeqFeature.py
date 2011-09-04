@@ -76,8 +76,12 @@ class SeqFeature(object):
     analagous to the qualifiers from a GenBank feature table. The keys of
     the dictionary are qualifier names, the values are the qualifier
     values.
-    o sub_features - Additional SeqFeatures which fall under this 'parent'
-    feature. For instance, if we having something like:
+    o sub_features - Obsolete attribute no longer used.
+
+    When dealing with compound or split locations (e.g. joins in GenBank),
+    Previous versions of Biopython would introduce additional SeqFeatures
+    kept in the sub_features list of the 'parent' feature. For instance,
+    if we having something like:
 
     CDS    join(1..10,30..40,50..60)
 
@@ -85,6 +89,9 @@ class SeqFeature(object):
     to 60 in Python counting) with location_operator='join', and the three sub-
     features would also be of type 'CDS', and would be from 1 to 10, 30 to
     40 and 50 to 60, respectively (although actually using Python counting).
+
+    These special locations are now handled with a special location object,
+    a new CompoundLocation which holds a list of FeatureLocation objects.
 
     To get the nucleotide sequence for this CDS, you would need to take the
     parent sequence and do seq[0:10]+seq[29:40]+seq[49:60] (Python counting).
@@ -147,7 +154,7 @@ class SeqFeature(object):
 
         self.type = type
         if location_operator:
-            raise DeprecationError("Sorry, set this via the CompoundLocation now")
+            raise ValueError("Sorry, set location operator via the CompoundLocation now")
         if strand is not None:
             #TODO - Deprecation warning
             self.strand = strand
@@ -155,15 +162,26 @@ class SeqFeature(object):
         if qualifiers is None:
             qualifiers = {}
         self.qualifiers = qualifiers
-        if sub_features is None:
-            sub_features = []
-        self.sub_features = sub_features
+        if sub_features is not None:
+            raise ValueError("The sub_features argument and associated attribute "
+                             "are no longer supported, use a CompoundLocation instead")
         if ref is not None:
             #TODO - Deprecation warning
             self.ref = ref
         if ref_db is not None:
             #TODO - Deprecation warning
             self.ref_db = ref_db
+
+    def _get_sub_features(self):
+        raise AttributeError("This will be a deprecation warning and return []")
+        import warnings
+        from Bio import BiopythonDeprecationWarning
+        warnings.warn("The sub_features attribute is no longer used. Instead "
+                      "see the SeqFeature's location is a CompoundLocation.",
+                      BiopythonDeprecationWarning)
+        return []
+    sub_features = property(fget = _get_sub_features,
+                            doc = "No longer used, see CompoundLocation object instead.")
 
     def _get_strand(self):
         return self.location.strand
@@ -228,14 +246,8 @@ class SeqFeature(object):
         answer = "%s(%s" % (self.__class__.__name__, repr(self.location))
         if self.type:
             answer += ", type=%s" % repr(self.type)
-        if self.location_operator:
-            answer += ", location_operator=%s" % repr(self.location_operator)
         if self.id and self.id != "<unknown id>":
             answer += ", id=%s" % repr(self.id)
-        if self.ref:
-            answer += ", ref=%s" % repr(self.ref)
-        if self.ref_db:
-            answer += ", ref_db=%s" % repr(self.ref_db)
         answer += ")"
         return answer
 
@@ -253,10 +265,6 @@ class SeqFeature(object):
         for qual_key in sorted(self.qualifiers):
             out += "    Key: %s, Value: %s\n" % (qual_key,
                                                self.qualifiers[qual_key])
-        if len(self.sub_features) != 0:
-            out += "Sub-Features\n"
-            for sub_feature in self.sub_features:
-                out +="%s\n" % sub_feature
         return out
 
     def _shift(self, offset):
@@ -265,10 +273,8 @@ class SeqFeature(object):
         The annotation qaulifiers are copied."""
         return SeqFeature(location = self.location._shift(offset),
             type = self.type,
-            location_operator = self.location_operator,
             id = self.id,
-            qualifiers = dict(self.qualifiers.iteritems()),
-            sub_features = [f._shift(offset) for f in self.sub_features])
+            qualifiers = dict(self.qualifiers.iteritems()))
 
     def _flip(self, length):
         """Returns a copy of the feature with its location flipped (PRIVATE).
@@ -282,10 +288,8 @@ class SeqFeature(object):
         """
         return SeqFeature(location = self.location._flip(length),
             type = self.type,
-            location_operator = self.location_operator,
             id = self.id,
-            qualifiers = dict(self.qualifiers.iteritems()),
-            sub_features = [f._flip(length) for f in self.sub_features[::-1]])
+            qualifiers = dict(self.qualifiers.iteritems()))
     
     def extract(self, parent_sequence):
         """Extract feature sequence from the supplied parent sequence.
@@ -309,39 +313,7 @@ class SeqFeature(object):
 
         Note - currently only sub-features of type "join" are supported.
         """
-        if isinstance(parent_sequence, MutableSeq):
-            #This avoids complications with reverse complements
-            #(the MutableSeq reverse complement acts in situ)
-            parent_sequence = parent_sequence.toseq()
-        if self.sub_features:
-            if self.location_operator!="join":
-                raise ValueError(self.location_operator)
-            if self.strand == -1:
-                #This is a special case given how the GenBank parser works.
-                #Must avoid doing the reverse complement twice.
-                parts = []
-                for f_sub in self.sub_features:
-                    assert f_sub.strand==-1
-                    parts.append(parent_sequence[f_sub.location.nofuzzy_start:\
-                                                 f_sub.location.nofuzzy_end])
-            else:
-                #This copes with mixed strand features:
-                parts = [f_sub.extract(parent_sequence) \
-                         for f_sub in self.sub_features]
-            #We use addition rather than a join to avoid alphabet issues:
-            f_seq = parts[0]
-            for part in parts[1:] : f_seq += part
-        else:
-            f_seq = parent_sequence[self.location.nofuzzy_start:\
-                                    self.location.nofuzzy_end]
-        if self.strand == -1:
-            #TODO - MutableSeq?
-            try:
-                f_seq = f_seq.reverse_complement()
-            except AttributeError:
-                assert isinstance(f_seq, str)
-                f_seq = reverse_complement(f_seq)
-        return f_seq
+        return self.location.extract(parent_sequence)
     
     def __nonzero__(self):
         """Returns True regardless of the length of the feature.
@@ -379,10 +351,7 @@ class SeqFeature(object):
         that len(f) == len(f.extract(parent_seq)), and also makes sure things
         work properly with features wrapping the origin etc.
         """
-        if self.sub_features:
-            return sum(len(f) for f in self.sub_features)
-        else:
-            return len(self.location)
+        return len(self.location)
 
     def __iter__(self):
         """Iterate over the parent positions within the feature.
@@ -403,18 +372,7 @@ class SeqFeature(object):
         >>> list(f)
         [9, 8, 7, 6, 5]
         """
-        if self.sub_features:
-            if self.strand == -1:
-                for f in self.sub_features[::-1]:
-                    for i in f.location:
-                        yield i
-            else:
-                for f in self.sub_features:
-                    for i in f.location:
-                        yield i
-        else:
-            for i in self.location:
-                yield i
+        return iter(self.location)
 
     def __contains__(self, value):
         """Check if an integer position is within the feature.
@@ -464,13 +422,8 @@ class SeqFeature(object):
         if not isinstance(value, int):
             raise ValueError("Currently we only support checking for integer "
                              "positions being within a SeqFeature.")
-        if self.sub_features:
-            for f in self.sub_features:
-                if value in f:
-                    return True
-            return False
-        else:
-            return value in self.location
+        return value in self.location
+
 
 # --- References
 
@@ -703,7 +656,6 @@ class FeatureLocation(object):
         >>> list(loc)
         [9, 8, 7, 6, 5]
         """
-        #TODO - Should we use nofuzzy_start and nofuzzy_end here?
         if self.strand == -1:
             return iter(xrange(self.nofuzzy_end-1, self.nofuzzy_start-1, -1))
         else:
@@ -755,6 +707,24 @@ class FeatureLocation(object):
         (10.20)..(30.40) should return 10 for start, and 40 for end.
         """)
 
+    def extract(self, parent_sequence):
+        """Extract feature sequence from the supplied parent sequence."""
+        if isinstance(parent_sequence, MutableSeq):
+            #This avoids complications with reverse complements
+            #(the MutableSeq reverse complement acts in situ)
+            parent_sequence = parent_sequence.toseq()
+        f_seq = parent_sequence[self.nofuzzy_start:\
+                                self.nofuzzy_end]
+        if self.strand == -1:
+            #TODO - MutableSeq?
+            try:
+                f_seq = f_seq.reverse_complement()
+            except AttributeError:
+                assert isinstance(f_seq, str)
+                f_seq = reverse_complement(f_seq)
+        return f_seq
+
+
 class CompoundLocation(object):
     """For handling joins etc where a feature location has several parts."""
     def __init__(self, parts, operator="join"):
@@ -795,7 +765,7 @@ class CompoundLocation(object):
                 raise ValueError("CompoundLocation should be given a list of "
                                  "FeatureLocation objects, not %s" % loc.__class__)
         if len(self.parts) < 2:
-            raise ValueError("CompoundLocation should have at least 2 parts")
+            raise ValueError("CompoundLocation should have at least 2 parts - have %i" % len(self.parts))
 
     def __str__(self):
         """Returns a representation of the location (with python counting)."""
@@ -845,9 +815,17 @@ class CompoundLocation(object):
         return sum(len(loc) for loc in self.parts)
 
     def __iter__(self):
-        for loc in self.parts:
-            for pos in loc:
-                yield pos
+        #TODO - Fix GenBank parser to avoid this hack
+        if self.strand == -1:
+            for loc in self.parts:
+                assert loc.strand == -1
+            for loc in self.parts[::-1]:
+                for pos in loc:
+                    yield pos
+        else:
+            for loc in self.parts:
+                for pos in loc:
+                    yield pos
 
     def _shift(self, offset):
         """Returns a copy of the location shifted by the offset (PRIVATE)."""
@@ -861,6 +839,40 @@ class CompoundLocation(object):
         """
         return CompoundLocation([loc._flip(length) for loc in self.parts[::-1]],
                                 self.operator)
+
+    def extract(self, parent_sequence):
+        """Extract feature sequence from the supplied parent sequence."""
+        if isinstance(parent_sequence, MutableSeq):
+            #This avoids complications with reverse complements
+            #(the MutableSeq reverse complement acts in situ)
+            parent_sequence = parent_sequence.toseq()
+        if self.operator!="join":
+            raise ValueError(self.operator)
+        if self.strand == -1:
+            #This is a special case given how the GenBank parser works.
+            #Must avoid doing the reverse complement twice.
+            #TODO - Fix this as part of sub_feature -> CompoundLocation
+            parts = []
+            for loc in self.parts:
+                assert loc.strand==-1
+                parts.append(parent_sequence[loc.nofuzzy_start:\
+                                             loc.nofuzzy_end])
+            f_seq = parts[0]
+            for part in parts[1:]:
+                f_seq += part
+            try:
+                f_seq = f_seq.reverse_complement()
+            except AttributeError:
+                assert isinstance(f_seq, str)
+                f_seq = reverse_complement(f_seq)
+        else:
+            #This copes with mixed strand features:
+            parts = [loc.extract(parent_sequence) for loc in self.parts]
+            #We use addition rather than a join to avoid alphabet issues:
+            f_seq = parts[0]
+            for part in parts[1:]:
+                f_seq += part
+        return f_seq
 
 
 class AbstractPosition(object):

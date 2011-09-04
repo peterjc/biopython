@@ -918,21 +918,12 @@ class _FeatureConsumer(_BaseGenBankConsumer):
         if _re_simple_compound.match(location_line):
             #e.g. join(<123..456,480..>500)
             i = location_line.find("(")
-            #cur_feature.location_operator = location_line[:i]
             #we can split on the comma because these are simple locations
+            parts = []
             for part in location_line[i+1:-1].split(","):
                 s, e = part.split("..")
-                f = SeqFeature.SeqFeature(SeqFeature.FeatureLocation(int(s)-1,
-                                                                     int(e),
-                                                                     strand),
-                        location_operator=cur_feature.location_operator,
-                        type=cur_feature.type)
-                cur_feature.sub_features.append(f)
-            #s = cur_feature.sub_features[0].location.start
-            #e = cur_feature.sub_features[-1].location.end
-            #cur_feature.location = SeqFeature.FeatureLocation(s,e, strand)
-            #TODO - Remove use of sub_features
-            cur_feature.location = SeqFeature.CompoundLocation([f.location for f in cur_feature.sub_features],
+                parts.append(SeqFeature.FeatureLocation(int(s)-1, int(e), strand))
+            cur_feature.location = SeqFeature.CompoundLocation(parts,
                                                                operator=location_line[:i])
             return
         
@@ -950,6 +941,7 @@ class _FeatureConsumer(_BaseGenBankConsumer):
             i = location_line.find("(")
             #cur_feature.location_operator = location_line[:i]
             #Can't split on the comma because of ositions like one-of(1,2,3)
+            parts = []
             for part in _split_compound_loc(location_line[i+1:-1]):
                 if part.startswith("complement("):
                     assert part[-1]==")"
@@ -963,31 +955,18 @@ class _FeatureConsumer(_BaseGenBankConsumer):
                 else:
                     ref = None
                 try:
-                    loc = _loc(part, self._expected_size, part_strand)
+                    parts.append(_loc(part, self._expected_size, part_strand))
                 except ValueError, err:
                     print location_line
                     print part
                     raise err
-                f = SeqFeature.SeqFeature(location=loc, ref=ref,
-                        location_operator=cur_feature.location_operator,
-                        type=cur_feature.type)
-                cur_feature.sub_features.append(f)
             # Historically a join on the reverse strand has been represented
             # in Biopython with both the parent SeqFeature and its children
             # (the exons for a CDS) all given a strand of -1.  Likewise, for
             # a join feature on the forward strand they all have strand +1.
             # However, we must also consider evil mixed strand examples like
             # this, join(complement(69611..69724),139856..140087,140625..140650)
-            strands = set(sf.strand for sf in cur_feature.sub_features)
-            if len(strands)==1:
-                strand = cur_feature.sub_features[0].strand
-            else:
-                strand = None # i.e. mixed strands
-            #s = cur_feature.sub_features[0].location.start
-            #e = cur_feature.sub_features[-1].location.end
-            #cur_feature.location = SeqFeature.FeatureLocation(s, e, strand)
-            #TODO - Remove use of sub_features
-            cur_feature.location = SeqFeature.CompoundLocation([f.location for f in cur_feature.sub_features],
+            cur_feature.location = SeqFeature.CompoundLocation(parts,
                                                                operator=location_line[:i])
             return
         #Not recognised
