@@ -38,6 +38,7 @@ with Biocorba.
 
 classes:
 o FeatureLocation - Specify the start and end location of a feature.
+o CompoundLocation - Collection of FeatureLocation objects (for joins etc).
 
 o ExactPosition - Specify the position as being exact.
 o WithinPosition - Specify a position occuring within some range.
@@ -57,7 +58,8 @@ class SeqFeature(object):
     o type - the specified type of the feature (ie. CDS, exon, repeat...)
     o location_operator - a string specifying how this SeqFeature may
     be related to others. For example, in the example GenBank feature
-    shown below, the location_operator would be "join"
+    shown below, the location_operator would be "join". This is a proxy
+    for feature.location.operator and only applies to compound locations.
     o strand - A value specifying on which strand (of a DNA sequence, for
     instance) the feature deals with. 1 indicates the plus strand, -1 
     indicates the minus strand, 0 indicates stranded but unknown (? in GFF3),
@@ -129,14 +131,25 @@ class SeqFeature(object):
         For exact start/end positions, an integer can be used (as shown above)
         as shorthand for the ExactPosition object. For non-exact locations, the
         FeatureLocation must be specified via the appropriate position objects.
+
+        Note that the strand, ref and ref_db arguments to the SeqFeature are
+        now obsolete and will be deprecated in a future release (which will
+        give warning messages) and later removed. Set them via the location
+        object instead.
+
+        Note that location_operator and sub_features arguments can no longer
+        be used, instead do this via the CompoundLocation object.
         """
-        if location is not None and not isinstance(location, FeatureLocation):
-            raise TypeError("FeatureLocation (or None) required for the location")
+        if location is not None and not isinstance(location, FeatureLocation) \
+        and not isinstance(location, CompoundLocation):
+            raise TypeError("FeatureLocation, CompoundLocation (or None) required for the location")
         self.location = location
 
         self.type = type
-        self.location_operator = location_operator
+        if location_operator:
+            raise DeprecationError("Sorry, set this via the CompoundLocation now")
         if strand is not None:
+            #TODO - Deprecation warning
             self.strand = strand
         self.id = id
         if qualifiers is None:
@@ -146,8 +159,10 @@ class SeqFeature(object):
             sub_features = []
         self.sub_features = sub_features
         if ref is not None:
+            #TODO - Deprecation warning
             self.ref = ref
         if ref_db is not None:
+            #TODO - Deprecation warning
             self.ref_db = ref_db
 
     def _get_strand(self):
@@ -168,7 +183,10 @@ class SeqFeature(object):
                             """)
 
     def _get_ref(self):
-        return self.location.ref
+        try:
+            return self.location.ref
+        except AttributeError:
+            return None
     def _set_ref(self, value):
         try:
             self.location.ref = value
@@ -185,7 +203,10 @@ class SeqFeature(object):
                          """)
 
     def _get_ref_db(self):
-        return self.location.ref_db
+        try:
+            return self.location.ref_db
+        except AttributeError:
+            return None
     def _set_ref_db(self, value):
         self.location.ref_db = value
     ref_db = property(fget = _get_ref_db, fset = _set_ref_db,
@@ -193,6 +214,14 @@ class SeqFeature(object):
 
                             This is a shortcut for feature.location.ref_db
                             """)
+
+    def _get_location_operator(self):
+        try:
+            return self.location.operator
+        except AttributeError:
+            return None
+    location_operator = property(fget = _get_location_operator,
+                                 doc = "Location operator for compound locations (e.g. join).")
 
     def __repr__(self):
         """A string representation of the record for debugging."""
@@ -412,7 +441,7 @@ class SeqFeature(object):
         ...         print f.type, f.strand, f.location
         source 1 [0:154478]
         gene -1 [1716:4347]
-        tRNA -1 [1716:4347]
+        tRNA -1 join of [1716:1751], [4310:4347]
 
         Note that for a feature defined as a join of several subfeatures (e.g.
         the union of several exons) the gaps are not checked (e.g. introns).
@@ -730,6 +759,113 @@ class FeatureLocation(object):
         the largest range of the fuzzy position. So something like:
         (10.20)..(30.40) should return 10 for start, and 40 for end.
         """)
+
+class CompoundLocation(object):
+    """For handling joins etc where a feature location has several parts."""
+    def __init__(self, parts, operator="join"):
+        """Create a compound location with several parts.
+
+        >>> from Bio.SeqFeature import FeatureLocation, CompoundLocation
+        >>> f1 = FeatureLocation(10, 40, strand=+1)
+        >>> f2 = FeatureLocation(50, 59, strand=+1)
+        >>> f = CompoundLocation([f1, f2])
+        >>> len(f) == len(f1) + len(f2) == 39 == len(list(f))
+        True
+        >>> print f.operator
+        join
+        >>> 5 in f
+        False
+        >>> 15 in f
+        True
+        >>> f.strand
+        1
+
+        Notice that the strand of the compound location is computed
+        automatically - in the case of mixed strands on the sub-locations
+        the overall strand is set to None.
+
+        >>> f = CompoundLocation([FeatureLocation(3, 6, strand=+1),
+        ...                       FeatureLocation(10, 13, strand=-1)])
+        >>> print f.strand
+        None
+        >>> len(f)
+        6
+        >>> list(f)
+        [3, 4, 5, 12, 11, 10]
+        """
+        self.operator = operator
+        self.parts = list(parts)
+        for loc in self.parts:
+            if not isinstance(loc, FeatureLocation):
+                raise ValueError("CompoundLocation should be given a list of "
+                                 "FeatureLocation objects, not %s" % loc.__class__)
+        if len(self.parts) < 2:
+            raise ValueError("CompoundLocation should have at least 2 parts")
+
+    def __str__(self):
+        """Returns a representation of the location (with python counting)."""
+        return "%s of %s" % (self.operator, ", ".join(str(loc) for loc in self.parts))
+
+    def __repr__(self):
+        """String representation of the location for debugging."""
+        return "%s(%r, %r)" % (self.__class__.__name__, \
+                               self.parts, self.operator)
+
+    def _get_strand(self):
+        # Historically a join on the reverse strand has been represented
+        # in Biopython with both the parent SeqFeature and its children
+        # (the exons for a CDS) all given a strand of -1.  Likewise, for
+        # a join feature on the forward strand they all have strand +1.
+        # However, we must also consider evil mixed strand examples like
+        # this, join(complement(69611..69724),139856..140087,140625..140650)
+        if len(set(loc.strand for loc in self.parts))==1:
+            return self.parts[0].strand
+        else:
+            return None # i.e. mixed strands
+    strand = property(fget = _get_strand,
+                      doc = "Overall strand of the compound location (read only).")
+
+    def __contains__(self, value):
+        """Check if an integer position is within the location."""
+        for loc in self.parts:
+            if value in loc:
+                return True
+        return False
+
+    def __nonzero__(self):
+        """Returns True regardless of the length of the feature.
+
+        This behaviour is for backwards compatibility, since until the
+        __len__ method was added, a FeatureLocation always evaluated as True.
+
+        Note that in comparison, Seq objects, strings, lists, etc, will all
+        evaluate to False if they have length zero.
+
+        WARNING: The FeatureLocation may in future evaluate to False when its
+        length is zero (in order to better match normal python behaviour)!
+        """
+        return True
+
+    def __len__(self):
+        return sum(len(loc) for loc in self.parts)
+
+    def __iter__(self):
+        for loc in self.parts:
+            for pos in loc:
+                yield pos
+
+    def _shift(self, offset):
+        """Returns a copy of the location shifted by the offset (PRIVATE)."""
+        return CompoundLocation([loc._shift(offset) for loc in self.parts],
+                                self.operator)
+
+    def _flip(self, length):
+        """Returns a copy of the location after the parent is reversed (PRIVATE).
+
+        Note that the order of the parts is reversed too.
+        """
+        return CompoundLocation([loc._flip(length) for loc in self.parts[::-1]],
+                                self.operator)
 
 
 class AbstractPosition(object):
