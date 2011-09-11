@@ -166,19 +166,17 @@ class Feature(object):
         """
         self.locations = []
         bounds = []
-        if self._feature.sub_features == []:
+        if not hasattr(self._feature.location, "parts"):
             start = self._feature.location.nofuzzy_start
             end = self._feature.location.nofuzzy_end
-            #if start > end and self.strand == -1:
-            #    start, end = end, start
             self.locations.append((start, end))
             bounds += [start, end]
         else:
-            for subfeature in self._feature.sub_features:
+            #Compound location
+            #TODO - Store strand here too (for mixed strand features)
+            for loc in self._feature.location.parts:
                 start = self._feature.location.nofuzzy_start
                 end = self._feature.location.nofuzzy_end
-                #if start > end and self.strand == -1:
-                #    start, end = end, start
                 self.locations.append((start, end))                
                 bounds += [start, end]
         self.type = str(self._feature.type)                     # Feature type
