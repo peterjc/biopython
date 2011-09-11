@@ -842,7 +842,7 @@ class CompoundLocation(object):
 
     def _get_start(self):
         starts = set(loc.start for loc in self.parts)
-        smallest = mix(pos.position for pos in starts)
+        smallest = min(pos.position for pos in starts)
         starts = [pos for pos in starts if pos.position == smallest]
         #Due to fuzzyness, could in theory have more than one
         #(overlapping) sub-part with same start...
