@@ -264,59 +264,36 @@ def _retrieve_features(adaptor, primary_id):
             if dbname == "":
                 dbname = None
             lookup[location_id] = (dbname, v)
-        
+
+        location_objects = []
+        location_operator = set()
+        for location_id, start, end, strand in locations:
+            dbname, v = lookup.get(location_id, (None, None))
+            location_objects.append(SeqFeature.FeatureLocation(start, end, strand, v, dbname))
+            location_operator.add(_retrieve_location_qualifier_value(adaptor, location_id))
+        if len(location_operator) > 1:
+            raise ValueError("Mixed location operators: %s" % ", ".join(location_operators))
+        try:
+            location_operator = list(location_operator)[0]
+        except IndexError:
+            location_operator = ""
+            #See Bug 2677, we currently don't record the location_operator
+            #For consistency with older versions Biopython, default to "".
+
         feature = SeqFeature.SeqFeature(type = seqfeature_type)
         feature._seqfeature_id = seqfeature_id #Store the key as a private property
         feature.qualifiers = qualifiers
-        if len(locations) == 0:
+        if len(location_objects) == 0:
             pass
-        elif len(locations) == 1:
-            location_id, start, end, strand = locations[0]
-            #See Bug 2677, we currently don't record the location_operator
-            #For consistency with older versions Biopython, default to "".
-            feature.location_operator = \
-                _retrieve_location_qualifier_value(adaptor, location_id)
-            dbname, version = lookup.get(location_id, (None, None))
-            feature.location = SeqFeature.FeatureLocation(start, end)
-            feature.strand = strand
-            feature.ref_db = dbname
-            feature.ref = version
+        elif len(location_objects) == 1:
+            feature.location = location_objects[0]
+            assert "" == location_operator
         else:
-            assert feature.sub_features == []
-            for location in locations:
-                location_id, start, end, strand = location
-                dbname, version = lookup.get(location_id, (None, None))
-                subfeature = SeqFeature.SeqFeature()
-                subfeature.type = seqfeature_type
-                subfeature.location_operator = \
-                    _retrieve_location_qualifier_value(adaptor, location_id)
-                #TODO - See Bug 2677 - we don't yet record location_operator,
-                #so for consistency with older versions of Biopython default
-                #to assuming its a join.
-                if not subfeature.location_operator:
-                    subfeature.location_operator="join"
-                subfeature.location = SeqFeature.FeatureLocation(start, end)
-                subfeature.strand = strand
-                subfeature.ref_db = dbname
-                subfeature.ref = version
-                feature.sub_features.append(subfeature)
-            # Assuming that the feature loc.op is the same as the sub_feature
-            # loc.op:
-            feature.location_operator = \
-                feature.sub_features[0].location_operator
+            if not location_operator:
+                location_operator = "join"
+            feature.location = SeqFeature.CompoundLocation(location_objects, location_operator)
             # Locations are in order, but because of remote locations for
             # sub-features they are not necessarily in numerical order:
-            start = locations[0][1]
-            end = locations[-1][2]
-            feature.location = SeqFeature.FeatureLocation(start, end)
-            # To get the parent strand (as done when parsing GenBank files),
-            # need to consider evil mixed strand examples like this,
-            # join(complement(69611..69724),139856..140087,140625..140650)
-            strands = set(sf.strand for sf in feature.sub_features)
-            if len(strands)==1:
-                feature.strand = feature.sub_features[0].strand
-            else:
-                feature.strand = None # i.e. mixed strands
 
         seq_feature_list.append(feature)
 
