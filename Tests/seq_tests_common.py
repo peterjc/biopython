@@ -106,14 +106,18 @@ def compare_feature(old_f, new_f):
                     "%s -> %s" % (old_f.location.nofuzzy_end, \
                                   new_f.location.nofuzzy_end)
 
-    assert len(old_f.sub_features) == len(new_f.sub_features), \
-        "number of sub_features: %s -> %s" % \
-        (len(old_f.sub_features), len(new_f.sub_features))
-    
-    for old_sub, new_sub in zip(old_f.sub_features, new_f.sub_features):
-        
-        assert old_sub.type == new_sub.type, \
-            "%s -> %s" % (old_sub.type, new_sub.type)
+    if hasattr(old_f.location, "parts"):
+        assert hasattr(new_f.location, "parts")
+        assert len(old_f.location.parts) == len(new_f.location.parts)
+        old_parts = old_f.location.parts
+        new_parts = new_f.location.parts
+    else:
+        assert not hasattr(new_f.location, "parts")
+        old_parts = []
+        new_parts = []
+
+    #TODO - Remove old/new_parts and use more indentation
+    for old_sub, new_sub in zip(old_parts, new_parts):
         
         assert old_sub.strand == new_sub.strand, \
             "%s -> %s" % (old_sub.strand, new_sub.strand)
@@ -124,11 +128,6 @@ def compare_feature(old_f, new_f):
         assert old_sub.ref_db == new_sub.ref_db, \
             "%s -> %s" % (old_sub.ref_db, new_sub.ref_db)
 
-        #TODO - Work out how the location_qualifier_value table should
-        #be used, given BioPerl seems to ignore it (Bug 2766)
-        #assert old_sub.location_operator == new_sub.location_operator, \
-        #    "%s -> %s" % (old_sub.location_operator, new_sub.location_operator)
-
         # Compare sub-feature Locations:
         # 
         # BioSQL currently does not store fuzzy locations, but instead stores
@@ -137,23 +136,23 @@ def compare_feature(old_f, new_f):
         # class locations, so we'll try that first and catch the exceptions.
 
         try:
-            assert str(old_sub.location) == str(new_sub.location), \
-               "%s -> %s" % (str(old_sub.location), str(new_sub.location))
+            assert str(old_sub) == str(new_sub), \
+               "%s -> %s" % (str(old_sub), str(new_sub))
         except AssertionError, e:
-            if isinstance(old_sub.location.start, ExactPosition) and \
-                isinstance(old_sub.location.end, ExactPosition):
+            if isinstance(old_sub.start, ExactPosition) and \
+                isinstance(old_sub.end, ExactPosition):
                 # Its not a problem with fuzzy locations, re-raise 
                 raise e
             else:
                 #At least one of the locations is fuzzy
-                assert old_sub.location.nofuzzy_start == \
-                       new_sub.location.nofuzzy_start, \
-                       "%s -> %s" % (old_sub.location.nofuzzy_start, \
-                                     new_sub.location.nofuzzy_start)
-                assert old_sub.location.nofuzzy_end == \
-                       new_sub.location.nofuzzy_end, \
-                       "%s -> %s" % (old_sub.location.nofuzzy_end, \
-                                     new_sub.location.nofuzzy_end)
+                assert old_sub.nofuzzy_start == \
+                       new_sub.nofuzzy_start, \
+                       "%s -> %s" % (old_sub.nofuzzy_start, \
+                                     new_sub.nofuzzy_start)
+                assert old_sub.nofuzzy_end == \
+                       new_sub.nofuzzy_end, \
+                       "%s -> %s" % (old_sub.nofuzzy_end, \
+                                     new_sub.nofuzzy_end)
 
     assert len(old_f.qualifiers) == len(new_f.qualifiers)    
     assert set(old_f.qualifiers) == set(new_f.qualifiers)
