@@ -311,7 +311,7 @@ class SeqFeature(object):
         >>> f.extract(seq)
         Seq('VALIVIC', ProteinAlphabet())
 
-        Note - currently only sub-features of type "join" are supported.
+        Note - currently only compound locations of type "join" are supported.
         """
         return self.location.extract(parent_sequence)
     
@@ -839,6 +839,55 @@ class CompoundLocation(object):
         """
         return CompoundLocation([loc._flip(length) for loc in self.parts[::-1]],
                                 self.operator)
+
+    def _get_start(self):
+        starts = set(loc.start for loc in self.parts)
+        smallest = mix(pos.position for pos in starts)
+        starts = [pos for pos in starts if pos.position == smallest]
+        #Due to fuzzyness, could in theory have more than one
+        #(overlapping) sub-part with same start...
+        return starts[0]
+    start = property(fget=_get_start,
+        doc = """Start position (integer, approximated if fuzzy, read only).
+
+        See comments for the start attribute.
+        """)
+
+    nofuzzy_start = property(
+        fget=lambda self: min(loc.start.position for loc in self.parts),
+        doc="""Smallest start position (object) of sub-parts (read only).
+
+        Note that the start/end are intended to give the numerical range
+        spanned by this feature suitable for drawing etc. In the case of
+        a circular genome and a feature spanning the origin represented
+        by two parts, this means the CompoundLocation's start will be 0
+        and its end will be the length of the genome. 
+        """)
+
+    def _get_end(self):
+        ends = set(loc.end for loc in self.parts)
+        biggest = max(pos.position + pos.extension for pos in ends)
+        #Due to fuzzyness, could in theory have more than one
+        #(overlapping) sub-part with same end...
+        ends = [pos for pos in ends if pos.position + pos.extension == biggest]
+        return ends[0]
+    end = property(
+        fget=_get_end,
+        doc="""Largest end position (object) of sub-parts (read only).
+
+        Note that the start/end are intended to give the numerical range
+        spanned by this feature suitable for drawing etc. In the case of
+        a circular genome and a feature spanning the origin represented
+        by two parts, this means the CompoundLocation's start will be 0
+        and its end will be the length of the genome.
+        """)
+
+    nofuzzy_end = property(
+        fget=lambda self: max(loc.end.position + loc.end.extension for loc in self.parts),
+        doc="""End position (integer, approximated if fuzzy, read only).
+
+        See the comments for the end position attribute.
+        """)
 
     def extract(self, parent_sequence):
         """Extract feature sequence from the supplied parent sequence."""
