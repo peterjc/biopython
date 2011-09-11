@@ -87,25 +87,6 @@ def compare_feature(old_f, new_f):
     #assert old_f.location_operator == new_f.location_operator, \
     #        "%s -> %s" % (old_f.location_operator, new_f.location_operator)
     
-    # We dont store fuzzy locations:
-    try:
-        assert str(old_f.location) == str(new_f.location), \
-           "%s -> %s" % (str(old_f.location), str(new_f.location))
-    except AssertionError, e:
-        if isinstance(old_f.location.start, ExactPosition) and \
-            isinstance(old_f.location.end, ExactPosition):
-            # Its not a problem with fuzzy locations, re-raise 
-            raise e
-        else:
-            assert old_f.location.nofuzzy_start == \
-                    new_f.location.nofuzzy_start, \
-                    "%s -> %s" % (old_f.location.nofuzzy_start, \
-                                  new_f.location.nofuzzy_start)
-            assert old_f.location.nofuzzy_end == \
-                    new_f.location.nofuzzy_end, \
-                    "%s -> %s" % (old_f.location.nofuzzy_end, \
-                                  new_f.location.nofuzzy_end)
-
     if hasattr(old_f.location, "parts"):
         assert hasattr(new_f.location, "parts")
         assert len(old_f.location.parts) == len(new_f.location.parts)
@@ -113,10 +94,9 @@ def compare_feature(old_f, new_f):
         new_parts = new_f.location.parts
     else:
         assert not hasattr(new_f.location, "parts")
-        old_parts = []
-        new_parts = []
+        old_parts = [old_f.location]
+        new_parts = [new_f.location]
 
-    #TODO - Remove old/new_parts and use more indentation
     for old_sub, new_sub in zip(old_parts, new_parts):
         
         assert old_sub.strand == new_sub.strand, \
@@ -128,13 +108,10 @@ def compare_feature(old_f, new_f):
         assert old_sub.ref_db == new_sub.ref_db, \
             "%s -> %s" % (old_sub.ref_db, new_sub.ref_db)
 
-        # Compare sub-feature Locations:
-        # 
         # BioSQL currently does not store fuzzy locations, but instead stores
         # them as FeatureLocation.nofuzzy_start FeatureLocation.nofuzzy_end.
         # The vast majority of cases will be comparisons of ExactPosition
         # class locations, so we'll try that first and catch the exceptions.
-
         try:
             assert str(old_sub) == str(new_sub), \
                "%s -> %s" % (str(old_sub), str(new_sub))
