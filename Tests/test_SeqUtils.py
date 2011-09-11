@@ -47,7 +47,7 @@ record = SeqIO.read(open(dna_genbank_filename), "genbank")
 records = []
 for feature in record.features:
     if feature.type == "CDS" \
-    and not feature.sub_features:
+    and not hasattr(feature.location, "parts"):
         start = feature.location.start.position
         end = feature.location.end.position
         table = int(feature.qualifiers["transl_table"][0])
