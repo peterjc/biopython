@@ -258,8 +258,6 @@ class SeqFeature(object):
         out += "location: %s\n" % self.location
         if self.id and self.id != "<unknown id>":
             out += "id: %s\n" % self.id
-        if self.ref or self.ref_db:
-            out += "ref: %s:%s\n" % (self.ref, self.ref_db)
         out += "qualifiers: \n"
         for qual_key in sorted(self.qualifiers):
             out += "    Key: %s, Value: %s\n" % (qual_key,
@@ -565,9 +563,15 @@ class FeatureLocation(object):
         (zero based counting) which GenBank would call 123..150 (one based
         counting).
         """
-        if self.strand == -1:
-            return "c[%s:%s]" % (self._start, self._end)
-        return "[%s:%s]" % (self._start, self._end)
+        if self.ref or self.ref_db:
+            answer = "%s:%s" % (self.ref_db, self.ref)
+            if self.strand == -1:
+                optional += ":c"
+        elif self.strand == -1:
+            optional = "c"
+        else:
+            optional = ""
+        return "%s[%s:%s]" % (optional, self._start, self._end)
 
     def __repr__(self):
         """A string representation of the location for debugging."""
