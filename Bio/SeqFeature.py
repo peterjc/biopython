@@ -564,7 +564,10 @@ class FeatureLocation(object):
         counting).
         """
         if self.ref or self.ref_db:
-            answer = "%s:%s" % (self.ref_db, self.ref)
+            if self.ref_db:
+                optional = "%s:%s" % (self.ref_db, self.ref)
+            else:
+                optional = self.ref
             if self.strand == -1:
                 optional += ":c"
         elif self.strand == -1:
