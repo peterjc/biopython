@@ -260,7 +260,6 @@ class SeqFeature(object):
             out += "id: %s\n" % self.id
         if self.ref or self.ref_db:
             out += "ref: %s:%s\n" % (self.ref, self.ref_db)
-        out += "strand: %s\n" % self.strand
         out += "qualifiers: \n"
         for qual_key in sorted(self.qualifiers):
             out += "    Key: %s, Value: %s\n" % (qual_key,
@@ -393,8 +392,8 @@ class SeqFeature(object):
         ...     if 1750 in f:
         ...         print f.type, f.strand, f.location
         source 1 [0:154478]
-        gene -1 [1716:4347]
-        tRNA -1 join of [1716:1751], [4310:4347]
+        gene -1 c[1716:4347]
+        tRNA -1 join of c[1716:1751], c[4310:4347]
 
         Note that for a feature defined as a join of several subfeatures (e.g.
         the union of several exons) the gaps are not checked (e.g. introns).
@@ -406,7 +405,7 @@ class SeqFeature(object):
         ...     if 1760 in f:
         ...         print f.type, f.strand, f.location
         source 1 [0:154478]
-        gene -1 [1716:4347]
+        gene -1 c[1716:4347]
 
         Note that additional care may be required with fuzzy locations, for
         example just before a BeforePosition:
@@ -566,6 +565,8 @@ class FeatureLocation(object):
         (zero based counting) which GenBank would call 123..150 (one based
         counting).
         """
+        if self.strand == -1:
+            return "c[%s:%s]" % (self._start, self._end)
         return "[%s:%s]" % (self._start, self._end)
 
     def __repr__(self):

@@ -1024,8 +1024,7 @@ class SeqRecord(object):
 
         >>> print plasmid.features[1]
         type: CDS
-        location: [1081:1960]
-        strand: -1
+        location: c[1081:1960]
         qualifiers: 
             Key: label, Value: ['araC']
             Key: note, Value: ['araC regulator of the arabinose BAD promoter']
@@ -1034,7 +1033,6 @@ class SeqRecord(object):
         >>> print rc_plasmid.features[-2]
         type: CDS
         location: [2963:3842]
-        strand: 1
         qualifiers: 
             Key: label, Value: ['araC']
             Key: note, Value: ['araC regulator of the arabinose BAD promoter']
