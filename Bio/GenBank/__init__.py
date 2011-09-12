@@ -931,7 +931,7 @@ class _FeatureConsumer(_BaseGenBankConsumer):
         if _re_complex_location.match(location_line):
             #e.g. "AL121804.2:41..610"
             if ":" in location_line:
-                location_ref, location_line = location_line.split(":")
+                location_ref, location_line = location_line.split(":", 1)
                 cur_feature.location = _loc(location_line, self._expected_size, strand)
                 cur_feature.location.ref = location_ref
             else:
@@ -951,7 +951,7 @@ class _FeatureConsumer(_BaseGenBankConsumer):
                 else:
                     part_strand = strand
                 if ":" in part:
-                    ref, part = part.split(":")
+                    ref, part = part.split(":", 1)
                 else:
                     ref = None
                 try:
@@ -960,6 +960,7 @@ class _FeatureConsumer(_BaseGenBankConsumer):
                     print location_line
                     print part
                     raise err
+                parts[-1].ref = ref
             # Historically a join on the reverse strand has been represented
             # in Biopython with both the parent SeqFeature and its children
             # (the exons for a CDS) all given a strand of -1.  Likewise, for
