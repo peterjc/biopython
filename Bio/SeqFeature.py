@@ -86,6 +86,9 @@ class SeqFeature(object):
     Things are more complicated with strands and fuzzy positions. To save you
     dealing with all these special cases, the SeqFeature provides an extract
     method to do this for you.
+
+    Read only attributes start and end give easy access to the start and end
+    positions of the feature's location object.
     """
     def __init__(self, location = None, type = '', location_operator = '',
                  strand = None, id = "<unknown id>", 
@@ -212,7 +215,29 @@ class SeqFeature(object):
             sub_features = [f._flip(length) for f in self.sub_features[::-1]],
             ref = self.ref,
             ref_db = self.ref_db)
-    
+
+    @property
+    def start(self):
+        """Proxy for the f.location.start (read only)."""
+        try:
+            return self.location.start
+        except AttributeError:
+            if self.location is None:
+                return None
+            else:
+                raise
+
+    @property
+    def end(self):
+        """Proxy for f.location.end (read only)."""
+        try:
+            return self.location.end
+        except AttributeError:
+            if self.location is None:
+                return None
+            else:
+                raise
+
     def extract(self, parent_sequence):
         """Extract feature sequence from the supplied parent sequence.
 
@@ -234,6 +259,14 @@ class SeqFeature(object):
         Seq('VALIVIC', ProteinAlphabet())
 
         Note - currently only sub-features of type "join" are supported.
+
+        This is more flexible than using the feature's start and end
+        because it will take into account "join" locations. However,
+        for simple cases you can treat the start and end as integers:
+
+        >>> seq[f.start:f.end]
+        Seq('VALIVIC', ProteinAlphabet())
+
         """
         if isinstance(parent_sequence, MutableSeq):
             #This avoids complications with reverse complements

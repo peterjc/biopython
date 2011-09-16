@@ -205,6 +205,12 @@ class SeqFeatureExtractionWritingReading(unittest.TestCase):
         self.assertTrue(isinstance(new, Seq))
         self.assertEqual(str(new), answer_str)
 
+        if not feature.sub_features:
+            new = parent_seq[feature.start:feature.end]
+            if feature.strand == -1:
+                new = reverse_complement(new)
+            self.assertEqual(str(new), answer_str)
+
         new = feature.extract(str(parent_seq))
         self.assertTrue(isinstance(new, str))
         self.assertEqual(new, answer_str)
