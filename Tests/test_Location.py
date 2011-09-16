@@ -11,7 +11,7 @@ print "Testing fuzzy representations..."
 
 # check the positions alone
 exact_pos = SeqFeature.ExactPosition(5)
-within_pos = SeqFeature.WithinPosition(10, 3)
+within_pos = SeqFeature.WithinPosition(10, left=10, right=13)
 between_pos = SeqFeature.BetweenPosition(20, 4)
 before_pos = SeqFeature.BeforePosition(15)
 after_pos = SeqFeature.AfterPosition(40)

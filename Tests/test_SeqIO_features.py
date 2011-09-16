@@ -387,7 +387,8 @@ class SeqFeatureExtractionWritingReading(unittest.TestCase):
         s = Seq("ABCDEFGHIJKLMNOPQRSTUVWXYZ", generic_protein)
         f1 = SeqFeature(FeatureLocation(BeforePosition(5),10))
         f2 = SeqFeature(FeatureLocation(OneOfPosition((ExactPosition(15),
-                                                       ExactPosition(16))),
+                                                       ExactPosition(16)),
+                                                      15),
                                         AfterPosition(20)))
         f = make_join_feature([f1,f2])
         self.check(s, f, "FGHIJ"+"PQRST", "join(<6..10,one-of(16,17)..>20)")
@@ -415,8 +416,8 @@ class SeqFeatureExtractionWritingReading(unittest.TestCase):
     def test_protein_oneof(self):
         """Feature on protein (one-of positions)"""
         s = Seq("ABCDEFGHIJKLMNOPQRSTUVWXYZ", generic_protein)
-        start = OneOfPosition((ExactPosition(5),ExactPosition(7)))
-        end = OneOfPosition((ExactPosition(10),ExactPosition(11)))
+        start = OneOfPosition((ExactPosition(5),ExactPosition(7)), 5)
+        end = OneOfPosition((ExactPosition(10),ExactPosition(11)), 11)
         f = SeqFeature(FeatureLocation(start,10))
         self.check(s, f, "FGHIJ", "one-of(6,8)..10")
         f = SeqFeature(FeatureLocation(start,end))
@@ -594,10 +595,12 @@ class FeatureWriting(unittest.TestCase):
         self.assertEqual(f._flip(100).strand, -1)
         
         f1 = SeqFeature(FeatureLocation(OneOfPosition([ExactPosition(107),
-                                                       ExactPosition(110)]),120),
+                                                       ExactPosition(110)],
+                                                      107),
+                                        120),
                         strand=+1)
         f2 = SeqFeature(FeatureLocation(125,140), strand=+1)
-        f3 = SeqFeature(FeatureLocation(145,WithinPosition(150,10)), strand=+1)
+        f3 = SeqFeature(FeatureLocation(145,WithinPosition(150, left=150, right=160)), strand=+1)
         f = make_join_feature([f1,f2,f3], "CDS")
         self.assertEqual(_insdc_feature_location_string(f,500),
                          "join(one-of(108,111)..120,126..140,146..(150.160))")
@@ -611,7 +614,7 @@ class FeatureWriting(unittest.TestCase):
         self.record.features.append(f)
         
         f1 = SeqFeature(FeatureLocation(BeforePosition(210),220), strand=-1)
-        f2 = SeqFeature(FeatureLocation(225,WithinPosition(240,4)), strand=-1)
+        f2 = SeqFeature(FeatureLocation(225,WithinPosition(244, left=240, right=244)), strand=-1)
         f = make_join_feature([f1,f2], "gene")
         self.assertEqual(_insdc_feature_location_string(f,500),
                          "complement(join(<211..220,226..(240.244)))")
@@ -626,9 +629,9 @@ class FeatureWriting(unittest.TestCase):
         
         f1 = SeqFeature(FeatureLocation(AfterPosition(310),320), strand=-1)
         f2 = SeqFeature(FeatureLocation(325,OneOfPosition([ExactPosition(340),
-                                                           ExactPosition(337)])),
+                                                           ExactPosition(337)], 377)),
                         strand=-1)
-        f3 = SeqFeature(FeatureLocation(345,WithinPosition(350,5)), strand=-1)
+        f3 = SeqFeature(FeatureLocation(345,WithinPosition(355, left=350, right=355)), strand=-1)
         f = make_join_feature([f1,f2,f3], "CDS")
         self.assertEqual(_insdc_feature_location_string(f,500),
                          "complement(join(>311..320,326..one-of(340,337),346..(350.355)))")
@@ -788,7 +791,7 @@ class FeatureWriting(unittest.TestCase):
     def test_oneof(self):
         """Features: write/read simple one-of locations."""
         s = "N" * 100
-        start = OneOfPosition([ExactPosition(0),ExactPosition(3),ExactPosition(6)])
+        start = OneOfPosition([ExactPosition(0),ExactPosition(3),ExactPosition(6)], 0)
         f = SeqFeature(FeatureLocation(start,21), strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f,100),
                          "one-of(1,4,7)..21")
@@ -799,8 +802,8 @@ class FeatureWriting(unittest.TestCase):
         self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
         
-        start = OneOfPosition([ExactPosition(x) for x in [10,13,16]])
-        end = OneOfPosition([ExactPosition(x) for x in [41,44,50]])
+        start = OneOfPosition([ExactPosition(x) for x in [10,13,16]], 10)
+        end = OneOfPosition([ExactPosition(x) for x in [41,44,50]], 50)
         f = SeqFeature(FeatureLocation(start,end), strand=+1, type="gene")
         self.assertEqual(_insdc_feature_location_string(f,100),
                          "one-of(11,14,17)..one-of(41,44,50)")
@@ -811,7 +814,7 @@ class FeatureWriting(unittest.TestCase):
         self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
         
-        end = OneOfPosition([ExactPosition(x) for x in [30,33]])
+        end = OneOfPosition([ExactPosition(x) for x in [30,33]], 33)
         f = SeqFeature(FeatureLocation(27,end), strand=+1, type="gene")
         self.assertEqual(_insdc_feature_location_string(f,100),
                          "28..one-of(30,33)")
@@ -822,7 +825,7 @@ class FeatureWriting(unittest.TestCase):
         self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
         
-        start = OneOfPosition([ExactPosition(x) for x in [36,40]])
+        start = OneOfPosition([ExactPosition(x) for x in [36,40]], 36)
         f = SeqFeature(FeatureLocation(start,46), strand=-1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(one-of(37,41)..46)")
@@ -833,8 +836,8 @@ class FeatureWriting(unittest.TestCase):
         self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
         
-        start = OneOfPosition([ExactPosition(x) for x in [45,60]])
-        end = OneOfPosition([ExactPosition(x) for x in [70,90]])
+        start = OneOfPosition([ExactPosition(x) for x in [45,60]], 45)
+        end = OneOfPosition([ExactPosition(x) for x in [70,90]], 90)
         f = SeqFeature(FeatureLocation(start,end), strand=-1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(one-of(46,61)..one-of(70,90))")
@@ -845,7 +848,7 @@ class FeatureWriting(unittest.TestCase):
         self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
         
-        end = OneOfPosition([ExactPosition(x) for x in [60,63]])
+        end = OneOfPosition([ExactPosition(x) for x in [60,63]], 63)
         f = SeqFeature(FeatureLocation(55,end), strand=-1, type="tRNA")
         self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(56..one-of(60,63))")
@@ -861,7 +864,7 @@ class FeatureWriting(unittest.TestCase):
     def test_within(self):
         """Features: write/read simple within locations."""
         s = "N" * 100
-        f = SeqFeature(FeatureLocation(WithinPosition(2,6),10), \
+        f = SeqFeature(FeatureLocation(WithinPosition(2, left=2, right=8),10), \
                        strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f,100),
                          "(3.9)..10")
@@ -872,8 +875,8 @@ class FeatureWriting(unittest.TestCase):
         self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
         
-        f = SeqFeature(FeatureLocation(WithinPosition(12,6),
-                                       WithinPosition(20,8)), \
+        f = SeqFeature(FeatureLocation(WithinPosition(12, left=12, right=18),
+                                       WithinPosition(28, left=20, right=28)), \
                        strand=+1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f,100),
                          "(13.19)..(20.28)")
@@ -884,7 +887,7 @@ class FeatureWriting(unittest.TestCase):
         self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
         
-        f = SeqFeature(FeatureLocation(25,WithinPosition(30,3)), \
+        f = SeqFeature(FeatureLocation(25,WithinPosition(33, left=30, right=33)), \
                        strand=+1, type="misc_feature")
         self.assertEqual(_insdc_feature_location_string(f,100),
                          "26..(30.33)")
@@ -895,7 +898,7 @@ class FeatureWriting(unittest.TestCase):
         self.assertEqual(f._flip(100).strand, -1)
         self.record.features.append(f)
         
-        f = SeqFeature(FeatureLocation(WithinPosition(35,4),40), \
+        f = SeqFeature(FeatureLocation(WithinPosition(35, left=35, right=39),40), \
                        strand=-1, type="rRNA")
         self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement((36.40)..40)")
@@ -905,8 +908,8 @@ class FeatureWriting(unittest.TestCase):
         self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
         
-        f = SeqFeature(FeatureLocation(WithinPosition(45,2),
-                                       WithinPosition(50,3)), \
+        f = SeqFeature(FeatureLocation(WithinPosition(45, left=45, right=47),
+                                       WithinPosition(53, left=50, right=53)), \
                        strand=-1, type="repeat_region")
         self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement((46.48)..(50.53))")
@@ -917,7 +920,7 @@ class FeatureWriting(unittest.TestCase):
         self.assertEqual(f._flip(100).strand, +1)
         self.record.features.append(f)
         
-        f = SeqFeature(FeatureLocation(55,WithinPosition(60,5)), \
+        f = SeqFeature(FeatureLocation(55,WithinPosition(65, left=60, right=65)), \
                        strand=-1, type="CDS")
         self.assertEqual(_insdc_feature_location_string(f,100),
                          "complement(56..(60.65))")

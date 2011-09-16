@@ -499,13 +499,17 @@ class FeatureLocation(object):
         """
         if isinstance(start, AbstractPosition):
             self._start = start
-        else:
+        elif isinstance(start, int):
             self._start = ExactPosition(start)
+        else:
+            raise TypeError(start)
 
         if isinstance(end, AbstractPosition):
             self._end = end
-        else:
+        elif isinstance(end, int):
             self._end = ExactPosition(end)
+        else:
+            raise TypeError(end)
 
     def __str__(self):
         """Returns a representation of the location (with python counting).
@@ -643,10 +647,12 @@ class FeatureLocation(object):
 class AbstractPosition(object):
     """Abstract base class representing a position.
     """
-    def __init__(self, position, extension):
-        self.position = position
+    def __new__(cls, position, extension):
         assert extension >= 0, extension
-        self.extension = extension
+        obj = super(AbstractPosition, cls).__new__(cls)
+        obj.position = position
+        obj.extension = extension
+        return obj
 
     def __repr__(self):
         """String representation of the location for debugging."""
@@ -734,7 +740,7 @@ class AbstractPosition(object):
                               self.extension)
 
 
-class ExactPosition(AbstractPosition):
+class ExactPosition(AbstractPosition, int):
     """Specify the specific position of a boundary.
 
     o position - The position of the boundary.
@@ -743,20 +749,35 @@ class ExactPosition(AbstractPosition):
     arguments can be passed to all position types.
 
     In this case, there is no fuzziness associated with the position.
+
+    >>> p = ExactPosition(5)
+    >>> p
+    ExactPosition(5)
+    >>> print p
+    5
+    >>> p + 10
+    15
+
     """
-    def __init__(self, position, extension = 0):
+    def __new__(cls, position, extension = 0):
         if extension != 0:
             raise AttributeError("Non-zero extension %s for exact position."
                                  % extension)
-        AbstractPosition.__init__(self, position, 0)
+        return int.__new__(cls, position)
 
     def __repr__(self):
         """String representation of the ExactPosition location for debugging."""
-        assert self.extension == 0
-        return "%s(%s)" % (self.__class__.__name__, repr(self.position))
+        return "%s(%i)" % (self.__class__.__name__, self)
 
-    def __str__(self):
-        return str(self.position)
+    @property
+    def position(self):
+        """Legacy attribute to get position as integer (OBSOLETE)."""
+        return int(self)
+
+    @property
+    def extension(self):
+        """Legacy attribute to get extension (zero) as integer (OBSOLETE)."""
+        return 0
 
 class UncertainPosition(ExactPosition):
     """Specify a specific position which is uncertain.
@@ -771,33 +792,79 @@ class UnknownPosition(AbstractPosition):
 
     This is used in UniProt, e.g. ? or in the XML as unknown.
     """
-    def __init__(self):
-        self.position = None
-        self.extension = None
-        pass
+    def __new__(cls):
+        return AbstractPosition.__new__(cls, None, 0)
 
     def __repr__(self):
         """String representation of the UnknownPosition location for debugging."""
         return "%s()" % self.__class__.__name__
         
-class WithinPosition(AbstractPosition):
+class WithinPosition(AbstractPosition, int):
     """Specify the position of a boundary within some coordinates.
 
     Arguments:
-    o position - The start position of the boundary
-    o extension - The range to which the boundary can extend.
+    o position - The default integer position
+    o left - The start (left) position of the boundary
+    o right - The end (right) position of the boundary
 
     This allows dealing with a position like ((1.4)..100). This
     indicates that the start of the sequence is somewhere between 1
-    and 4. To represent that with this class we would set position as
-    1 and extension as 3.
+    and 4. Since this is a start coordindate, it acts like it is at
+    position 1 (or in Python counting, 0).
+
+    >>> p = WithinPosition(0,0,3)
+    >>> p
+    WithinPosition(0, left=0, right=3)
+    >>> print p
+    (0.3)
+    >>> int(p)
+    0
+    >>> p + 10
+    10
+
+    >>> isinstance(p, WithinPosition)
+    True
+    >>> isinstance(p, AbstractPosition)
+    True
+    >>> isinstance(p, int)
+    True
+
     """
-    def __init__(self, position, extension = 0):
-        AbstractPosition.__init__(self, position, extension)
+    def __new__(cls, position, left, right):
+        assert position==left or position==right
+        obj = int.__new__(cls, position)
+        obj._left = left
+        obj._right = right
+        return obj
+
+    def __repr__(self):
+        """String representation of the WithinPosition location for debugging."""
+        return "%s(%i, left=%i, right=%i)" \
+               % (self.__class__.__name__, self,
+                  self._left, self._right)
 
     def __str__(self):
-        return "(%s.%s)" % (self.position, self.position + self.extension)
+        return "(%s.%s)" % (self._left, self._right)
 
+    @property
+    def position(self):
+        """Legacy attribute to get (left) position as integer (OBSOLETE)."""
+        return self._left
+
+    @property
+    def extension(self):
+        """Legacy attribute to get extension (from left to right) as an integer (OBSOLETE)."""
+        return self._right - self._left
+
+    def _shift(self, offset):
+        return WithinPosition(int(self) + offset,
+                              self._left + offset,
+                              self._right + offset)
+
+    def _flip(self, length):
+        return WithinPosition(length - int(self),
+                              length - self._right,
+                              length - self._left)
 
 class BetweenPosition(AbstractPosition):
     """Specify the position of a boundary between two coordinates (OBSOLETE?).
@@ -808,17 +875,25 @@ class BetweenPosition(AbstractPosition):
 
     This specifies a coordinate which is found between the two positions.
     So this allows us to deal with a position like ((1^2)..100). To
-    represent that with this class we set position as 1 and the
-    extension as 1.
+    represent that with this class we set position as 1 (or rather 0
+    for Python counting) and the extension as 1.
+
+    >>> p = BetweenPosition(0, 1)
+    >>> print p
+    (0^1)
+    >>> p.position
+    0
+    >>> p.extension
+    1
+
     """
-    def __init__(self, position, extension = 0):
-        AbstractPosition.__init__(self, position, extension)
+    def __new__(cls, position, extension = 0):
+        return AbstractPosition.__new__(cls, position, extension)
 
     def __str__(self):
         return "(%s^%s)" % (self.position, self.position + self.extension)
 
-
-class BeforePosition(AbstractPosition):
+class BeforePosition(AbstractPosition, int):
     """Specify a position where the actual location occurs before it.
 
     Arguments:
@@ -829,25 +904,46 @@ class BeforePosition(AbstractPosition):
 
     This is used to specify positions like (<10..100) where the location
     occurs somewhere before position 10.
+
+    >>> p = BeforePosition(5)
+    >>> p
+    BeforePosition(5)
+    >>> print p
+    <5
+    >>> int(p)
+    5
+    >>> p + 10
+    15
+
     """
-    def __init__(self, position, extension = 0):
+    #Subclasses int so can't use __init__
+    def __new__(cls, position, extension = 0):
         if extension != 0:
             raise AttributeError("Non-zero extension %s for exact position."
                                  % extension)
-        AbstractPosition.__init__(self, position, 0)
+        return int.__new__(cls, position)
+
+    @property
+    def position(self):
+        """Legacy attribute to get position as integer (OBSOLETE)."""
+        return int(self)
+
+    @property
+    def extension(self):
+        """Legacy attribute to get extension (zero) as integer (OBSOLETE)."""
+        return 0
 
     def __repr__(self):
         """A string representation of the location for debugging."""
-        assert self.extension == 0
-        return "%s(%s)" % (self.__class__.__name__, repr(self.position))
+        return "%s(%i)" % (self.__class__.__name__, self)
 
     def __str__(self):
         return "<%s" % self.position
 
     def _flip(self, length):
-        return AfterPosition(length - self.position)
+        return AfterPosition(length - int(self))
 
-class AfterPosition(AbstractPosition):
+class AfterPosition(AbstractPosition, int):
     """Specify a position where the actual location is found after it.
 
     Arguments:
@@ -858,61 +954,100 @@ class AfterPosition(AbstractPosition):
 
     This is used to specify positions like (>10..100) where the location
     occurs somewhere after position 10.
+
+    >>> p = AfterPosition(7)
+    >>> p
+    AfterPosition(7)
+    >>> print p
+    >7
+    >>> int(p)
+    7
+    >>> p + 10
+    17
+
+    >>> isinstance(p, AfterPosition)
+    True
+    >>> isinstance(p, AbstractPosition)
+    True
+    >>> isinstance(p, int)
+    True
+
     """
-    def __init__(self, position, extension = 0):
+    #Subclasses int so can't use __init__
+    def __new__(cls, position, extension = 0):
         if extension != 0:
             raise AttributeError("Non-zero extension %s for exact position."
                                  % extension)
-        AbstractPosition.__init__(self, position, 0)
+        return int.__new__(cls, position)
+
+    @property
+    def position(self):
+        """Legacy attribute to get position as integer (OBSOLETE)."""
+        return int(self)
+
+    @property
+    def extension(self):
+        """Legacy attribute to get extension (zero) as integer (OBSOLETE)."""
+        return 0
 
     def __repr__(self):
         """A string representation of the location for debugging."""
-        assert self.extension == 0
-        return "%s(%s)" % (self.__class__.__name__, repr(self.position))
+        return "%s(%i)" % (self.__class__.__name__, self)
 
     def __str__(self):
         return ">%s" % self.position
 
     def _flip(self, length):
-        return BeforePosition(length - self.position)
+        return BeforePosition(length - int(self))
 
 
-class OneOfPosition(AbstractPosition):
+class OneOfPosition(AbstractPosition, int):
     """Specify a position where the location can be multiple positions.
 
     This models the GenBank 'one-of(1888,1901)' function, and tries
-    to make this fit within the Biopython Position models. In our case
-    the position of the "one-of" is set as the lowest choice, and the
-    extension is the range to the highest choice.
+    to make this fit within the Biopython Position models. If this was
+    a start position it will act like 1888, but as an end position 1901.
+
+    >>> p = OneOfPosition([ExactPosition(1888), ExactPosition(1901)], 1888)
+    >>> p
+    OneOfPosition([ExactPosition(1888), ExactPosition(1901)], 1888)
+    >>> int(p)
+    1888
+
+    >>> isinstance(p, OneOfPosition)
+    True
+    >>> isinstance(p, AbstractPosition)
+    True
+    >>> isinstance(p, int)
+    True
     """
-    def __init__(self, position_list):
+    def __new__(cls, position_list, position):
         """Initialize with a set of posssible positions.
 
         position_list is a list of AbstractPosition derived objects,
         specifying possible locations.
+
+        position is an integer specifying the default behaviour.
         """
-        # unique attribute for this type of positions
-        self.position_choices = position_list
-        # find the smallest and largest position in the choices
-        smallest = None
-        largest = None
-        for position_choice in self.position_choices:
-            assert isinstance(position_choice, AbstractPosition), \
-              "Expected position objects, got %r" % position_choice
-            if smallest is None and largest is None:
-                smallest = position_choice.position
-                largest = position_choice.position
-            elif position_choice.position > largest:
-                largest = position_choice.position
-            elif position_choice.position < smallest:
-                smallest = position_choice.position
-        # initialize with our definition of position and extension
-        AbstractPosition.__init__(self, smallest, largest - smallest)
+        obj = int.__new__(cls, position)
+        obj.position_choices = position_list
+        return obj
+
+    @property
+    def position(self):
+        """Legacy attribute to get (left) position as integer (OBSOLETE)."""
+        return min(int(pos) for pos in self.position_choices)
+
+    @property
+    def extension(self):
+        """Legacy attribute to get extension as integer (OBSOLETE)."""
+        positions = [int(pos) for pos in self.position_choices]
+        return max(positions) - min(positions)
 
     def __repr__(self):
         """String representation of the OneOfPosition location for debugging."""
-        return "%s(%s)" % (self.__class__.__name__, \
-                           repr(self.position_choices))
+        return "%s(%r, %i)" % (self.__class__.__name__, \
+                               self.position_choices, int(self))
 
     def __str__(self):
         out = "one-of("
@@ -924,10 +1059,12 @@ class OneOfPosition(AbstractPosition):
 
     def _shift(self, offset):
         return self.__class__([position_choice._shift(offset) \
-                               for position_choice in self.position_choices])
+                               for position_choice in self.position_choices],
+                               int(self) + offset)
 
     def _flip(self, length):
-        return OneOfPosition([p._flip(length) for p in self.position_choices[::-1]])
+        return self.__class__([p._flip(length) for p in self.position_choices[::-1]],
+                             length - int(self))
 
 
 class PositionGap(object):
