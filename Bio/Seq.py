@@ -202,13 +202,35 @@ class Seq(object):
         return len(self._data)       # Seq API requirement
 
     def __getitem__(self, index) :                 # Seq API requirement
-        """Returns a subsequence of single letter, use my_seq[index]."""
+        """Returns a subsequence.
+
+        Simple example,
+
+        >>> from Bio.Seq import Seq
+        >>> s = Seq("ACGTACGT")
+        >>> print s[0]
+        A
+        >>> print s[0:4]
+        ACGT
+
+        In recent versions of Biopython you can also use a feature
+        or location:
+
+        >>> from Bio.SeqFeature import FeatureLocation
+        >>> print s[FeatureLocation(2, 4)]
+        GT
+        >>> print s[FeatureLocation(2, 4, strand=-1)]
+        AC
+        """
         #Note since Python 2.0, __getslice__ is deprecated
         #and __getitem__ is used instead.
         #See http://docs.python.org/ref/sequence-methods.html
         if isinstance(index, int):
             #Return a single letter as a string
             return self._data[index]
+        elif hasattr(index, "extract"):
+            #The index is a feature or location...
+            return index.extract(self)
         else:
             #Return the (sub)sequence as another Seq object
             return Seq(self._data[index], self.alphabet)
