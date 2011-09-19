@@ -606,7 +606,7 @@ class FeatureWriting(unittest.TestCase):
                                         120),
                         strand=+1)
         f2 = SeqFeature(FeatureLocation(125,140), strand=+1)
-        f3 = SeqFeature(FeatureLocation(145,WithinPosition(150, left=150, right=160)), strand=+1)
+        f3 = SeqFeature(FeatureLocation(145,WithinPosition(160, left=150, right=160)), strand=+1)
         f = make_join_feature([f1,f2,f3], "CDS")
         self.assertEqual(_insdc_feature_location_string(f,500),
                          "join(one-of(108,111)..120,126..140,146..(150.160))")
@@ -634,8 +634,9 @@ class FeatureWriting(unittest.TestCase):
         self.record.features.append(f)
         
         f1 = SeqFeature(FeatureLocation(AfterPosition(310),320), strand=-1)
+        #Note - is one-of(340,337) allowed or should it be one-of(337,340)?
         f2 = SeqFeature(FeatureLocation(325,OneOfPosition([ExactPosition(340),
-                                                           ExactPosition(337)], 377)),
+                                                           ExactPosition(337)], 340)),
                         strand=-1)
         f3 = SeqFeature(FeatureLocation(345,WithinPosition(355, left=350, right=355)), strand=-1)
         f = make_join_feature([f1,f2,f3], "CDS")
