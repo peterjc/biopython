@@ -583,8 +583,7 @@ class FeatureLocation(object):
         >>> len(loc)
         5
         """
-        #TODO - Should we use nofuzzy_start and nofuzzy_end here?
-        return self._end.position + self._end.extension - self._start.position
+        return int(self._end) - int(self._start)
 
     def __contains__(self, value):
         """Check if an integer position is within the FeatureLocation.
@@ -602,9 +601,7 @@ class FeatureLocation(object):
         if not isinstance(value, int):
             raise ValueError("Currently we only support checking for integer "
                              "positions being within a FeatureLocation.")
-        #TODO - Should we use nofuzzy_start and nofuzzy_end here?
-        if value < self._start.position \
-        or value >= self._end.position + self._end.extension:
+        if value < self._start or value >= self._end:
             return False
         else:
             return True
@@ -628,9 +625,7 @@ class FeatureLocation(object):
         >>> [i for i in range(15) if i in loc]
         [5, 6, 7, 8, 9]
         """
-        #TODO - Should we use nofuzzy_start and nofuzzy_end here?
-        for i in range(self._start.position,
-                       self._end.position + self._end.extension):
+        for i in range(self._start, self._end):
             yield i
 
     def _shift(self, offset):
@@ -663,7 +658,7 @@ class FeatureLocation(object):
         the largest range of the fuzzy position. So something like:
         (10.20)..(30.40) should return 10 for start, and 40 for end.
         """
-        return self._start.position
+        return int(self._start)
 
     @property
     def nofuzzy_end(self):
@@ -674,7 +669,7 @@ class FeatureLocation(object):
         the largest range of the fuzzy position. So something like:
         (10.20)..(30.40) should return 10 for start, and 40 for end.
         """
-        return self._end.position + self._end.extension
+        return int(self._end)
 
 
 class AbstractPosition(object):
