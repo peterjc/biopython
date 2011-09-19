@@ -69,7 +69,7 @@ class SeqRecordMethods(unittest.TestCase):
         f1 = SeqFeature(FeatureLocation(0,ExactPosition(10)))
         f2 = SeqFeature(FeatureLocation(WithinPosition(12, left=12,right=15),BeforePosition(22)))
         f3 = SeqFeature(FeatureLocation(AfterPosition(16),
-                                        OneOfPosition([ExactPosition(25),AfterPosition(26)], 26)))
+                                        OneOfPosition(26, [ExactPosition(25),AfterPosition(26)])))
         self.record = SeqRecord(Seq("ABCDEFGHIJKLMNOPQRSTUVWZYX", generic_protein),
                                 id="TestID", name="TestName", description="TestDescr",
                                 dbxrefs=["TestXRef"], annotations={"k":"v"},

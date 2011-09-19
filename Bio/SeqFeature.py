@@ -1091,9 +1091,9 @@ class OneOfPosition(int, AbstractPosition):
     to make this fit within the Biopython Position models. If this was
     a start position it should act like 1888, but as an end position 1901.
 
-    >>> p = OneOfPosition([ExactPosition(1888), ExactPosition(1901)], 1888)
+    >>> p = OneOfPosition(1888, [ExactPosition(1888), ExactPosition(1901)])
     >>> p
-    OneOfPosition([ExactPosition(1888), ExactPosition(1901)], 1888)
+    OneOfPosition(1888, choices=[ExactPosition(1888), ExactPosition(1901)])
     >>> int(p)
     1888
 
@@ -1121,7 +1121,7 @@ class OneOfPosition(int, AbstractPosition):
     Note that the position object will act like one of the list of
     possible locations depending on how it was created:
 
-    >>> p2 = OneOfPosition([ExactPosition(1888), ExactPosition(1901)], 1901)
+    >>> p2 = OneOfPosition(1901, [ExactPosition(1888), ExactPosition(1901)])
     >>> p.position == p2.position == 1888
     True
     >>> p.extension == p2.extension == 13
@@ -1134,7 +1134,7 @@ class OneOfPosition(int, AbstractPosition):
     True
 
     """
-    def __new__(cls, position_list, position):
+    def __new__(cls, position, choices):
         """Initialize with a set of posssible positions.
 
         position_list is a list of AbstractPosition derived objects,
@@ -1143,7 +1143,7 @@ class OneOfPosition(int, AbstractPosition):
         position is an integer specifying the default behaviour.
         """
         obj = int.__new__(cls, position)
-        obj.position_choices = position_list
+        obj.position_choices = choices
         return obj
 
     @property
@@ -1159,8 +1159,8 @@ class OneOfPosition(int, AbstractPosition):
 
     def __repr__(self):
         """String representation of the OneOfPosition location for debugging."""
-        return "%s(%r, %i)" % (self.__class__.__name__, \
-                               self.position_choices, int(self))
+        return "%s(%i, choices=%r)" % (self.__class__.__name__, \
+                                       self, self.position_choices)
 
     def __str__(self):
         out = "one-of("
@@ -1171,13 +1171,12 @@ class OneOfPosition(int, AbstractPosition):
         return out
 
     def _shift(self, offset):
-        return self.__class__([position_choice._shift(offset) \
-                               for position_choice in self.position_choices],
-                               int(self) + offset)
+        return self.__class__(int(self) + offset,
+                              [p._shift(offset) for p in self.position_choices])
 
     def _flip(self, length):
-        return self.__class__([p._flip(length) for p in self.position_choices[::-1]],
-                             length - int(self))
+        return self.__class__(length - int(self),
+                              [p._flip(length) for p in self.position_choices[::-1]])
 
 
 class PositionGap(object):

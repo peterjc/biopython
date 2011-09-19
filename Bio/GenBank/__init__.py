@@ -165,7 +165,7 @@ def _pos(pos_str, offset=0):
 
     >>> p = _pos("one-of(5,8,11)")
     >>> p
-    OneOfPosition([ExactPosition(5), ExactPosition(8), ExactPosition(11)], 11)
+    OneOfPosition(11, choices=[ExactPosition(5), ExactPosition(8), ExactPosition(11)])
     >>> print p
     one-of(5,8,11)
     >>> int(p)
@@ -188,7 +188,7 @@ def _pos(pos_str, offset=0):
 
     >>> p = _pos("one-of(5,8,11)", -1)
     >>> p
-    OneOfPosition([ExactPosition(4), ExactPosition(7), ExactPosition(10)], 4)
+    OneOfPosition(4, choices=[ExactPosition(4), ExactPosition(7), ExactPosition(10)])
     >>> print(p)
     one-of(4,7,10)
     >>> int(p)
@@ -217,7 +217,7 @@ def _pos(pos_str, offset=0):
             default = min(int(pos) for pos in parts)
         else:
             default = max(int(pos) for pos in parts)
-        return SeqFeature.OneOfPosition(parts, default)
+        return SeqFeature.OneOfPosition(default, choices=parts)
     else:
         return SeqFeature.ExactPosition(int(pos_str)+offset)
 
