@@ -704,6 +704,8 @@ class AbstractPosition(object):
         of the features; extensions are not considered at all. This could
         potentially be expanded to try to take advantage of extensions.
         """
+        if isinstance(other, int):
+            return self.position == other
         assert isinstance(other, AbstractPosition), \
           "We can only do comparisons between Biopython Position objects."
         return self.position == other.position
@@ -715,6 +717,8 @@ class AbstractPosition(object):
         of the features; extensions are not considered at all. This could
         potentially be expanded to try to take advantage of extensions.
         """
+        if isinstance(other, int):
+            return self.position != other
         assert isinstance(other, AbstractPosition), \
           "We can only do comparisons between Biopython Position objects."
         return self.position != other.position
@@ -726,6 +730,8 @@ class AbstractPosition(object):
         of the features; extensions are not considered at all. This could
         potentially be expanded to try to take advantage of extensions.
         """
+        if isinstance(other, int):
+            return self.position <= other
         assert isinstance(other, AbstractPosition), \
           "We can only do comparisons between Biopython Position objects."
         return self.position <= other.position
@@ -737,6 +743,8 @@ class AbstractPosition(object):
         of the features; extensions are not considered at all. This could
         potentially be expanded to try to take advantage of extensions.
         """
+        if isinstance(other, int):
+            return self.position < other
         assert isinstance(other, AbstractPosition), \
           "We can only do comparisons between Biopython Position objects."
         return self.position < other.position
@@ -748,6 +756,8 @@ class AbstractPosition(object):
         of the features; extensions are not considered at all. This could
         potentially be expanded to try to take advantage of extensions.
         """
+        if isinstance(other, int):
+            return self.position >= other
         assert isinstance(other, AbstractPosition), \
           "We can only do comparisons between Biopython Position objects."
         return self.position >= other.position
@@ -759,6 +769,8 @@ class AbstractPosition(object):
         of the features; extensions are not considered at all. This could
         potentially be expanded to try to take advantage of extensions.
         """
+        if isinstance(other, int):
+            return self.position > other
         assert isinstance(other, AbstractPosition), \
           "We can only do comparisons between Biopython Position objects."
         return self.position > other.position
@@ -773,7 +785,7 @@ class AbstractPosition(object):
                               self.extension)
 
 
-class ExactPosition(AbstractPosition, int):
+class ExactPosition(int, AbstractPosition):
     """Specify the specific position of a boundary.
 
     o position - The position of the boundary.
@@ -788,6 +800,20 @@ class ExactPosition(AbstractPosition, int):
     ExactPosition(5)
     >>> print p
     5
+
+    >>> isinstance(p, AbstractPosition)
+    True
+    >>> isinstance(p, int)
+    True
+
+    Integer comparisons and operations should work as expected:
+
+    >>> p == 5
+    True
+    >>> p < 6
+    True
+    >>> p <= 5
+    True
     >>> p + 10
     15
 
@@ -832,7 +858,7 @@ class UnknownPosition(AbstractPosition):
         """String representation of the UnknownPosition location for debugging."""
         return "%s()" % self.__class__.__name__
         
-class WithinPosition(AbstractPosition, int):
+class WithinPosition(int, AbstractPosition):
     """Specify the position of a boundary within some coordinates.
 
     Arguments:
@@ -852,6 +878,16 @@ class WithinPosition(AbstractPosition, int):
     (0.3)
     >>> int(p)
     0
+
+    Basic integer comparisons and operations should work as though
+    this were a plain integer:
+
+    >>> p == 0
+    True
+    >>> p in [0,1,2]
+    True
+    >>> p < 1
+    True
     >>> p + 10
     10
 
@@ -926,7 +962,7 @@ class BetweenPosition(AbstractPosition):
     def __str__(self):
         return "(%s^%s)" % (self.position, self.position + self.extension)
 
-class BeforePosition(AbstractPosition, int):
+class BeforePosition(int, AbstractPosition):
     """Specify a position where the actual location occurs before it.
 
     Arguments:
@@ -976,7 +1012,7 @@ class BeforePosition(AbstractPosition, int):
     def _flip(self, length):
         return AfterPosition(length - int(self))
 
-class AfterPosition(AbstractPosition, int):
+class AfterPosition(int, AbstractPosition):
     """Specify a position where the actual location is found after it.
 
     Arguments:
@@ -1034,7 +1070,7 @@ class AfterPosition(AbstractPosition, int):
         return BeforePosition(length - int(self))
 
 
-class OneOfPosition(AbstractPosition, int):
+class OneOfPosition(int, AbstractPosition):
     """Specify a position where the location can be multiple positions.
 
     This models the GenBank 'one-of(1888,1901)' function, and tries
@@ -1046,6 +1082,17 @@ class OneOfPosition(AbstractPosition, int):
     OneOfPosition([ExactPosition(1888), ExactPosition(1901)], 1888)
     >>> int(p)
     1888
+
+    Interget comparisons and operators act like using int(p),
+
+    >>> p == 1888
+    True
+    >>> p <= 1888
+    True
+    >>> p > 1888
+    False
+    >>> p + 100
+    1988
 
     >>> isinstance(p, OneOfPosition)
     True
