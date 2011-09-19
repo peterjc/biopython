@@ -1142,6 +1142,7 @@ class OneOfPosition(int, AbstractPosition):
 
         position is an integer specifying the default behaviour.
         """
+        assert position in choices
         obj = int.__new__(cls, position)
         obj.position_choices = choices
         return obj
