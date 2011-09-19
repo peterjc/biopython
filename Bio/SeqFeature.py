@@ -680,110 +680,10 @@ class FeatureLocation(object):
 class AbstractPosition(object):
     """Abstract base class representing a position.
     """
-    def __new__(cls, position, extension):
-        assert extension >= 0, extension
-        obj = super(AbstractPosition, cls).__new__(cls)
-        obj.position = position
-        obj.extension = extension
-        return obj
 
     def __repr__(self):
         """String representation of the location for debugging."""
-        return "%s(%s,%s)" % (self.__class__.__name__, \
-                              repr(self.position), repr(self.extension))
-
-    def __hash__(self):
-        """Simple position based hash."""
-        #Note __hash__ must be implemented on Python 3.x if overriding __eq__
-        return hash(self.position)
-
-    def __eq__(self, other):
-        """A simple equality for positions.
-
-        This is very simple-minded and just compares the position attribute
-        of the features; extensions are not considered at all. This could
-        potentially be expanded to try to take advantage of extensions.
-        """
-        if isinstance(other, int):
-            return self.position == other
-        assert isinstance(other, AbstractPosition), \
-          "We can only do comparisons between Biopython Position objects."
-        return self.position == other.position
-
-    def __ne__(self, other):
-        """A simple non-equality for positions.
-
-        This is very simple-minded and just compares the position attribute
-        of the features; extensions are not considered at all. This could
-        potentially be expanded to try to take advantage of extensions.
-        """
-        if isinstance(other, int):
-            return self.position != other
-        assert isinstance(other, AbstractPosition), \
-          "We can only do comparisons between Biopython Position objects."
-        return self.position != other.position
-
-    def __le__(self, other):
-        """A simple less than or equal for positions.
-
-        This is very simple-minded and just compares the position attribute
-        of the features; extensions are not considered at all. This could
-        potentially be expanded to try to take advantage of extensions.
-        """
-        if isinstance(other, int):
-            return self.position <= other
-        assert isinstance(other, AbstractPosition), \
-          "We can only do comparisons between Biopython Position objects."
-        return self.position <= other.position
-
-    def __lt__(self, other):
-        """A simple less than or equal for positions.
-
-        This is very simple-minded and just compares the position attribute
-        of the features; extensions are not considered at all. This could
-        potentially be expanded to try to take advantage of extensions.
-        """
-        if isinstance(other, int):
-            return self.position < other
-        assert isinstance(other, AbstractPosition), \
-          "We can only do comparisons between Biopython Position objects."
-        return self.position < other.position
-
-    def __ge__(self, other):
-        """A simple less than or equal for positions.
-
-        This is very simple-minded and just compares the position attribute
-        of the features; extensions are not considered at all. This could
-        potentially be expanded to try to take advantage of extensions.
-        """
-        if isinstance(other, int):
-            return self.position >= other
-        assert isinstance(other, AbstractPosition), \
-          "We can only do comparisons between Biopython Position objects."
-        return self.position >= other.position
-
-    def __gt__(self, other):
-        """A simple less than or equal for positions.
-
-        This is very simple-minded and just compares the position attribute
-        of the features; extensions are not considered at all. This could
-        potentially be expanded to try to take advantage of extensions.
-        """
-        if isinstance(other, int):
-            return self.position > other
-        assert isinstance(other, AbstractPosition), \
-          "We can only do comparisons between Biopython Position objects."
-        return self.position > other.position
-
-    def _shift(self, offset):
-        #We want this to maintain the subclass when called from a subclass
-        return self.__class__(self.position + offset, self.extension)
-
-    def _flip(self, length):
-        #We want this to maintain the subclass when called from a subclass
-        return self.__class__(length - self.position - self.extension,
-                              self.extension)
-
+        return "%s(...)" % (self.__class__.__name__)
 
 class ExactPosition(int, AbstractPosition):
     """Specify the specific position of a boundary.
@@ -838,6 +738,14 @@ class ExactPosition(int, AbstractPosition):
         """Legacy attribute to get extension (zero) as integer (OBSOLETE)."""
         return 0
 
+    def _shift(self, offset):
+        #By default preserve any subclass
+        return self.__class__(int(self) + offset)
+
+    def _flip(self, length):
+        #By default perserve any subclass
+        return self.__class__(length - int(self))
+
 class UncertainPosition(ExactPosition):
     """Specify a specific position which is uncertain.
     
@@ -851,12 +759,29 @@ class UnknownPosition(AbstractPosition):
 
     This is used in UniProt, e.g. ? or in the XML as unknown.
     """
-    def __new__(cls):
-        return AbstractPosition.__new__(cls, None, 0)
 
     def __repr__(self):
         """String representation of the UnknownPosition location for debugging."""
         return "%s()" % self.__class__.__name__
+
+    def __hash__(self):
+        return hash(None)
+
+    @property
+    def position(self):
+        """Legacy attribute to get position (None) (OBSOLETE)."""
+        return None
+
+    @property
+    def extension(self):
+        """Legacy attribute to get extension (zero) as integer (OBSOLETE)."""
+        return 0
+
+    def _shift(self, offset):
+        return self
+
+    def _flip(self, length):
+        return self
         
 class WithinPosition(int, AbstractPosition):
     """Specify the position of a boundary within some coordinates.
@@ -871,25 +796,29 @@ class WithinPosition(int, AbstractPosition):
     and 4. Since this is a start coordindate, it acts like it is at
     position 1 (or in Python counting, 0).
 
-    >>> p = WithinPosition(0,0,3)
+    >>> p = WithinPosition(10,10,13)
     >>> p
-    WithinPosition(0, left=0, right=3)
+    WithinPosition(10, left=10, right=13)
     >>> print p
-    (0.3)
+    (10.13)
+    >>> p.position
+    10
+    >>> p.extension
+    3
     >>> int(p)
-    0
+    10
 
     Basic integer comparisons and operations should work as though
     this were a plain integer:
 
-    >>> p == 0
+    >>> p == 10
     True
-    >>> p in [0,1,2]
+    >>> p in [9,10,11]
     True
-    >>> p < 1
+    >>> p < 11
     True
     >>> p + 10
-    10
+    20
 
     >>> isinstance(p, WithinPosition)
     True
@@ -898,6 +827,21 @@ class WithinPosition(int, AbstractPosition):
     >>> isinstance(p, int)
     True
 
+    If this were an end point, you would want the position to be 13:
+
+    >>> p2 = WithinPosition(13,10,13)
+    >>> p2
+    WithinPosition(13, left=10, right=13)
+    >>> print p2
+    (10.13)
+    >>> p2.position
+    10
+    >>> p2.extension
+    3
+    >>> int(p2)
+    13
+    >>> p2 == 13
+    True
     """
     def __new__(cls, position, left, right):
         assert position==left or position==right
@@ -926,41 +870,86 @@ class WithinPosition(int, AbstractPosition):
         return self._right - self._left
 
     def _shift(self, offset):
-        return WithinPosition(int(self) + offset,
+        return self.__class__(int(self) + offset,
                               self._left + offset,
                               self._right + offset)
 
     def _flip(self, length):
-        return WithinPosition(length - int(self),
+        return self.__class__(length - int(self),
                               length - self._right,
                               length - self._left)
 
-class BetweenPosition(AbstractPosition):
+class BetweenPosition(int, AbstractPosition):
     """Specify the position of a boundary between two coordinates (OBSOLETE?).
 
     Arguments:
-    o position - The start position of the boundary.
-    o extension - The range to the other position of a boundary.
+    o position - The default integer position
+    o left - The start (left) position of the boundary
+    o right - The end (right) position of the boundary
 
-    This specifies a coordinate which is found between the two positions.
-    So this allows us to deal with a position like ((1^2)..100). To
-    represent that with this class we set position as 1 (or rather 0
-    for Python counting) and the extension as 1.
+    This allows dealing with a position like 123^456. This                                                  
+    indicates that the start of the sequence is somewhere between
+    123 and 456. It is up to the parser to set the position argument
+    to either boundary point (depending on if this is being used as
+    a start or end of the feature). For example as a feature end:
 
-    >>> p = BetweenPosition(0, 1)
+    >>> p = BetweenPosition(456, 123, 456)
+    >>> p
+    BetweenPosition(456, left=123, right=456)
     >>> print p
-    (0^1)
+    (123^456)
     >>> p.position
-    0
+    123
     >>> p.extension
-    1
+    333
+    >>> int(p)
+    456
+
+    Integer equality and comparison use the given position,
+
+    >>> p == 456
+    True
+    >>> p in [455, 456, 457]
+    True
+    >>> p > 300
+    True
 
     """
-    def __new__(cls, position, extension = 0):
-        return AbstractPosition.__new__(cls, position, extension)
+    def __new__(cls, position, left, right):
+        assert position==left or position==right
+        obj = int.__new__(cls, position)
+        obj._left = left
+        obj._right = right
+        return obj
+
+    def __repr__(self):
+        """String representation of the WithinPosition location for debugging."""
+        return "%s(%i, left=%i, right=%i)" \
+               % (self.__class__.__name__, self,
+                  self._left, self._right)
 
     def __str__(self):
-        return "(%s^%s)" % (self.position, self.position + self.extension)
+        return "(%s^%s)" % (self._left, self._right)
+
+    @property
+    def position(self):
+        """Legacy attribute to get (left) position as integer (OBSOLETE)."""
+        return self._left
+
+    @property
+    def extension(self):
+        """Legacy attribute to get extension (from left to right) as an integer (OBSOLETE)."""
+        return self._right - self._left
+
+    def _shift(self, offset):
+        return self.__class__(int(self) + offset,
+                              self._left + offset,
+                              self._right + offset)
+
+    def _flip(self, length):
+        return self.__class__(length - int(self),
+                              length - self._right,
+                              length - self._left)
 
 class BeforePosition(int, AbstractPosition):
     """Specify a position where the actual location occurs before it.
@@ -1008,6 +997,9 @@ class BeforePosition(int, AbstractPosition):
 
     def __str__(self):
         return "<%s" % self.position
+
+    def _shift(self, offset):
+        return self.__class__(int(self) + offset)
 
     def _flip(self, length):
         return AfterPosition(length - int(self))
@@ -1065,6 +1057,9 @@ class AfterPosition(int, AbstractPosition):
 
     def __str__(self):
         return ">%s" % self.position
+
+    def _shift(self, offset):
+        return self.__class__(int(self) + offset)
 
     def _flip(self, length):
         return BeforePosition(length - int(self))
