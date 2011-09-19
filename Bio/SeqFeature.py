@@ -641,33 +641,31 @@ class FeatureLocation(object):
 
     @property
     def start(self):
-        """Start location (possibly a fuzzy position, read only)."""
+        """Start location (integer like, possibly a fuzzy position, read only)."""
         return self._start
 
     @property
     def end(self):
-        """End location (possibly a fuzzy position, read only)."""
+        """End location (integer like, possibly a fuzzy position, read only)."""
         return self._end
 
     @property
     def nofuzzy_start(self):
-        """Start position (integer, approximated if fuzzy, read only).
+        """Start position (integer, approximated if fuzzy, read only) (OBSOLETE).
 
-        To get non-fuzzy attributes (ie. the position only) ask for
-        'location.nofuzzy_start', 'location.nofuzzy_end'. These should return
-        the largest range of the fuzzy position. So something like:
-        (10.20)..(30.40) should return 10 for start, and 40 for end.
+        This is now a alias for int(feature.start), which should be
+        used in preference -- unless you are trying to support old
+        versions of Biopython.
         """
         return int(self._start)
 
     @property
     def nofuzzy_end(self):
-        """End position (integer, approximated if fuzzy, read only).
+        """End position (integer, approximated if fuzzy, read only) (OBSOLETE).
 
-        To get non-fuzzy attributes (ie. the position only) ask for
-        'location.nofuzzy_start', 'location.nofuzzy_end'. These should return
-        the largest range of the fuzzy position. So something like:
-        (10.20)..(30.40) should return 10 for start, and 40 for end.
+        This is now a alias for int(feature.end), which should be
+        used in preference -- unless you are trying to support old
+        versions of Biopython.  
         """
         return int(self._end)
 
@@ -788,18 +786,14 @@ class WithinPosition(int, AbstractPosition):
 
     This allows dealing with a position like ((1.4)..100). This
     indicates that the start of the sequence is somewhere between 1
-    and 4. Since this is a start coordindate, it acts like it is at
-    position 1 (or in Python counting, 0).
+    and 4. Since this is a start coordindate, it should acts like
+    it is at position 1 (or in Python counting, 0).
 
     >>> p = WithinPosition(10,10,13)
     >>> p
     WithinPosition(10, left=10, right=13)
     >>> print p
     (10.13)
-    >>> p.position
-    10
-    >>> p.extension
-    3
     >>> int(p)
     10
 
@@ -829,14 +823,26 @@ class WithinPosition(int, AbstractPosition):
     WithinPosition(13, left=10, right=13)
     >>> print p2
     (10.13)
-    >>> p2.position
-    10
-    >>> p2.extension
-    3
     >>> int(p2)
     13
+
+    The old legacy properties of position and extension give the
+    starting/lower/left position as an integer, and the distance
+    to the ending/higher/right position as an integer. Note that
+    the position object will act like either the left or the right
+    end-point depending on how it was created:
+
+    >>> p.position == p2.position == 10
+    True
+    >>> p.extension == p2.extension == 3
+    True
+    >>> int(p) == int(p2)
+    False
+    >>> p == 10
+    True
     >>> p2 == 13
     True
+    
     """
     def __new__(cls, position, left, right):
         assert position==left or position==right
@@ -893,10 +899,6 @@ class BetweenPosition(int, AbstractPosition):
     BetweenPosition(456, left=123, right=456)
     >>> print p
     (123^456)
-    >>> p.position
-    123
-    >>> p.extension
-    333
     >>> int(p)
     456
 
@@ -907,6 +909,28 @@ class BetweenPosition(int, AbstractPosition):
     >>> p in [455, 456, 457]
     True
     >>> p > 300
+    True
+
+    The old legacy properties of position and extension give the
+    starting/lower/left position as an integer, and the distance
+    to the ending/higher/right position as an integer. Note that
+    the position object will act like either the left or the right
+    end-point depending on how it was created:
+
+    >>> p2 = BetweenPosition(123, left=123, right=456)
+    >>> p.position == p2.position == 123
+    True
+    >>> p.extension
+    333
+    >>> p2.extension
+    333
+    >>> p.extension == p2.extension == 333
+    True
+    >>> int(p) == int(p2)
+    False
+    >>> p == 456
+    True
+    >>> p2 == 123
     True
 
     """
@@ -1065,7 +1089,7 @@ class OneOfPosition(int, AbstractPosition):
 
     This models the GenBank 'one-of(1888,1901)' function, and tries
     to make this fit within the Biopython Position models. If this was
-    a start position it will act like 1888, but as an end position 1901.
+    a start position it should act like 1888, but as an end position 1901.
 
     >>> p = OneOfPosition([ExactPosition(1888), ExactPosition(1901)], 1888)
     >>> p
@@ -1090,6 +1114,25 @@ class OneOfPosition(int, AbstractPosition):
     True
     >>> isinstance(p, int)
     True
+
+    The old legacy properties of position and extension give the
+    starting/lowest/left-most position as an integer, and the
+    distance to the ending/highest/right-most position as an integer.
+    Note that the position object will act like one of the list of
+    possible locations depending on how it was created:
+
+    >>> p2 = OneOfPosition([ExactPosition(1888), ExactPosition(1901)], 1901)
+    >>> p.position == p2.position == 1888
+    True
+    >>> p.extension == p2.extension == 13
+    True
+    >>> int(p) == int(p2)
+    False
+    >>> p == 1888
+    True
+    >>> p2 == 1901
+    True
+
     """
     def __new__(cls, position_list, position):
         """Initialize with a set of posssible positions.
