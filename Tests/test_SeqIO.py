@@ -43,7 +43,7 @@ possible_unknown_seq_formats = ["qual", "genbank", "gb", "embl", "imgt"]
 #test output, with any new formats added since appended to the end.
 test_write_read_alignment_formats = ["fasta","clustal","phylip","stockholm",
                                      "phylip-relaxed"]
-for format in sorted(SeqIO._FormatToWriter):
+for format in sorted(set(SeqIO._FormatToWriter).union(SeqIO._FormatToWriterB)):
     if format not in test_write_read_alignment_formats:
         test_write_read_alignment_formats.append(format)
 for format in sorted(AlignIO._FormatToWriter):
@@ -232,6 +232,10 @@ class ForwardOnlyHandle(object):
 
     def close(self):
         return self._handle.close()
+
+    @property
+    def mode(self):
+        return self._handle.mode
 
 def compare_record(record_one, record_two):
     """This is meant to be a strict comparison for exact agreement..."""

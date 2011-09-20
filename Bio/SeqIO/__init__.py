@@ -299,11 +299,18 @@ dis-ambiguate them - return them as is.
 When adding a new file format, please use the same lower case format name
 as BioPerl, or if they have not defined one, try the names used by EMBOSS.
 
+Note we now have two dictionaries depending on if a plain text or binary
+handle is expected. This is particulary important under Python 3, where
+one gives unicode strings (which is slow) and the other bytes (which is
+faster). We therefore may actually implement both a text and binary
+parser for some key text formats (e.g. FASTA and FASTQ).
+
 See also http://biopython.org/wiki/SeqIO_dev
 
 --Peter
 """
 
+from Bio._py3k import _is_binary_handle
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
@@ -352,11 +359,14 @@ _FormatToIterator = {"fasta" : FastaIO.FastaIterator,
                      "fastq-solexa" : QualityIO.FastqSolexaIterator,
                      "fastq-illumina" : QualityIO.FastqIlluminaIterator,
                      "qual" : QualityIO.QualPhredIterator,
-                     "sff": SffIO.SffIterator,
-                     #Not sure about this in the long run:
-                     "sff-trim": SffIO._SffTrimIterator,
                      "uniprot-xml": UniprotIO.UniprotIterator,
                      "seqxml" : SeqXmlIO.SeqXmlIterator,
+                     }
+
+#Binary formats/parsers
+_FormatToIteratorB = {
+                     "sff": SffIO.SffIterator,
+                     "sff-trim": SffIO._SffTrimIterator,
                      "abi": AbiIO.AbiIterator,
                      "abi-trim": AbiIO._AbiTrimIterator,
                      }
@@ -373,11 +383,20 @@ _FormatToWriter = {"fasta" : FastaIO.FastaWriter,
                    "fastq-illumina" : QualityIO.FastqIlluminaWriter,
                    "phd" : PhdIO.PhdWriter,
                    "qual" : QualityIO.QualPhredWriter,
-                   "sff" : SffIO.SffWriter,
                    "seqxml" : SeqXmlIO.SeqXmlWriter,
                    }
 
-_BinaryFormats = ["sff", "sff-trim", "abi", "abi-trim"]
+#Binary formats/writers
+_FormatToWriterB = {
+                   "sff" : SffIO.SffWriter,
+                   }
+
+#Do we need this except for the unit tests?
+_BinaryFormats = set()
+_BinaryFormats.update(_FormatToIteratorB)
+_BinaryFormats.update(_FormatToWriterB)
+_BinaryFormats.difference_update(_FormatToIterator)
+_BinaryFormats.difference_update(_FormatToWriter)
 
 def write(sequences, handle, format):
     """Write complete set of sequences to a file.
@@ -407,7 +426,7 @@ def write(sequences, handle, format):
         sequences = [sequences]
 
     if isinstance(handle, basestring):
-        if format in _BinaryFormats :
+        if format in _FormatToWriterB :
             handle = open(handle, "wb")
         else :
             handle = open(handle, "w")
@@ -416,8 +435,19 @@ def write(sequences, handle, format):
         handle_close = False
 
     #Map the file format to a writer class
-    if format in _FormatToWriter:
-        writer_class = _FormatToWriter[format]
+    if format in _FormatToWriter or format in _FormatToWriterB:
+        if _is_binary_handle(handle):
+            #Binary mode
+            try:
+                writer_class = _FormatToWriterB[format]
+            except KeyError:
+                raise ValueError("Use text mode for %s format" % format)
+        else:
+            #Text mode
+            try:
+                writer_class = _FormatToWriter[format]
+            except KeyError:
+                raise ValueError("Use binary mode for %s format" % format)
         count = writer_class(handle).write_file(sequences)
     elif format in AlignIO._FormatToWriter:
         #Try and turn all the records into a single alignment,
@@ -501,8 +531,7 @@ def parse(handle, format, alphabet=None):
     handle_close = False
     
     if isinstance(handle, basestring):
-        #Hack for SFF, will need to make this more general in future
-        if format in _BinaryFormats :
+        if format in _FormatToIteratorB :
             handle = open(handle, "rb")
         else :
             handle = open(handle, "rU")
@@ -521,8 +550,19 @@ def parse(handle, format, alphabet=None):
         raise ValueError("Invalid alphabet, %s" % repr(alphabet))
 
     #Map the file format to a sequence iterator:    
-    if format in _FormatToIterator:
-        iterator_generator = _FormatToIterator[format]
+    if format in _FormatToIterator or format in _FormatToIteratorB:
+        if _is_binary_handle(handle):
+            #Binary handle
+            try:
+                iterator_generator = _FormatToIteratorB[format]
+            except KeyError:
+                raise ValueError("Use text mode for %s format" % format)
+        else:
+            #Text handle
+            try:
+                iterator_generator = _FormatToIterator[format]
+            except KeyError:
+                raise ValueError("Use binary mode for %s format" % format)
         if alphabet is None:
             i = iterator_generator(handle)
         else:

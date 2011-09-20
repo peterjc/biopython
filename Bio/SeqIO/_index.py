@@ -489,7 +489,11 @@ class SeqFileRandomAccess(object):
         self._format = format
         #Load the parser class/function once an avoid the dict lookup in each
         #__getitem__ call:
-        i = SeqIO._FormatToIterator[format]
+        try:
+            #Prefer the binary parsers, should be faster on Python 3
+            i = SeqIO._FormatToIteratorB[format]
+        except KeyError:
+            i = SeqIO._FormatToIterator[format]
         #The following alphabet code is a bit nasty... duplicates logic in
         #Bio.SeqIO.parse()
         if alphabet is None:

@@ -39,6 +39,14 @@ if sys.version_info[0] >= 3:
         """
         return isinstance(i, int)
 
+    def _is_binary_handle(handle, default=False):
+        #Optional argument default is for Python 2.5 case
+        try:
+            return "b" in handle.mode
+        except AttributeError:
+            from io import BytesIO
+            return isinstance(handle, BytesIO)
+
 else:
     #Python 2 code
 
@@ -64,3 +72,15 @@ else:
         #will be changed to "isinstance(i, int) or isinstance(i, int)"
         #but that doesn't matter.
         return isinstance(i, int) or isinstance(i, long)
+
+    def _is_binary_handle(handle, default=False):
+        try:
+            return "b" in handle.mode
+        except AttributeError:
+            try:
+                #Python 2.6+
+                from io import BytesIO
+                return isinstance(handle, BytesIO)
+            except ImportError:
+                #Python 2.5
+                return default
