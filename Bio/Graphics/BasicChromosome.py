@@ -605,7 +605,8 @@ class AnnotatedChromosomeSegment(ChromosomeSegment):
         self.features = features
         self.default_feature_color = default_feature_color
         self.name_qualifiers = name_qualifiers
-        self.label_sep_percent = self.chr_percent * 0.5
+        self.label_sep_percent = self.chr_percent * 0.5 #Half the chr width
+        self._stranded_feature_percentage = 0.4 #Of the chr width
 
     def _overdraw_subcomponents(self, cur_drawing):
         """Draw any annotated features on the chromosome segment.
@@ -626,6 +627,7 @@ class AnnotatedChromosomeSegment(ChromosomeSegment):
         
         left_labels = []
         right_labels = []
+        fw = segment_width * self._stranded_feature_percentage
         for f in self.features:
             try:
                 #Assume SeqFeature objects
@@ -649,12 +651,12 @@ class AnnotatedChromosomeSegment(ChromosomeSegment):
             assert 0 <= start <= end <= self.bp_length
             if strand == +1 :
                 #Right side only
-                x = segment_x + segment_width * 0.6
-                w = segment_width * 0.4
+                x = segment_x + segment_width - fw
+                w = fw
             elif strand == -1:
                 #Left side only
                 x = segment_x
-                w = segment_width * 0.4
+                w = fw
             else:
                 #Both or neighther - full width
                 x = segment_x
