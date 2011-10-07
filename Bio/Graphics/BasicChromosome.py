@@ -640,6 +640,7 @@ class AnnotatedChromosomeSegment(ChromosomeSegment):
                                              f.qualifiers['color'][0])
                 except:
                     color = self.default_feature_color
+                fill_color = color
                 name = ""
                 for qualifier in self.name_qualifiers:            
                     if qualifier in f.qualifiers:
@@ -648,8 +649,12 @@ class AnnotatedChromosomeSegment(ChromosomeSegment):
             except AttributeError:
                 #Assume tuple of ints, string, and color [, %width]
                 start, end, strand, name, color = f[:5]
-                if len(f) >= 6:
-                    fw = segment_width * f[5]
+                if len(f) > 5:
+                    fill_color = f[5]
+                else:
+                    fill_color = color
+                if len(f) > 6:
+                    fw = segment_width * f[6]
                 else:
                     fw = segment_width * self._stranded_feature_percentage
             assert 0 <= start <= end <= self.bp_length
@@ -668,7 +673,7 @@ class AnnotatedChromosomeSegment(ChromosomeSegment):
             local_scale = segment_height / self.bp_length
             fill_rectangle = Rect(x, segment_y + segment_height - local_scale*start,
                                   w, local_scale*(start-end))
-            fill_rectangle.fillColor = color
+            fill_rectangle.fillColor = fill_color
             fill_rectangle.strokeColor = color
             cur_drawing.add(fill_rectangle)
             if name:
