@@ -646,8 +646,12 @@ class AnnotatedChromosomeSegment(ChromosomeSegment):
                         name = f.qualifiers[qualifier][0]
                         break
             except AttributeError:
-                #Assume tuple of ints, string, and color
-                start, end, strand, name, color = f
+                #Assume tuple of ints, string, and color [, %width]
+                start, end, strand, name, color = f[:5]
+                if len(f) >= 6:
+                    fw = segment_width * f[5]
+                else:
+                    fw = segment_width * self._stranded_feature_percentage
             assert 0 <= start <= end <= self.bp_length
             if strand == +1 :
                 #Right side only
