@@ -38,16 +38,28 @@ class SamRead(object):
         a malformed entry (e.g. a non-numeric mapping position) may
         not be detected unless accessed.
 
-        Initially this will all be read only, but the plan is you will
-        be able to set properties, and they will be held in memory and
-        used in place of any prior value when writing the record back
-        to disk. This will work by replacing the cached parsed value.
+        You can modify values too, this overrides any values parsed
+        from the raw data and will be used if saving the record back
+        to disk later on:
+
+        >>> read.tid = "Fred"
+        >>> print read.tid
+        Fred
+
         """
         self._data = data.rstrip("\n").split("\t")
 
-    @property
-    def tid(self):
-        return self._data[0]
+    def _get_tid(self):
+        try:
+            return self._tid
+        except AttributeError:
+            tid = self._data[0]
+            self._tid = tid
+            return tid
+    def _set_tid(self, value):
+        self._tid = value
+    tid = property(fget = _get_tid, fset = _set_tid,
+                   doc = "Template ID (read ID aka QNAME)")
 
 #TODO - BamRead class, a subclass where the data is decoded using struct
 
