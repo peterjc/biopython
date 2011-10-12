@@ -20,6 +20,27 @@ The low level objects can be used as follows:
 
 """
 
+def SamIterator(handle):
+    """Loop over a SAM file returning SamRead objects.
+
+    >>> with open("SamBam/ex1.sam") as handle:
+    ...     for read in SamIterator(handle):
+    ...         print read.tid, read.flag
+    ...         if read.tid == "EAS219_FC30151:3:40:1128:1940": break
+    EAS56_57:6:190:289:82 69
+    EAS56_57:6:190:289:82 137
+    EAS51_64:3:190:727:308 99
+    EAS112_34:7:141:80:875 99
+    EAS219_FC30151:3:40:1128:1940 163
+
+    """
+    for line in handle:
+        if line[0] == "@":
+            #Ignore any optional header
+            continue
+        else:
+            yield SamRead(line)
+
 #TODO - Have a Flag class?
 
 class SamRead(object):
