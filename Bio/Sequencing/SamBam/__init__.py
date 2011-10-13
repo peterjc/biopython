@@ -30,6 +30,8 @@ def SamIterator(handle):
     <<<<<<<<<<<<<<<<<<<;<<5;;<<<9;;;;7:
     >>> print read.mpos #aka PNEXT
     290
+    >>> print read.isize #aka TLEN
+    214
 
 
     >>> count = 0
@@ -67,6 +69,9 @@ def BamIterator(handle):
     <<<<<<<<<<<<<<<<<<<;<<5;;<<<9;;;;7:
     >>> print read.mpos #aka PNEXT
     290
+    >>> print read.isize #aka TLEN
+    214
+
 
     >>> count = 0
     >>> with open("SamBam/ex1.bam", "rb") as handle:
@@ -84,13 +89,14 @@ def BamIterator(handle):
     while True:
         read_name, start_offset, end_offset, ref_id, ref_pos, \
             bin, map_qual, cigar_len, flag, read_len, mate_ref_id, \
-            mate_ref_pos = _bam_file_read_header(h)
+            mate_ref_pos, inferred_insert_size = _bam_file_read_header(h)
         raw_cigar = h.read(cigar_len * 4)
         raw_seq = h.read((read_len+1)/2) # round up to make it even
         raw_qual = h.read(read_len)
         #TODO - the tags
         h.seek(end_offset)
-        yield BamRead(read_name, flag, ref_pos, mate_ref_pos, read_len, raw_seq, raw_qual)
+        yield BamRead(read_name, flag, ref_pos, mate_ref_pos,
+                      inferred_insert_size, read_len, raw_seq, raw_qual)
 
 
 def _bam_file_header(handle):
@@ -175,7 +181,7 @@ def _bam_file_read_header(handle):
     data = handle.read(36)
     if not data:
         raise StopIteration
-    if len(data) < 26:
+    if len(data) < 36:
         raise ValueError("Premature end of file")
     #raise ValueError("Data %s = %s" % (repr(data), repr(struct.unpack(fmt, data))))
 
@@ -197,7 +203,8 @@ def _bam_file_read_header(handle):
     read_name = handle.read(read_name_len).rstrip("\0")
     end_offset = start_offset + block_size + 4
     return read_name, start_offset, end_offset, ref_id, ref_pos, bin, \
-           map_qual, cigar_len, flag, read_len, mate_ref_id, mate_ref_pos
+           map_qual, cigar_len, flag, read_len, mate_ref_id, mate_ref_pos, \
+           inferred_insert_size
 
 def _build_decoder():
     answer = {}
@@ -258,6 +265,7 @@ class SamRead(object):
         self.flag = int(parts[1])
         self.pos = int(parts[3]) - 1
         self.mpos = int(parts[7]) - 1 #aka PNEXT
+        self.isize = int(parts[8]) #aka TLEN
         if parts[10] == "*":
             self.qual = None
         else:
@@ -270,14 +278,14 @@ class SamRead(object):
 
 
 class BamRead(SamRead):
-    def __init__(self, qname, flag, pos, mpos, read_len, binary_seq, binary_qual):
+    def __init__(self, qname, flag, pos, mpos, isize, read_len, binary_seq, binary_qual):
         r"""Create a BamRead object.
 
         This is a lazy-parsing approach to loading SAM/BAM files, so
         all the parser does is grab the raw data and pass it to this
         object. The bare minimum parsing is done at this point.
 
-        >>> read = BamRead(qname='rd01', flag=1, pos=None, mpos=None, read_len=0, binary_seq='', binary_qual='')
+        >>> read = BamRead(qname='rd01', flag=1, pos=None, mpos=None, isize=0, read_len=0, binary_seq='', binary_qual='')
         >>> print read.qname
         rd01
 
@@ -300,6 +308,7 @@ class BamRead(SamRead):
         self.flag = flag
         self.pos = pos
         self.mpos = mpos #aka pnext
+        self.isize = isize #aka tlen
         self._read_len = read_len
         self._binary_seq = binary_seq
         self._binary_qual = binary_qual
