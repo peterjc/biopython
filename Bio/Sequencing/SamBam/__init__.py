@@ -479,10 +479,15 @@ def _pysam():
     def compare(a_iter, b_iter):
         from itertools import izip
         for a, b in izip(a_iter, b_iter):
-             assert a.qname == b.qname
-             assert a.seq == b.seq
-             assert a.qual == b.qual, "%r vs %r" % (a.qual, b.qual)
+             assert a.qname == b.qname, "%r vs %r" % (a.qname, b.qname)
+             assert a.flag == b.flag, "%r vs %r" % (a.flag, b.flag)
+             assert a.mapq == b.mapq, "%r vs %r" % (a.mapq, b.mapq)
              assert a.cigar == b.cigar, "%r vs %r" % (a.cigar, b.cigar)
+             assert a.seq == b.seq, "%r vs %r" % (a.seq, b.seq)
+             assert a.qual == b.qual, "%r vs %r" % (a.qual, b.qual)
+             #Would compare other fields and str(a)==str(b) but pysam broken,
+             #See http://code.google.com/p/pysam/issues/detail?id=74
+             #and http://code.google.com/p/pysam/issues/detail?id=75
     
     #TODO, use pysam on the SAM file
     #http://code.google.com/p/pysam/issues/detail?id=73
