@@ -496,10 +496,22 @@ def _next_tag_raw(raw):
         if sub_code == "S":
             value = raw[7:7+length*unit]
             return tag, value, "Z", raw[7+length*unit:]
+        elif sub_code in "cCsSiIf":
+            raise NotImplementedError("TODO - BAM tag B sub-element type %r (for %r tag)" % (sub_code, tag))
         else:
             raise ValueError("Unknown BAM tag B sub-element type %r (for %r tag)" % (sub_code, tag))
     elif code == "C": #u_int8
         return tag, code, "i", ord(raw[3]), raw[4:]
+    elif code == "S": #u_int16
+        return tag, code, "i", struct.unpack("<H", rar[3:5])[0], raw[5:]
+    elif code == "I": #u_int32
+        return tag, code, "i", struct.unpack("<I", rar[3:7])[0], raw[7:]
+    elif code == "s": #int16
+        return tag, code, "i", struct.unpack("<h", rar[3:5])[0], raw[5:]
+    elif code == "i": #int32
+        return tag, code, "i", struct.unpack("<i", rar[3:7])[0], raw[7:]
+    elif code == "c": #int8
+        raise NotImplementedError("TODO - Unsigned int8 code 'c' for %r tag)" % tag)
     else:
         raise ValueError("Unknown BAM tag element type %r (for %r tag)" % (code, tag))
 
