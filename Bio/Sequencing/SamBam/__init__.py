@@ -12,48 +12,61 @@ somewhat (which is a wrapper for the samtools C API).
 The SAM and BAM parsers return SamRead and BamRead objects, but these
 should behave identically:
 
->>> from itertools import izip
->>> sam = SamIterator(open("SamBam/ex1.sam"))
->>> bam = BamIterator(open("SamBam/ex1.bam", "rb"))
->>> for s, b in izip(sam,bam):
-...     assert s.qname == b.qname
-...     assert s.seq == b.seq
-...     assert s.qual == b.qual
-...     assert s.cigar == b.cigar
-...     b.mrnm = s.mrnm #hack for testing
-...     assert str(s) == str(b), "SAM:\n%r\nBAM:\n%r\n" % (str(s), str(b))
+    >>> from itertools import izip
+    >>> sam = SamIterator(open("SamBam/ex1.sam"))
+    >>> bam = BamIterator(open("SamBam/ex1.bam", "rb"))
+    >>> for s, b in izip(sam,bam):
+    ...     assert s.qname == b.qname
+    ...     assert s.seq == b.seq
+    ...     assert s.qual == b.qual
+    ...     assert s.cigar == b.cigar
+    ...     b.mrnm = s.mrnm #hack for testing
+    ...     assert str(s) == str(b), "SAM:\n%r\nBAM:\n%r\n" % (str(s), str(b))
 
 The iterators allow you to filter by flag, much like the samtools view
 command does. For example, with no filtering we get all the records:
 
-    >>> def count_sam(filename, required_flag=0):
+    >>> def count_sam(filename, required_flag=0, excluded_flag=0):
     ...     count = 0
     ...     with open(filename) as handle:
-    ...         for read in SamIterator(handle, required_flag):
+    ...         for read in SamIterator(handle, required_flag, excluded_flag):
     ...             count += 1
     ...     return count
     >>> count_sam("SamBam/ex1.sam")
     3270
 
 The optional argument required_flag selectes only records where those FLAG
-bits are set (like "samtools view -f FLAG ..." works). For instance, an
-argument of 0x2 (hex) or 2 (decimal) requires the reads be properly mapped:
+bits are set (like how "samtools view -f FLAG ..." with a lower case -f
+works). For instance, an argument of 0x2 (hex) or 2 (decimal) requires the
+reads be properly mapped:
 
     >>> count_sam("SamBam/ex1.sam", required_flag=0x2)
     3124
 
 The same applies to the BAM parser as well,
 
-    >>> def count_bam(filename, required_flag=0):
+    >>> def count_bam(filename, required_flag=0, excluded_flag=0):
     ...     count = 0
     ...     with open(filename, "rb") as handle:
-    ...         for read in BamIterator(handle, required_flag):
+    ...         for read in BamIterator(handle, required_flag, excluded_flag):
     ...             count += 1
     ...     return count
     >>> count_bam("SamBam/ex1.bam", required_flag=0x2)
     3124
 
-The flag bit 0x40 indicates the first read of a pair:
+The excluded_flag argument allows you to specify a black list, so to exclude
+any properly paired reads (like "samtools view -F FLAG ..." with a capital
+-F switch):
+
+   >>> count_sam("SamBam/ex1.sam", excluded_flag=0x2)
+   146
+   >>> count_bam("SamBam/ex1.bam", excluded_flag=0x2)
+   146
+   >>> 3270 - 3124
+   146
+
+To demonstrate combining flags, consider that flag bit 0x40 indicates
+the first read of a pair (or set):
 
     >>> count_sam("SamBam/ex1.sam", required_flag=0x40)
     1636
@@ -77,12 +90,33 @@ read in a multi-read fragment (e.g. middle reads in a strobed read).
     >>> count_sam("SamBam/ex1.sam", required_flag=0x120)
     0
 
+You can of course combined the required and excluded flags, for instance
+0x4 indicates the read is mapped to the reverse strand, and 0x8 indicates
+the read's partner is mapped to the reverse strand. We can use these to
+count pairs mapped to the same or different strands. We add the extra
+requirement of 0x2 for properly mapped pairs, and 0x40 for first read:
+
+   >>> print "1--> 2-->", count_sam("SamBam/ex1.sam", required_flag=0x42, excluded_flag=0x4+0x8)
+   1--> 2--> 1564
+
+   >>> print "1--> <--2", count_sam("SamBam/ex1.sam", required_flag=0x42+0x8, excluded_flag=0x4)
+   1--> <--2 0
+
+   >>> print "<--1 2-->", count_sam("SamBam/ex1.sam", required_flag=0x42+0x4, excluded_flag=0x8)
+   <--1 2--> 0
+
+   >>> print "<--1 <--2", count_sam("SamBam/ex1.sam", required_flag=0x42+0x4+0x8)
+   <--1 <--2 0
+
+Can you guess what kind of paired reads there were? My guess from that
+would be 454 paired end reads, since the are on the same strand.
+
 """
 
 import gzip
 import struct
 
-def SamIterator(handle, required_flag=0):
+def SamIterator(handle, required_flag=0, excluded_flag=0):
     """Loop over a SAM file returning SamRead objects.
 
     >>> with open("SamBam/ex1.sam") as handle:
@@ -113,14 +147,17 @@ def SamIterator(handle, required_flag=0):
     to only show records where those FLAG bits are set. Thus for example,
     using an argument of 2 requires the reads be properly mapped.
     """
-    if required_flag:
+    if required_flag or excluded_flag:
         for line in handle:
             if line[0] == "@":
                 #Ignore any optional header
                 continue
             flag = int(line.split("\t",2)[1])
-            if flag & required_flag == required_flag:
-                yield SamRead(line)
+            if flag & required_flag != required_flag:
+                continue
+            if flag & excluded_flag:
+                continue
+            yield SamRead(line)
     else:
         for line in handle:
             if line[0] == "@":
@@ -130,7 +167,7 @@ def SamIterator(handle, required_flag=0):
                 yield SamRead(line)
 
 
-def BamIterator(handle, required_flag=0):
+def BamIterator(handle, required_flag=0, excluded_flag=0):
     """Loop over a BAM file returning BamRead objects.
 
     This should be functionally identical to using a SAM file
@@ -186,6 +223,8 @@ def BamIterator(handle, required_flag=0):
         assert h.tell() == end_offset, \
             "%i vs %i diff %i\n" % (h.tell(), end_offset, h.tell()-end_offset)
         if required_flag and flag & required_flag != required_flag:
+            continue
+        if flag & excluded_flag:
             continue
         ref_name = references[ref_id][0]
         mate_ref_name = references[mate_ref_id][0]
