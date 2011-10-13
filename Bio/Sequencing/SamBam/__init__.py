@@ -17,6 +17,8 @@ somewhat (which is a wrapper for the samtools C API).
 ...     assert s.seq == b.seq
 ...     assert s.qual == b.qual
 ...     assert s.cigar == b.cigar
+...     b.mrnm = s.mrnm #hack for testing
+...     assert str(s) == str(b), "SAM:\n%r\nBAM:\n%r\n" % (str(s), str(b))
 
 """
 
@@ -114,17 +116,20 @@ def BamIterator(handle):
     while True:
         read_name, start_offset, end_offset, ref_id, ref_pos, \
             bin, map_qual, cigar_len, flag, read_len, mate_ref_id, \
-            mate_ref_pos, inferred_insert_size = _bam_file_read_header(h)
+            mate_ref_pos, inferred_insert_size, tag_len \
+            = _bam_file_read_header(h)
         raw_cigar = h.read(cigar_len * 4)
         raw_seq = h.read((read_len+1)/2) # round up to make it even
         raw_qual = h.read(read_len)
-        #TODO - the tags
-        h.seek(end_offset)
+        raw_tags = h.read(tag_len)
+        assert h.tell() == end_offset, \
+            "%i vs %i diff %i\n" % (h.tell(), end_offset, h.tell()-end_offset)
         ref_name = references[ref_id][0]
         mate_ref_name = references[mate_ref_id][0]
         yield BamRead(read_name, flag, ref_name, ref_pos, map_qual,
                       raw_cigar, mate_ref_name, mate_ref_pos,
-                      inferred_insert_size, read_len, raw_seq, raw_qual)
+                      inferred_insert_size, read_len,
+                      raw_seq, raw_qual, raw_tags)
 
 
 def _bam_file_header(handle):
@@ -230,9 +235,11 @@ def _bam_file_read_header(handle):
 
     read_name = handle.read(read_name_len).rstrip("\0")
     end_offset = start_offset + block_size + 4
+    #Block size includes misc fields, read name, seq len, qual len and cigar len
+    tag_len = block_size - 32 - read_name_len - ((read_len+1)/2) - read_len - cigar_len * 4
     return read_name, start_offset, end_offset, ref_id, ref_pos, bin, \
            map_qual, cigar_len, flag, read_len, mate_ref_id, mate_ref_pos, \
-           inferred_insert_size
+           inferred_insert_size, tag_len
 
 def _build_decoder():
     answer = {}
@@ -331,6 +338,8 @@ class SamRead(object):
         parts = [self.qname, str(self.flag), self.rname, str(self.pos+1),
                  str(self.mapq), self.cigar_str, self.mrnm, str(self.mpos+1),
                  str(self.isize), seq, qual] + self._tags
+        if self.mrnm == self.rname and self.mrnm != "*":
+            parts[6] = "="
         try:
             return "\t".join(parts) + "\n"
         except TypeError, e:
@@ -364,14 +373,14 @@ class SamRead(object):
 
  
 class BamRead(SamRead):
-    def __init__(self, qname, flag, rname, pos, mapq, binary_cigar, mrnm, mpos, isize, read_len, binary_seq, binary_qual):
+    def __init__(self, qname, flag, rname, pos, mapq, binary_cigar, mrnm, mpos, isize, read_len, binary_seq, binary_qual, binary_tags):
         r"""Create a BamRead object.
 
         This is a lazy-parsing approach to loading SAM/BAM files, so
         all the parser does is grab the raw data and pass it to this
         object. The bare minimum parsing is done at this point.
 
-        >>> read = BamRead(qname='rd01', flag=1, rname="*", pos=-1, mapq=255, binary_cigar='', mrnm="*", mpos=-1, isize=0, read_len=0, binary_seq='', binary_qual='')
+        >>> read = BamRead(qname='rd01', flag=1, rname="*", pos=-1, mapq=255, binary_cigar='', mrnm="*", mpos=-1, isize=0, read_len=0, binary_seq='', binary_qual='', binary_tags='')
         >>> print read.qname
         rd01
 
@@ -407,7 +416,7 @@ class BamRead(SamRead):
         self._read_len = read_len
         self._binary_seq = binary_seq
         self._binary_qual = binary_qual
-        self._tags = [] #TODO
+        self._binary_tags = binary_tags
     
     @property
     def cigar(self):
@@ -467,7 +476,34 @@ class BamRead(SamRead):
         self._qual = value
     qual = property(fget = _get_qual, fset = _set_qual,
                     doc = "QUAL - read quality as FASTQ encoded string, including soft clipped bases")
-    
+
+    @property
+    def _tags(self):
+        """Decord the binary tags into a SAM style string (PRIVATE."""
+        raw = self._binary_tags
+        answer = []
+        while raw:
+            tag, bam_code, sam_code, value, raw = _next_tag_raw(raw)
+            answer.append("%s:%s:%s" % (tag, sam_code, value))
+        return answer
+
+def _next_tag_raw(raw):
+    tag = raw[0:2]
+    code = raw[2]
+    if code == "B":
+        sub_code = raw[3]
+        length = struct.unpack("<I", raw[3:7])
+        if sub_code == "S":
+            value = raw[7:7+length*unit]
+            return tag, value, "Z", raw[7+length*unit:]
+        else:
+            raise ValueError("Unknown BAM tag B sub-element type %r (for %r tag)" % (sub_code, tag))
+    elif code == "C": #u_int8
+        return tag, code, "i", ord(raw[3]), raw[4:]
+    else:
+        raise ValueError("Unknown BAM tag element type %r (for %r tag)" % (code, tag))
+
+
 
 def _pysam():
     try:
