@@ -45,10 +45,10 @@ def SamIterator(handle):
     = 290
     >>> print read.isize #aka TLEN
     214
-    >>> print read._cigar_str
-    35M
     >>> print read.cigar
     [(0, 35)]
+    >>> print read.cigar_str
+    35M
 
 
     >>> count = 0
@@ -94,6 +94,8 @@ def BamIterator(handle):
     214
     >>> print read.cigar
     [(0, 35)]
+    >>> print read.cigar_str
+    35M
 
 
     >>> count = 0
@@ -273,6 +275,13 @@ class SamRead(object):
         >>> print read.mpos
         -1
 
+        Getting back to the SAM formatted line is easy, print it or use str(),
+
+        >>> str(read)
+        "frag_5022\t16\tNC_000913_bb\t1\t255\t36M1S\t*\t0\t0\tTCTATTCATTATCTCAATAGCTTTTCATTCTGACTGN\tMMMMMMMMMMMMMMKKKK##%')+.024JMMMMMMM!\tRG:Z:Solexa_test\n"
+        >>> data == str(read)
+        True
+
         Note that a potentially unexpected side effect of this is that
         a malformed entry (e.g. invalid tags) may not be detected unless
         accessed.
@@ -292,19 +301,40 @@ class SamRead(object):
         self.rname = parts[2] #not an integer!
         self.pos = int(parts[3]) - 1
         self.mapq = int(parts[4])
-        self._cigar_str = parts[5]
+        self.cigar_str = parts[5]
         self.mrnm = parts[6]
         self.mpos = int(parts[7]) - 1 #aka PNEXT
         self.isize = int(parts[8]) #aka TLEN
-        if parts[10] == "*":
-            self.qual = None
-        else:
-            self.qual = parts[10]
         if parts[9] == "*":
             self.seq = None
         else:
             self.seq = parts[9]
-        #Tags will not be split up untill accessed
+        if parts[10] == "*":
+            self.qual = None
+        else:
+            self.qual = parts[10]
+        self._tags = parts[11:]
+    
+    def __repr__(self):
+        """Returns simple representation of the read for debugging."""
+        return "%s(qname=%r, flag=%i, ...)" \
+                         % (self.__class__.__name__, self.qname, self.flag)
+
+    def __str__(self):
+        """Returns the read as a SAM line (including trailing new line)."""
+        seq = self.seq
+        if seq is None:
+            seq = "*"
+        qual = self.qual
+        if qual is None:
+            qual = "*"
+        parts = [self.qname, str(self.flag), self.rname, str(self.pos+1),
+                 str(self.mapq), self.cigar_str, self.mrnm, str(self.mpos+1),
+                 str(self.isize), seq, qual] + self._tags
+        try:
+            return "\t".join(parts) + "\n"
+        except TypeError, e:
+            raise TypeError("%s from join on %r" % (e, parts))
 
     @property
     def cigar(self):
@@ -316,12 +346,12 @@ class SamRead(object):
         Any empty CIGAR string (represented as * in SAM) is given as an empty
         list.
         """
-        cigar = self._cigar_str
+        cigar = self.cigar_str
         if cigar == "*":
             return []
         answer = []
         count = ""
-        for letter in self._cigar_str:
+        for letter in cigar:
             if letter.isdigit():
                 count += letter #string addition
             else:
@@ -342,7 +372,7 @@ class BamRead(SamRead):
         all the parser does is grab the raw data and pass it to this
         object. The bare minimum parsing is done at this point.
 
-        >>> read = BamRead(qname='rd01', flag=1, rname=None, pos=None, mapq=255, binary_cigar='', mrnm=None, mpos=None, isize=0, read_len=0, binary_seq='', binary_qual='')
+        >>> read = BamRead(qname='rd01', flag=1, rname="*", pos=-1, mapq=255, binary_cigar='', mrnm="*", mpos=-1, isize=0, read_len=0, binary_seq='', binary_qual='')
         >>> print read.qname
         rd01
 
@@ -352,6 +382,11 @@ class BamRead(SamRead):
 
         TODO - example
 
+        Getting the read as a SAM formatted line is easy, print it or use str(),
+
+        >>> str(read)
+        'rd01\t1\t*\t0\t255\t*\t*\t0\t0\t\t\n'
+    
         You can modify values too, this overrides any values parsed
         from the raw data and will be used if saving the record back
         to disk later on:
@@ -373,6 +408,7 @@ class BamRead(SamRead):
         self._read_len = read_len
         self._binary_seq = binary_seq
         self._binary_qual = binary_qual
+        self._tags = [] #TODO
     
     @property
     def cigar(self):
@@ -390,6 +426,20 @@ class BamRead(SamRead):
             length = value >> 4
             value -= length << 4
             answer.append((value, length))
+        return answer
+
+    @property
+    def cigar_str(self):
+        """CIGAR string as used in the SAM format (string)."""
+        cigar = self._binary_cigar
+        length = len(cigar) // 4
+        if not length:
+            return "*"
+        answer = ""
+        for value in struct.unpack("<%iI" % length, cigar):
+            length = value >> 4
+            value -= length << 4
+            answer += "%i%s" % (length, "MIDNSHP=X"[value])
         return answer
 
     def _get_seq(self):
