@@ -9,6 +9,15 @@ This is intended to be written in Pure Python (so that it will work
 under PyPy, Jython, etc) but will attempt to follow the pysam API
 somewhat (which is a wrapper for the samtools C API).
 
+>>> from itertools import izip
+>>> sam = SamIterator(open("SamBam/ex1.sam"))
+>>> bam = BamIterator(open("SamBam/ex1.bam", "rb"))
+>>> for s, b in izip(sam,bam):
+...     assert s.qname == b.qname
+...     assert s.seq == b.seq
+...     assert s.qual == b.qual
+...     assert s.cigar == b.cigar
+
 """
 
 import gzip
@@ -36,6 +45,10 @@ def SamIterator(handle):
     = 290
     >>> print read.isize #aka TLEN
     214
+    >>> print read._cigar_str
+    35M
+    >>> print read.cigar
+    [(0, 35)]
 
 
     >>> count = 0
@@ -79,6 +92,8 @@ def BamIterator(handle):
     chr1 290
     >>> print read.isize #aka TLEN
     214
+    >>> print read.cigar
+    [(0, 35)]
 
 
     >>> count = 0
@@ -106,7 +121,7 @@ def BamIterator(handle):
         ref_name = references[ref_id][0]
         mate_ref_name = references[mate_ref_id][0]
         yield BamRead(read_name, flag, ref_name, ref_pos, map_qual,
-                      mate_ref_name, mate_ref_pos,
+                      raw_cigar, mate_ref_name, mate_ref_pos,
                       inferred_insert_size, read_len, raw_seq, raw_qual)
 
 
@@ -277,6 +292,7 @@ class SamRead(object):
         self.rname = parts[2] #not an integer!
         self.pos = int(parts[3]) - 1
         self.mapq = int(parts[4])
+        self._cigar_str = parts[5]
         self.mrnm = parts[6]
         self.mpos = int(parts[7]) - 1 #aka PNEXT
         self.isize = int(parts[8]) #aka TLEN
@@ -290,16 +306,43 @@ class SamRead(object):
             self.seq = parts[9]
         #Tags will not be split up untill accessed
 
+    @property
+    def cigar(self):
+        """CIGAR string parsed into a list of tuples (operator code, count).
+        
+        The CIGAR operators MIDNSHP=X are represented using 0 to 7 (as in BAM),
+        so a cigar string of 36M2I3M becomes [(0, 36), (1, 2), (0, 3)] etc.
+        
+        Any empty CIGAR string (represented as * in SAM) is given as an empty
+        list.
+        """
+        cigar = self._cigar_str
+        if cigar == "*":
+            return []
+        answer = []
+        count = ""
+        for letter in self._cigar_str:
+            if letter.isdigit():
+                count += letter #string addition
+            else:
+                operator = "MIDNSHP=X".find(letter)
+                if operator == -1:
+                    raise ValueError("Invalid character %s in CIGAR %s" \
+                                     % (letter, cigar))
+                answer.append((operator, int(count)))
+                count = ""
+        return answer
 
+ 
 class BamRead(SamRead):
-    def __init__(self, qname, flag, rname, pos, mapq, mrnm, mpos, isize, read_len, binary_seq, binary_qual):
+    def __init__(self, qname, flag, rname, pos, mapq, binary_cigar, mrnm, mpos, isize, read_len, binary_seq, binary_qual):
         r"""Create a BamRead object.
 
         This is a lazy-parsing approach to loading SAM/BAM files, so
         all the parser does is grab the raw data and pass it to this
         object. The bare minimum parsing is done at this point.
 
-        >>> read = BamRead(qname='rd01', flag=1, rname=None, pos=None, mapq=255, mrnm=None, mpos=None, isize=0, read_len=0, binary_seq='', binary_qual='')
+        >>> read = BamRead(qname='rd01', flag=1, rname=None, pos=None, mapq=255, binary_cigar='', mrnm=None, mpos=None, isize=0, read_len=0, binary_seq='', binary_qual='')
         >>> print read.qname
         rd01
 
@@ -323,6 +366,7 @@ class BamRead(SamRead):
         self.rname = rname #the actual name, not the integer!
         self.pos = pos
         self.mapq = mapq
+        self._binary_cigar = binary_cigar
         self.mrnm = mrnm #aka RNEXT, the actual name, not the integer!
         self.mpos = mpos #aka PNEXT
         self.isize = isize #aka TLEN
@@ -330,6 +374,24 @@ class BamRead(SamRead):
         self._binary_seq = binary_seq
         self._binary_qual = binary_qual
     
+    @property
+    def cigar(self):
+        """CIGAR string parsed into a list of tuples (operator code, count).
+        
+        The CIGAR operators MIDNSHP=X are represented using 0 to 7 (as in BAM).
+
+        Any empty CIGAR string (represented as * in SAM) is given as an empty
+        list.
+        """
+        cigar = self._binary_cigar
+        length = len(cigar) // 4
+        answer = []
+        for value in struct.unpack("<%iI" % length, cigar):
+            length = value >> 4
+            value -= length << 4
+            answer.append((value, length))
+        return answer
+
     def _get_seq(self):
         try:
             return self._seq
