@@ -13,7 +13,7 @@ The low level objects can be used as follows:
 
 >>> data = "frag_5022\t16\tNC_000913_bb\t1\t255\t36M1S\t*\t0\t0\tTCTATTCATTATCTCAATAGCTTTTCATTCTGACTGN\tMMMMMMMMMMMMMMKKKK##%')+.024JMMMMMMM!\tRG:Z:Solexa_test\n"
 >>> read = SamRead(data)
->>> read.tid
+>>> read.qname
 'frag_5022'
 >>> read.flag
 16
@@ -28,8 +28,8 @@ def SamIterator(handle):
 
     >>> with open("SamBam/ex1.sam") as handle:
     ...     for read in SamIterator(handle):
-    ...         print read.tid, read.flag, read.seq
-    ...         if read.tid == "EAS219_FC30151:3:40:1128:1940": break
+    ...         print read.qname, read.flag, read.seq
+    ...         if read.qname == "EAS219_FC30151:3:40:1128:1940": break
     EAS56_57:6:190:289:82 69 CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
     EAS56_57:6:190:289:82 137 AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC
     EAS51_64:3:190:727:308 99 GGTGCAGAGCCGAGTCACGGGGTTGCCAGCACAGG
@@ -60,8 +60,8 @@ def BamIterator(handle):
 
     >>> with open("SamBam/ex1.bam", "rb") as handle:
     ...     for read in BamIterator(handle):
-    ...         print read.tid, read.flag, read.seq
-    ...         if read.tid == "EAS219_FC30151:3:40:1128:1940": break
+    ...         print read.qname, read.flag, read.seq
+    ...         if read.qname == "EAS219_FC30151:3:40:1128:1940": break
     EAS56_57:6:190:289:82 69 CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
     EAS56_57:6:190:289:82 137 AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC
     EAS51_64:3:190:727:308 99 GGTGCAGAGCCGAGTCACGGGGTTGCCAGCACAGG
@@ -234,7 +234,7 @@ class SamRead(object):
 
         >>> data = 'rd01\t...\n'
         >>> read = SamRead(data)
-        >>> print read.tid
+        >>> print read.qname
         rd01
 
         Note that a potentially unexpected side effect of this is that
@@ -250,23 +250,23 @@ class SamRead(object):
         from the raw data and will be used if saving the record back
         to disk later on:
 
-        >>> read.tid = "Fred"
-        >>> print read.tid
+        >>> read.qname = "Fred"
+        >>> print read.qname
         Fred
 
         """
         self._data = data.rstrip("\n").split("\t")
 
-    def _get_tid(self):
+    def _get_qname(self):
         try:
-            return self._tid
+            return self._qname
         except AttributeError:
-            tid = self._data[0]
-            self._tid = tid
-            return tid
-    def _set_tid(self, value):
-        self._tid = value
-    tid = property(fget = _get_tid, fset = _set_tid,
+            qname = self._data[0]
+            self._qname = qname
+            return qname
+    def _set_qname(self, value):
+        self._qname = value
+    qname = property(fget = _get_qname, fset = _set_qname,
                    doc = "Template ID (read ID aka QNAME)")
 
     def _get_flag(self):
@@ -297,15 +297,15 @@ class SamRead(object):
 
 
 class BamRead(SamRead):
-    def __init__(self, tid, flag, read_len, raw_seq):
+    def __init__(self, qname, flag, read_len, raw_seq):
         r"""Create a BamRead object.
 
         This is a lazy-parsing approach to loading SAM/BAM files, so
         all the parser does is grab the raw data and pass it to this
         object. The bare minimum parsing is done at this point.
 
-        >>> read = BamRead(tid='rd01', flag=1, read_len=0, raw_seq='')
-        >>> print read.tid
+        >>> read = BamRead(qname='rd01', flag=1, read_len=0, raw_seq='')
+        >>> print read.qname
         rd01
 
         Note that a potentially unexpected side effect of this is that
@@ -318,12 +318,12 @@ class BamRead(SamRead):
         from the raw data and will be used if saving the record back
         to disk later on:
 
-        >>> read.tid = "Fred"
-        >>> print read.tid
+        >>> read.qname = "Fred"
+        >>> print read.qname
         Fred
 
         """
-        self.tid = tid
+        self.qname = qname
         self.flag = flag
         self._read_len = read_len
         self._binary_seq = raw_seq
