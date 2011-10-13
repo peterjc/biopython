@@ -316,25 +316,31 @@ class Chromosome(_ChromosomeComponent):
         right_labels = _place_labels(right_labels, y_min, y_max, h)
         x1 = segment_x
         x2 = segment_x - label_sep
-        for (y1, y2, color, name) in left_labels:
+        for (y1, y2, color, bold, name) in left_labels:
             cur_drawing.add(Line(x1, y1, x2, y2,
                                  strokeColor = color,
                                  strokeWidth = 0.25))
             label_string = String(x2, y2, name,
                                   textAnchor="end")
-            label_string.fontName = 'Helvetica'
+            if bold:
+                label_string.fontName = 'Helvetica-BoldOblique'
+            else:
+                label_string.fontName = 'Helvetica'
             label_string.fontSize = self.label_size
             if color_label:
                 label_string.fillColor = color
             cur_drawing.add(label_string)
         x1 = segment_x + segment_width
         x2 = segment_x + segment_width + label_sep
-        for (y1, y2, color, name) in right_labels:
+        for (y1, y2, color, bold, name) in right_labels:
             cur_drawing.add(Line(x1, y1, x2, y2,
                                  strokeColor = color,
                                  strokeWidth = 0.25))
             label_string = String(x2, y2, name)
-            label_string.fontName = 'Helvetica'
+            if bold:
+                label_string.fontName = 'Helvetica-BoldOblique'
+            else:
+                label_string.fontName = 'Helvetica'
             label_string.fontSize = self.label_size
             if color_label:
                 label_string.fillColor = color
@@ -566,8 +572,8 @@ def _place_labels(desired_etc, minimum, maximum, gap=0):
     placed = _spring_layout([row[0] for row in desired_etc],
                             minimum, maximum, gap)
     for old,y2 in zip(desired_etc, placed):
-        y1, color, name = old
-        yield (y1, y2, color, name)
+        y1, color, bold, name = old
+        yield (y1, y2, color, bold, name)
 
 class AnnotatedChromosomeSegment(ChromosomeSegment):
     def __init__(self, bp_length, features,
@@ -649,14 +655,18 @@ class AnnotatedChromosomeSegment(ChromosomeSegment):
             except AttributeError:
                 #Assume tuple of ints, string, and color [, %width]
                 start, end, strand, name, color = f[:5]
-                if len(f) > 5:
+                if len(f) > 5 and f[5]:
                     fill_color = f[5]
                 else:
                     fill_color = color
-                if len(f) > 6:
+                if len(f) > 6 and f[6]:
                     fw = segment_width * f[6]
                 else:
                     fw = segment_width * self._stranded_feature_percentage
+                if len(f) > 7:
+                    bold = f[7]
+                else:
+                    bold = False
             assert 0 <= start <= end <= self.bp_length
             if strand == +1 :
                 #Right side only
@@ -677,7 +687,7 @@ class AnnotatedChromosomeSegment(ChromosomeSegment):
             fill_rectangle.strokeColor = color
             cur_drawing.add(fill_rectangle)
             if name:
-                value = (segment_y + segment_height - local_scale*start, color, name)
+                value = (segment_y + segment_height - local_scale*start, color, bold, name)
                 if strand == -1:
                     self._left_labels.append(value)
                 else:
