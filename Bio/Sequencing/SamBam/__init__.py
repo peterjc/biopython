@@ -20,6 +20,9 @@ The low level objects can be used as follows:
 
 """
 
+import gzip
+import struct
+
 def SamIterator(handle):
     """Loop over a SAM file returning SamRead objects.
 
@@ -40,6 +43,152 @@ def SamIterator(handle):
             continue
         else:
             yield SamRead(line)
+
+
+def BamIterator(handle):
+    """Loop over a BAM file returning BamRead objects.
+
+    This should be functionally identical to using a SAM file
+    with the SamIterator function.
+
+    >>> with open("SamBam/ex1.bam", "rb") as handle:
+    ...     for read in BamIterator(handle):
+    ...         print read.tid, read.flag
+    ...         if read.tid == "EAS219_FC30151:3:40:1128:1940": break
+    EAS56_57:6:190:289:82 69
+    EAS56_57:6:190:289:82 137
+    EAS51_64:3:190:727:308 99
+    EAS112_34:7:141:80:875 99
+    EAS219_FC30151:3:40:1128:1940 163
+
+    """
+    h = gzip.GzipFile(fileobj=handle)
+    header, ref_count = _bam_file_header(h)
+    #Load any reference information
+    references = [_bam_file_reference(h) for i in range(ref_count)]
+    print references
+    #Loop over the reads
+    while True:
+        read_name, start_offset, end_offset, ref_id, ref_pos, \
+            bin, map_qual, cigar_len, flag, read_len, mate_ref_id, \
+            mate_ref_pos = _bam_file_read_header(h)
+        #raw_cigar = h.read(cigar_len * XXX)
+        #raw_seq = h.read((read_len+1)/2) # round up to make it even
+        #raw_qual = h.read(read_len)
+        #TODO - the tags
+        h.seek(end_offset)
+        yield SamRead("%s\t%i\t...\n" % (read_name, flag))
+
+
+def _bam_file_header(handle):
+    """Read in a BAM file header (PRIVATE).
+
+    Assumings the handle is at the start of the file and has already been
+    decompressed (e.g. with the gzip module).
+
+    >>> handle = gzip.open("SamBam/ex1.bam")
+    >>> header, num_refs = _bam_file_header(handle)
+    >>> header
+    ''
+    >>> num_refs
+    2
+
+    """
+    magic = handle.read(4)
+    if magic != "BAM\1":
+        raise ValueError("After decompression BAM files should start "
+                         "with 'BAM\1', not %s" % repr(magic))
+    assert 4 == struct.calcsize("<i")
+    data = handle.read(4)
+    #raise ValueError("Got %s" % repr(data))
+    header_length = struct.unpack("<i", data)[0]
+    header = handle.read(header_length).rstrip("\0")
+    data = handle.read(4)
+    #raise ValueError("Got %s" % repr(data))
+    num_refs = struct.unpack("<i", data)[0]
+    return header, num_refs
+
+def _bam_file_reference(handle):
+    """Parse next reference in a BAM file (PRIVATE).
+
+    Assumings the handle is just after the header and has already been                                             
+    decompressed (e.g. with the gzip module)
+
+    >>> handle = gzip.open("SamBam/ex1.bam")
+    >>> header, num_refs = _bam_file_header(handle)
+    >>> for i in range(num_refs):
+    ...     print _bam_file_reference(handle)
+    ('chr1', 1575)
+    ('chr2', 1584)
+
+    """
+    ref_name_len = struct.unpack("<i", handle.read(4))[0]
+    ref_name = handle.read(ref_name_len).rstrip("\0")
+    ref_len = struct.unpack("<i", handle.read(4))[0]
+    return ref_name, ref_len
+
+def _bam_file_read_header(handle):
+    """Parse the header of the next read in a BAM file (PRIVATE).
+
+    >>> handle = gzip.open("SamBam/ex1.bam")
+    >>> header, num_refs = _bam_file_header(handle)
+    >>> for i in range(num_refs):
+    ...     print _bam_file_reference(handle)
+    ('chr1', 1575)
+    ('chr2', 1584)
+    >>> print _bam_file_read_header(handle)[:3]
+    ('EAS56_57:6:190:289:82', 38, 153)
+    >>> handle.seek(153)
+    153
+    >>> print _bam_file_read_header(handle)[:3]
+    ('EAS56_57:6:190:289:82', 153, 292)
+    >>> handle.seek(153)
+    153
+    >>> print _bam_file_read_header(handle)[:3]
+    ('EAS56_57:6:190:289:82', 153, 292)
+
+    Returns a tuple of the read name, start offset, end offset, etc.
+
+    The offset information is used for indexing - the start offset is to find
+    the record on demand, the end offset is used when building the index to
+    skip over the rest of the read.
+    
+    The end offset is also used to determine the end of the tags section.
+    """
+    #TODO - Check BBH really works for the bin_mq_ml field, defined by
+    # bin_mq_nl = bin<<16|mapQual<<8|read_name_len (including NULL)
+    start_offset = handle.tell()
+
+    fmt = "<iiiBBHHHiiii"
+    assert 36 == struct.calcsize(fmt)
+    data = handle.read(36)
+    if not data:
+        raise StopIteration
+    if len(data) < 26:
+        raise ValueError("Premature end of file")
+    #raise ValueError("Data %s = %s" % (repr(data), repr(struct.unpack(fmt, data))))
+
+    block_size, ref_id, ref_pos, read_name_len, map_qual, bin, \
+    cigar_len, flag, read_len, mate_ref_id, mate_ref_pos, \
+    inferred_insert_size = struct.unpack(fmt, data)
+
+    if read_name_len > 50 or read_name_len <= 0:
+        raise ValueError("A read name length of %i probably means the "
+                         "parser is out of sync somehow. Read starts:\n%s"
+                         "\nand the read name would be %s etc." \
+                         % (read_name_len, repr(data), repr(handle.read(25))))
+    if read_len > 5000 or read_len <= 0:
+        raise ValueError("A read length of %i probably means the parser is out "
+                         "of sync somehow. Read starts:\n%s\nand the read name "
+                         "would be %s." \
+                         % (read_len, repr(data), repr(handle.read(read_name_len))))
+
+    read_name = handle.read(read_name_len).rstrip("\0")
+    end_offset = start_offset + block_size + 4
+    return read_name, start_offset, end_offset, ref_id, ref_pos, bin, \
+           map_qual, cigar_len, flag, read_len, mate_ref_id, mate_ref_pos
+
+
 
 #TODO - Have a Flag class?
 
