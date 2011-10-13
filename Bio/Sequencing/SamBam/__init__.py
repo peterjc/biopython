@@ -9,6 +9,9 @@ This is intended to be written in Pure Python (so that it will work
 under PyPy, Jython, etc) but will attempt to follow the pysam API
 somewhat (which is a wrapper for the samtools C API).
 
+The SAM and BAM parsers return SamRead and BamRead objects, but these
+should behave identically:
+
 >>> from itertools import izip
 >>> sam = SamIterator(open("SamBam/ex1.sam"))
 >>> bam = BamIterator(open("SamBam/ex1.bam", "rb"))
@@ -20,12 +23,66 @@ somewhat (which is a wrapper for the samtools C API).
 ...     b.mrnm = s.mrnm #hack for testing
 ...     assert str(s) == str(b), "SAM:\n%r\nBAM:\n%r\n" % (str(s), str(b))
 
+The iterators allow you to filter by flag, much like the samtools view
+command does. For example, with no filtering we get all the records:
+
+    >>> def count_sam(filename, required_flag=0):
+    ...     count = 0
+    ...     with open(filename) as handle:
+    ...         for read in SamIterator(handle, required_flag):
+    ...             count += 1
+    ...     return count
+    >>> count_sam("SamBam/ex1.sam")
+    3270
+
+The optional argument required_flag selectes only records where those FLAG
+bits are set (like "samtools view -f FLAG ..." works). For instance, an
+argument of 0x2 (hex) or 2 (decimal) requires the reads be properly mapped:
+
+    >>> count_sam("SamBam/ex1.sam", required_flag=0x2)
+    3124
+
+The same applies to the BAM parser as well,
+
+    >>> def count_bam(filename, required_flag=0):
+    ...     count = 0
+    ...     with open(filename, "rb") as handle:
+    ...         for read in BamIterator(handle, required_flag):
+    ...             count += 1
+    ...     return count
+    >>> count_bam("SamBam/ex1.bam", required_flag=0x2)
+    3124
+
+The flag bit 0x40 indicates the first read of a pair:
+
+    >>> count_sam("SamBam/ex1.sam", required_flag=0x40)
+    1636
+
+If you wanted to select only those reads which are properly mapped (0x2)
+and are the first read (0x40), you would use a flag of 0x2 + 0x40 = 0x42,
+which in decimal is 2 + 64 = 66.
+
+    >>> count_sam("SamBam/ex1.sam", required_flag=0x42)
+    1564
+
+Similarly, the second read in a pair has flag bit 0x80 set, so for just
+the read in second properly mapped pairs use 0x2 + 0x80 or 0x82,
+
+    >>> count_sam("SamBam/ex1.sam", required_flag=0x82)
+    1560
+
+If both 0x40 and 0x80 are set, the read is neither the first not the last
+read in a multi-read fragment (e.g. middle reads in a strobed read).
+
+    >>> count_sam("SamBam/ex1.sam", required_flag=0x120)
+    0
+
 """
 
 import gzip
 import struct
 
-def SamIterator(handle):
+def SamIterator(handle, required_flag=0):
     """Loop over a SAM file returning SamRead objects.
 
     >>> with open("SamBam/ex1.sam") as handle:
@@ -52,24 +109,28 @@ def SamIterator(handle):
     >>> print read.cigar_str
     35M
 
-
-    >>> count = 0
-    >>> with open("SamBam/ex1.sam") as handle:
-    ...     for read in SamIterator(handle):
-    ...         count += 1
-    >>> count
-    3270
-
+    Optional argument required_flag is used like "samtools view -f FLAG ..."
+    to only show records where those FLAG bits are set. Thus for example,
+    using an argument of 2 requires the reads be properly mapped.
     """
-    for line in handle:
-        if line[0] == "@":
-            #Ignore any optional header
-            continue
-        else:
-            yield SamRead(line)
+    if required_flag:
+        for line in handle:
+            if line[0] == "@":
+                #Ignore any optional header
+                continue
+            flag = int(line.split("\t",2)[1])
+            if flag & required_flag == required_flag:
+                yield SamRead(line)
+    else:
+        for line in handle:
+            if line[0] == "@":
+                #Ignore any optional header
+                continue
+            else:
+                yield SamRead(line)
 
 
-def BamIterator(handle):
+def BamIterator(handle, required_flag=0):
     """Loop over a BAM file returning BamRead objects.
 
     This should be functionally identical to using a SAM file
@@ -124,6 +185,8 @@ def BamIterator(handle):
         raw_tags = h.read(tag_len)
         assert h.tell() == end_offset, \
             "%i vs %i diff %i\n" % (h.tell(), end_offset, h.tell()-end_offset)
+        if required_flag and flag & required_flag != required_flag:
+            continue
         ref_name = references[ref_id][0]
         mate_ref_name = references[mate_ref_id][0]
         yield BamRead(read_name, flag, ref_name, ref_pos, map_qual,
