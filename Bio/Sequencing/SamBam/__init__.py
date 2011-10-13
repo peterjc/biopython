@@ -28,13 +28,13 @@ def SamIterator(handle):
 
     >>> with open("SamBam/ex1.sam") as handle:
     ...     for read in SamIterator(handle):
-    ...         print read.tid, read.flag
+    ...         print read.tid, read.flag, read.seq
     ...         if read.tid == "EAS219_FC30151:3:40:1128:1940": break
-    EAS56_57:6:190:289:82 69
-    EAS56_57:6:190:289:82 137
-    EAS51_64:3:190:727:308 99
-    EAS112_34:7:141:80:875 99
-    EAS219_FC30151:3:40:1128:1940 163
+    EAS56_57:6:190:289:82 69 CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
+    EAS56_57:6:190:289:82 137 AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC
+    EAS51_64:3:190:727:308 99 GGTGCAGAGCCGAGTCACGGGGTTGCCAGCACAGG
+    EAS112_34:7:141:80:875 99 AGCCGAGTCACGGGGTTGCCAGCACAGGGGCTTAA
+    EAS219_FC30151:3:40:1128:1940 163 CCGAGTCACGGGGTTGCCAGCACAGGGGCTTAACC
 
     >>> count = 0
     >>> with open("SamBam/ex1.sam") as handle:
@@ -269,6 +269,20 @@ class SamRead(object):
         self._flag = value
     flag = property(fget = _get_flag, fset = _set_flag,
                     doc = "FLAG (integer representing bit field)")
+
+    def _get_seq(self):
+        try:
+            return self._seq
+        except AttributeError:
+            seq = self._data[9]
+            if seq == "*":
+                seq = None
+            self._seq = seq
+            return seq
+    def _set_seq(self, value):
+        self._seq = value
+    seq = property(fget = _get_seq, fset = _set_seq,
+                   doc = "SEQ - read sequence bases as string, including soft clipped bases (None if not present)")
 
 
 #TODO - BamRead class, a subclass where the data is decoded using struct
