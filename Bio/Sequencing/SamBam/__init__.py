@@ -28,13 +28,13 @@ def SamIterator(handle):
 
     >>> with open("SamBam/ex1.sam") as handle:
     ...     for read in SamIterator(handle):
-    ...         print read.qname, read.flag, read.seq
+    ...         print read.qname, read.flag, read.pos, read.seq
     ...         if read.qname == "EAS219_FC30151:3:40:1128:1940": break
-    EAS56_57:6:190:289:82 69 CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
-    EAS56_57:6:190:289:82 137 AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC
-    EAS51_64:3:190:727:308 99 GGTGCAGAGCCGAGTCACGGGGTTGCCAGCACAGG
-    EAS112_34:7:141:80:875 99 AGCCGAGTCACGGGGTTGCCAGCACAGGGGCTTAA
-    EAS219_FC30151:3:40:1128:1940 163 CCGAGTCACGGGGTTGCCAGCACAGGGGCTTAACC
+    EAS56_57:6:190:289:82 69 99 CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
+    EAS56_57:6:190:289:82 137 99 AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC
+    EAS51_64:3:190:727:308 99 102 GGTGCAGAGCCGAGTCACGGGGTTGCCAGCACAGG
+    EAS112_34:7:141:80:875 99 109 AGCCGAGTCACGGGGTTGCCAGCACAGGGGCTTAA
+    EAS219_FC30151:3:40:1128:1940 163 111 CCGAGTCACGGGGTTGCCAGCACAGGGGCTTAACC
 
     >>> count = 0
     >>> with open("SamBam/ex1.sam") as handle:
@@ -60,13 +60,13 @@ def BamIterator(handle):
 
     >>> with open("SamBam/ex1.bam", "rb") as handle:
     ...     for read in BamIterator(handle):
-    ...         print read.qname, read.flag, read.seq
+    ...         print read.qname, read.flag, read.pos, read.seq
     ...         if read.qname == "EAS219_FC30151:3:40:1128:1940": break
-    EAS56_57:6:190:289:82 69 CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
-    EAS56_57:6:190:289:82 137 AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC
-    EAS51_64:3:190:727:308 99 GGTGCAGAGCCGAGTCACGGGGTTGCCAGCACAGG
-    EAS112_34:7:141:80:875 99 AGCCGAGTCACGGGGTTGCCAGCACAGGGGCTTAA
-    EAS219_FC30151:3:40:1128:1940 163 CCGAGTCACGGGGTTGCCAGCACAGGGGCTTAACC
+    EAS56_57:6:190:289:82 69 99 CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
+    EAS56_57:6:190:289:82 137 99 AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC
+    EAS51_64:3:190:727:308 99 102 GGTGCAGAGCCGAGTCACGGGGTTGCCAGCACAGG
+    EAS112_34:7:141:80:875 99 109 AGCCGAGTCACGGGGTTGCCAGCACAGGGGCTTAA
+    EAS219_FC30151:3:40:1128:1940 163 111 CCGAGTCACGGGGTTGCCAGCACAGGGGCTTAACC
 
     >>> count = 0
     >>> with open("SamBam/ex1.bam", "rb") as handle:
@@ -90,7 +90,7 @@ def BamIterator(handle):
         raw_qual = h.read(read_len)
         #TODO - the tags
         h.seek(end_offset)
-        yield BamRead(read_name, flag, read_len, raw_seq)
+        yield BamRead(read_name, flag, ref_pos, read_len, raw_seq)
 
 
 def _bam_file_header(handle):
@@ -281,6 +281,18 @@ class SamRead(object):
     flag = property(fget = _get_flag, fset = _set_flag,
                     doc = "FLAG (integer representing bit field)")
 
+    def _get_pos(self):
+        try:
+            return self._pos
+        except AttributeError:
+            pos = int(self._data[3]) - 1
+            self._pos = pos
+            return pos
+    def _set_pos(self, value):
+        self._pos = value
+    pos = property(fget = _get_pos, fset = _set_pos,
+                   doc = "POS (zero-based integer for mapping position)")
+
     def _get_seq(self):
         try:
             return self._seq
@@ -297,14 +309,14 @@ class SamRead(object):
 
 
 class BamRead(SamRead):
-    def __init__(self, qname, flag, read_len, raw_seq):
+    def __init__(self, qname, flag, pos, read_len, raw_seq):
         r"""Create a BamRead object.
 
         This is a lazy-parsing approach to loading SAM/BAM files, so
         all the parser does is grab the raw data and pass it to this
         object. The bare minimum parsing is done at this point.
 
-        >>> read = BamRead(qname='rd01', flag=1, read_len=0, raw_seq='')
+        >>> read = BamRead(qname='rd01', flag=1, pos=None, read_len=0, raw_seq='')
         >>> print read.qname
         rd01
 
@@ -325,6 +337,7 @@ class BamRead(SamRead):
         """
         self.qname = qname
         self.flag = flag
+        self.pos = pos
         self._read_len = read_len
         self._binary_seq = raw_seq
 
