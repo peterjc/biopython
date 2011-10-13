@@ -28,6 +28,9 @@ def SamIterator(handle):
     EAS219_FC30151:3:40:1128:1940 163 111 CCGAGTCACGGGGTTGCCAGCACAGGGGCTTAACC
     >>> print read.qual
     <<<<<<<<<<<<<<<<<<<;<<5;;<<<9;;;;7:
+    >>> print read.mpos #aka PNEXT
+    290
+
 
     >>> count = 0
     >>> with open("SamBam/ex1.sam") as handle:
@@ -62,6 +65,8 @@ def BamIterator(handle):
     EAS219_FC30151:3:40:1128:1940 163 111 CCGAGTCACGGGGTTGCCAGCACAGGGGCTTAACC
     >>> print read.qual
     <<<<<<<<<<<<<<<<<<<;<<5;;<<<9;;;;7:
+    >>> print read.mpos #aka PNEXT
+    290
 
     >>> count = 0
     >>> with open("SamBam/ex1.bam", "rb") as handle:
@@ -85,7 +90,7 @@ def BamIterator(handle):
         raw_qual = h.read(read_len)
         #TODO - the tags
         h.seek(end_offset)
-        yield BamRead(read_name, flag, ref_pos, read_len, raw_seq, raw_qual)
+        yield BamRead(read_name, flag, ref_pos, mate_ref_pos, read_len, raw_seq, raw_qual)
 
 
 def _bam_file_header(handle):
@@ -230,6 +235,10 @@ class SamRead(object):
         >>> read = SamRead(data)
         >>> print read.qname
         frag_5022
+        >>> print read.pos
+        0
+        >>> print read.mpos
+        -1
 
         Note that a potentially unexpected side effect of this is that
         a malformed entry (e.g. invalid tags) may not be detected unless
@@ -248,6 +257,7 @@ class SamRead(object):
         self.qname = parts[0]
         self.flag = int(parts[1])
         self.pos = int(parts[3]) - 1
+        self.mpos = int(parts[7]) - 1 #aka PNEXT
         if parts[10] == "*":
             self.qual = None
         else:
@@ -260,14 +270,14 @@ class SamRead(object):
 
 
 class BamRead(SamRead):
-    def __init__(self, qname, flag, pos, read_len, binary_seq, binary_qual):
+    def __init__(self, qname, flag, pos, mpos, read_len, binary_seq, binary_qual):
         r"""Create a BamRead object.
 
         This is a lazy-parsing approach to loading SAM/BAM files, so
         all the parser does is grab the raw data and pass it to this
         object. The bare minimum parsing is done at this point.
 
-        >>> read = BamRead(qname='rd01', flag=1, pos=None, read_len=0, binary_seq='', binary_qual='')
+        >>> read = BamRead(qname='rd01', flag=1, pos=None, mpos=None, read_len=0, binary_seq='', binary_qual='')
         >>> print read.qname
         rd01
 
@@ -289,6 +299,7 @@ class BamRead(SamRead):
         self.qname = qname
         self.flag = flag
         self.pos = pos
+        self.mpos = mpos #aka pnext
         self._read_len = read_len
         self._binary_seq = binary_seq
         self._binary_qual = binary_qual
