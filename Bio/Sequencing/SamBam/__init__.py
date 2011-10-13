@@ -26,6 +26,8 @@ def SamIterator(handle):
     EAS51_64:3:190:727:308 99 102 GGTGCAGAGCCGAGTCACGGGGTTGCCAGCACAGG
     EAS112_34:7:141:80:875 99 109 AGCCGAGTCACGGGGTTGCCAGCACAGGGGCTTAA
     EAS219_FC30151:3:40:1128:1940 163 111 CCGAGTCACGGGGTTGCCAGCACAGGGGCTTAACC
+    >>> print read.qual
+    <<<<<<<<<<<<<<<<<<<;<<5;;<<<9;;;;7:
 
     >>> count = 0
     >>> with open("SamBam/ex1.sam") as handle:
@@ -58,6 +60,8 @@ def BamIterator(handle):
     EAS51_64:3:190:727:308 99 102 GGTGCAGAGCCGAGTCACGGGGTTGCCAGCACAGG
     EAS112_34:7:141:80:875 99 109 AGCCGAGTCACGGGGTTGCCAGCACAGGGGCTTAA
     EAS219_FC30151:3:40:1128:1940 163 111 CCGAGTCACGGGGTTGCCAGCACAGGGGCTTAACC
+    >>> print read.qual
+    <<<<<<<<<<<<<<<<<<<;<<5;;<<<9;;;;7:
 
     >>> count = 0
     >>> with open("SamBam/ex1.bam", "rb") as handle:
@@ -81,7 +85,7 @@ def BamIterator(handle):
         raw_qual = h.read(read_len)
         #TODO - the tags
         h.seek(end_offset)
-        yield BamRead(read_name, flag, ref_pos, read_len, raw_seq)
+        yield BamRead(read_name, flag, ref_pos, read_len, raw_seq, raw_qual)
 
 
 def _bam_file_header(handle):
@@ -244,6 +248,10 @@ class SamRead(object):
         self.qname = parts[0]
         self.flag = int(parts[1])
         self.pos = int(parts[3]) - 1
+        if parts[10] == "*":
+            self.qual = None
+        else:
+            self.qual = parts[10]
         if parts[9] == "*":
             self.seq = None
         else:
@@ -252,14 +260,14 @@ class SamRead(object):
 
 
 class BamRead(SamRead):
-    def __init__(self, qname, flag, pos, read_len, raw_seq):
+    def __init__(self, qname, flag, pos, read_len, binary_seq, binary_qual):
         r"""Create a BamRead object.
 
         This is a lazy-parsing approach to loading SAM/BAM files, so
         all the parser does is grab the raw data and pass it to this
         object. The bare minimum parsing is done at this point.
 
-        >>> read = BamRead(qname='rd01', flag=1, pos=None, read_len=0, raw_seq='')
+        >>> read = BamRead(qname='rd01', flag=1, pos=None, read_len=0, binary_seq='', binary_qual='')
         >>> print read.qname
         rd01
 
@@ -282,7 +290,8 @@ class BamRead(SamRead):
         self.flag = flag
         self.pos = pos
         self._read_len = read_len
-        self._binary_seq = raw_seq
+        self._binary_seq = binary_seq
+        self._binary_qual = binary_qual
 
     def _get_seq(self):
         try:
@@ -290,14 +299,25 @@ class BamRead(SamRead):
         except AttributeError:
             seq = "".join(_decode_dibase_byte[byte] for byte in self._binary_seq)
             seq = seq[:self._read_len] # remove extra value if odd
-            if seq == "*":
-                seq = None
             self._seq = seq
             return seq
     def _set_seq(self, value):
         self._seq = value
     seq = property(fget = _get_seq, fset = _set_seq,
-                   doc = "SEQ - read sequence bases as string, including soft clipped bases (None if not present)")
+                   doc = "SEQ - read sequence bases as string, including soft clipped bases")
+
+    def _get_qual(self):
+        try:
+            return self._qual
+        except AttributeError:
+            #TODO - Reuse dict mapping from FASTQ parser, will be faster
+            qual = "".join(chr(33+ord(byte)) for byte in self._binary_qual)
+            self._qual = qual
+            return qual
+    def _set_qual(self, value):
+        self._qual = value
+    qual = property(fget = _get_qual, fset = _set_qual,
+                    doc = "QUAL - read quality as FASTQ encoded string, including soft clipped bases")
     
 
 def _test():
