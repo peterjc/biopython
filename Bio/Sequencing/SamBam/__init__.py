@@ -60,13 +60,13 @@ def BamIterator(handle):
 
     >>> with open("SamBam/ex1.bam", "rb") as handle:
     ...     for read in BamIterator(handle):
-    ...         print read.tid, read.flag
+    ...         print read.tid, read.flag, read.seq
     ...         if read.tid == "EAS219_FC30151:3:40:1128:1940": break
-    EAS56_57:6:190:289:82 69
-    EAS56_57:6:190:289:82 137
-    EAS51_64:3:190:727:308 99
-    EAS112_34:7:141:80:875 99
-    EAS219_FC30151:3:40:1128:1940 163
+    EAS56_57:6:190:289:82 69 CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
+    EAS56_57:6:190:289:82 137 AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC
+    EAS51_64:3:190:727:308 99 GGTGCAGAGCCGAGTCACGGGGTTGCCAGCACAGG
+    EAS112_34:7:141:80:875 99 AGCCGAGTCACGGGGTTGCCAGCACAGGGGCTTAA
+    EAS219_FC30151:3:40:1128:1940 163 CCGAGTCACGGGGTTGCCAGCACAGGGGCTTAACC
 
     >>> count = 0
     >>> with open("SamBam/ex1.bam", "rb") as handle:
@@ -85,12 +85,12 @@ def BamIterator(handle):
         read_name, start_offset, end_offset, ref_id, ref_pos, \
             bin, map_qual, cigar_len, flag, read_len, mate_ref_id, \
             mate_ref_pos = _bam_file_read_header(h)
-        #raw_cigar = h.read(cigar_len * XXX)
-        #raw_seq = h.read((read_len+1)/2) # round up to make it even
-        #raw_qual = h.read(read_len)
+        raw_cigar = h.read(cigar_len * 4)
+        raw_seq = h.read((read_len+1)/2) # round up to make it even
+        raw_qual = h.read(read_len)
         #TODO - the tags
         h.seek(end_offset)
-        yield SamRead("%s\t%i\t...\n" % (read_name, flag))
+        yield BamRead(read_name, flag, read_len, raw_seq)
 
 
 def _bam_file_header(handle):
@@ -199,6 +199,17 @@ def _bam_file_read_header(handle):
     return read_name, start_offset, end_offset, ref_id, ref_pos, bin, \
            map_qual, cigar_len, flag, read_len, mate_ref_id, mate_ref_pos
 
+def _build_decoder():
+    answer = {}
+    for i,first in enumerate("=ACMGRSVTWYHKDBN"):
+        answer[chr(i*16)] = first+"="
+        for j,second in enumerate("=ACMGRSVTWYHKDBN"):
+            answer[chr(i*16 + j)] = first+second
+    assert answer[chr(79)] == "GN"
+    assert answer[chr(240)] == "N="
+    assert answer[chr(241)] == "NA"
+    return answer
+_decode_dibase_byte = _build_decoder()
 
 
 #TODO - Have a Flag class?
@@ -285,7 +296,53 @@ class SamRead(object):
                    doc = "SEQ - read sequence bases as string, including soft clipped bases (None if not present)")
 
 
-#TODO - BamRead class, a subclass where the data is decoded using struct
+class BamRead(SamRead):
+    def __init__(self, tid, flag, read_len, raw_seq):
+        r"""Create a BamRead object.
+
+        This is a lazy-parsing approach to loading SAM/BAM files, so
+        all the parser does is grab the raw data and pass it to this
+        object. The bare minimum parsing is done at this point.
+
+        >>> read = BamRead(tid='rd01', flag=1, read_len=0, raw_seq='')
+        >>> print read.tid
+        rd01
+
+        Note that a potentially unexpected side effect of this is that
+        a malformed entry (e.g. a non-numeric mapping position) may
+        not be detected unless accessed:
+
+        TODO - example
+
+        You can modify values too, this overrides any values parsed
+        from the raw data and will be used if saving the record back
+        to disk later on:
+
+        >>> read.tid = "Fred"
+        >>> print read.tid
+        Fred
+
+        """
+        self.tid = tid
+        self.flag = flag
+        self._read_len = read_len
+        self._binary_seq = raw_seq
+
+    def _get_seq(self):
+        try:
+            return self._seq
+        except AttributeError:
+            seq = "".join(_decode_dibase_byte[byte] for byte in self._binary_seq)
+            seq = seq[:self._read_len] # remove extra value if odd
+            if seq == "*":
+                seq = None
+            self._seq = seq
+            return seq
+    def _set_seq(self, value):
+        self._seq = value
+    seq = property(fget = _get_seq, fset = _set_seq,
+                   doc = "SEQ - read sequence bases as string, including soft clipped bases (None if not present)")
+    
 
 def _test():
     """Run the module's doctests (PRIVATE).
