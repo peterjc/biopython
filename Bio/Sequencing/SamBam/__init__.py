@@ -9,15 +9,6 @@ This is intended to be written in Pure Python (so that it will work
 under PyPy, Jython, etc) but will attempt to follow the pysam API
 somewhat (which is a wrapper for the samtools C API).
 
-The low level objects can be used as follows:
-
->>> data = "frag_5022\t16\tNC_000913_bb\t1\t255\t36M1S\t*\t0\t0\tTCTATTCATTATCTCAATAGCTTTTCATTCTGACTGN\tMMMMMMMMMMMMMMKKKK##%')+.024JMMMMMMM!\tRG:Z:Solexa_test\n"
->>> read = SamRead(data)
->>> read.qname
-'frag_5022'
->>> read.flag
-16
-
 """
 
 import gzip
@@ -229,22 +220,16 @@ class SamRead(object):
         This is a lazy-parsing approach to loading SAM/BAM files, so
         all the parser does is grab the raw data and pass it to this
         object. The bare minimum parsing is done - splitting the text
-        into fields, for later parsing on demand if a property is
-        accessed:
+        into fields, tags for instance are parsed on demand if accessed.
 
-        >>> data = 'rd01\t...\n'
+        >>> data = "frag_5022\t16\tNC_000913_bb\t1\t255\t36M1S\t*\t0\t0\tTCTATTCATTATCTCAATAGCTTTTCATTCTGACTGN\tMMMMMMMMMMMMMMKKKK##%')+.024JMMMMMMM!\tRG:Z:Solexa_test\n"
         >>> read = SamRead(data)
         >>> print read.qname
-        rd01
+        frag_5022
 
         Note that a potentially unexpected side effect of this is that
-        a malformed entry (e.g. a non-numeric mapping position) may
-        not be detected unless accessed:
-
-        >>> print read.flag
-        Traceback (most recent call last):
-        ...
-        ValueError: invalid literal for int() with base 10: '...'
+        a malformed entry (e.g. invalid tags) may not be detected unless
+        accessed.
 
         You can modify values too, this overrides any values parsed
         from the raw data and will be used if saving the record back
@@ -255,57 +240,15 @@ class SamRead(object):
         Fred
 
         """
-        self._data = data.rstrip("\n").split("\t")
-
-    def _get_qname(self):
-        try:
-            return self._qname
-        except AttributeError:
-            qname = self._data[0]
-            self._qname = qname
-            return qname
-    def _set_qname(self, value):
-        self._qname = value
-    qname = property(fget = _get_qname, fset = _set_qname,
-                   doc = "Template ID (read ID aka QNAME)")
-
-    def _get_flag(self):
-        try:
-            return self._flag
-        except AttributeError:
-            flag = int(self._data[1])
-            self._flag = flag
-            return flag
-    def _set_flag(self, value):
-        self._flag = value
-    flag = property(fget = _get_flag, fset = _set_flag,
-                    doc = "FLAG (integer representing bit field)")
-
-    def _get_pos(self):
-        try:
-            return self._pos
-        except AttributeError:
-            pos = int(self._data[3]) - 1
-            self._pos = pos
-            return pos
-    def _set_pos(self, value):
-        self._pos = value
-    pos = property(fget = _get_pos, fset = _set_pos,
-                   doc = "POS (zero-based integer for mapping position)")
-
-    def _get_seq(self):
-        try:
-            return self._seq
-        except AttributeError:
-            seq = self._data[9]
-            if seq == "*":
-                seq = None
-            self._seq = seq
-            return seq
-    def _set_seq(self, value):
-        self._seq = value
-    seq = property(fget = _get_seq, fset = _set_seq,
-                   doc = "SEQ - read sequence bases as string, including soft clipped bases (None if not present)")
+        parts = data.rstrip("\n").split("\t")
+        self.qname = parts[0]
+        self.flag = int(parts[1])
+        self.pos = int(parts[3]) - 1
+        if parts[9] == "*":
+            self.seq = None
+        else:
+            self.seq = parts[9]
+        #Tags will not be split up untill accessed
 
 
 class BamRead(SamRead):
