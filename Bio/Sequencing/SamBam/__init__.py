@@ -36,6 +36,13 @@ def SamIterator(handle):
     EAS112_34:7:141:80:875 99
     EAS219_FC30151:3:40:1128:1940 163
 
+    >>> count = 0
+    >>> with open("SamBam/ex1.sam") as handle:
+    ...     for read in SamIterator(handle):
+    ...         count += 1
+    >>> count
+    3270
+
     """
     for line in handle:
         if line[0] == "@":
@@ -61,12 +68,18 @@ def BamIterator(handle):
     EAS112_34:7:141:80:875 99
     EAS219_FC30151:3:40:1128:1940 163
 
+    >>> count = 0
+    >>> with open("SamBam/ex1.bam", "rb") as handle:
+    ...     for read in BamIterator(handle):
+    ...         count += 1
+    >>> count
+    3270
+
     """
     h = gzip.GzipFile(fileobj=handle)
     header, ref_count = _bam_file_header(h)
     #Load any reference information
     references = [_bam_file_reference(h) for i in range(ref_count)]
-    print references
     #Loop over the reads
     while True:
         read_name, start_offset, end_offset, ref_id, ref_pos, \
@@ -138,12 +151,10 @@ def _bam_file_read_header(handle):
     ('chr2', 1584)
     >>> print _bam_file_read_header(handle)[:3]
     ('EAS56_57:6:190:289:82', 38, 153)
-    >>> handle.seek(153)
-    153
+    >>> x = handle.seek(153)
     >>> print _bam_file_read_header(handle)[:3]
     ('EAS56_57:6:190:289:82', 153, 292)
-    >>> handle.seek(153)
-    153
+    >>> x = handle.seek(153)
     >>> print _bam_file_read_header(handle)[:3]
     ('EAS56_57:6:190:289:82', 153, 292)
 
