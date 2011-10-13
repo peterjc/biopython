@@ -343,12 +343,11 @@ class SamRead(object):
         The CIGAR operators MIDNSHP=X are represented using 0 to 7 (as in BAM),
         so a cigar string of 36M2I3M becomes [(0, 36), (1, 2), (0, 3)] etc.
         
-        Any empty CIGAR string (represented as * in SAM) is given as an empty
-        list.
+        Any empty CIGAR string (represented as * in SAM) is given as None.
         """
         cigar = self.cigar_str
         if cigar == "*":
-            return []
+            return None
         answer = []
         count = ""
         for letter in cigar:
@@ -416,11 +415,12 @@ class BamRead(SamRead):
         
         The CIGAR operators MIDNSHP=X are represented using 0 to 7 (as in BAM).
 
-        Any empty CIGAR string (represented as * in SAM) is given as an empty
-        list.
+        Any empty CIGAR string (represented as * in SAM) is given as None.
         """
         cigar = self._binary_cigar
         length = len(cigar) // 4
+        if not length:
+            return None
         answer = []
         for value in struct.unpack("<%iI" % length, cigar):
             length = value >> 4
@@ -469,6 +469,31 @@ class BamRead(SamRead):
                     doc = "QUAL - read quality as FASTQ encoded string, including soft clipped bases")
     
 
+def _pysam():
+    try:
+        import pysam
+    except ImportError:
+        pass
+    print "Running tests against pysam..."
+    
+    def compare(a_iter, b_iter):
+        from itertools import izip
+        for a, b in izip(a_iter, b_iter):
+             assert a.qname == b.qname
+             assert a.seq == b.seq
+             assert a.qual == b.qual, "%r vs %r" % (a.qual, b.qual)
+             assert a.cigar == b.cigar, "%r vs %r" % (a.cigar, b.cigar)
+    
+    #TODO, use pysam on the SAM file
+    #http://code.google.com/p/pysam/issues/detail?id=73
+    #compare(SamIterator(open("SamBam/ex1.sam")),
+    #        pysam.Samfile("SamBam/ex1.sam", "r"))
+    compare(SamIterator(open("SamBam/ex1.sam")),
+            pysam.Samfile("SamBam/ex1.bam", "rb"))
+    compare(BamIterator(open("SamBam/ex1.bam", "rb")),
+            pysam.Samfile("SamBam/ex1.bam", "rb"))
+    print "Done"
+
 def _test():
     """Run the module's doctests (PRIVATE).
 
@@ -482,17 +507,19 @@ def _test():
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..", "..", "..", "Tests"))
         doctest.testmod()
+        print "Done"
+        _pysam()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
     elif os.path.isdir(os.path.join("Tests")):
         print "Runing doctests..."
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("Tests"))
         doctest.testmod()
+        print "Done"
+        _pysam()
         os.chdir(cur_dir)
         del cur_dir
-        print "Done"
 
 if __name__ == "__main__":
     _test()
