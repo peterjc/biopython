@@ -605,15 +605,19 @@ def _next_tag_raw(raw):
     elif code == "C": #u_int8
         return tag, code, "i", ord(raw[3]), raw[4:]
     elif code == "S": #u_int16
-        return tag, code, "i", struct.unpack("<H", rar[3:5])[0], raw[5:]
+        return tag, code, "i", struct.unpack("<H", raw[3:5])[0], raw[5:]
     elif code == "I": #u_int32
-        return tag, code, "i", struct.unpack("<I", rar[3:7])[0], raw[7:]
+        return tag, code, "i", struct.unpack("<I", raw[3:7])[0], raw[7:]
     elif code == "s": #int16
-        return tag, code, "i", struct.unpack("<h", rar[3:5])[0], raw[5:]
+        return tag, code, "i", struct.unpack("<h", raw[3:5])[0], raw[5:]
     elif code == "i": #int32
-        return tag, code, "i", struct.unpack("<i", rar[3:7])[0], raw[7:]
+        return tag, code, "i", struct.unpack("<i", raw[3:7])[0], raw[7:]
     elif code == "c": #int8
-        raise NotImplementedError("TODO - Unsigned int8 code 'c' for %r tag)" % tag)
+        value = ord(raw[3])
+        if value >= 128:
+            #Negative bit set
+            value -= 256
+        return tag, code, "i", value, raw[4:]
     else:
         raise ValueError("Unknown BAM tag element type %r (for %r tag)" % (code, tag))
 
@@ -660,6 +664,18 @@ def _pysam():
             pysam.Samfile("SamBam/ex1.bam", "rb"))
     compare(BamIterator(open("SamBam/ex1.bam", "rb")),
             pysam.Samfile("SamBam/ex1.bam", "rb"))
+
+def _test_misc():
+    print "Misc tests..."
+    for read in SamIterator(open("SamBam/tags.sam")):
+        #TODO - API for getting tag values
+        tag = str(read).rstrip("\n").split("\t")[-1]
+        assert read.qname == "tag_" + tag, \
+               "%s vs tag of %s" % (read.qname, tag)
+    for read in BamIterator(open("SamBam/tags.bam", "rb")):
+        tag = str(read).rstrip("\n").split("\t")[-1]
+        assert read.qname == "tag_" + tag, \
+               "%s vs tag of %s" % (read.qname, tag)
     print "Done"
 
 def _test():
@@ -677,6 +693,7 @@ def _test():
         doctest.testmod()
         print "Done"
         _pysam()
+        _test_misc()
         os.chdir(cur_dir)
         del cur_dir
     elif os.path.isdir(os.path.join("Tests")):
@@ -686,6 +703,7 @@ def _test():
         doctest.testmod()
         print "Done"
         _pysam()
+        _test_misc()
         os.chdir(cur_dir)
         del cur_dir
 
