@@ -1,0 +1,21 @@
+@SQ	SN:chr1	LN:100
+@SQ	SN:chr2	LN:200
+tag_xx:i:0	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:0
+tag_xx:i:1	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:1
+tag_xx:i:-1	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:-1
+tag_xx:i:126	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:126
+tag_xx:i:127	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:127
+tag_xx:i:128	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:128
+tag_xx:i:254	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:254
+tag_xx:i:255	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:255
+tag_xx:i:256	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:256
+tag_xx:i:257	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:257
+tag_xx:i:-253	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:-253
+tag_xx:i:-254	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:-254
+tag_xx:i:-255	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:-255
+tag_xx:i:-256	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:-256
+tag_xx:i:32000	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:32000
+tag_xx:i:33000	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:33000
+tag_xx:i:-33000	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:-33000
+tag_xx:i:64000	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:64000
+tag_xx:i:64000	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:64000
