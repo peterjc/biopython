@@ -324,7 +324,7 @@ def _bam_file_read_header(handle):
     cigar_len, flag, read_len, mate_ref_id, mate_ref_pos, \
     inferred_insert_size = struct.unpack(fmt, data)
 
-    if read_name_len > 50 or read_name_len <= 0:
+    if read_name_len > 200 or read_name_len <= 0:
         raise ValueError("A read name length of %i probably means the "
                          "parser is out of sync somehow. Read starts:\n%s"
                          "\nand the read name would be %s etc." \
@@ -594,26 +594,63 @@ def _next_tag_raw(raw):
     code = raw[2]
     if code == "B":
         sub_code = raw[3]
-        length = struct.unpack("<I", raw[3:7])
-        if sub_code == "S":
-            value = raw[7:7+length*unit]
-            return tag, value, "Z", raw[7+length*unit:]
-        elif sub_code in "cCsSiIf":
-            raise NotImplementedError("TODO - BAM tag B sub-element type %r (for %r tag)" % (sub_code, tag))
+        length = struct.unpack("<I", raw[4:8])[0]
+        if sub_code == "f": #float
+            values = struct.unpack(("<%if" % length), raw[8:8+length*4])
+            return tag, code, "B", values, raw[8+length*4:]
+        elif sub_code == "i": #int32
+            values = struct.unpack(("<%ii" % length), raw[8:8+length*4])
+            return tag, code, "B", values, raw[8+length*4:]
+        elif sub_code == "I": #int32
+            values = struct.unpack(("<%iI" % length), raw[8:8+length*4])
+            return tag, code, "B", values, raw[8+length*4:]
+        elif sub_code == "s": #int16
+            values = struct.unpack(("<%ih" % length), raw[8:8+length*2])
+            return tag, code, "B", values, raw[8+length*2:]
+        elif sub_code == "S": #int16
+            values = struct.unpack(("<%iH" % length), raw[8:8+length*2])
+            return tag, code, "B", values, raw[8+length*2:]
+        elif sub_code == "c": #int8
+            values = struct.unpack(("<%ib" % length), raw[8:8+length])
+            return tag, code, "B", values, raw[8+length:]
+        elif sub_code == "C": #int8
+            values = struct.unpack(("<%iB" % length), raw[8:8+length])
+            return tag, code, "B", values, raw[8+length:]
         else:
             raise ValueError("Unknown BAM tag B sub-element type %r (for %r tag)" % (sub_code, tag))
     elif code == "C": #u_int8
         return tag, code, "i", ord(raw[3]), raw[4:]
     elif code == "S": #u_int16
-        return tag, code, "i", struct.unpack("<H", rar[3:5])[0], raw[5:]
+        return tag, code, "i", struct.unpack("<H", raw[3:5])[0], raw[5:]
     elif code == "I": #u_int32
-        return tag, code, "i", struct.unpack("<I", rar[3:7])[0], raw[7:]
+        return tag, code, "i", struct.unpack("<I", raw[3:7])[0], raw[7:]
     elif code == "s": #int16
-        return tag, code, "i", struct.unpack("<h", rar[3:5])[0], raw[5:]
+        return tag, code, "i", struct.unpack("<h", raw[3:5])[0], raw[5:]
     elif code == "i": #int32
-        return tag, code, "i", struct.unpack("<i", rar[3:7])[0], raw[7:]
+        return tag, code, "i", struct.unpack("<i", raw[3:7])[0], raw[7:]
     elif code == "c": #int8
-        raise NotImplementedError("TODO - Unsigned int8 code 'c' for %r tag)" % tag)
+        value = ord(raw[3])
+        if value >= 128:
+            #Negative bit set
+            value -= 256
+        return tag, code, "i", value, raw[4:]
+    elif code == "A": #Single char
+        return tag, code, "A", raw[3], raw[4:]
+    elif code == "Z": #Null terminated string
+        i = 3
+        while ord(raw[i]) != 0: i+= 1
+        return tag, code, "Z", raw[3:i], raw[i+1:]
+    elif code == "H": #Hex, null terminated string
+        i = 3
+        while ord(raw[i]) != 0: i+= 1
+        if (i-3) % 2 == 1:
+            #Warning only?
+            raise ValueError("Odd number of bytes for hex string? %r" % raw)
+        return tag, code, "H", raw[3:i], raw[i+1:]
+    elif code == "f": #Single precision float
+        #TODO, leave it as a float rather than turning it into a string
+        #which is a short term solution during testing
+        return tag, code, "f", str(struct.unpack("<f",raw[3:7])[0]), raw[7:]
     else:
         raise ValueError("Unknown BAM tag element type %r (for %r tag)" % (code, tag))
 
@@ -660,6 +697,42 @@ def _pysam():
             pysam.Samfile("SamBam/ex1.bam", "rb"))
     compare(BamIterator(open("SamBam/ex1.bam", "rb")),
             pysam.Samfile("SamBam/ex1.bam", "rb"))
+
+def _comp_float(a,b):
+    return repr(a)==repr(b) or a==b or abs(float(a)-float(b))<0.000001,
+
+def _test_misc():
+    print "Misc tests..."
+    for read in SamIterator(open("SamBam/tags.sam")):
+        #TODO - API for getting tag values
+        tag = str(read).rstrip("\n").split("\t")[-1]
+        assert read.qname == "tag_" + tag, \
+               "%s vs tag of %s" % (read.qname, tag)
+    for read in BamIterator(open("SamBam/tags.bam", "rb")):
+        tag = str(read).rstrip("\n").split("\t")[-1]
+        if ":f:" in tag:
+            old = float(read.qname.split(":")[2])
+            new = float(tag.split(":")[2])
+            assert _comp_float(old, new), \
+                   "%s vs tag of %s" % (read.qname, tag)
+        elif ":B:" in tag:
+            assert read.qname.startswith("tag_" + tag[:5]), \
+                   "%s vs tag of %s" % (read.qname, tag)
+            if ":B:f," in read.qname:
+                old = repr(tuple(float(v) for v in read.qname.split(":B:f,")[1].split(",")))
+                new = repr(tuple(float(v) for v in tag.split(":")[2].strip("()").split(",")))
+                assert len(old) == len(new)
+                for a,b in zip(old, new):
+                    assert _comp_float(a, b), \
+                           "Mismatch in %s,\n%s\n%s" % (read.qname, old, new)
+            else:
+                #Integers
+                old = repr(tuple(int(v) for v in read.qname.split(":B:")[1][2:].split(",")))
+                new = tag.split(":")[2]
+                assert old == new, "Mismatch in %s,\n%s\n%s" % (read.qname, old, new)
+        else:
+            assert read.qname == "tag_" + tag, \
+                   "%s vs tag of %s" % (read.qname, tag)
     print "Done"
 
 def _test():
@@ -677,6 +750,7 @@ def _test():
         doctest.testmod()
         print "Done"
         _pysam()
+        _test_misc()
         os.chdir(cur_dir)
         del cur_dir
     elif os.path.isdir(os.path.join("Tests")):
@@ -686,6 +760,7 @@ def _test():
         doctest.testmod()
         print "Done"
         _pysam()
+        _test_misc()
         os.chdir(cur_dir)
         del cur_dir
 
