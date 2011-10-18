@@ -633,7 +633,7 @@ def _pysam():
     try:
         import pysam
     except ImportError:
-        pass
+        return
     print "Running tests against pysam..."
     
     def compare(a_iter, b_iter):
