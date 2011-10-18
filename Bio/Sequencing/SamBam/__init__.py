@@ -618,6 +618,12 @@ def _next_tag_raw(raw):
             #Negative bit set
             value -= 256
         return tag, code, "i", value, raw[4:]
+    elif code == "A": #Single char
+        return tag, code, "A", raw[3], raw[4:]
+    elif code == "Z": #Null terminated string
+        i = 3
+        while ord(raw[i]) != 0: i+= 1
+        return tag, code, "Z", raw[3:i], raw[i+1:]
     else:
         raise ValueError("Unknown BAM tag element type %r (for %r tag)" % (code, tag))
 
