@@ -33,6 +33,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.lib import colors
+from reportlab.pdfbase.pdfmetrics import stringWidth
 
 from reportlab.graphics.shapes import Drawing, String, Line, Rect, Wedge, ArcPath
 from reportlab.graphics import renderPDF, renderPS
@@ -316,10 +317,7 @@ class Chromosome(_ChromosomeComponent):
         right_labels = _place_labels(right_labels, y_min, y_max, h)
         x1 = segment_x
         x2 = segment_x - label_sep
-        for (y1, y2, color, bold, name) in left_labels:
-            cur_drawing.add(Line(x1, y1, x2, y2,
-                                 strokeColor = color,
-                                 strokeWidth = 0.25))
+        for (y1, y2, color, bold, back_color, name) in left_labels:
             label_string = String(x2, y2, name,
                                   textAnchor="end")
             if bold:
@@ -329,13 +327,18 @@ class Chromosome(_ChromosomeComponent):
             label_string.fontSize = self.label_size
             if color_label:
                 label_string.fillColor = color
-            cur_drawing.add(label_string)
-        x1 = segment_x + segment_width
-        x2 = segment_x + segment_width + label_sep
-        for (y1, y2, color, bold, name) in right_labels:
+            if back_color:
+                w = - stringWidth(name, label_string.fontName, label_string.fontSize) 
+                cur_drawing.add(Rect(x2, y2 - 0.1*h, w, h,
+                                     strokeColor=back_color,
+                                     fillColor=back_color))
             cur_drawing.add(Line(x1, y1, x2, y2,
                                  strokeColor = color,
                                  strokeWidth = 0.25))
+            cur_drawing.add(label_string)
+        x1 = segment_x + segment_width
+        x2 = segment_x + segment_width + label_sep
+        for (y1, y2, color, bold, back_color, name) in right_labels:
             label_string = String(x2, y2, name)
             if bold:
                 label_string.fontName = 'Helvetica-BoldOblique'
@@ -344,6 +347,14 @@ class Chromosome(_ChromosomeComponent):
             label_string.fontSize = self.label_size
             if color_label:
                 label_string.fillColor = color
+            if back_color:
+                w = stringWidth(name, label_string.fontName, label_string.fontSize) 
+                cur_drawing.add(Rect(x2, y2 - 0.1*h, w, h,
+                                     strokeColor=back_color,
+                                     fillColor=back_color))
+            cur_drawing.add(Line(x1, y1, x2, y2,
+                                 strokeColor = color,
+                                 strokeWidth = 0.25))
             cur_drawing.add(label_string)
 
 
@@ -572,8 +583,8 @@ def _place_labels(desired_etc, minimum, maximum, gap=0):
     placed = _spring_layout([row[0] for row in desired_etc],
                             minimum, maximum, gap)
     for old,y2 in zip(desired_etc, placed):
-        y1, color, bold, name = old
-        yield (y1, y2, color, bold, name)
+        y1, color, bold, back_color, name = old
+        yield (y1, y2, color, bold, back_color, name)
 
 class AnnotatedChromosomeSegment(ChromosomeSegment):
     def __init__(self, bp_length, features,
@@ -687,7 +698,11 @@ class AnnotatedChromosomeSegment(ChromosomeSegment):
             fill_rectangle.strokeColor = color
             cur_drawing.add(fill_rectangle)
             if name:
-                value = (segment_y + segment_height - local_scale*start, color, bold, name)
+                if fill_color == color:
+                    back_color = None
+                else:
+                    back_color = fill_color
+                value = (segment_y + segment_height - local_scale*start, color, bold, back_color, name)
                 if strand == -1:
                     self._left_labels.append(value)
                 else:
