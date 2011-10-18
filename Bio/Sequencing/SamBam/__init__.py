@@ -624,6 +624,13 @@ def _next_tag_raw(raw):
         i = 3
         while ord(raw[i]) != 0: i+= 1
         return tag, code, "Z", raw[3:i], raw[i+1:]
+    elif code == "H": #Hex, null terminated string
+        i = 3
+        while ord(raw[i]) != 0: i+= 1
+        if (i-3) % 2 == 1:
+            #Warning only?
+            raise ValueError("Odd number of bytes for hex string? %r" % raw)
+        return tag, code, "H", raw[3:i], raw[i+1:]
     else:
         raise ValueError("Unknown BAM tag element type %r (for %r tag)" % (code, tag))
 
