@@ -16,6 +16,13 @@ for a in range(32,127):
 for a in range(32,127):
     v = chr(a)
     h.write("tag_aa:A:%s\t0\tchr1\t50\t255\t4X\t*\t0\t0\tACGT\t<<<<\taa:A:%s\n" % (v, v))
+#Hex strings (SAM code H, BAM code H)
+for i in [0, 1, 2, 15, 16, 16, 31, 32, 33, 63, 64, 65, 128, 256, 32000, 33000,64000,1234567890]:
+    v = "%x" % i
+    if len(v) % 2 == 1:
+        #Odd length, add leading zero to follow spec
+        v = "0" + v
+    h.write("tag_hh:H:%s\t0\tchr1\t50\t255\t4X\t*\t0\t0\tACGT\t<<<<\thh:H:%s\n" % (v, v))
 h.close()
 print "SAM done"
 
