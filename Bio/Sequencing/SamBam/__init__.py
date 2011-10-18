@@ -12,10 +12,10 @@ somewhat (which is a wrapper for the samtools C API).
 The SAM and BAM parsers return SamRead and BamRead objects, but these
 should behave identically:
 
-    >>> from itertools import izip
+    >>> from itertools import izip_longest
     >>> sam = SamIterator(open("SamBam/ex1.sam"))
     >>> bam = BamIterator(open("SamBam/ex1.bam", "rb"))
-    >>> for s, b in izip(sam,bam):
+    >>> for s, b in izip_longest(sam,bam):
     ...     assert s.qname == b.qname
     ...     assert s.seq == b.seq
     ...     assert s.qual == b.qual
@@ -627,22 +627,35 @@ def _pysam():
     print "Running tests against pysam..."
     
     def compare(a_iter, b_iter):
-        from itertools import izip
-        for a, b in izip(a_iter, b_iter):
-             assert a.qname == b.qname, "%r vs %r" % (a.qname, b.qname)
-             assert a.flag == b.flag, "%r vs %r" % (a.flag, b.flag)
-             assert a.mapq == b.mapq, "%r vs %r" % (a.mapq, b.mapq)
-             assert a.cigar == b.cigar, "%r vs %r" % (a.cigar, b.cigar)
-             assert a.seq == b.seq, "%r vs %r" % (a.seq, b.seq)
-             assert a.qual == b.qual, "%r vs %r" % (a.qual, b.qual)
-             #Would compare other fields and str(a)==str(b) but pysam broken,
-             #See http://code.google.com/p/pysam/issues/detail?id=74
-             #and http://code.google.com/p/pysam/issues/detail?id=75
+        from itertools import izip_longest
+        for a, b in izip_longest(a_iter, b_iter):
+            assert b is not None, "Extra read in a: %r" % str(a)
+            assert a is not None, "Extra read in b: %r" % str(b)
+            assert a.qname == b.qname, "%r vs %r" % (a.qname, b.qname)
+            assert a.flag == b.flag, "%r vs %r" % (a.flag, b.flag)
+            #assert a.rname == b.rname, "%r vs %r" % (a.rname, b.rname)
+            assert a.pos == b.pos, "%r vs %r" % (a.pos, b.pos)
+            assert a.mapq == b.mapq, "%r vs %r" % (a.mapq, b.mapq)
+            assert a.cigar == b.cigar, "%r vs %r" % (a.cigar, b.cigar)
+            #assert a.mrnm == b.mrnm, "%r vs %r" % (a.mrnm, b.mrnm)
+            assert a.mpos == b.mpos, "%r vs %r" % (a.pos, b.pos)
+            assert a.isize == b.isize, "%r vs %r" % (a.isize, b.isize) 
+            assert a.seq == b.seq, "%r vs %r" % (a.seq, b.seq)
+            assert a.qual == b.qual, "%r vs %r" % (a.qual, b.qual)
+            #Would compare other fields and str(a)==str(b) but pysam broken,
+            #See http://code.google.com/p/pysam/issues/detail?id=74
+            #and http://code.google.com/p/pysam/issues/detail?id=75
+            #assert str(a) == str(b), "%r vs %r" % (str(a), str(b))
     
     #TODO, use pysam on the SAM file
     #http://code.google.com/p/pysam/issues/detail?id=73
     #compare(SamIterator(open("SamBam/ex1.sam")),
     #        pysam.Samfile("SamBam/ex1.sam", "r"))
+    #Avoid this by using a copy of the SAM file with a header:
+    compare(SamIterator(open("SamBam/ex1.sam")),
+            pysam.Samfile("SamBam/ex1_header.sam", "r"))
+    compare(SamIterator(open("SamBam/ex1_header.sam")),
+            pysam.Samfile("SamBam/ex1_header.sam", "r"))
     compare(SamIterator(open("SamBam/ex1.sam")),
             pysam.Samfile("SamBam/ex1.bam", "rb"))
     compare(BamIterator(open("SamBam/ex1.bam", "rb")),
