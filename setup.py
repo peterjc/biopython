@@ -339,6 +339,7 @@ PACKAGES = [
     'Bio.SeqUtils',
     'Bio.Sequencing',
     'Bio.Sequencing.Applications',
+    'Bio.Sequencing.SamBam',
     'Bio.Statistics',
     'Bio.SubsMat',
     'Bio.SVDSuperimposer',
