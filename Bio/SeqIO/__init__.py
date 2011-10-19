@@ -321,6 +321,7 @@ import IgIO #IntelliGenetics or MASE format
 import InsdcIO #EMBL and GenBank
 import PhdIO
 import PirIO
+import SamBamIO
 import SeqXmlIO
 import SffIO
 import SwissIO
@@ -363,7 +364,9 @@ _FormatToIterator = {"fasta" : FastaIO.FastaIterator,
                      "seqxml" : SeqXmlIO.SeqXmlIterator,
                      "abi": AbiIO.AbiIterator,
                      "abi-trim": AbiIO._AbiTrimIterator,
-                     }
+                     "sam-ref" : SamBamIO.SamRefIterator,
+                     "bam-ref" : SamBamIO.BamRefIterator,
+}
 
 _FormatToWriter = {"fasta" : FastaIO.FastaWriter,
                    "gb" : InsdcIO.GenBankWriter,
@@ -379,9 +382,10 @@ _FormatToWriter = {"fasta" : FastaIO.FastaWriter,
                    "qual" : QualityIO.QualPhredWriter,
                    "sff" : SffIO.SffWriter,
                    "seqxml" : SeqXmlIO.SeqXmlWriter,
+                   "sam-ref" : SamBamIO.SamRefWriter,
                    }
 
-_BinaryFormats = ["sff", "sff-trim", "abi", "abi-trim"]
+_BinaryFormats = ["sff", "sff-trim", "abi", "abi-trim", "bam-ref"]
 
 
 def write(sequences, handle, format):
