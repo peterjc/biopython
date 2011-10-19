@@ -377,8 +377,8 @@ class SamBamReadTags(dict):
     ...
     KeyError: 'RT'
 
-    Where this differs from a normal Python dictionary is you cannot use
-    anything you like for a key. SAM/BAM tags must be two letters:
+    Where this first differs from a normal Python dictionary is you cannot
+    use anything you like for a key. SAM/BAM tags must be two letters:
 
     >>> tags["x"] = "Hello"
     Traceback (most recent call last):
@@ -394,6 +394,15 @@ class SamBamReadTags(dict):
     >>> tags["xx"] = ("Z", "Hello")
     >>> tags["xx"] = ("A", "H")
     >>> tags["xx"] = ("Bi", [1,2,3])
+
+    Next, if you print the tags or use str(tags), you get a SAM formated
+    string, tab separated:
+
+    >>> str(tags)
+    'CO:Z:My comment\txx:B,i,1,2,3'
+
+    Note the order of the tags is not important in SAM/BAM, but for
+    consistency we sort them alphabetically.
     """
     def __setitem__(self, key, value):
         if len(key) != 2:
@@ -427,6 +436,16 @@ class SamBamReadTags(dict):
             raise ValueError("SAM/BAM tag type %r not supported" % code)
         return dict.__setitem__(self, key, value)
 
+    def __str__(self):
+        """Returns the tags tab separated in SAM formatting."""
+        tags = []
+        for key, (code, data) in self.iteritems():
+            if code.startswith("B"):
+                tags.append("%s:B,%s,%s" % (key, code[1:], ",".join(str(v) for v in data)))
+            else:
+                tags.append("%s:%s:%s" % (key, code, data))
+        tags.sort() #Want this consistent regardless of Python implementation
+        return "\t".join(tags)
 
 class SamBamRead(object):
     r"""Represents a SAM/BAM entry, i.e. a single read.
