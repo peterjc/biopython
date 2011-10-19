@@ -22,7 +22,13 @@ for i in [0, 1, 2, 15, 16, 16, 31, 32, 33, 63, 64, 65, 128, 256, 32000, 33000,64
     if len(v) % 2 == 1:
         #Odd length, add leading zero to follow spec
         v = "0" + v
-    h.write("tag_hh:H:%s\t0\tchr1\t50\t255\t4X\t*\t0\t0\tACGT\t<<<<\thh:H:%s\n" % (v, v))
+    if v.upper() == v.lower():
+        values = [v]
+    else:
+        #Gets stored as a string in BAM, so can preserve the case
+        values = [v.upper(), v.lower()]
+    for v in values:
+        h.write("tag_hh:H:%s\t0\tchr1\t50\t255\t4X\t*\t0\t0\tACGT\t<<<<\thh:H:%s\n" % (v, v))
 h.close()
 print "SAM done"
 
