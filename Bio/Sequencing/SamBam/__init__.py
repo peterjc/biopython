@@ -399,7 +399,7 @@ class SamBamReadTags(dict):
     string, tab separated:
 
     >>> str(tags)
-    'CO:Z:My comment\txx:B,i,1,2,3'
+    'CO:Z:My comment\txx:B:i,1,2,3'
 
     Note the order of the tags is not important in SAM/BAM, but for
     consistency we sort them alphabetically.
@@ -413,25 +413,40 @@ class SamBamReadTags(dict):
             raise ValueError("Tag value must be 2-tuple of SAM/BAM type and data value")
         if code == "Z":
             if not isinstance(data, basestring):
-                raise TypeError("Z type SAM/BAM tag values must be strings")
+                raise TypeError("Z type SAM/BAM tag values must be strings, not:\n%r" % data)
         elif code == "A":
             if not isinstance(data, basestring) or len(data)!=1:
-                raise TypeError("Z type SAM/BAM tag values must be single character strings")
+                raise TypeError("Z type SAM/BAM tag values must be single character strings, not:\n%r" % data)
+        elif code == "i":
+            try:
+                data = int(data)
+            except ValueError:
+                raise TypeError("i type SAM/BAM tag values must be integers, not:\n%r" % data)
+        elif code == "f":
+            try:
+                data = float(data)
+            except ValueError:
+                raise TypeError("f type SAM/BAM tag values must be floats, not:\n%r" % data)
         elif code == "Bf":
             try:
-                for v in data:
-                    if not isinstance(v, float) and not isinstance(v, int):
-                        raise TypeError("B float arrays require numerical values")
+                data = [float(v) for v in data]
+            except ValueError:
+                raise TypeError("B float arrays require numerical values, not:\n%r" % data)
             except AttributeError:
-                raise TypeError("B arrays require a list/tuple/sequence of numbers")
+                raise TypeError("B arrays require a list/tuple/sequence of numbers, not:\n%r" % data)
         elif code.startswith("B"):
             #TODO - bounds checking
             try:
-                for v in data:
-                    if not isinstance(v, int):
-                        raise TypeError("B integer arrays require integer values")
+                data = [int(v) for v in data]
+            except ValueError:
+                raise TypeError("B integer arrays require integer values, not:\n%r" % data)
             except AttributeError:
-                raise TypeError("B arrays require a list/tuple/sequence of numbers")
+                raise TypeError("B arrays require a list/tuple/sequence of numbers, not:\n%r" % data)
+        elif code=="H":
+            try:
+                int(data, 16)
+            except ValueError:
+                raise TypeError("H type SAM/BAM tag values must be hexadecimal strings, not:\n%r" % data)
         else:
             raise ValueError("SAM/BAM tag type %r not supported" % code)
         return dict.__setitem__(self, key, value)
@@ -441,7 +456,7 @@ class SamBamReadTags(dict):
         tags = []
         for key, (code, data) in self.iteritems():
             if code.startswith("B"):
-                tags.append("%s:B,%s,%s" % (key, code[1:], ",".join(str(v) for v in data)))
+                tags.append("%s:B:%s,%s" % (key, code[1:], ",".join(str(v) for v in data)))
             else:
                 tags.append("%s:%s:%s" % (key, code, data))
         tags.sort() #Want this consistent regardless of Python implementation
@@ -473,8 +488,7 @@ class SamBamRead(object):
     """
     def __init__(self, qname="*", flag=0, rname="*", pos=-1,
                  mapq=255, cigar_str="*", mrnm="*", mpos=-1,
-                 isize=0, seq=None, qual=None):
-        #TODO - Tags
+                 isize=0, seq=None, qual=None, tags=None):
         #TODO - Store qname, rname, mrnm as None rather than *
         #TODO - Type checking
         self.qname = qname
@@ -488,7 +502,9 @@ class SamBamRead(object):
         self.isize = isize
         self.seq = seq
         self.qual = qual
-        self._tags = []
+        if tags is not None and not isinstance(tags, SamBamReadTags):
+            raise TypeError("Bad tags argument")
+        self._tags = tags #Only create object on demand
 
     def __repr__(self):
         """Returns simple representation of the read for debugging."""
@@ -505,7 +521,9 @@ class SamBamRead(object):
             qual = "*"
         parts = [self.qname, str(self.flag), self.rname, str(self.pos+1),
                  str(self.mapq), self.cigar_str, self.mrnm, str(self.mpos+1),
-                 str(self.isize), seq, qual] + self._tags
+                 str(self.isize), seq, qual]
+        if self.tags:
+            parts.append(str(self.tags))
         if self.mrnm == self.rname and self.mrnm != "*":
             parts[6] = "="
         try:
@@ -539,6 +557,14 @@ class SamBamRead(object):
                 count = ""
         return answer
 
+    @property
+    def tags(self):
+        """Any tags for the read as a dictionary like object."""
+        if self._tags:
+            return self._tags
+        tags = SamBamReadTags()
+        self._tags = tags
+        return tags
 
 class SamRead(SamBamRead):
     """Represents a SAM/BAM entry created from a SAM file entry.
@@ -601,7 +627,26 @@ class SamRead(SamBamRead):
             self.qual = None
         else:
             self.qual = parts[10]
-        self._tags = parts[11:]
+        self._raw_tags = parts[11:]
+        self._tags = None
+
+    @property
+    def tags(self):
+        if self._tags:
+            return self._tags
+        tags = SamBamReadTags()
+        for tag in self._raw_tags:
+            key, code, data = tag.split(":",2)
+            if code=="I":
+                data = int(data)
+            elif code=="B":
+                assert data[1]==","
+                code = code + data[0]
+                data = data[2:].split(",")
+            tags[key] = (code, data)
+        self._tags = tags
+        del self._raw_tags
+        return tags
 
 
 class BamRead(SamBamRead):
@@ -654,6 +699,7 @@ class BamRead(SamBamRead):
         self._binary_seq = binary_seq
         self._binary_qual = binary_qual
         self._binary_tags = binary_tags
+        self._tags = None
     
     @property
     def cigar(self):
@@ -715,14 +761,17 @@ class BamRead(SamBamRead):
                     doc = "QUAL - read quality as FASTQ encoded string, including soft clipped bases")
 
     @property
-    def _tags(self):
-        """Decord the binary tags into a SAM style string (PRIVATE."""
+    def tags(self):
+        if self._tags:
+            return self._tags
         raw = self._binary_tags
-        answer = []
+        tags = SamBamReadTags()
         while raw:
-            tag, bam_code, sam_code, value, raw = _next_tag_raw(raw)
-            answer.append("%s:%s:%s" % (tag, sam_code, value))
-        return answer
+            tag, code, value, raw = _next_tag_raw(raw)
+            tags[tag] = (code, value)
+        self._tags = tags
+        del self._binary_tags
+        return tags
 
 def _next_tag_raw(raw):
     tag = raw[0:2]
@@ -732,60 +781,60 @@ def _next_tag_raw(raw):
         length = struct.unpack("<I", raw[4:8])[0]
         if sub_code == "f": #float
             values = struct.unpack(("<%if" % length), raw[8:8+length*4])
-            return tag, code, "B", values, raw[8+length*4:]
+            return tag, "Bf", values, raw[8+length*4:]
         elif sub_code == "i": #int32
             values = struct.unpack(("<%ii" % length), raw[8:8+length*4])
-            return tag, code, "B", values, raw[8+length*4:]
+            return tag, "Bi", values, raw[8+length*4:]
         elif sub_code == "I": #int32
             values = struct.unpack(("<%iI" % length), raw[8:8+length*4])
-            return tag, code, "B", values, raw[8+length*4:]
+            return tag, "BI", values, raw[8+length*4:]
         elif sub_code == "s": #int16
             values = struct.unpack(("<%ih" % length), raw[8:8+length*2])
-            return tag, code, "B", values, raw[8+length*2:]
+            return tag, "Bs", values, raw[8+length*2:]
         elif sub_code == "S": #int16
             values = struct.unpack(("<%iH" % length), raw[8:8+length*2])
-            return tag, code, "B", values, raw[8+length*2:]
+            return tag, "BS", values, raw[8+length*2:]
         elif sub_code == "c": #int8
             values = struct.unpack(("<%ib" % length), raw[8:8+length])
-            return tag, code, "B", values, raw[8+length:]
+            return tag, "Bc", values, raw[8+length:]
         elif sub_code == "C": #int8
             values = struct.unpack(("<%iB" % length), raw[8:8+length])
-            return tag, code, "B", values, raw[8+length:]
+            return tag, "BC", values, raw[8+length:]
         else:
             raise ValueError("Unknown BAM tag B sub-element type %r (for %r tag)" % (sub_code, tag))
     elif code == "C": #u_int8
-        return tag, code, "i", ord(raw[3]), raw[4:]
+        return tag, "i", ord(raw[3]), raw[4:]
     elif code == "S": #u_int16
-        return tag, code, "i", struct.unpack("<H", raw[3:5])[0], raw[5:]
+        return tag, "i", struct.unpack("<H", raw[3:5])[0], raw[5:]
     elif code == "I": #u_int32
-        return tag, code, "i", struct.unpack("<I", raw[3:7])[0], raw[7:]
+        return tag, "i", struct.unpack("<I", raw[3:7])[0], raw[7:]
     elif code == "s": #int16
-        return tag, code, "i", struct.unpack("<h", raw[3:5])[0], raw[5:]
+        return tag, "i", struct.unpack("<h", raw[3:5])[0], raw[5:]
     elif code == "i": #int32
-        return tag, code, "i", struct.unpack("<i", raw[3:7])[0], raw[7:]
+        return tag, "i", struct.unpack("<i", raw[3:7])[0], raw[7:]
     elif code == "c": #int8
         value = ord(raw[3])
         if value >= 128:
             #Negative bit set
             value -= 256
-        return tag, code, "i", value, raw[4:]
+        return tag, "i", value, raw[4:]
     elif code == "A": #Single char
-        return tag, code, "A", raw[3], raw[4:]
+        return tag, "A", raw[3], raw[4:]
     elif code == "Z": #Null terminated string
         i = 3
         while ord(raw[i]) != 0: i+= 1
-        return tag, code, "Z", raw[3:i], raw[i+1:]
+        return tag, "Z", raw[3:i], raw[i+1:]
     elif code == "H": #Hex, null terminated string
         i = 3
         while ord(raw[i]) != 0: i+= 1
         if (i-3) % 2 == 1:
             #Warning only?
             raise ValueError("Odd number of bytes for hex string? %r" % raw)
-        return tag, code, "H", raw[3:i], raw[i+1:]
+        return tag, "H", raw[3:i], raw[i+1:]
     elif code == "f": #Single precision float
         #TODO, leave it as a float rather than turning it into a string
         #which is a short term solution during testing
-        return tag, code, "f", str(struct.unpack("<f",raw[3:7])[0]), raw[7:]
+        return tag, "f", str(struct.unpack("<f",raw[3:7])[0]), raw[7:]
     else:
         raise ValueError("Unknown BAM tag element type %r (for %r tag)" % (code, tag))
 
@@ -847,6 +896,9 @@ def _test_misc():
                "%s vs tag of %s" % (read.qname, tag)
     for read in BamIterator(open("SamBam/tags.bam", "rb")):
         tag = str(read).rstrip("\n").split("\t")[-1]
+        assert read.qname.startswith("tag_" + tag[:5])
+        if read.qname == "tag_" + tag:
+            continue
         if ":f:" in tag:
             old = float(read.qname.split(":")[2])
             new = float(tag.split(":")[2])
@@ -857,7 +909,7 @@ def _test_misc():
                    "%s vs tag of %s" % (read.qname, tag)
             if ":B:f," in read.qname:
                 old = tuple(float(v) for v in read.qname.split(":B:f,")[1].split(","))
-                new = tuple(float(v) for v in tag.split(":")[2].strip("()").split(","))
+                new = tuple(float(v) for v in tag.split(":")[2][2:].split(","))
                 assert len(old) == len(new), \
                        "Count mismatch %i vs %i in %s\n%s\n%s\n" \
                        % (read.qname, len(old), len(new), old, new)
@@ -866,12 +918,12 @@ def _test_misc():
                            "Mismatch in %s,\n%s\n%s" % (read.qname, old, new)
             else:
                 #Integers
-                old = repr(tuple(int(v) for v in read.qname.split(":B:")[1][2:].split(",")))
-                new = tag.split(":")[2]
-                assert old == new, "Mismatch in %s,\n%s\n%s" % (read.qname, old, new)
+                old = [int(v) for v in read.qname.split(":B:")[1][2:].split(",")]
+                new = [int(v) for v in tag.split(":")[2][2:].split(",")]
+                assert old == new, "Mismatch in read %s vs %s\n%r\n%r" % (read.qname, tag, old, new)
         else:
             assert read.qname == "tag_" + tag, \
-                   "%s vs tag of %s" % (read.qname, tag)
+                   "Please check %s vs tag of %s" % (read.qname, tag)
     print "Done"
 
 def _test():
