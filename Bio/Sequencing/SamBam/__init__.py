@@ -324,7 +324,7 @@ def _bam_file_read_header(handle):
     cigar_len, flag, read_len, mate_ref_id, mate_ref_pos, \
     inferred_insert_size = struct.unpack(fmt, data)
 
-    if read_name_len > 50 or read_name_len <= 0:
+    if read_name_len > 60 or read_name_len <= 0:
         raise ValueError("A read name length of %i probably means the "
                          "parser is out of sync somehow. Read starts:\n%s"
                          "\nand the read name would be %s etc." \
