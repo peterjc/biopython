@@ -7,6 +7,13 @@ h.write("@SQ\tSN:chr2\tLN:200\n")
 for i in [0,1,-1,126,127,128,254,255,256,257,-253,-254,-255,-256,
           32000,33000,-33000,64000,-64000,1234567890,-1234567890]:
     h.write("tag_xx:i:%i\t0\tchr1\t50\t255\t4X\t*\t0\t0\tACGT\t<<<<\txx:i:%i\n" % (i,i))
+#Single precision floats (SAM code f, BAM code f)
+for f in ["0", "-0", "-1.2345", "1.12345", "3.1415e-12", "inf", "-inf", "nan"]:
+    #Allowed [-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?
+    #These values have been checked by hand to confirm
+    #SAM -> BAM -> SAM with samtools preserves them
+    #and they match the read name.
+    h.write("tag_ff:f:%s\t0\tchr1\t50\t255\t4X\t*\t0\t0\tACGT\t<<<<\tff:f:%s\n" % (f,f))
 #Printable character(s) including space (SAM code Z, BAM code Z)
 for a in range(32,127):
     #Try both single character (see also code A), and something a little longer.
