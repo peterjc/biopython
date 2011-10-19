@@ -10,7 +10,7 @@ under PyPy, Jython, etc) but will attempt to follow the pysam API
 somewhat (which is a wrapper for the samtools C API).
 
 The SAM and BAM parsers return SamRead and BamRead objects, but these
-should behave identically:
+should behave identically (modulo the tag ordering):
 
     >>> from itertools import izip_longest
     >>> sam = SamIterator(open("SamBam/ex1.sam"))
@@ -20,8 +20,7 @@ should behave identically:
     ...     assert s.seq == b.seq
     ...     assert s.qual == b.qual
     ...     assert s.cigar == b.cigar
-    ...     b.mrnm = s.mrnm #hack for testing
-    ...     assert str(s) == str(b), "SAM:\n%r\nBAM:\n%r\n" % (str(s), str(b))
+    ...     assert sorted(s.tags.items()) == sorted(b.tags.items())
 
 The iterators allow you to filter by flag, much like the samtools view
 command does. For example, with no filtering we get all the records:
@@ -449,7 +448,7 @@ class SamBamReadTags(dict):
                 raise TypeError("H type SAM/BAM tag values must be hexadecimal strings, not:\n%r" % data)
         else:
             raise ValueError("SAM/BAM tag type %r not supported" % code)
-        return dict.__setitem__(self, key, value)
+        return dict.__setitem__(self, key, (code, data))
 
     def __str__(self):
         """Returns the tags tab separated in SAM formatting."""
@@ -522,8 +521,12 @@ class SamBamRead(object):
         parts = [self.qname, str(self.flag), self.rname, str(self.pos+1),
                  str(self.mapq), self.cigar_str, self.mrnm, str(self.mpos+1),
                  str(self.isize), seq, qual]
-        if self.tags:
-            parts.append(str(self.tags))
+        try:
+            #See if this is a SAM record where we never un-parsed the tags
+            parts.extend(self._raw_tags)
+        except AttributeError:
+            if self.tags:
+                parts.append(str(self.tags))
         if self.mrnm == self.rname and self.mrnm != "*":
             parts[6] = "="
         try:
@@ -637,12 +640,11 @@ class SamRead(SamBamRead):
         tags = SamBamReadTags()
         for tag in self._raw_tags:
             key, code, data = tag.split(":",2)
-            if code=="I":
-                data = int(data)
-            elif code=="B":
+            if code=="B":
                 assert data[1]==","
                 code = code + data[0]
                 data = data[2:].split(",")
+            #The tags object should do any casting for us
             tags[key] = (code, data)
         self._tags = tags
         del self._raw_tags
