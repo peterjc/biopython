@@ -324,7 +324,7 @@ def _bam_file_read_header(handle):
     cigar_len, flag, read_len, mate_ref_id, mate_ref_pos, \
     inferred_insert_size = struct.unpack(fmt, data)
 
-    if read_name_len > 60 or read_name_len <= 0:
+    if read_name_len > 200 or read_name_len <= 0:
         raise ValueError("A read name length of %i probably means the "
                          "parser is out of sync somehow. Read starts:\n%s"
                          "\nand the read name would be %s etc." \
@@ -599,8 +599,11 @@ def _next_tag_raw(raw):
             assert False, "Not tested yet"
             value = raw[8:8+length]
             return tag, code, "B", value, raw[8+length:]
-        elif sub_code == "f":
+        elif sub_code == "f": #float
             values = struct.unpack(("<%if" % length), raw[8:8+length*4])
+            return tag, code, "B", values, raw[8+length*4:]
+        elif sub_code == "i": #int32
+            values = struct.unpack(("<%ii" % length), raw[8:8+length*4])
             return tag, code, "B", values, raw[8+length*4:]
         elif sub_code in "cCsSiIf":
             raise NotImplementedError("TODO - BAM tag B sub-element type %r (for %r tag)" % (sub_code, tag))
