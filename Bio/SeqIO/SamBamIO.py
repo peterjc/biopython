@@ -80,25 +80,46 @@ class SamRefWriter(SequentialSequenceWriter):
                 id = "*"
             if f.sub_features:
                 f_list = f.sub_features
+                f_count = len(f_list)
                 def_flag += 0x1 #multipart
                 def_flag += 0x2 #all properly mapped
-                next_ref = ref
+                starts = [sf.location.start+1 for sf in f_list]
+                strands = [sf.location.strand for sf in f_list]
+                starts = starts[1:] + starts[:1] #offset by one
+                strands = strands[1:] + strands[:1] #offset by one
+                for i, sf, next_start, next_strand in zip(range(f_count), f_list, starts, strands):
+                    flag = def_flag + 0x1 + 0x2
+                    #TODO - Check first/last for reverse complement features
+                    if i == 0:
+                        flag += 0x40 #first
+                    elif i + 1 == f_count:
+                        flag += 0x80 #last
+                    if sf.location.strand == -1:
+                        flag += 0x10
+                        seq = str(sf.extract(record.seq).reverse_complement())
+                    else:
+                        seq = str(sf.extract(record.seq))
+                    if next_strand == -1:
+                        flag += 0x20
+                    start = str(sf.location.start + 1)
+                    cigar = "%i=" % len(seq)
+                    co = "CO:Z:%s feature" % f.type
+                    parts = [id, str(flag), ref, start, "30", cigar, ref, str(next_start+1), "0", seq, "*", co]
+                    if f_count > 2:
+                        parts.append("TC:i:%i" % f_count)
+                    self.handle.write("\t".join(parts) + "\n")
             else:
-                f_list = [f]
                 next_ref = "*"
-            #TODO - First/last flag, and next strand flags
-            for sf in f_list:
-                assert not sf.sub_features
-                if sf.location.strand == -1:
-                    flag = str(def_flag + 0x10)
-                    seq = str(sf.extract(record.seq).reverse_complement())
+                if f.location.strand == -1:
+                    flag = def_flag + 0x10
+                    seq = str(f.extract(record.seq).reverse_complement())
                 else:
-                    flag = str(def_flag)
-                    seq = str(sf.extract(record.seq))
-                start = str(sf.location.start + 1)
+                    flag = def_flag
+                    seq = str(f.extract(record.seq))
+                start = str(f.location.start + 1)
                 cigar = "%i=" % len(seq)
                 co = "CO:Z:%s feature" % f.type
-                parts = [id, flag, ref, start, "30", cigar, next_ref, "0", "0", seq, "*", co]
+                parts = [id, str(flag), ref, start, "30", cigar, next_ref, "0", "0", seq, "*", co]
                 self.handle.write("\t".join(parts) + "\n")
 
 def _test():
