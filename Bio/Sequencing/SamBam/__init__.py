@@ -671,18 +671,20 @@ def _pysam():
             assert a.qname == b.qname, "%r vs %r" % (a.qname, b.qname)
             assert a.flag == b.flag, "%r vs %r" % (a.flag, b.flag)
             #assert a.rname == b.rname, "%r vs %r" % (a.rname, b.rname)
+            #See http://code.google.com/p/pysam/issues/detail?id=25
             assert a.pos == b.pos, "%r vs %r" % (a.pos, b.pos)
             assert a.mapq == b.mapq, "%r vs %r" % (a.mapq, b.mapq)
             assert a.cigar == b.cigar, "%r vs %r" % (a.cigar, b.cigar)
             #assert a.mrnm == b.mrnm, "%r vs %r" % (a.mrnm, b.mrnm)
+            #See http://code.google.com/p/pysam/issues/detail?id=25
             assert a.mpos == b.mpos, "%r vs %r" % (a.pos, b.pos)
             assert a.isize == b.isize, "%r vs %r" % (a.isize, b.isize) 
             assert a.seq == b.seq, "%r vs %r" % (a.seq, b.seq)
             assert a.qual == b.qual, "%r vs %r" % (a.qual, b.qual)
-            #Would compare other fields and str(a)==str(b) but pysam broken,
+            #Would compare str(a)==str(b) but pysam does not attempt
+            #to return a valid SAM record like this.
             #See http://code.google.com/p/pysam/issues/detail?id=74
             #and http://code.google.com/p/pysam/issues/detail?id=75
-            #assert str(a) == str(b), "%r vs %r" % (str(a), str(b))
     
     #TODO, use pysam on the SAM file
     #http://code.google.com/p/pysam/issues/detail?id=73
