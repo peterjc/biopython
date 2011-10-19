@@ -605,6 +605,9 @@ def _next_tag_raw(raw):
         elif sub_code == "i": #int32
             values = struct.unpack(("<%ii" % length), raw[8:8+length*4])
             return tag, code, "B", values, raw[8+length*4:]
+        elif sub_code == "I": #int32
+            values = struct.unpack(("<%iI" % length), raw[8:8+length*4])
+            return tag, code, "B", values, raw[8+length*4:]
         elif sub_code in "cCsSiIf":
             raise NotImplementedError("TODO - BAM tag B sub-element type %r (for %r tag)" % (sub_code, tag))
         else:
@@ -712,6 +715,10 @@ def _test_misc():
                    "%s vs tag of %s" % (read.qname, tag)
             if ":B:i," in read.qname:
                 old = repr(tuple(int(v) for v in read.qname.split(":B:i,")[1].split(",")))
+                new = tag.split(":")[2]
+                assert old == new, "Mismatch in %s,\n%s\n%s" % (read.qname, old, new)
+            elif ":B:I," in read.qname:
+                old = repr(tuple(int(v) for v in read.qname.split(":B:I,")[1].split(",")))
                 new = tag.split(":")[2]
                 assert old == new, "Mismatch in %s,\n%s\n%s" % (read.qname, old, new)
             elif ":B:f," in read.qname:
