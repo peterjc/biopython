@@ -24,6 +24,14 @@ Or, using the BAM format should behave exactly the same:
 >>> for ref in SeqIO.parse("SamBam/ex1.bam", "bam-ref"):
 ...     print ref.id
 
+You can do things like convert from GenBank to SAM,
+
+>>> SeqIO.convert("GenBank/NC_000932.gb", "gb", "NC_000932.sam", "sam-ref")
+1
+>>> import os
+>>> assert 0 == os.system("samtools view -S -b NC_000932.sam | samtools sort - NC_000932")
+>>> assert 0 == os.system("samtools index NC_000932.bam")
+
 Internally this module calls Bio.Sequencing.SamBam which offers a more
 SAM/BAM specific interface.
 """
@@ -51,9 +59,47 @@ def BamRefIterator(handle):
 
 class SamRefWriter(SequentialSequenceWriter):
     #Writing the header is a problem for a single pass strategy...
+    #Currently assume one record and/or users can sort it out afterwards.
     def write_record(self, record):
-        pass
-
+        auto_id = 0
+        ref = record.id
+        cigar = "%i=" % len(record)
+        qual = "*" #Get PHRED quality if available
+        co = "CO:Z:%s" % record.description.replace("\t", " ")
+        parts = [ref, "516", ref, "1", "0", cigar, "*", "0", "0", str(record.seq), qual, co]
+        self.handle.write("@SQ\tSN:%s\tLN:%i\n" % (ref, len(record)))
+        self.handle.write("\t".join(parts) + "\n")
+        for f in record.features:
+            def_flag = 768
+            if f.id and f.id != "<unknown id>":
+                id = f.id
+            elif f.sub_features:
+                id = "UNNAMED-TEMP-ID-%i" % auto_id
+                auto_id += 1
+            else:
+                id = "*"
+            if f.sub_features:
+                f_list = f.sub_features
+                def_flag += 0x1 #multipart
+                def_flag += 0x2 #all properly mapped
+                next_ref = ref
+            else:
+                f_list = [f]
+                next_ref = "*"
+            #TODO - First/last flag, and next strand flags
+            for sf in f_list:
+                assert not sf.sub_features
+                if sf.location.strand == -1:
+                    flag = str(def_flag + 0x10)
+                    seq = str(sf.extract(record.seq).reverse_complement())
+                else:
+                    flag = str(def_flag)
+                    seq = str(sf.extract(record.seq))
+                start = str(sf.location.start + 1)
+                cigar = "%i=" % len(seq)
+                co = "CO:Z:%s feature" % f.type
+                parts = [id, flag, ref, start, "30", cigar, next_ref, "0", "0", seq, "*", co]
+                self.handle.write("\t".join(parts) + "\n")
 
 def _test():
     """Run the module's doctests (PRIVATE).
