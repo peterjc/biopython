@@ -594,10 +594,14 @@ def _next_tag_raw(raw):
     code = raw[2]
     if code == "B":
         sub_code = raw[3]
-        length = struct.unpack("<I", raw[3:7])
+        length = struct.unpack("<I", raw[4:8])[0]
         if sub_code == "S":
-            value = raw[7:7+length*unit]
-            return tag, value, "Z", raw[7+length*unit:]
+            assert False, "Not tested yet"
+            value = raw[8:8+length]
+            return tag, code, "B", value, raw[8+length:]
+        elif sub_code == "f":
+            values = struct.unpack(("<%if" % length), raw[8:8+length*4])
+            return tag, code, "B", values, raw[8+length*4:]
         elif sub_code in "cCsSiIf":
             raise NotImplementedError("TODO - BAM tag B sub-element type %r (for %r tag)" % (sub_code, tag))
         else:
@@ -692,11 +696,16 @@ def _test_misc():
     for read in BamIterator(open("SamBam/tags.bam", "rb")):
         tag = str(read).rstrip("\n").split("\t")[-1]
         if ":f:" in tag:
+            #TODO - Compare as floats
             old = read.qname.split(":")[2]
             new = tag.split(":")[2]
             #String comparison handles nan==nan etc
             assert old==new or float(old)==float(new) or \
                    abs(float(old) - float(new)) < 0.000001, \
+                   "%s vs tag of %s" % (read.qname, tag)
+        elif ":B:" in tag:
+            #TODO - Compare values
+            assert read.qname.startswith("tag_" + tag[:5]), \
                    "%s vs tag of %s" % (read.qname, tag)
         else:
             assert read.qname == "tag_" + tag, \
