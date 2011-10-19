@@ -109,7 +109,7 @@ requirement of 0x2 for properly mapped pairs, and 0x40 for first read:
    <--1 <--2 0
 
 Can you guess what kind of paired reads there were? My guess from that
-would be 454 paired end reads, since the are on the same strand.
+would be 454 paired end reads, since they are on the same strand.
 
 """
 
@@ -358,14 +358,105 @@ _decode_dibase_byte = _build_decoder()
 
 #TODO - Have a Flag class?
 
-class SamRead(object):
-    """Represents a SAM/BAM entry, i.e. a single read.
+
+class SamBamRead(object):
+    r"""Represents a SAM/BAM entry, i.e. a single read.
 
     Paired end reads are described by two lines in SAM with the same
     template ID, and become two SamRead objects. Likewise a strobe-read
     or other mulit-read structure becomes multiple SamRead objects.
 
     This should be API equivalent to the pysam.AlignedRead object.
+
+    This is intended for end users to create read objects from
+    scratch, as opposed to the SamRead and BamRead classes which
+    are used to create functionally identical classes from raw
+    data in SAM and BAM format.
+
+    For example, to represent an unmapped read, we need to use FLAG
+    0x4, thus:
+
+    >>> read = SamBamRead(qname="demo", flag=0x4)
+    >>> str(read)
+    'demo\t4\t*\t0\t255\t*\t*\t0\t0\t*\t*\n'
+
+    Just printing or using str(read) gives the read formatted as a
+    SAM line (with the newline character included).
+    """
+    def __init__(self, qname="*", flag=0, rname="*", pos=-1,
+                 mapq=255, cigar_str="*", mrnm="*", mpos=-1,
+                 isize=0, seq=None, qual=None):
+        #TODO - Tags
+        #TODO - Store qname, rname, mrnm as None rather than *
+        #TODO - Type checking
+        self.qname = qname
+        self.flag = flag
+        self.rname = rname
+        self.pos = pos
+        self.mapq = mapq
+        self.cigar_str = cigar_str
+        self.mrnm = mrnm
+        self.mpos = mpos
+        self.isize = isize
+        self.seq = seq
+        self.qual = qual
+        self._tags = []
+
+    def __repr__(self):
+        """Returns simple representation of the read for debugging."""
+        return "%s(qname=%r, flag=%i, ...)" \
+                         % (self.__class__.__name__, self.qname, self.flag)
+
+    def __str__(self):
+        """Returns the read as a SAM line (including trailing new line)."""
+        seq = self.seq
+        if seq is None:
+            seq = "*"
+        qual = self.qual
+        if qual is None:
+            qual = "*"
+        parts = [self.qname, str(self.flag), self.rname, str(self.pos+1),
+                 str(self.mapq), self.cigar_str, self.mrnm, str(self.mpos+1),
+                 str(self.isize), seq, qual] + self._tags
+        if self.mrnm == self.rname and self.mrnm != "*":
+            parts[6] = "="
+        try:
+            return "\t".join(parts) + "\n"
+        except TypeError, e:
+            raise TypeError("%s from join on %r" % (e, parts))
+
+    @property
+    def cigar(self):
+        """CIGAR string parsed into a list of tuples (operator code, count).
+
+        The CIGAR operators MIDNSHP=X are represented using 0 to 7 (as in BAM),
+        so a cigar string of 36M2I3M becomes [(0, 36), (1, 2), (0, 3)] etc.
+
+        Any empty CIGAR string (represented as * in SAM) is given as None.
+        """
+        cigar = self.cigar_str
+        if cigar == "*":
+            return None
+        answer = []
+        count = ""
+        for letter in cigar:
+            if letter.isdigit():
+                count += letter #string addition
+            else:
+                operator = "MIDNSHP=X".find(letter)
+                if operator == -1:
+                    raise ValueError("Invalid character %s in CIGAR %s" \
+                                     % (letter, cigar))
+                answer.append((operator, int(count)))
+                count = ""
+        return answer
+
+
+class SamRead(SamBamRead):
+    """Represents a SAM/BAM entry created from a SAM file entry.
+
+    This is a subclass of SamBamRead, and it intended for use in creating
+    a read object from a line in a SAM file.
     """
     def __init__(self, data):
         r"""Create a SamRead object.
@@ -423,58 +514,14 @@ class SamRead(object):
         else:
             self.qual = parts[10]
         self._tags = parts[11:]
-    
-    def __repr__(self):
-        """Returns simple representation of the read for debugging."""
-        return "%s(qname=%r, flag=%i, ...)" \
-                         % (self.__class__.__name__, self.qname, self.flag)
 
-    def __str__(self):
-        """Returns the read as a SAM line (including trailing new line)."""
-        seq = self.seq
-        if seq is None:
-            seq = "*"
-        qual = self.qual
-        if qual is None:
-            qual = "*"
-        parts = [self.qname, str(self.flag), self.rname, str(self.pos+1),
-                 str(self.mapq), self.cigar_str, self.mrnm, str(self.mpos+1),
-                 str(self.isize), seq, qual] + self._tags
-        if self.mrnm == self.rname and self.mrnm != "*":
-            parts[6] = "="
-        try:
-            return "\t".join(parts) + "\n"
-        except TypeError, e:
-            raise TypeError("%s from join on %r" % (e, parts))
 
-    @property
-    def cigar(self):
-        """CIGAR string parsed into a list of tuples (operator code, count).
-        
-        The CIGAR operators MIDNSHP=X are represented using 0 to 7 (as in BAM),
-        so a cigar string of 36M2I3M becomes [(0, 36), (1, 2), (0, 3)] etc.
-        
-        Any empty CIGAR string (represented as * in SAM) is given as None.
-        """
-        cigar = self.cigar_str
-        if cigar == "*":
-            return None
-        answer = []
-        count = ""
-        for letter in cigar:
-            if letter.isdigit():
-                count += letter #string addition
-            else:
-                operator = "MIDNSHP=X".find(letter)
-                if operator == -1:
-                    raise ValueError("Invalid character %s in CIGAR %s" \
-                                     % (letter, cigar))
-                answer.append((operator, int(count)))
-                count = ""
-        return answer
+class BamRead(SamBamRead):
+    """Represents a SAM/BAM entry created from a BAM file entry.
 
- 
-class BamRead(SamRead):
+    This is a subclass of SamBamRead, and it intended for use in creating
+    a read object from an entry in a BAM file.
+    """
     def __init__(self, qname, flag, rname, pos, mapq, binary_cigar, mrnm, mpos, isize, read_len, binary_seq, binary_qual, binary_tags):
         r"""Create a BamRead object.
 
@@ -721,9 +768,11 @@ def _test_misc():
             assert read.qname.startswith("tag_" + tag[:5]), \
                    "%s vs tag of %s" % (read.qname, tag)
             if ":B:f," in read.qname:
-                old = repr(tuple(float(v) for v in read.qname.split(":B:f,")[1].split(",")))
-                new = repr(tuple(float(v) for v in tag.split(":")[2].strip("()").split(",")))
-                assert len(old) == len(new)
+                old = tuple(float(v) for v in read.qname.split(":B:f,")[1].split(","))
+                new = tuple(float(v) for v in tag.split(":")[2].strip("()").split(","))
+                assert len(old) == len(new), \
+                       "Count mismatch %i vs %i in %s\n%s\n%s\n" \
+                       % (read.qname, len(old), len(new), old, new)
                 for a,b in zip(old, new):
                     assert _comp_float(a, b), \
                            "Mismatch in %s,\n%s\n%s" % (read.qname, old, new)
