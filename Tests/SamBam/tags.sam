@@ -29,6 +29,9 @@ tag_ff:f:3.1415e-12	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	ff:f:3.1415e-12
 tag_ff:f:inf	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	ff:f:inf
 tag_ff:f:-inf	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	ff:f:-inf
 tag_ff:f:nan	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	ff:f:nan
+tag_bf:B:f,0,-0,-1.2345,1.12345,3.1415e-12	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	bf:B:f,0,-0,-1.2345,1.12345,3.1415e-12
+tag_bf:B:f,0,-0,-1.2345,1.12345,3.1415e-12,inf,-inf,nan	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	bf:B:f,0,-0,-1.2345,1.12345,3.1415e-12,inf,-inf,nan
+tag_bf:B:f,nan,-inf,inf,3.1415e-12,1.12345,-1.2345,-0,0	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	bf:B:f,nan,-inf,inf,3.1415e-12,1.12345,-1.2345,-0,0
 tag_zz:Z: 	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	zz:Z: 
 tag_zz:Z:   	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	zz:Z:   
 tag_zz:Z:!	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	zz:Z:!
