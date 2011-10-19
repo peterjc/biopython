@@ -16,13 +16,13 @@ for i in i_values:
     h.write("tag_xx:i:%i\t0\tchr1\t1\t255\t4X\t*\t0\t0\tACGT\t<<<<\txx:i:%i\n" % (i,i))
 
 #Now write some arrays of integers
-for i in range(1,len(i_values)+1):
-    v = ",".join(map(str, i_values[:i]))
-    h.write("tag_bx:B:i,%s\t0\tchr1\t10\t255\t4X\t*\t0\t0\tACGT\t<<<<\tbx:B:i,%s\n" % (v,v))
-    if min(i_values[:i]) < 0:
-        #Also test unsigned arrays
-        v = ",".join(map(str, [abs(x) for x in i_values[:i]]))
-        h.write("tag_bx:B:i,%s\t0\tchr1\t10\t255\t4X\t*\t0\t0\tACGT\t<<<<\tbx:B:i,%s\n" % (v,v))
+for code, lower, upper in [("i", -(2**31), 2**31 - 1),
+                           ("I",        0, 2**32 - 1)]:
+    for i in range(1,len(i_values)+1):
+        v = i_values[:i]
+        if lower <= min(v) and max(v) <= upper:
+            v = ",".join(map(str, i_values[:i]))
+            h.write("tag_b%s:B:%s,%s\t0\tchr1\t10\t255\t4X\t*\t0\t0\tACGT\t<<<<\tb%s:B:%s,%s\n" % (code,code,v,code,code,v))
     
 #Single precision floats (SAM code f, BAM code f)
 f_values = ["0", "-0", "-1.2345", "1.12345", "3.1415e-12", "inf", "-inf", "nan"]
