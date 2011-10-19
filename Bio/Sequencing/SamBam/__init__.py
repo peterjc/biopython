@@ -356,7 +356,76 @@ def _build_decoder():
 _decode_dibase_byte = _build_decoder()
 
 
-#TODO - Have a Flag class?
+class SamBamReadTags(dict):
+    r"""Represents the tags for a SAM/BAM read.
+
+    Although left ambiguous in early versions of the SAM/BAM specification,
+    it is now made clear that each two-letter tag should only appear once.
+    Therefore we can use the two-letter tags like dictionary keys.
+
+    >>> tags = SamBamReadTags()
+    >>> tags["CO"] = ("Z", "My comment")
+    >>> tags["CO"]
+    ('Z', 'My comment')
+    >>> "CO" in tags
+    True
+
+    Trying to access undefined tags raises a KeyError,
+
+    >>> tags["RT"]
+    Traceback (most recent call last):
+    ...
+    KeyError: 'RT'
+
+    Where this differs from a normal Python dictionary is you cannot use
+    anything you like for a key. SAM/BAM tags must be two letters:
+
+    >>> tags["x"] = "Hello"
+    Traceback (most recent call last):
+    ...
+    ValueError: Tag keys must be two letters in SAM/BAM, not 'x'
+
+    Also, the values must always be two-entry tuples, where the first
+    component is the SAM/BAM type (e.g. "Z" for strings, "i" for int32,
+    and "Bi" for an array of int32 values), and the second component is
+    the value (e.g. a string, integer, or list of integers). Basic type
+    checking is done:
+
+    >>> tags["xx"] = ("Z", "Hello")
+    >>> tags["xx"] = ("A", "H")
+    >>> tags["xx"] = ("Bi", [1,2,3])
+    """
+    def __setitem__(self, key, value):
+        if len(key) != 2:
+            raise ValueError("Tag keys must be two letters in SAM/BAM, not %r" % key)
+        try:
+            code, data = value
+        except ValueError:
+            raise ValueError("Tag value must be 2-tuple of SAM/BAM type and data value")
+        if code == "Z":
+            if not isinstance(data, basestring):
+                raise TypeError("Z type SAM/BAM tag values must be strings")
+        elif code == "A":
+            if not isinstance(data, basestring) or len(data)!=1:
+                raise TypeError("Z type SAM/BAM tag values must be single character strings")
+        elif code == "Bf":
+            try:
+                for v in data:
+                    if not isinstance(v, float) and not isinstance(v, int):
+                        raise TypeError("B float arrays require numerical values")
+            except AttributeError:
+                raise TypeError("B arrays require a list/tuple/sequence of numbers")
+        elif code.startswith("B"):
+            #TODO - bounds checking
+            try:
+                for v in data:
+                    if not isinstance(v, int):
+                        raise TypeError("B integer arrays require integer values")
+            except AttributeError:
+                raise TypeError("B arrays require a list/tuple/sequence of numbers")
+        else:
+            raise ValueError("SAM/BAM tag type %r not supported" % code)
+        return dict.__setitem__(self, key, value)
 
 
 class SamBamRead(object):
