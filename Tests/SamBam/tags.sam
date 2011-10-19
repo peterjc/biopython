@@ -21,6 +21,14 @@ tag_xx:i:64000	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:64000
 tag_xx:i:-64000	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:-64000
 tag_xx:i:1234567890	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:1234567890
 tag_xx:i:-1234567890	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	xx:i:-1234567890
+tag_ff:f:0	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	ff:f:0
+tag_ff:f:-0	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	ff:f:-0
+tag_ff:f:-1.2345	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	ff:f:-1.2345
+tag_ff:f:1.12345	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	ff:f:1.12345
+tag_ff:f:3.1415e-12	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	ff:f:3.1415e-12
+tag_ff:f:inf	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	ff:f:inf
+tag_ff:f:-inf	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	ff:f:-inf
+tag_ff:f:nan	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	ff:f:nan
 tag_zz:Z: 	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	zz:Z: 
 tag_zz:Z:   	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	zz:Z:   
 tag_zz:Z:!	0	chr1	50	255	4X	*	0	0	ACGT	<<<<	zz:Z:!
