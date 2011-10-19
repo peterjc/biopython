@@ -16,7 +16,11 @@ for i in i_values:
     h.write("tag_xx:i:%i\t0\tchr1\t1\t255\t4X\t*\t0\t0\tACGT\t<<<<\txx:i:%i\n" % (i,i))
 
 #Now write some arrays of integers
-for code, lower, upper in [("i", -(2**31), 2**31 - 1),
+for code, lower, upper in [("c",  -(2**7), 2**7 - 1),
+                           ("C",        0, 2**8 - 1),
+                           ("s", -(2**15), 2**15 - 1),
+                           ("S",        0, 2**16 - 1),
+                           ("i", -(2**31), 2**31 - 1),
                            ("I",        0, 2**32 - 1)]:
     for i in range(1,len(i_values)+1):
         v = i_values[:i]
