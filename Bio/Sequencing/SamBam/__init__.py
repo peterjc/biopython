@@ -689,6 +689,9 @@ def _pysam():
     compare(BamIterator(open("SamBam/ex1.bam", "rb")),
             pysam.Samfile("SamBam/ex1.bam", "rb"))
 
+def _comp_float(a,b):
+    return repr(a)==repr(b) or a==b or abs(float(a)-float(b))<0.000001,
+
 def _test_misc():
     print "Misc tests..."
     for read in SamIterator(open("SamBam/tags.sam")):
@@ -699,17 +702,28 @@ def _test_misc():
     for read in BamIterator(open("SamBam/tags.bam", "rb")):
         tag = str(read).rstrip("\n").split("\t")[-1]
         if ":f:" in tag:
-            #TODO - Compare as floats
-            old = read.qname.split(":")[2]
-            new = tag.split(":")[2]
-            #String comparison handles nan==nan etc
-            assert old==new or float(old)==float(new) or \
-                   abs(float(old) - float(new)) < 0.000001, \
+            old = float(read.qname.split(":")[2])
+            new = float(tag.split(":")[2])
+            assert _comp_float(old, new), \
                    "%s vs tag of %s" % (read.qname, tag)
         elif ":B:" in tag:
             #TODO - Compare values
             assert read.qname.startswith("tag_" + tag[:5]), \
                    "%s vs tag of %s" % (read.qname, tag)
+            if ":B:i," in read.qname:
+                old = repr(tuple(int(v) for v in read.qname.split(":B:i,")[1].split(",")))
+                new = tag.split(":")[2]
+                assert old == new, "Mismatch in %s,\n%s\n%s" % (read.qname, old, new)
+            elif ":B:f," in read.qname:
+                old = repr(tuple(float(v) for v in read.qname.split(":B:f,")[1].split(",")))
+                new = repr(tuple(float(v) for v in tag.split(":")[2].strip("()").split(",")))
+                assert len(old) == len(new)
+                for a,b in zip(old, new):
+                    assert _comp_float(a, b), \
+                           "Mismatch in %s,\n%s\n%s" % (read.qname, old, new)
+            else:
+                #TODO - Compare values
+                print read.qname, tag
         else:
             assert read.qname == "tag_" + tag, \
                    "%s vs tag of %s" % (read.qname, tag)
