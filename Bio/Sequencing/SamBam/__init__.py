@@ -631,6 +631,10 @@ def _next_tag_raw(raw):
             #Warning only?
             raise ValueError("Odd number of bytes for hex string? %r" % raw)
         return tag, code, "H", raw[3:i], raw[i+1:]
+    elif code == "f": #Single precision float
+        #TODO, leave it as a float rather than turning it into a string
+        #which is a short term solution during testing
+        return tag, code, "f", str(struct.unpack("<f",raw[3:7])[0]), raw[7:]
     else:
         raise ValueError("Unknown BAM tag element type %r (for %r tag)" % (code, tag))
 
@@ -687,8 +691,16 @@ def _test_misc():
                "%s vs tag of %s" % (read.qname, tag)
     for read in BamIterator(open("SamBam/tags.bam", "rb")):
         tag = str(read).rstrip("\n").split("\t")[-1]
-        assert read.qname == "tag_" + tag, \
-               "%s vs tag of %s" % (read.qname, tag)
+        if ":f:" in tag:
+            old = read.qname.split(":")[2]
+            new = tag.split(":")[2]
+            #String comparison handles nan==nan etc
+            assert old==new or float(old)==float(new) or \
+                   abs(float(old) - float(new)) < 0.000001, \
+                   "%s vs tag of %s" % (read.qname, tag)
+        else:
+            assert read.qname == "tag_" + tag, \
+                   "%s vs tag of %s" % (read.qname, tag)
     print "Done"
 
 def _test():
