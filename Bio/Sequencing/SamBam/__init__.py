@@ -24,16 +24,25 @@ should behave identically (modulo the tag ordering):
 
 Here's a sneaky trick, you can access the header like so:
 
-    >>> print sam.header
-    <BLANKLINE>
+    >>> print repr(sam.header)
+    ''
 
-Tricked you - this SAM file has no header! How about this?
+Tricked you - this SAM file has no header! Unsurprisingly, neither does
+the BAM version of the file - but the BAM format does separately list
+all the reference names and their lengths so a minimal SAM style header
+can be inferred automatically:
+
+    >>> print repr(bam.header)
+    '@SQ\tSN:chr1\tLN:1575\n@SQ\tSN:chr2\tLN:1584\n'
+
+That is probably atypical though - you would expect a proper SAM header
+to be present, indeed it is essential if using things like read groups:
 
     >>> sam = SamIterator(open("SamBam/tags.sam"))
     >>> print repr(sam.header)
     '@SQ\tSN:chr1\tLN:100\n@SQ\tSN:chr2\tLN:200\n'
 
-The same works on BAM files when there is an embedded SAM text header:
+Or on the BAM equivalent to this SAM file:
 
     >>> bam = BamIterator(open("SamBam/tags.bam", "rb"))
     >>> print repr(bam.header)
@@ -256,6 +265,10 @@ class BamIterator(object):
         self.header, ref_count = _bam_file_header(h)
         #Load any reference information
         self._references = [_bam_file_reference(h) for i in range(ref_count)]
+        if not self.header:
+            #Generate a minimal SAM style header from the BAM header
+            self.header = "".join(["@SQ\tSN:%s\tLN:%i\n" % (name, length) \
+                                   for name, length in self._references])
         self._h = h
 
     def __iter__(self):
