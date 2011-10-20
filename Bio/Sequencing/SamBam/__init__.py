@@ -326,13 +326,17 @@ def _bam_file_read_header(handle):
     if read_name_len > 200 or read_name_len <= 0:
         raise ValueError("A read name length of %i probably means the "
                          "parser is out of sync somehow. Read starts:\n%s"
-                         "\nand the read name would be %s etc." \
-                         % (read_name_len, repr(data), repr(handle.read(25))))
-    if read_len > 5000 or read_len <= 0:
+                         "\nand the read name would be %s... with flag %i" \
+                         % (read_name_len, repr(data),
+                            repr(handle.read(25)), flag))
+    #FLAG 516 is for embedding a reference sequence in SAM/BAM
+    #FLAG 768 is for a dummy read (usually SEQ is * though)
+    if (read_len > 5000 and flag!=516 and flag&768!=768) or read_len <= 0:
         raise ValueError("A read length of %i probably means the parser is out "
                          "of sync somehow. Read starts:\n%s\nand the read name "
-                         "would be %s." \
-                         % (read_len, repr(data), repr(handle.read(read_name_len))))
+                         "would be %s with flag %i" \
+                         % (read_len, repr(data),
+                            repr(handle.read(read_name_len)), flag))
 
     read_name = handle.read(read_name_len).rstrip("\0")
     end_offset = start_offset + block_size + 4
