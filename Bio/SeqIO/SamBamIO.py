@@ -198,6 +198,8 @@ class SamRefWriter(SequentialSequenceWriter):
                         flag += 0x40 #first
                     elif i + 1 == f_count:
                         flag += 0x80 #last
+                    else:
+                        flag += 0x40 + 0x80 #middle
                     if sf.location.strand == -1:
                         flag += 0x10
                         seq = str(sf.extract(record.seq).reverse_complement())
