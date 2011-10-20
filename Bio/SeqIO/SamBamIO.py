@@ -130,18 +130,22 @@ def _hack(iterator):
                 except:
                     f_list = []
                     f_map[read.qname] = f_list
-                f_list.append(f)
+                f_list.append(SeqFeature(loc, type="misc_feature"))
                 #Do we have all the pieces? If no TC tag assume 2 bits
+                #TODO - Use join vs order, depending on FLAG for middle bits?
                 if len(f_list) == read.tags.get("TC", ("i",2))[1]:
                     #Yes, we do.
                     #TODO - Sort the features using the SAM/BAM information
                     loc = FeatureLocation(min(f.location.start for f in f_list),
                                           max(f.location.start for f in f_list))
-                    f = SeqFeature(loc, id=read.qname, sub_features=f_list)
+                    f = SeqFeature(loc, id=read.qname, type="misc_feature",
+                                   sub_features=f_list, location_operator="join")
+                    if read.qname.startswith("UNNAMED-TEMP-ID-"):
+                        f.id = None
                     references[index].features.append(f)
             else:
                 #Easy case, single dummy read for this feature
-                f = SeqFeature(loc, id=read.qname)
+                f = SeqFeature(loc, id=read.qname, type="misc_feature")
                 references[index].features.append(f)
 
     #No more reads, return any pending references
