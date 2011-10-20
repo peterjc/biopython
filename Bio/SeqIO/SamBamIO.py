@@ -28,9 +28,25 @@ You can do things like convert from GenBank to SAM,
 
 >>> SeqIO.convert("GenBank/NC_000932.gb", "gb", "NC_000932.sam", "sam-ref")
 1
+
+Then if you wanted it as a BAM file we currently suggest using samtools,
+
 >>> import os
 >>> assert 0 == os.system("samtools view -S -b NC_000932.sam | samtools sort - NC_000932")
 >>> assert 0 == os.system("samtools index NC_000932.bam")
+
+You can then read back either the SAM or the BAM file as a SeqRecord,
+in this example there is only one reference so we can use SeqIO.read():
+
+>>> record = SeqIO.read("NC_000932.bam", "bam-ref")
+>>> print record.id, len(record)
+NC_000932.1 154478
+
+Compare this to the original GenBank file, and it matches:
+
+>>> record = SeqIO.read("GenBank/NC_000932.gb", "gb")
+>>> print record.id, len(record)
+NC_000932.1 154478
 
 Internally this module calls Bio.Sequencing.SamBam which offers a more
 SAM/BAM specific interface.
