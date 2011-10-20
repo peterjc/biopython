@@ -88,7 +88,6 @@ class SamRefWriter(SequentialSequenceWriter):
                 starts = starts[1:] + starts[:1] #offset by one
                 strands = strands[1:] + strands[:1] #offset by one
                 for i, sf, next_start, next_strand in zip(range(f_count), f_list, starts, strands):
-                    flag = def_flag + 0x1 + 0x2
                     #TODO - Check first/last for reverse complement features
                     if i == 0:
                         flag += 0x40 #first
