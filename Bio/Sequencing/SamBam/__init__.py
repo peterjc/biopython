@@ -22,8 +22,7 @@ should behave identically (modulo the tag ordering):
     ...     assert s.cigar == b.cigar
     ...     assert sorted(s.tags.items()) == sorted(b.tags.items())
 
-Here's a sneaky trick (which probably needs a better API to access),
-you can access the header like so:
+Here's a sneaky trick, you can access the header like so:
 
     >>> print sam.header
     <BLANKLINE>
@@ -31,8 +30,6 @@ you can access the header like so:
 Tricked you - this SAM file has no header! How about this?
 
     >>> sam = SamIterator(open("SamBam/tags.sam"))
-    >>> print sum(1 for read in sam)
-    417
     >>> print repr(sam.header)
     '@SQ\tSN:chr1\tLN:100\n@SQ\tSN:chr2\tLN:200\n'
 
@@ -170,31 +167,47 @@ class SamIterator(object):
         self._handle = handle
         self._required_flag = required_flag
         self._excluded_flag = excluded_flag
-        self.header = ""
-        #TODO - Check the header here before the reads
+        headers = []
+        self._saved_line = None
+        while True:
+            line = handle.readline()
+            if not line:
+                break
+            if line[0] == "@":
+                headers.append(line)
+            else:
+                self._saved_line = line
+                break
+        self.header = "".join(headers)
 
     def __iter__(self):
         handle = self._handle
+        #Mess about with the first read as a special case since it was
+        #already taken from the handle during __iter__ header parsing.
+        if self._saved_line:
+            line = self._saved_line
+            self._saved_line = None
+        else:
+            line = handle.readline()
         if self._required_flag or self._excluded_flag:
+            #Filter the reads
             required_flag = self._required_flag
             excluded_flag = self._excluded_flag
-            for line in handle:
+            while line:
                 if line[0] == "@":
-                    self.header += line
-                    continue
+                    raise ValueError("SAM header @ lines must be before the reads")
                 flag = int(line.split("\t",2)[1])
-                if flag & required_flag != required_flag:
-                    continue
-                if flag & excluded_flag:
-                    continue
-                yield SamRead(line)
-        else:
-            for line in handle:
-                if line[0] == "@":
-                    self.header += line
-                    continue
-                else:
+                if (flag & required_flag == required_flag) \
+                and not (flag & excluded_flag):
                     yield SamRead(line)
+                line = handle.readline()
+        else:
+            #Take all the reads
+            while line:
+                if line[0] == "@":
+                    raise ValueError("SAM header @ lines must be before the reads")
+                yield SamRead(line)
+                line = handle.readline()
 
 class BamIterator(object):
     """Loop over a BAM file returning BamRead objects.
