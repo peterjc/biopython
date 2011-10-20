@@ -43,14 +43,14 @@ You can then read back either the SAM or the BAM file as a SeqRecord,
 in this example there is only one reference so we can use SeqIO.read():
 
 >>> record = SeqIO.read("NC_000932.bam", "bam-ref")
->>> print record.id, len(record)
-NC_000932.1 154478
+>>> print record.id, len(record), len(record.features)
+NC_000932.1 154478 259
 
 Compare this to the original GenBank file, and it matches:
 
 >>> record = SeqIO.read("GenBank/NC_000932.gb", "gb")
->>> print record.id, len(record)
-NC_000932.1 154478
+>>> print record.id, len(record), len(record.features)
+NC_000932.1 154478 259
 
 Internally this module calls Bio.Sequencing.SamBam which offers a more
 SAM/BAM specific interface.
@@ -59,6 +59,7 @@ SAM/BAM specific interface.
 from Bio.Alphabet import single_letter_alphabet
 from Bio.Seq import Seq, UnknownSeq
 from Bio.SeqRecord import SeqRecord
+from Bio.SeqFeature import SeqFeature, FeatureLocation
 from Bio.SeqIO.Interfaces import SequentialSequenceWriter
 
 from Bio.Sequencing import SamBam
@@ -92,6 +93,7 @@ def _hack(iterator):
         raise StopIteration
     #Should we cope with unsorted data?
     cur_index = 0
+    f_map = dict()
     for read in iterator:
         if not read.rname:
             continue
@@ -105,6 +107,7 @@ def _hack(iterator):
         elif index > cur_index:
             yield references[cur_index]
             references[cur_index] = None
+            f_map = dict()
             cur_index = index
         
         #What does this read tell us about the references?
@@ -112,6 +115,36 @@ def _hack(iterator):
             #Dummy read with sequence
             assert len(read.seq) == len(references[index].seq)
             references[index].seq = Seq(read.seq, single_letter_alphabet)
+        elif read.flag & 768 == 768:
+            #Dummy read for annotation
+            #TODO - Merge split location features
+            if read.flag & 0x10:
+                strand = -1
+            else:
+                strand = +1
+            loc = FeatureLocation(read.mpos, read.mpos+len(read.seq), strand)
+            if read.flag & 0x1:
+                #Split location as multiple dummy reads
+                try:
+                    f_list = f_map[read.qname]
+                except:
+                    f_list = []
+                    f_map[read.qname] = f_list
+                f_list.append(f)
+                #Do we have all the pieces? If no TC tag assume 2 bits
+                if len(f_list) == read.tags.get("TC", ("i",2))[1]:
+                    #Yes, we do.
+                    #TODO - Sort the features using the SAM/BAM information
+                    loc = FeatureLocation(min(f.location.start for f in f_list),
+                                          max(f.location.start for f in f_list))
+                    f = SeqFeature(loc, id=read.qname, sub_features=f_list)
+                    references[index].features.append(f)
+            else:
+                #Easy case, single dummy read for this feature
+                f = SeqFeature(loc, id=read.qname)
+                references[index].features.append(f)
+
+    #No more reads, return any pending references
     for index, record in enumerate(references):
         if record is not None:
             assert cur_index <= index
