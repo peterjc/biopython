@@ -22,6 +22,26 @@ should behave identically (modulo the tag ordering):
     ...     assert s.cigar == b.cigar
     ...     assert sorted(s.tags.items()) == sorted(b.tags.items())
 
+Here's a sneaky trick (which probably needs a better API to access),
+you can access the header like so:
+
+    >>> print sam.header
+    <BLANKLINE>
+
+Tricked you - this SAM file has no header! How about this?
+
+    >>> sam = SamIterator(open("SamBam/tags.sam"))
+    >>> print sum(1 for read in sam)
+    417
+    >>> print repr(sam.header)
+    '@SQ\tSN:chr1\tLN:100\n@SQ\tSN:chr2\tLN:200\n'
+
+The same works on BAM files when there is an embedded SAM text header:
+
+    >>> bam = BamIterator(open("SamBam/tags.bam", "rb"))
+    >>> print repr(bam.header)
+    '@SQ\tSN:chr1\tLN:100\n@SQ\tSN:chr2\tLN:200\n'
+
 The iterators allow you to filter by flag, much like the samtools view
 command does. For example, with no filtering we get all the records:
 
@@ -115,7 +135,7 @@ would be 454 paired end reads, since they are on the same strand.
 import gzip
 import struct
 
-def SamIterator(handle, required_flag=0, excluded_flag=0):
+class SamIterator(object):
     """Loop over a SAM file returning SamRead objects.
 
     >>> with open("SamBam/ex1.sam") as handle:
@@ -146,27 +166,37 @@ def SamIterator(handle, required_flag=0, excluded_flag=0):
     to only show records where those FLAG bits are set. Thus for example,
     using an argument of 2 requires the reads be properly mapped.
     """
-    if required_flag or excluded_flag:
-        for line in handle:
-            if line[0] == "@":
-                #Ignore any optional header
-                continue
-            flag = int(line.split("\t",2)[1])
-            if flag & required_flag != required_flag:
-                continue
-            if flag & excluded_flag:
-                continue
-            yield SamRead(line)
-    else:
-        for line in handle:
-            if line[0] == "@":
-                #Ignore any optional header
-                continue
-            else:
+    def __init__(self, handle, required_flag=0, excluded_flag=0):
+        self._handle = handle
+        self._required_flag = required_flag
+        self._excluded_flag = excluded_flag
+        self.header = ""
+        #TODO - Check the header here before the reads
+
+    def __iter__(self):
+        handle = self._handle
+        if self._required_flag or self._excluded_flag:
+            required_flag = self._required_flag
+            excluded_flag = self._excluded_flag
+            for line in handle:
+                if line[0] == "@":
+                    self.header += line
+                    continue
+                flag = int(line.split("\t",2)[1])
+                if flag & required_flag != required_flag:
+                    continue
+                if flag & excluded_flag:
+                    continue
                 yield SamRead(line)
+        else:
+            for line in handle:
+                if line[0] == "@":
+                    self.header += line
+                    continue
+                else:
+                    yield SamRead(line)
 
-
-def BamIterator(handle, required_flag=0, excluded_flag=0):
+class BamIterator(object):
     """Loop over a BAM file returning BamRead objects.
 
     This should be functionally identical to using a SAM file
@@ -205,32 +235,44 @@ def BamIterator(handle, required_flag=0, excluded_flag=0):
     3270
 
     """
-    h = gzip.GzipFile(fileobj=handle)
-    header, ref_count = _bam_file_header(h)
-    #Load any reference information
-    references = [_bam_file_reference(h) for i in range(ref_count)]
-    #Loop over the reads
-    while True:
-        read_name, start_offset, end_offset, ref_id, ref_pos, \
-            bin, map_qual, cigar_len, flag, read_len, mate_ref_id, \
-            mate_ref_pos, inferred_insert_size, tag_len \
-            = _bam_file_read_header(h)
-        raw_cigar = h.read(cigar_len * 4)
-        raw_seq = h.read((read_len+1)/2) # round up to make it even
-        raw_qual = h.read(read_len)
-        raw_tags = h.read(tag_len)
-        assert h.tell() == end_offset, \
-            "%i vs %i diff %i\n" % (h.tell(), end_offset, h.tell()-end_offset)
-        if required_flag and flag & required_flag != required_flag:
-            continue
-        if flag & excluded_flag:
-            continue
-        ref_name = references[ref_id][0]
-        mate_ref_name = references[mate_ref_id][0]
-        yield BamRead(read_name, flag, ref_name, ref_pos, map_qual,
-                      raw_cigar, mate_ref_name, mate_ref_pos,
-                      inferred_insert_size, read_len,
-                      raw_seq, raw_qual, raw_tags)
+    def __init__(self, handle, required_flag=0, excluded_flag=0):
+        self._handle = handle
+        self._required_flag = required_flag
+        self._excluded_flag = excluded_flag
+        h = gzip.GzipFile(fileobj=handle)
+        self.header, ref_count = _bam_file_header(h)
+        #Load any reference information
+        self._references = [_bam_file_reference(h) for i in range(ref_count)]
+        self._h = h
+
+    def __iter__(self):
+        h = self._h
+        references = self._references
+        required_flag = self._required_flag
+        excluded_flag = self._excluded_flag
+        #Assumes the handle is just after the header!
+        #Loop over the reads
+        while True:
+            read_name, start_offset, end_offset, ref_id, ref_pos, \
+                bin, map_qual, cigar_len, flag, read_len, mate_ref_id, \
+                mate_ref_pos, inferred_insert_size, tag_len \
+                = _bam_file_read_header(h)
+            raw_cigar = h.read(cigar_len * 4)
+            raw_seq = h.read((read_len+1)/2) # round up to make it even
+            raw_qual = h.read(read_len)
+            raw_tags = h.read(tag_len)
+            assert h.tell() == end_offset, \
+                "%i vs %i diff %i\n" % (h.tell(), end_offset, h.tell()-end_offset)
+            if required_flag and flag & required_flag != required_flag:
+                continue
+            if flag & excluded_flag:
+                continue
+            ref_name = references[ref_id][0]
+            mate_ref_name = references[mate_ref_id][0]
+            yield BamRead(read_name, flag, ref_name, ref_pos, map_qual,
+                          raw_cigar, mate_ref_name, mate_ref_pos,
+                          inferred_insert_size, read_len,
+                          raw_seq, raw_qual, raw_tags)
 
 
 def _bam_file_header(handle):
