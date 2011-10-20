@@ -63,12 +63,15 @@ class SamRefWriter(SequentialSequenceWriter):
     def write_record(self, record):
         auto_id = 0
         ref = record.id
-        cigar = "%i=" % len(record)
-        qual = "*" #Get PHRED quality if available
-        co = "CO:Z:%s" % record.description.replace("\t", " ")
-        parts = [ref, "516", ref, "1", "0", cigar, "*", "0", "0", str(record.seq), qual, co]
+        #TODO - Try and get quality scores from per-letter-annotation
+        dummy_read = SamBam.SamBamRead(qname=ref, flag=516,
+                                       rname=ref, pos=-1, mapq=0,
+                                       cigar_str="%i=" % len(record),
+                                       seq = str(record.seq))
+        dummy_read.tags["co"] = ("Z", record.description)
         self.handle.write("@SQ\tSN:%s\tLN:%i\n" % (ref, len(record)))
-        self.handle.write("\t".join(parts) + "\n")
+        self.handle.write(str(dummy_read))
+        #self.handle.write("\t".join(parts) + "\n")
         for f in record.features:
             def_flag = 768
             if f.id and f.id != "<unknown id>":
@@ -81,15 +84,13 @@ class SamRefWriter(SequentialSequenceWriter):
             if f.sub_features:
                 f_list = f.sub_features
                 f_count = len(f_list)
-                def_flag += 0x1 #multipart
-                def_flag += 0x2 #all properly mapped
-                starts = [str(sf.location.start+1) for sf in f_list]
+                starts = [sf.location.start for sf in f_list]
                 strands = [sf.location.strand for sf in f_list]
                 starts = starts[1:] + starts[:1] #offset by one
                 strands = strands[1:] + strands[:1] #offset by one
                 for i, sf, next_start, next_strand in zip(range(f_count), f_list, starts, strands):
                     #TODO - Check first/last for reverse complement features
-                    flag = def_flag
+                    flag = def_flag + 0x1 + 0x2 #multipart, all properly mapped
                     if i == 0:
                         flag += 0x40 #first
                     elif i + 1 == f_count:
@@ -101,13 +102,13 @@ class SamRefWriter(SequentialSequenceWriter):
                         seq = str(sf.extract(record.seq))
                     if next_strand == -1:
                         flag += 0x20
-                    start = str(sf.location.start + 1)
-                    cigar = "%i=" % len(seq)
-                    co = "CO:Z:%s feature" % f.type
-                    parts = [id, str(flag), ref, start, "30", cigar, ref, next_start, "0", seq, "*", co]
+                    dummy_read = SamBam.SamBamRead(id, flag, ref, sf.location.start, 30,
+                                                   "%i=" % len(seq), ref, next_start, 0,
+                                                   seq)
+                    dummy_read.tags["CO"] = ("Z", "%s feature" % f.type)
                     if f_count > 2:
-                        parts.append("TC:i:%i" % f_count)
-                    self.handle.write("\t".join(parts) + "\n")
+                        dummy_read.tags["TC"] = ("i", f_count)
+                    self.handle.write(str(dummy_read))
             else:
                 next_ref = "*"
                 if f.location.strand == -1:
@@ -116,11 +117,10 @@ class SamRefWriter(SequentialSequenceWriter):
                 else:
                     flag = def_flag
                     seq = str(f.extract(record.seq))
-                start = str(f.location.start + 1)
-                cigar = "%i=" % len(seq)
-                co = "CO:Z:%s feature" % f.type
-                parts = [id, str(flag), ref, start, "30", cigar, next_ref, "0", "0", seq, "*", co]
-                self.handle.write("\t".join(parts) + "\n")
+                dummy_read = SamBam.SamBamRead(id, flag, ref, f.location.start, 30,
+                                               "%i=" % len(seq), seq=seq)
+                dummy_read.tags["CO"] = ("Z", "%s feature" %f.type)
+                self.handle.write(str(dummy_read))
 
 def _test():
     """Run the module's doctests (PRIVATE).
