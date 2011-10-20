@@ -83,7 +83,7 @@ class SamRefWriter(SequentialSequenceWriter):
                 f_count = len(f_list)
                 def_flag += 0x1 #multipart
                 def_flag += 0x2 #all properly mapped
-                starts = [sf.location.start+1 for sf in f_list]
+                starts = [str(sf.location.start+1) for sf in f_list]
                 strands = [sf.location.strand for sf in f_list]
                 starts = starts[1:] + starts[:1] #offset by one
                 strands = strands[1:] + strands[:1] #offset by one
@@ -104,7 +104,7 @@ class SamRefWriter(SequentialSequenceWriter):
                     start = str(sf.location.start + 1)
                     cigar = "%i=" % len(seq)
                     co = "CO:Z:%s feature" % f.type
-                    parts = [id, str(flag), ref, start, "30", cigar, ref, str(next_start+1), "0", seq, "*", co]
+                    parts = [id, str(flag), ref, start, "30", cigar, ref, next_start, "0", seq, "*", co]
                     if f_count > 2:
                         parts.append("TC:i:%i" % f_count)
                     self.handle.write("\t".join(parts) + "\n")
