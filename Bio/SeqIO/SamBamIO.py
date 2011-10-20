@@ -185,6 +185,8 @@ class SamRefWriter(SequentialSequenceWriter):
             else:
                 id = "*"
             if f.sub_features:
+                #TODO - Explore using CIGAR N operator instead which
+                #may be much simpler, but cannot handle mixed strand.
                 f_list = f.sub_features
                 f_count = len(f_list)
                 starts = [sf.location.start for sf in f_list]
