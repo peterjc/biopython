@@ -24,7 +24,7 @@ should behave identically (modulo the tag ordering):
 
 Here's a sneaky trick, you can access the header like so:
 
-    >>> print repr(sam.header)
+    >>> print repr(sam.text)
     ''
 
 Tricked you - this SAM file has no header! Unsurprisingly, neither does
@@ -32,20 +32,20 @@ the BAM version of the file - but the BAM format does separately list
 all the reference names and their lengths so a minimal SAM style header
 can be inferred automatically:
 
-    >>> print repr(bam.header)
+    >>> print repr(bam.text)
     '@SQ\tSN:chr1\tLN:1575\n@SQ\tSN:chr2\tLN:1584\n'
 
 That is probably atypical though - you would expect a proper SAM header
 to be present, indeed it is essential if using things like read groups:
 
     >>> sam = SamIterator(open("SamBam/tags.sam"))
-    >>> print repr(sam.header)
+    >>> print repr(sam.text)
     '@SQ\tSN:chr1\tLN:100\n@SQ\tSN:chr2\tLN:200\n'
 
 Or on the BAM equivalent to this SAM file:
 
     >>> bam = BamIterator(open("SamBam/tags.bam", "rb"))
-    >>> print repr(bam.header)
+    >>> print repr(bam.text)
     '@SQ\tSN:chr1\tLN:100\n@SQ\tSN:chr2\tLN:200\n'
 
 In addition to the raw header string, you can get the reference names,
@@ -219,7 +219,7 @@ class SamIterator(object):
             else:
                 self._saved_line = line
                 break
-        self.header = "".join(headers)
+        self.text = "".join(headers)
 
     @property
     def nreferences(self):
@@ -235,6 +235,11 @@ class SamIterator(object):
     def lengths(self):
         """Lengths of the reference sequences (read only tuple)."""
         return tuple(l for r,l in self._references)
+
+    @property
+    def header(self):
+        """Header parsed into two-level dictionary (read only)."""
+        return ParseSamHeader(self.text)
 
     def __iter__(self):
         handle = self._handle
@@ -309,13 +314,13 @@ class BamIterator(object):
         self._required_flag = required_flag
         self._excluded_flag = excluded_flag
         h = gzip.GzipFile(fileobj=handle)
-        self.header, ref_count = _bam_file_header(h)
+        self.text, ref_count = _bam_file_header(h)
         #Load any reference information
         self._references = [_bam_file_reference(h) for i in range(ref_count)]
         #TODO - What if the @SQ lines contradict the BAM header?
-        if not self.header:
+        if not self.text:
             #Generate a minimal SAM style header from the BAM header
-            self.header = "".join(["@SQ\tSN:%s\tLN:%i\n" % (name, length) \
+            self.text = "".join(["@SQ\tSN:%s\tLN:%i\n" % (name, length) \
                                    for name, length in self._references])
         self._h = h
 
@@ -334,6 +339,11 @@ class BamIterator(object):
     def lengths(self):
         """Lengths of the reference sequences (read only tuple)."""
         return tuple(l for r,l in self._references)
+
+    @property
+    def header(self):
+        """Header parsed into two-level dictionary (read only)."""
+        return ParseSamHeader(self.text)
 
     def __iter__(self):
         h = self._h
@@ -363,6 +373,30 @@ class BamIterator(object):
                           raw_cigar, mate_ref_name, mate_ref_pos,
                           inferred_insert_size, read_len,
                           raw_seq, raw_qual, raw_tags)
+
+def ParseSamHeader(text):
+    """Parse the SAM plain text header into a two-level dictionary."""
+    d1 = dict()
+    for line in text.split("\n"):
+        if not line.strip():
+            continue
+        assert line[0] == "@"
+        assert line[3] == "\t"
+        k1 = line[1:3]
+        d2 = dict()
+        for part in line[4:].rstrip().split("\t"):
+            assert part[2] == ":"
+            k, v = part.split(":",1)
+            assert len(k)==2
+            if k1=="SQ" and k=="LN":
+                #Currently the only case need to cast
+                v = int(v)
+            d2[k] = v
+        try:
+            d1[k1].append(d2)
+        except KeyError:
+            d1[k1] = [d2]
+    return d1
 
 
 def _bam_file_header(handle):
@@ -1022,6 +1056,10 @@ def _pysam():
             "%r vs %r" % (a_iter.references, b_iter.references)
         assert a_iter.lengths == b_iter.lengths, \
             "%r vs %r" % (a_iter.lengths, b_iter.lengths)
+        if a_iter.header and b_iter.header:
+            #pysam doesn't infer a minimal SAM header from BAM header
+            assert a_iter.header == b_iter.header, \
+                "%r vs %r" % (a_iter.header, b_iter.header)
         for a, b in izip_longest(a_iter, b_iter):
             #Note using mrnm and isize to test these aliases
             assert b is not None, "Extra read in a: %r" % str(a)
