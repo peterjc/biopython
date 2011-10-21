@@ -159,9 +159,9 @@ class SamIterator(object):
     99
     >>> print read.rname, read.pos
     chr1 111
-    >>> print read.mrnm, read.mpos #aka RNEXT and PNEXT
+    >>> print read.rnext, read.pnext #RNEXT and PNEXT aka MRNM and MPOS
     = 290
-    >>> print read.isize #aka TLEN
+    >>> print read.tlen #TLEN aka ISIZE
     214
     >>> print read.cigar
     [(0, 35)]
@@ -239,9 +239,9 @@ class BamIterator(object):
     99
     >>> print read.rname, read.pos
     chr1 111
-    >>> print read.mrnm, read.mpos #aka RNEXT and PNEXT
+    >>> print read.rnext, read.pnext #aka RNEXT and PNEXT
     chr1 290
-    >>> print read.isize #aka TLEN
+    >>> print read.tlen #aka TLEN
     214
     >>> print read.cigar
     [(0, 35)]
@@ -558,9 +558,9 @@ class SamBamRead(object):
     SAM line (with the newline character included).
     """
     def __init__(self, qname="*", flag=0, rname="*", pos=-1,
-                 mapq=255, cigar_str="*", mrnm="*", mpos=-1,
-                 isize=0, seq=None, qual=None, tags=None):
-        #TODO - Store qname, rname, mrnm as None rather than *
+                 mapq=255, cigar_str="*", rnext="*", pnext=-1,
+                 tlen=0, seq=None, qual=None, tags=None):
+        #TODO - Store qname, rname, rnext as None rather than *
         #TODO - Type checking
         self.qname = qname
         self.flag = flag
@@ -568,9 +568,9 @@ class SamBamRead(object):
         self.pos = pos
         self.mapq = mapq
         self.cigar_str = cigar_str
-        self.mrnm = mrnm
-        self.mpos = mpos
-        self.isize = isize
+        self.rnext = rnext
+        self.pnext = pnext
+        self.tlen = tlen
         self.seq = seq
         self.qual = qual
         if tags is not None and not isinstance(tags, SamBamReadTags):
@@ -591,15 +591,15 @@ class SamBamRead(object):
         if qual is None:
             qual = "*"
         parts = [self.qname, str(self.flag), self.rname, str(self.pos+1),
-                 str(self.mapq), self.cigar_str, self.mrnm, str(self.mpos+1),
-                 str(self.isize), seq, qual]
+                 str(self.mapq), self.cigar_str, self.rnext, str(self.pnext+1),
+                 str(self.tlen), seq, qual]
         try:
             #See if this is a SAM record where we never un-parsed the tags
             parts.extend(self._raw_tags)
         except AttributeError:
             if self.tags:
                 parts.append(str(self.tags))
-        if self.mrnm == self.rname and self.mrnm != "*":
+        if self.rnext == self.rname and self.rnext != "*":
             parts[6] = "="
         try:
             return "\t".join(parts) + "\n"
@@ -633,6 +633,33 @@ class SamBamRead(object):
         return answer
 
     @property
+    def mrnm(self):
+        """Use RNEXT instead, replaced mate's reference name (MRNM).
+
+        This is a legacy method for compatibility with early pysam
+        (versions 0.5 or older).
+        """
+        return self.rnext
+
+    @property
+    def mpos(self):
+        """Use PNEXT instead, replaced mate's position (MPOS).
+
+        This is a legacy method for compatibility with early pysam
+        (version 0.5 or older).
+        """
+        return self.pnext
+
+    @property
+    def isize(self):
+        """Use template length (TLEN) instead, replaced insert size (ISZIE).
+
+        This is a legacy method for compatibility with early pysam
+        (version 0.5 or older).
+        """
+        return self.tlen
+
+    @property
     def tags(self):
         """Any tags for the read as a dictionary like object."""
         if self._tags:
@@ -661,7 +688,7 @@ class SamRead(SamBamRead):
         frag_5022
         >>> print read.pos
         0
-        >>> print read.mpos
+        >>> print read.pnext
         -1
 
         Getting back to the SAM formatted line is easy, print it or use str(),
@@ -687,13 +714,13 @@ class SamRead(SamBamRead):
         parts = data.rstrip("\n").split("\t")
         self.qname = parts[0]
         self.flag = int(parts[1])
-        self.rname = parts[2] #not an integer!
+        self.rname = parts[2] #RNAME aka MRNM, not an integer!
         self.pos = int(parts[3]) - 1
         self.mapq = int(parts[4])
         self.cigar_str = parts[5]
-        self.mrnm = parts[6]
-        self.mpos = int(parts[7]) - 1 #aka PNEXT
-        self.isize = int(parts[8]) #aka TLEN
+        self.rnext = parts[6]
+        self.pnext = int(parts[7]) - 1 #PNEXT aka MPOS
+        self.tlen = int(parts[8]) #TLEN aka ISAIZE
         if parts[9] == "*":
             self.seq = None
         else:
@@ -729,14 +756,16 @@ class BamRead(SamBamRead):
     This is a subclass of SamBamRead, and it intended for use in creating
     a read object from an entry in a BAM file.
     """
-    def __init__(self, qname, flag, rname, pos, mapq, binary_cigar, mrnm, mpos, isize, read_len, binary_seq, binary_qual, binary_tags):
+    def __init__(self, qname, flag, rname, pos, mapq, binary_cigar,
+                 rnext, pnext, tlen, read_len, binary_seq, binary_qual,
+                 binary_tags):
         r"""Create a BamRead object.
 
         This is a lazy-parsing approach to loading SAM/BAM files, so
         all the parser does is grab the raw data and pass it to this
         object. The bare minimum parsing is done at this point.
 
-        >>> read = BamRead(qname='rd01', flag=1, rname="*", pos=-1, mapq=255, binary_cigar='', mrnm="*", mpos=-1, isize=0, read_len=0, binary_seq='', binary_qual='', binary_tags='')
+        >>> read = BamRead(qname='rd01', flag=1, rname="*", pos=-1, mapq=255, binary_cigar='', rnext="*", pnext=-1, tlen=0, read_len=0, binary_seq='', binary_qual='', binary_tags='')
         >>> print read.qname
         rd01
 
@@ -766,9 +795,9 @@ class BamRead(SamBamRead):
         self.pos = pos
         self.mapq = mapq
         self._binary_cigar = binary_cigar
-        self.mrnm = mrnm #aka RNEXT, the actual name, not the integer!
-        self.mpos = mpos #aka PNEXT
-        self.isize = isize #aka TLEN
+        self.rnext = rnext #RNEXT aka MRNM, the actual name, not the integer!
+        self.pnext = pnext #PNEXT aka MPOS
+        self.tlen = tlen #TLEN aka ISIZE
         self._read_len = read_len
         self._binary_seq = binary_seq
         self._binary_qual = binary_qual
@@ -924,6 +953,7 @@ def _pysam():
     def compare(a_iter, b_iter):
         from itertools import izip_longest
         for a, b in izip_longest(a_iter, b_iter):
+            #Note using mrnm and isize to test these aliases
             assert b is not None, "Extra read in a: %r" % str(a)
             assert a is not None, "Extra read in b: %r" % str(b)
             assert a.qname == b.qname, "%r vs %r" % (a.qname, b.qname)
