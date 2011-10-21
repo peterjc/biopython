@@ -24,7 +24,7 @@ should behave identically (modulo the tag ordering):
 
 Here's a sneaky trick, you can access the header like so:
 
-    >>> print repr(sam.header)
+    >>> print repr(sam.text)
     ''
 
 Tricked you - this SAM file has no header! Unsurprisingly, neither does
@@ -32,20 +32,20 @@ the BAM version of the file - but the BAM format does separately list
 all the reference names and their lengths so a minimal SAM style header
 can be inferred automatically:
 
-    >>> print repr(bam.header)
+    >>> print repr(bam.text)
     '@SQ\tSN:chr1\tLN:1575\n@SQ\tSN:chr2\tLN:1584\n'
 
 That is probably atypical though - you would expect a proper SAM header
 to be present, indeed it is essential if using things like read groups:
 
     >>> sam = SamIterator(open("SamBam/tags.sam"))
-    >>> print repr(sam.header)
+    >>> print repr(sam.text)
     '@SQ\tSN:chr1\tLN:100\n@SQ\tSN:chr2\tLN:200\n'
 
 Or on the BAM equivalent to this SAM file:
 
     >>> bam = BamIterator(open("SamBam/tags.bam", "rb"))
-    >>> print repr(bam.header)
+    >>> print repr(bam.text)
     '@SQ\tSN:chr1\tLN:100\n@SQ\tSN:chr2\tLN:200\n'
 
 In addition to the raw header string, you can get the reference names,
@@ -219,7 +219,7 @@ class SamIterator(object):
             else:
                 self._saved_line = line
                 break
-        self.header = "".join(headers)
+        self.text = "".join(headers)
 
     @property
     def nreferences(self):
@@ -309,13 +309,13 @@ class BamIterator(object):
         self._required_flag = required_flag
         self._excluded_flag = excluded_flag
         h = gzip.GzipFile(fileobj=handle)
-        self.header, ref_count = _bam_file_header(h)
+        self.text, ref_count = _bam_file_header(h)
         #Load any reference information
         self._references = [_bam_file_reference(h) for i in range(ref_count)]
         #TODO - What if the @SQ lines contradict the BAM header?
-        if not self.header:
+        if not self.text:
             #Generate a minimal SAM style header from the BAM header
-            self.header = "".join(["@SQ\tSN:%s\tLN:%i\n" % (name, length) \
+            self.text = "".join(["@SQ\tSN:%s\tLN:%i\n" % (name, length) \
                                    for name, length in self._references])
         self._h = h
 
