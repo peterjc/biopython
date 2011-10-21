@@ -48,6 +48,26 @@ Or on the BAM equivalent to this SAM file:
     >>> print repr(bam.header)
     '@SQ\tSN:chr1\tLN:100\n@SQ\tSN:chr2\tLN:200\n'
 
+In addition to the raw header string, you can get the reference names,
+and lengths, as tuple, plus the number of references:
+
+    >>> bam.nreferences
+    2
+    >>> bam.references
+    ('chr1', 'chr2')
+    >>> bam.lengths
+    (100, 200)
+
+The above works on BAM files even if there is no embedded SAM header.
+For SAM files it depends on the @SQ lines to work:
+
+    >>> sam.nreferences
+    2
+    >>> sam.references
+    ('chr1', 'chr2')
+    >>> sam.lengths
+    (100, 200)
+
 The iterators allow you to filter by flag, much like the samtools view
 command does. For example, with no filtering we get all the records:
 
@@ -178,16 +198,43 @@ class SamIterator(object):
         self._excluded_flag = excluded_flag
         headers = []
         self._saved_line = None
+        self._references = []
         while True:
             line = handle.readline()
             if not line:
                 break
             if line[0] == "@":
                 headers.append(line)
+                if line.startswith("@SQ\t"):
+                    r = None
+                    l = None
+                    for part in line[3:].rstrip().split("\t"):
+                        if part.startswith("SN:"):
+                            r = part[3:]
+                        elif part.startswith("LN:"):
+                            l = int(part[3:])
+                    if r is None or l is None:
+                        raise ValueError("Malformed @SQ header (SN and LN required):\n%r" % line)
+                    self._references.append((r,l))
             else:
                 self._saved_line = line
                 break
         self.header = "".join(headers)
+
+    @property
+    def nreferences(self):
+        """Number of reference sequences (read only integer)."""
+        return len(self._references)
+
+    @property
+    def references(self):
+        """Names of the reference sequences (read only tuple)."""
+        return tuple(r for r,l in self._references)
+
+    @property
+    def lengths(self):
+        """Lengths of the reference sequences (read only tuple)."""
+        return tuple(l for r,l in self._references)
 
     def __iter__(self):
         handle = self._handle
@@ -265,11 +312,28 @@ class BamIterator(object):
         self.header, ref_count = _bam_file_header(h)
         #Load any reference information
         self._references = [_bam_file_reference(h) for i in range(ref_count)]
+        #TODO - What if the @SQ lines contradict the BAM header?
         if not self.header:
             #Generate a minimal SAM style header from the BAM header
             self.header = "".join(["@SQ\tSN:%s\tLN:%i\n" % (name, length) \
                                    for name, length in self._references])
         self._h = h
+
+
+    @property
+    def nreferences(self):
+        """Number of reference sequences (read only integer)."""
+        return len(self._references)
+
+    @property
+    def references(self):
+        """Names of the reference sequences (read only tuple)."""
+        return tuple(r for r,l in self._references)
+
+    @property
+    def lengths(self):
+        """Lengths of the reference sequences (read only tuple)."""
+        return tuple(l for r,l in self._references)
 
     def __iter__(self):
         h = self._h
@@ -952,6 +1016,12 @@ def _pysam():
     
     def compare(a_iter, b_iter):
         from itertools import izip_longest
+        assert a_iter.nreferences == b_iter.nreferences, \
+            "%r vs %r" % (a_iter.nreferences, b_iter.nreferences)
+        assert a_iter.references == b_iter.references, \
+            "%r vs %r" % (a_iter.references, b_iter.references)
+        assert a_iter.lengths == b_iter.lengths, \
+            "%r vs %r" % (a_iter.lengths, b_iter.lengths)
         for a, b in izip_longest(a_iter, b_iter):
             #Note using mrnm and isize to test these aliases
             assert b is not None, "Extra read in a: %r" % str(a)
@@ -979,11 +1049,11 @@ def _pysam():
     #compare(SamIterator(open("SamBam/ex1.sam")),
     #        pysam.Samfile("SamBam/ex1.sam", "r"))
     #Avoid this by using a copy of the SAM file with a header:
-    compare(SamIterator(open("SamBam/ex1.sam")),
+    compare(SamIterator(open("SamBam/ex1_header.sam")),
             pysam.Samfile("SamBam/ex1_header.sam", "r"))
     compare(SamIterator(open("SamBam/ex1_header.sam")),
             pysam.Samfile("SamBam/ex1_header.sam", "r"))
-    compare(SamIterator(open("SamBam/ex1.sam")),
+    compare(SamIterator(open("SamBam/ex1_header.sam")),
             pysam.Samfile("SamBam/ex1.bam", "rb"))
     compare(BamIterator(open("SamBam/ex1.bam", "rb")),
             pysam.Samfile("SamBam/ex1.bam", "rb"))
