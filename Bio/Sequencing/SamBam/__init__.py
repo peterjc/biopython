@@ -840,11 +840,23 @@ class SamBamRead(object):
             next_index = refs.index(self.rnext)
         else:
             next_index = -1
+        try:
+            seq = self._binary_seq #See BamRead subclass
+        except AttributeError:
+            seq = chr(0) * (l_seq // 2) #TODO
+        try:
+            qual = self._binary_qual #See BamRead subclass
+        except AttributeError:
+            qual = chr(0xFF) * l_seq #TODO
+        try:
+            tags = self._binary_tags #See BamRead subclass
+        except AttributeError:
+            tags = ""
         data = struct.pack("<iiIIiiii",
                            ref_index, self.pos,
                            bin_mq_nl, flag_nc, l_seq,
                            next_index, self.pnext, self.tlen)
-        data += self.qname + chr(0) + cigar
+        data += self.qname + chr(0) + cigar + seq + qual + tags
         return data
 
     #For other FLAG methods, see "magic" after class
@@ -1270,6 +1282,15 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     >>> sam = SamIterator(open("SamBam/ex1_header.sam"))
     >>> handle = open("saved.bam", "wb")
     >>> count = BamWriter(handle, sam)
+    >>> handle.close()
+    >>> print "Saved %i reads to BAM file" % count
+    Saved 3270 reads to BAM file
+
+    And a (silly) example for testing, BAM to BAM,
+
+    >>> bam = BamIterator(open("SamBam/ex1_header.bam", "rb"))
+    >>> handle = open("saved.bam", "wb")
+    >>> count = BamWriter(handle, bam)
     >>> handle.close()
     >>> print "Saved %i reads to BAM file" % count
     Saved 3270 reads to BAM file
