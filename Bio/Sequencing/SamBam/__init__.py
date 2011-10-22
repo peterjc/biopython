@@ -214,6 +214,18 @@ class SamIterator(object):
     >>> print count
     3270
 
+    You should be alerted to mixing up SAM and BAM as inputs,
+
+    >>> sam = SamIterator(open("SamBam/ex1.bam"))
+    Traceback (most recent call last):
+    ...
+    ValueError: This looks like a BAM file or gzipped file, not a SAM file.
+
+    >>> sam = SamIterator(open("SamBam/ex1.uncompressed.bam"))
+    Traceback (most recent call last):
+    ...
+    ValueError: This looks like an uncompressed BAM file, not a SAM file.
+
     """
     def __init__(self, handle, required_flag=0, excluded_flag=0):
         self._handle = handle
@@ -222,15 +234,17 @@ class SamIterator(object):
         headers = []
         self._saved_line = None
         self._references = []
-        while True:
-            line = handle.readline()
-            if not line:
-                break
-            if line[0] == "@":
-                headers.append(line)
-            else:
+        line = handle.readline()
+        if line.startswith("\x1f\x8b"):
+            raise ValueError("This looks like a BAM file or gzipped file, not a SAM file.")
+        if line.startswith("BAM" + chr(1)):
+            raise ValueError("This looks like an uncompressed BAM file, not a SAM file.")
+        while line:
+            if line[0] != "@":
                 self._saved_line = line
                 break
+            headers.append(line)
+            line = handle.readline()
         self.text = "".join(headers)
         self._references = _sam_header_to_ref_list(self.text)
 
