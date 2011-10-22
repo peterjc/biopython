@@ -652,6 +652,17 @@ class SamBamRead(object):
     >>> str(read)
     'demo\t4\t*\t0\t255\t*\t*\t0\t0\t*\t*\n'
 
+    There are helper methods to access the FLAG bit values, e.g.
+
+    >>> print read.flag, hex(read.flag), read.is_qcfail
+    4 0x4 False
+    >>> read.is_qcfail = True
+    >>> print read.flag, hex(read.flag), read.is_qcfail
+    516 0x204 True
+    >>> read.is_qcfail = False
+    >>> print read.flag, hex(read.flag), read.is_qcfail
+    4 0x4 False
+
     Just printing or using str(read) gives the read formatted as a
     SAM line (with the newline character included).
     """
@@ -703,6 +714,16 @@ class SamBamRead(object):
             return "\t".join(parts) + "\n"
         except TypeError, e:
             raise TypeError("%s from join on %r" % (e, parts))
+
+    def _get_qcfail(self):
+        return bool(self.flag & 0x200)
+    def _set_qcfail(self, value):
+        if value:
+            self.flag = self.flag | 0x200
+        else:
+            self.flag = self.flag & ~0x200
+    is_qcfail = property(fget = _get_qcfail, fset = _set_qcfail,
+                         doc = "FLAG 0x200, did the read fail quality control (QC)?")
 
     @property
     def cigar(self):
