@@ -202,6 +202,18 @@ class SamIterator(object):
     Optional argument required_flag is used like "samtools view -f FLAG ..."
     to only show records where those FLAG bits are set. Thus for example,
     using an argument of 2 requires the reads be properly mapped.
+
+    If your SAM file is gzip compressed, use the Python standard library gzip
+    to decompress it during parsing:
+
+    >>> import gzip
+    >>> count = 0
+    >>> with gzip.open("SamBam/ex1.sam.gz") as handle:
+    ...     for read in SamIterator(handle):
+    ...         count += 1
+    >>> print count
+    3270
+
     """
     def __init__(self, handle, required_flag=0, excluded_flag=0):
         self._handle = handle
