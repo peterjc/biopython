@@ -309,12 +309,28 @@ class BamIterator(object):
     >>> count
     3270
 
+    By default a normal compressed BAM file is assumed, but you can use
+    the optional argument gzipped=False if your BAM file is not compressed.
+
+    >>> count = 0
+    >>> with open("SamBam/ex1.uncompressed.bam", "rb") as handle:
+    ...     for read in BamIterator(handle, gzipped=False):
+    ...         count += 1
+    >>> count
+    3270
+
+    This can be useful if piping uncompressed BAM files between tools at
+    the Unix command line. It may also helpful in debugging BAM problems.
     """
-    def __init__(self, handle, required_flag=0, excluded_flag=0):
+    def __init__(self, handle, required_flag=0, excluded_flag=0, gzipped=True):
         self._handle = handle
         self._required_flag = required_flag
         self._excluded_flag = excluded_flag
-        h = gzip.GzipFile(fileobj=handle)
+        if gzipped:
+            h = gzip.GzipFile(fileobj=handle)
+        else:
+            #Uncompressed BAM (useful in piping between command line tools)
+            h = handle
         self.text, ref_count = _bam_file_header(h)
         #Load any reference information
         self._references = [_bam_file_reference(h) for i in range(ref_count)]
