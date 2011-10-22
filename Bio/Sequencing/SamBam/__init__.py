@@ -216,21 +216,11 @@ class SamIterator(object):
                 break
             if line[0] == "@":
                 headers.append(line)
-                if line.startswith("@SQ\t"):
-                    r = None
-                    l = None
-                    for part in line[3:].rstrip().split("\t"):
-                        if part.startswith("SN:"):
-                            r = part[3:]
-                        elif part.startswith("LN:"):
-                            l = int(part[3:])
-                    if r is None or l is None:
-                        raise ValueError("Malformed @SQ header (SN and LN required):\n%r" % line)
-                    self._references.append((r,l))
             else:
                 self._saved_line = line
                 break
         self.text = "".join(headers)
+        self._references = _sam_header_to_ref_list(self.text)
 
     @property
     def nreferences(self):
@@ -409,6 +399,21 @@ def ParseSamHeader(text):
             d1[k1] = [d2]
     return d1
 
+def _sam_header_to_ref_list(header):
+    references = []
+    for line in header.split("\n"):
+        if line.startswith("@SQ\t"):
+            r = None
+            l = None
+            for part in line[3:].rstrip().split("\t"):
+                if part.startswith("SN:"):
+                    r = part[3:]
+                elif part.startswith("LN:"):
+                    l = int(part[3:])
+            if r is None or l is None:
+                raise ValueError("Malformed @SQ header (SN and LN required):\n%r" % line)
+            references.append((r,l))
+    return references
 
 def _bam_file_header(handle):
     """Read in a BAM file header (PRIVATE).
