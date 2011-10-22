@@ -1119,6 +1119,56 @@ def _next_tag_raw(raw):
         raise ValueError("Unknown BAM tag element type %r (for %r tag)" % (code, tag))
 
 
+def SamWriter(handle, reads, header="", referencenames=None, referencelengths=None):
+    """Writes a complete SAM file including any header, returns read count.
+
+    >>> bam = BamIterator(open("SamBam/ex1.bam", "rb"))
+    >>> handle = open("saved.sam", "w")
+    >>> count = SamWriter(handle, bam)
+    >>> handle.close()
+    >>> print "Saved %i reads to SAM file" % count
+    Saved 3270 reads to SAM file
+
+    For a more complicated example, to get only the properly mapped paired
+    reads (i.e. where FLAG 0x2 is set):
+
+    >>> bam = BamIterator(open("SamBam/ex1.bam", "rb"), required_flag=0x2)
+    >>> handle = open("saved.sam", "w")
+    >>> count = SamWriter(handle, bam)
+    >>> handle.close()
+    >>> print "Saved %i reads to SAM file" % count
+    Saved 3124 reads to SAM file
+
+    """
+    if not header:
+        #If the reads argument is a SamIterator or BamIterator this works:
+        try:
+            header = reads.text
+        except AttributeError:
+            pass        
+    if referencenames is not None or referencelengths is not None:
+        assert len(referencenames) == len(referencelengths)
+        references = zip(referencenames, referencelengths)
+        alt_refs = _sam_header_to_ref_list(header)
+        if not alt_refs:
+            #Append minimal @SQ lines to the header
+            header += _ref_list_to_sam_header(references)
+        elif alt_refs!=references:
+            raise ValueError("Reference names and lengths inconsistent with header @SQ lines")
+    #Perform some basic sanity testing
+    for line in header.split("\n"):
+        if not line:
+            continue
+            #raise ValueError("Blank line in header")
+        elif line[0] != "@":
+            raise ValueError("SAM header lines must start with @, not %s" % line)
+        handle.write(line + "\n")
+    count = 0
+    for read in reads:
+        handle.write(str(read))
+        count += 1
+    return count
+
 
 def _pysam():
     try:
