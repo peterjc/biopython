@@ -1015,27 +1015,28 @@ class BamRead(SamBamRead):
 
 #Magic to define lots of very similar properties at once:
 #(can we do this to the base class in a way that covers the subclasses?)
+def _make_prop(bit, prop, help):
+    #import sys
+    #sys.stderr.write("Making %s property\n" % prop)
+    def _get_flag_bit(self):
+        return bool(self.flag & bit)
+    def _set_flag_bit(self,value):
+            if value:
+                self.flag = self.flag |bit
+            else:
+                self.flag = self.flag &~bit
+    return property(fget=_get_flag_bit, fset=_set_flag_bit, doc=help)
 for bit, prop, help in [
     (0x4, "unmapped", "FLAG 0x4, is this read unmapped?"),
     (0x10, "reverse", "FLAG 0x10, is this read mapped to the reverse strand?"),
     (0x200, "qcfail", "FLAG 0x200, did the read fail quality control (QC)?"),
     (0x400, "duplicate", "FLAG 0x400, is this read a PCR or optical duplicate?"),
     ]:
-    def _make_prop(bit, prop, help):
-        #import sys
-        #sys.stderr.write("Making %s property\n" % prop)
-        def _get_flag_bit(self):
-            return bool(self.flag & bit)
-        def _set_flag_bit(self,value):
-                if value:
-                    self.flag = self.flag |bit
-                else:
-                    self.flag = self.flag &~bit
-        return property(fget=_get_flag_bit, fset=_set_flag_bit, doc=help)
-    setattr(SamBamRead, "is_%s" % prop, _make_prop(bit, prop, help))
-    setattr(SamRead, "is_%s" % prop, _make_prop(bit, prop, help))
-    setattr(BamRead, "is_%s" % prop, _make_prop(bit, prop, help))
-del bit, prop, help
+    p = _make_prop(bit, prop, help)
+    setattr(SamBamRead, "is_%s" % prop, p)
+    setattr(SamRead, "is_%s" % prop, p)
+    setattr(BamRead, "is_%s" % prop, p)
+del bit, prop, help, p, _make_prop
 
 
 def _next_tag_raw(raw):
