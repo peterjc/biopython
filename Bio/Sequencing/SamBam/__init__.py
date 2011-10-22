@@ -318,11 +318,16 @@ class BamIterator(object):
         self.text, ref_count = _bam_file_header(h)
         #Load any reference information
         self._references = [_bam_file_reference(h) for i in range(ref_count)]
-        #TODO - What if the @SQ lines contradict the BAM header?
-        if not self.text:
-            #Generate a minimal SAM style header from the BAM header
-            self.text = "".join(["@SQ\tSN:%s\tLN:%i\n" % (name, length) \
-                                   for name, length in self._references])
+        if self.text:
+            alt_refs = _sam_header_to_ref_list(self.text)
+            if not alt_refs:
+                #Append minimal SAM @SQ lines (good idea?)
+                self.text += _ref_list_to_sam_header(self._references)
+            elif alt_refs != self._references:
+                raise ValueError("BAM reference names & lengths inconsistent with SAM header @SQ lines") 
+        else:
+            #Generate a minimal SAM style header from the BAM header (good idea?)
+            self.text = _ref_list_to_sam_header(self._references)
         self._h = h
 
 
@@ -398,6 +403,10 @@ def ParseSamHeader(text):
         except KeyError:
             d1[k1] = [d2]
     return d1
+
+def _ref_list_to_sam_header(references):
+    return "".join(["@SQ\tSN:%s\tLN:%i\n" % (name, length) \
+                    for name, length in references])
 
 def _sam_header_to_ref_list(header):
     references = []
