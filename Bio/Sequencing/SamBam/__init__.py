@@ -426,10 +426,15 @@ def ParseSamHeader(text):
                 #Currently the only case need to cast
                 v = int(v)
             d2[k] = v
-        try:
-            d1[k1].append(d2)
-        except KeyError:
-            d1[k1] = [d2]
+        #Need to understand when pysam uses a list if want to match...
+        if k1 in ["HD"]:
+            assert k1 not in d1
+            d1[k1] = d2
+        else:
+            try:
+                d1[k1].append(d2)
+            except KeyError:
+                d1[k1] = [d2]
     return d1
 
 def _ref_list_to_sam_header(references):
@@ -1173,13 +1178,7 @@ def SamWriter(handle, reads, header="", referencenames=None, referencelengths=No
                                                   referencenames,
                                                   referencelengths)
     #Write SAM header, perform some basic sanity testing:
-    for line in header.split("\n"):
-        if not line:
-            continue
-            #raise ValueError("Blank line in header")
-        elif line[0] != "@":
-            raise ValueError("SAM header lines must start with @, not %s" % line)
-        handle.write(line + "\n")
+    handle.write(_check_header_text(header))
     #Write SAM reads:
     count = 0
     for read in reads:
@@ -1197,7 +1196,7 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     The header information is optional, but only in the special case of no
     mapped reads. Even then you may want a header for things like read groups.
 
-    >>> sam = SamIterator(open("SamBam/ex1.sam"))
+    >>> sam = SamIterator(open("SamBam/ex1_header.sam"))
     >>> handle = open("saved.bam", "wb")
     >>> count = BamWriter(handle, sam)
     >>> handle.close()
@@ -1207,7 +1206,7 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     For a more complicated example, to get only the properly mapped paired
     reads (i.e. where FLAG 0x2 is set):
 
-    >>> sam = SamIterator(open("SamBam/ex1.sam"), required_flag=0x2)
+    >>> sam = SamIterator(open("SamBam/ex1_header.sam"), required_flag=0x2)
     >>> handle = open("saved.bam", "wb")
     >>> count = BamWriter(handle, sam)
     >>> handle.close()
@@ -1221,13 +1220,34 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     header, references = _cross_check_header_refs(reads, header,
                                                   referencenames,
                                                   referencelengths)
+    header = _check_header_text(header)
     #Write BAM header:
-    pass
+    handle.write("BAM" + chr(1))
+    handle.write(struct.pack("<I", len(header)))
+    handle.write(header)
+    handle.write(struct.pack("<I", len(references)))
+    for r, l in references:
+        handle.write(struct.pack("<I", len(r)+1))
+        handle.write(r + chr(0))
+        handle.write(struct.pack("<I", l))
     #Write reads:
     count = 0
     for read in reads:
+        handle.write(read.qname + chr(0))
         count += 1
     return count
+
+def _check_header_text(text):
+    """Removes blank lines, ensures trailing newlines, spots some errors."""
+    lines = []
+    for line in text.split("\n"):
+        if not line:
+            continue
+            #raise ValueError("Blank line in header")
+        elif line[0] != "@":
+            raise ValueError("SAM header lines must start with @, not %s" % line)
+        lines.append(line + "\n")
+    return "".join(lines)
 
 def _cross_check_header_refs(reads, header="", referencenames=None, referencelengths=None):
     if not header:
@@ -1300,7 +1320,7 @@ def _pysam():
     compare(SamIterator(open("SamBam/ex1_header.sam")),
             pysam.Samfile("SamBam/ex1_header.sam", "r"))
     compare(SamIterator(open("SamBam/ex1_header.sam")),
-            pysam.Samfile("SamBam/ex1.bam", "rb"))
+            pysam.Samfile("SamBam/ex1_header.bam", "rb"))
     compare(BamIterator(open("SamBam/ex1.bam", "rb")),
             pysam.Samfile("SamBam/ex1.bam", "rb"))
 
