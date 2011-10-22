@@ -236,6 +236,11 @@ class SamIterator(object):
         """Lengths of the reference sequences (read only tuple)."""
         return tuple(l for r,l in self._references)
 
+    @property
+    def header(self):
+        """Header parsed into two-level dictionary (read only)."""
+        return ParseSamHeader(self.text)
+
     def __iter__(self):
         handle = self._handle
         #Mess about with the first read as a special case since it was
@@ -335,6 +340,11 @@ class BamIterator(object):
         """Lengths of the reference sequences (read only tuple)."""
         return tuple(l for r,l in self._references)
 
+    @property
+    def header(self):
+        """Header parsed into two-level dictionary (read only)."""
+        return ParseSamHeader(self.text)
+
     def __iter__(self):
         h = self._h
         references = self._references
@@ -363,6 +373,30 @@ class BamIterator(object):
                           raw_cigar, mate_ref_name, mate_ref_pos,
                           inferred_insert_size, read_len,
                           raw_seq, raw_qual, raw_tags)
+
+def ParseSamHeader(text):
+    """Parse the SAM plain text header into a two-level dictionary."""
+    d1 = dict()
+    for line in text.split("\n"):
+        if not line.strip():
+            continue
+        assert line[0] == "@"
+        assert line[3] == "\t"
+        k1 = line[1:3]
+        d2 = dict()
+        for part in line[4:].rstrip().split("\t"):
+            assert part[2] == ":"
+            k, v = part.split(":",1)
+            assert len(k)==2
+            if k1=="SQ" and k=="LN":
+                #Currently the only case need to cast
+                v = int(v)
+            d2[k] = v
+        try:
+            d1[k1].append(d2)
+        except KeyError:
+            d1[k1] = [d2]
+    return d1
 
 
 def _bam_file_header(handle):
@@ -1022,6 +1056,10 @@ def _pysam():
             "%r vs %r" % (a_iter.references, b_iter.references)
         assert a_iter.lengths == b_iter.lengths, \
             "%r vs %r" % (a_iter.lengths, b_iter.lengths)
+        if a_iter.header and b_iter.header:
+            #pysam doesn't infer a minimal SAM header from BAM header
+            assert a_iter.header == b_iter.header, \
+                "%r vs %r" % (a_iter.header, b_iter.header)
         for a, b in izip_longest(a_iter, b_iter):
             #Note using mrnm and isize to test these aliases
             assert b is not None, "Extra read in a: %r" % str(a)
