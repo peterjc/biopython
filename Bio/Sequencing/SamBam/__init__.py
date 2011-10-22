@@ -689,6 +689,7 @@ class SamBamReadTags(dict):
         tags.sort() #Want this consistent regardless of Python implementation
         return "\t".join(tags)
 
+
 class SamBamRead(object):
     r"""Represents a SAM/BAM entry, i.e. a single read.
 
@@ -775,6 +776,41 @@ class SamBamRead(object):
             return "\t".join(parts) + "\n"
         except TypeError, e:
             raise TypeError("%s from join on %r" % (e, parts))
+
+    def _as_bam(self, refs):
+        """Returns BAM formatted entry as a bytes string (PRIVATE).
+
+        Required argument 'refs' are the list of reference names in the BAM header.
+
+        TODO? Take lengths argument too and validate mapping positions?
+        """
+        if self.rname != "*":
+            ref_index = refs.index(self.rname)
+        else:
+            ref_index = -1
+        bin = 0 #TODO, reg2bin using self.pos and end position
+        bin_mq_nl = bin<<16 | self.mapq<<8 | (len(self.qname)+1)
+        try:
+            cigar = self._binary_cigar #See BamRead subclass
+        except AttributeError:
+            cigar = "" #TODO
+        flag_nc = self.flag << 16 | len(cigar)
+        if self.seq:
+            l_seq = len(self.seq)
+        else:
+            l_seq = 0
+        if self.rnext == "=":
+            next_index = ref_index
+        elif self.rnext != "*":
+            next_index = refs.index(self.rnext)
+        else:
+            next_index = -1
+        data = struct.pack("<iiIIiiii",
+                           ref_index, self.pos,
+                           bin_mq_nl, flag_nc, l_seq,
+                           next_index, self.pnext, self.tlen)
+        data += self.qname + chr(0) + cigar
+        return data
 
     #For other FLAG methods, see "magic" after class
     #This one is difference because it flips the bit value,
@@ -1203,16 +1239,6 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     >>> print "Saved %i reads to BAM file" % count
     Saved 3270 reads to BAM file
 
-    For a more complicated example, to get only the properly mapped paired
-    reads (i.e. where FLAG 0x2 is set):
-
-    >>> sam = SamIterator(open("SamBam/ex1_header.sam"), required_flag=0x2)
-    >>> handle = open("saved.bam", "wb")
-    >>> count = BamWriter(handle, sam)
-    >>> handle.close()
-    >>> print "Saved %i reads to BAM file" % count
-    Saved 3124 reads to BAM file
-
     """
     if gzipped:
         raise NotImplementedError("TODO - For now you get uncompressed BAM")
@@ -1227,13 +1253,21 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     handle.write(header)
     handle.write(struct.pack("<I", len(references)))
     for r, l in references:
-        handle.write(struct.pack("<I", len(r)+1))
-        handle.write(r + chr(0))
-        handle.write(struct.pack("<I", l))
+        try:
+            handle.write(struct.pack("<I", len(r)+1))
+            handle.write(r + chr(0))
+            handle.write(struct.pack("<I", l))
+        except Exception:
+            raise ValueError("Problem with reference %r, %r" % (r,l))
     #Write reads:
     count = 0
+    refs = [r for (r,l) in references]
     for read in reads:
-        handle.write(read.qname + chr(0))
+        block = read._as_bam(refs)
+        handle.write(struct.pack("<I", 1+len(block)) + block)
+        #if count == 0:
+        #    import sys
+        #    sys.stderr.write("%r\n" % block)
         count += 1
     return count
 
