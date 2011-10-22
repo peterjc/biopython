@@ -17,10 +17,21 @@ should behave identically (modulo the tag ordering):
     >>> bam = BamIterator(open("SamBam/ex1.bam", "rb"))
     >>> for s, b in izip_longest(sam,bam):
     ...     assert s.qname == b.qname
+    ...     assert s.flag == b.flag
     ...     assert s.seq == b.seq
     ...     assert s.qual == b.qual
     ...     assert s.cigar == b.cigar
     ...     assert sorted(s.tags.items()) == sorted(b.tags.items())
+
+Let's look at the FLAG values for the last read, including a couple
+of the helper properties to access the bit values (here bit 0x4 is
+set for unmapped reads):
+
+    >>> print s.flag, hex(s.flag), s.is_mapped, s.is_unmapped
+    83 0x53 True False
+    >>> s.is_mapped = False
+    >>> print s.flag, hex(s.flag), s.is_mapped, s.is_unmapped
+    87 0x57 False True
 
 Here's a sneaky trick, you can access the header like so:
 
@@ -654,14 +665,17 @@ class SamBamRead(object):
 
     There are helper methods to access the FLAG bit values, e.g.
 
-    >>> print read.flag, hex(read.flag), read.is_qcfail
-    4 0x4 False
+    >>> print read.flag, hex(read.flag), read.is_unmapped, read.is_qcfail
+    4 0x4 True False
     >>> read.is_qcfail = True
-    >>> print read.flag, hex(read.flag), read.is_qcfail
-    516 0x204 True
+    >>> print read.flag, hex(read.flag), read.is_unmapped, read.is_qcfail
+    516 0x204 True True
     >>> read.is_qcfail = False
-    >>> print read.flag, hex(read.flag), read.is_qcfail
-    4 0x4 False
+    >>> print read.flag, hex(read.flag), read.is_unmapped, read.is_qcfail
+    4 0x4 True False
+    >>> read.is_unmapped = False
+    >>> print read.flag, hex(read.flag), read.is_unmapped, read.is_qcfail
+    0 0x0 False False
 
     Just printing or using str(read) gives the read formatted as a
     SAM line (with the newline character included).
@@ -715,15 +729,18 @@ class SamBamRead(object):
         except TypeError, e:
             raise TypeError("%s from join on %r" % (e, parts))
 
-    def _get_qcfail(self):
-        return bool(self.flag & 0x200)
-    def _set_qcfail(self, value):
+    #For other FLAG methods, see "magic" after class
+    #This one is difference because it flips the bit value,
+    #0x4 set means unmapped!
+    def _get_mapped(self):
+        return not bool(self.flag & 0x4)
+    def _set_mapped(self, value):
         if value:
-            self.flag = self.flag | 0x200
+            self.flag = self.flag & ~0x4
         else:
-            self.flag = self.flag & ~0x200
-    is_qcfail = property(fget = _get_qcfail, fset = _set_qcfail,
-                         doc = "FLAG 0x200, did the read fail quality control (QC)?")
+            self.flag = self.flag | 0x4
+    is_mapped = property(fget = _get_mapped, fset = _set_mapped,
+                         doc = "FLAG 0x200, was this read mapped (bit not set)?")
 
     @property
     def cigar(self):
@@ -786,6 +803,7 @@ class SamBamRead(object):
         tags = SamBamReadTags()
         self._tags = tags
         return tags
+
 
 class SamRead(SamBamRead):
     """Represents a SAM/BAM entry created from a SAM file entry.
@@ -994,6 +1012,31 @@ class BamRead(SamBamRead):
         self._tags = tags
         del self._binary_tags
         return tags
+
+#Magic to define lots of very similar properties at once:
+#(can we do this to the base class in a way that covers the subclasses?)
+for bit, prop, help in [
+    (0x4, "unmapped", "FLAG 0x4, is this read unmapped?"),
+    (0x10, "reverse", "FLAG 0x10, is this read mapped to the reverse strand?"),
+    (0x200, "qcfail", "FLAG 0x200, did the read fail quality control (QC)?"),
+    (0x400, "duplicate", "FLAG 0x400, is this read a PCR or optical duplicate?"),
+    ]:
+    def _make_prop(bit, prop, help):
+        #import sys
+        #sys.stderr.write("Making %s property\n" % prop)
+        def _get_flag_bit(self):
+            return bool(self.flag & bit)
+        def _set_flag_bit(self,value):
+                if value:
+                    self.flag = self.flag |bit
+                else:
+                    self.flag = self.flag &~bit
+        return property(fget=_get_flag_bit, fset=_set_flag_bit, doc=help)
+    setattr(SamBamRead, "is_%s" % prop, _make_prop(bit, prop, help))
+    setattr(SamRead, "is_%s" % prop, _make_prop(bit, prop, help))
+    setattr(BamRead, "is_%s" % prop, _make_prop(bit, prop, help))
+del bit, prop, help
+
 
 def _next_tag_raw(raw):
     tag = raw[0:2]
