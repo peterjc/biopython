@@ -457,6 +457,35 @@ def _sam_header_to_ref_list(header):
             references.append((r,l))
     return references
 
+def reg2bin(beg, end):
+    """Turn a beg:end region into a bin BAM/UCSC indexing bin number.
+
+    Based on the C function reg2bin given in the SAM/BAM specification.
+    Note that this indexing scheme is limited to references of 512Mbps
+    (that is 2^29 base pairs).
+    """
+    assert 0 <= beg <= end < 2**29, "Bad region %i:%i" % (beg, end)
+    if (beg>>14 == end>>14): return ((1<<15)-1)/7 + (beg>>14)
+    if (beg>>17 == end>>17): return ((1<<12)-1)/7 + (beg>>17)
+    if (beg>>20 == end>>20): return ((1<<9)-1)/7  + (beg>>20)
+    if (beg>>23 == end>>23): return ((1<<6)-1)/7  + (beg>>23)
+    if (beg>>26 == end>>26): return ((1<<3)-1)/7  + (beg>>26)
+    return 0
+
+def reg2bins(beg, end):
+    """Turn beg:end region into list of BAM/UCSC indexing bin numbers overlapping it.
+
+    Based on the C function reg2bins given in the SAM/BAM specification.
+    Note that this indexing scheme is limited to references of 512Mbps
+    (that is 2^29 base pairs). 
+    """
+    bins = []
+    for power in [26, 23, 20, 17, 14]:
+        for k in range(1 + (beg>>power), 2 + (end>>power)):
+            bins.append(k)
+    return bins
+
+    
 def _bam_file_header(handle):
     """Read in a BAM file header (PRIVATE).
 
@@ -788,17 +817,23 @@ class SamBamRead(object):
             ref_index = refs.index(self.rname)
         else:
             ref_index = -1
-        bin = 0 #TODO, reg2bin using self.pos and end position
+        if self.seq:
+            l_seq = len(self.seq)
+        else:
+            raise NotImplementedError("TODO - Count CIGAR operators to get SEQ len")
+            l_seq = 0 #TODO, use the CIGAR counts
+        if self.pos >= 0:
+            bin = reg2bin(self.pos, self.pos + l_seq)
+        else:
+            #Unmapped AND not given a POS anyway (e.g. to match partner)
+            #TODO - Check this after clarification from samtools-devel
+            bin = 0
         bin_mq_nl = bin<<16 | self.mapq<<8 | (len(self.qname)+1)
         try:
             cigar = self._binary_cigar #See BamRead subclass
         except AttributeError:
             cigar = "" #TODO
         flag_nc = self.flag << 16 | len(cigar)
-        if self.seq:
-            l_seq = len(self.seq)
-        else:
-            l_seq = 0
         if self.rnext == "=":
             next_index = ref_index
         elif self.rnext != "*":
