@@ -795,6 +795,11 @@ class SamBamReadTags(dict):
         tags.sort() #Want this consistent regardless of Python implementation
         return "\t".join(tags)
 
+    def _as_bam(self):
+        """Returns the tags binary encodes in BAM formatting (bytes string)."""
+        #TODO - BAM encoding of tags
+        return ""
+
 
 class SamBamRead(object):
     r"""Represents a SAM/BAM entry, i.e. a single read.
@@ -937,13 +942,13 @@ class SamBamRead(object):
         try:
             tags = self._binary_tags #See BamRead subclass
         except AttributeError:
-            tags = ""
+            tags = self.tags._as_bam()
         data = struct.pack("<iiIIiiii",
                            ref_index, self.pos,
                            bin_mq_nl, flag_nc, l_seq,
                            next_index, self.pnext, self.tlen)
         data += self.qname + chr(0) + cigar + seq + qual + tags
-        return data
+        return struct.pack("<I", 1+len(data)) + data
 
     #For other FLAG methods, see "magic" after class
     #This one is difference because it flips the bit value,
@@ -1406,11 +1411,7 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     count = 0
     refs = [r for (r,l) in references]
     for read in reads:
-        block = read._as_bam(refs)
-        handle.write(struct.pack("<I", 1+len(block)) + block)
-        #if count == 0:
-        #    import sys
-        #    sys.stderr.write("%r\n" % block)
+        handle.write(read._as_bam(refs))
         count += 1
     return count
 
