@@ -1692,15 +1692,29 @@ def _test_misc():
             assert read.qname == "tag_" + tag, \
                    "Please check %s vs tag of %s" % (read.qname, tag)
 
-    #TODO - Compare values here (currently using diff externally)
-    sam = SamIterator(open("SamBam/tags.sam"))
-    handle = open("tags_from_sam.bam", "wb")
-    count = BamWriter(handle, sam)
-    handle.close()
-    bam = BamIterator(open("SamBam/tags.bam", "rb"))
-    handle = open("tags_from_bam.bam", "wb")
-    count = BamWriter(handle, bam)
-    handle.close()
+    import gzip
+    try:
+        #This is in Python 2.6+, but we need it on Python 3
+        from io import BytesIO
+    except ImportError:
+        #Must be on Python 2.5 or older
+        from StringIO import StringIO as BytesIO
+    for sam_filename, bam_filename in [
+        ("SamBam/tags.sam", "SamBam/tags.bam"),
+        ("SamBam/ex1_header.sam", "SamBam/ex1_header.bam"),
+        ]:
+        #BAM -> BAM
+        handle = BytesIO()
+        count = BamWriter(handle, BamIterator(open(bam_filename, "rb")))
+        assert handle.getvalue() == gzip.open(bam_filename).read(), \
+            "Couldn't reproduce %s -> %s" % (bam_filename, bam_filename)
+        #SAM -> BAM
+        handle = BytesIO()
+        count = BamWriter(handle, SamIterator(open(sam_filename)))
+        assert handle.getvalue() == gzip.open(bam_filename).read(), \
+            "Couldn't reproduce %s -> %s" % (sam_filename, bam_filename)
+        #Comparing SAM output is tricky due to float formatting...
+
     print "Done"
 
 def _test():
