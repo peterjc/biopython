@@ -928,7 +928,12 @@ class SamBamRead(object):
         try:
             qual = self._binary_qual #See BamRead subclass
         except AttributeError:
-            qual = chr(0xFF) * l_seq #TODO
+            if self.qual:
+                #TODO - Store this as ints? Currently FASTQ encoded...
+                #TODO - Reuse the dict in Bio.SeqIO.QualityIO for this
+                qual = "".join(chr(ord(q)-33) for q in self.qual)
+            else:
+                qual = chr(0xFF) * l_seq
         try:
             tags = self._binary_tags #See BamRead subclass
         except AttributeError:
