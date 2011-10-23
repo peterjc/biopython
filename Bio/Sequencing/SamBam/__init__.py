@@ -956,10 +956,14 @@ class SamBamRead(object):
         else:
             raise NotImplementedError("TODO - Count CIGAR operators to get SEQ len")
             l_seq = 0 #TODO, use the CIGAR counts
-        if self.pos >= 0:
-            bin = reg2bin(self.pos, self.pos + l_seq) #TODO - Fix end point!
+        if self.pos >= 0 and self.cigar:
+            #Encoding is MIDNSHP=X
+            #Want 'M' = 0, 'D' = 2, 'N' = 3, '=' = 7, 'X' = 8
+            mapped_len = sum(op_len for op, op_len in self.cigar if op in [0,2,3,7,8])
+            bin = reg2bin(self.pos, self.pos + mapped_len)
         else:
             #Unmapped AND not given a POS anyway (e.g. to match partner)
+            #(or mapped with zero length CIGAR, special corner case)
             #TODO - Check this after clarification from samtools-devel
             bin = 0
         bin_mq_nl = bin<<16 | self.mapq<<8 | (len(self.qname)+1)
