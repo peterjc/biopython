@@ -485,6 +485,10 @@ def reg2bin(beg, end):
     Based on the C function reg2bin given in the SAM/BAM specification.
     Note that this indexing scheme is limited to references of 512Mbps
     (that is 2^29 base pairs).
+
+    >>> reg2bin(9, 13)
+    4681
+
     """
     assert 0 <= beg <= end < 2**29, "Bad region %i:%i" % (beg, end)
     if (beg>>14 == end>>14): return ((1<<15)-1)/7 + (beg>>14)
@@ -959,14 +963,17 @@ class SamBamRead(object):
         else:
             raise NotImplementedError("TODO - Count CIGAR operators to get SEQ len")
             l_seq = 0 #TODO, use the CIGAR counts
-        if self.pos >= 0 and self.cigar:
-            #Encoding is MIDNSHP=X
-            #Want 'M' = 0, 'D' = 2, 'N' = 3, '=' = 7, 'X' = 8
-            mapped_len = sum(op_len for op, op_len in self.cigar if op in [0,2,3,7,8])
+        if self.pos > 0: #using bin=0 is pos=0 to reproduce a file from samtools
+            if self.cigar:
+                #Encoding is MIDNSHP=X
+                #Want 'M' = 0, 'D' = 2, 'N' = 3, '=' = 7, 'X' = 8
+                mapped_len = sum(op_len for op, op_len in self.cigar if op in [0,2,3,7,8])
+            else:
+                #Have no CIGAR for unmapped reads (given their partner's position)
+                mapped_len = 0
             bin = reg2bin(self.pos, self.pos + mapped_len)
         else:
             #Unmapped AND not given a POS anyway (e.g. to match partner)
-            #(or mapped with zero length CIGAR, special corner case)
             #TODO - Check this after clarification from samtools-devel
             bin = 0
         bin_mq_nl = bin<<16 | self.mapq<<8 | (len(self.qname)+1)
