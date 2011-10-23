@@ -845,7 +845,8 @@ class SamBamReadTags(dict):
                               "s":"h", "S":"H",
                               "i":"i", "I":"I",
                               "f":"f"}
-                data += key + code + struct.pack("<%i%s" % (len(value), bam2struct[code[1]]), *value)
+                data += key + code + struct.pack("<I%i%s" % (len(value), bam2struct[code[1]]),
+                                                 len(value), *value)
             elif code=="A":
                 assert len(value)==1 and isinstance(value, basestring)
                 data += key + code + value
