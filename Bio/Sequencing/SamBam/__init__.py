@@ -415,8 +415,14 @@ class BamIterator(object):
                 continue
             if flag & excluded_flag:
                 continue
-            ref_name = references[ref_id][0]
-            mate_ref_name = references[mate_ref_id][0]
+            if ref_id == -1:
+                ref_name = "*"
+            else:
+                ref_name = references[ref_id][0]
+            if mate_ref_id == -1:
+                mate_ref_name = "*"
+            else:
+                mate_ref_name = references[mate_ref_id][0]
             yield BamRead(read_name, flag, ref_name, ref_pos, map_qual,
                           raw_cigar, mate_ref_name, mate_ref_pos,
                           inferred_insert_size, read_len,
@@ -1126,11 +1132,11 @@ class SamRead(SamBamRead):
         parts = data.rstrip("\n").split("\t")
         self.qname = parts[0]
         self.flag = int(parts[1])
-        self.rname = parts[2] #RNAME aka MRNM, not an integer!
+        self.rname = parts[2] #RNAME, the actual name, not an integer!
         self.pos = int(parts[3]) - 1
         self.mapq = int(parts[4])
         self.cigar_str = parts[5]
-        self.rnext = parts[6]
+        self.rnext = parts[6] #RNEXT aka MRNM, not an integer!
         self.pnext = int(parts[7]) - 1 #PNEXT aka MPOS
         self.tlen = int(parts[8]) #TLEN aka ISAIZE
         if parts[9] == "*":
@@ -1203,7 +1209,7 @@ class BamRead(SamBamRead):
         """
         self.qname = qname
         self.flag = flag
-        self.rname = rname #the actual name, not the integer!
+        self.rname = rname #RNAME, the actual name, not the integer!
         self.pos = pos
         self.mapq = mapq
         self._binary_cigar = binary_cigar
@@ -1561,6 +1567,51 @@ def _comp_float(a,b):
 
 def _test_misc():
     print "Misc tests..."
+    def compare(a_iter, b_iter):
+        from itertools import izip_longest
+        assert a_iter.nreferences == b_iter.nreferences, \
+            "%r vs %r" % (a_iter.nreferences, b_iter.nreferences)
+        assert a_iter.references == b_iter.references, \
+            "%r vs %r" % (a_iter.references, b_iter.references)
+        assert a_iter.lengths == b_iter.lengths, \
+            "%r vs %r" % (a_iter.lengths, b_iter.lengths)
+        if a_iter.header and b_iter.header:
+            assert a_iter.header == b_iter.header, \
+                "%r vs %r" % (a_iter.header, b_iter.header)
+        for a, b in izip_longest(a_iter, b_iter):
+            assert b is not None, "Extra read in a: %r" % str(a)
+            assert a is not None, "Extra read in b: %r" % str(b)
+            assert a.qname == b.qname, "%r vs %r" % (a.qname, b.qname)
+            assert a.flag == b.flag, "%r vs %r" % (a.flag, b.flag)
+            assert a.rname == b.rname, "%r vs %r" % (a.rname, b.rname)
+            assert a.pos == b.pos, "%r vs %r" % (a.pos, b.pos)
+            assert a.mapq == b.mapq, "%r vs %r" % (a.mapq, b.mapq)
+            assert a.cigar == b.cigar, "%r vs %r" % (a.cigar, b.cigar)
+            assert a.mrnm == b.mrnm, "%r vs %r" % (a.mrnm, b.mrnm)                                                        
+            assert a.mpos == b.mpos, "%r vs %r" % (a.pos, b.pos)
+            assert a.isize == b.isize, "%r vs %r" % (a.isize, b.isize)
+            assert a.seq == b.seq, "%r vs %r" % (a.seq, b.seq)
+            assert a.qual == b.qual, "%r vs %r" % (a.qual, b.qual)
+            assert a.tags.keys() == b.tags.keys(), "%r vs %r" % (a.tags.keys(), b.tags.keys())
+            for key in a.tags:
+                assert a.tags[key][0] == b.tags[key][0], \
+                       "%s tag %s has codes %s vs %s" % \
+                       (a.qname, key, a.tags[key][0], b.tags[key][0])
+                if a.tags[key][0]=="f":
+                    assert str(a.tags[key][1]) == str(b.tags[key][1]) or \
+                           abs(a.tags[key][1] - b.tags[key][1]) < 0.00001, \
+                           "%s tag %s have %f vs %f" % \
+                           (a.qname, key, a.tags[key][1], b.tags[key][1])
+                elif a.tags[key][0]=="Bf":
+                    pass
+                else:
+                    assert a.tags[key][1] == b.tags[key][1], \
+                           "%s tag %s:%s has %s vs %s" % \
+                           (a.qname, key, a.tags[key][0], a.tags[key][1], b.tags[key][1])
+            #Float formating in tags is annoying...
+            #assert str(a) == str(b), "Reads disagree,\n%s\n%s\n" % (a,b)
+    compare(SamIterator(open("SamBam/tags.sam")),
+            BamIterator(open("SamBam/tags.bam", "rb")))
     for read in SamIterator(open("SamBam/tags.sam")):
         #TODO - Test API for getting tag values
         tag = str(read).rstrip("\n").split("\t")[-1]
