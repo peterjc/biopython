@@ -797,8 +797,40 @@ class SamBamReadTags(dict):
 
     def _as_bam(self):
         """Returns the tags binary encodes in BAM formatting (bytes string)."""
-        #TODO - BAM encoding of tags
-        return ""
+        data = ""
+        for key, (code, value) in self.iteritems():
+            assert len(key) ==2, key
+            if code in ["Z", "H"]:
+                #Store as null terminated string, easy
+                assert isinstance(value, basestring), "%s %s %r" % (key, code, value)
+                data += key + code + value + chr(0)
+            elif code == "i":
+                #TODO - Time this with try/except letting struct do bounds checking
+                #Integer, but how much space will we need in BAM?
+                if value >= 0:
+                    #Use an unsigned int
+                    if value < 2**8:
+                        data += key + "C" + struct.pack("<B", value)
+                    elif value < 2**16:
+                        data += key + "S" + struct.pack("<H", value)
+                    elif value < 2**32:
+                        data += key + "I" + struct.pack("<I", value)
+                    else:
+                        raise ValueError("%s:%s:%i too big for BAM unsigned 32bit int" % (key, code, value))
+                else:
+                    #Use a signed int
+                    if -2**7 < value:
+                        data += key + "c" + struct.pack("<b", value)
+                    elif -2**15 < value:
+                        data += key + "s" + struct.pack("<h", value)
+                    elif -2**31 < value:
+                        data +=key + "i" + struct.pack("<i", value)
+                    else:
+                        raise ValueError("%s:%s:%i too big for BAM signed 32bit int" % (key, code, value))
+            else:
+                #TODO - BAM encoding of other tag types
+                continue
+        return data
 
 
 class SamBamRead(object):
