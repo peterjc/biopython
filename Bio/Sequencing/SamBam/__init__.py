@@ -984,7 +984,13 @@ class SamBamRead(object):
         else:
             raise NotImplementedError("TODO - Count CIGAR operators to get SEQ len")
             l_seq = 0 #TODO, use the CIGAR counts
-        if self.pos > 0: #using bin=0 is pos=0 to reproduce a file from samtools
+        if self.pos == 0  and ref_index == 0:
+            #Hackery to match samtools on my test files,
+            #SAM pos 1 => real pos 0, chr1 gets bin 0
+            #SAM pos 1 => real pos 0, chr2 gets bin 4681
+            #TODO - Resolve this oddity.
+            bin = 0
+        elif self.pos >= 0:
             if self.cigar:
                 #Encoding is MIDNSHP=X
                 #Want 'M' = 0, 'D' = 2, 'N' = 3, '=' = 7, 'X' = 8
