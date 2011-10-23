@@ -614,17 +614,80 @@ def _bam_file_read_header(handle):
            inferred_insert_size, tag_len
 
 def _build_decoder():
-    answer = {}
+    decode = {}
+    encode = {}
     for i,first in enumerate("=ACMGRSVTWYHKDBN"):
-        answer[chr(i*16)] = first+"="
+        b = chr(i*16)
+        encode[first] = b
+        encode[first.lower()] = b
         for j,second in enumerate("=ACMGRSVTWYHKDBN"):
-            answer[chr(i*16 + j)] = first+second
-    assert answer[chr(79)] == "GN"
-    assert answer[chr(240)] == "N="
-    assert answer[chr(241)] == "NA"
-    return answer
-_decode_dibase_byte = _build_decoder()
+            b = chr(i*16 + j)
+            decode[b] = first+second
+            encode[first+second] = b
+            encode[first.lower()+second] = b
+            encode[first.lower()+second.lower()] = b
+            encode[first+second.lower()] = b
 
+    assert decode[chr(0)] == "=="
+    assert decode[chr(1)] == "=A"
+    assert decode[chr(2)] == "=C"
+    assert decode[chr(4)] == "=G"
+    assert decode[chr(8)] == "=T"
+    assert decode[chr(15)] == "=N"
+
+    assert decode[chr(16)] == "A="
+    assert decode[chr(32)] == "C="
+    assert decode[chr(64)] == "G="
+    assert decode[chr(128)] == "T="
+    assert decode[chr(240)] == "N="
+
+    assert decode[chr(16+2)] == "AC", decode[chr(16+2)]
+    assert decode[chr(128+8)] == "TT", decode[chr(128+8)]
+    assert decode[chr(64+4)] == "GG", decode[chr(64+4)]
+    assert decode[chr(64+15)] == "GN", decode[chr(64+15)]
+
+    assert encode["gn"] == chr(79)
+    assert encode["Gn"] == chr(79)
+    assert encode["gN"] == chr(79)
+    assert encode["GN"] == chr(79)
+
+    return decode, encode
+_decode_dibase_byte, _encode_dibase_byte = _build_decoder()
+
+def _decode_seq(binary, seq_len):
+    r"""Helper function to decode BAM style sequence (PRIVATE).
+
+    >>> binary = chr(16+2) + chr(64+8)
+    >>> binary
+    '\x12H'
+    >>> print _decode_seq(binary, 4)
+    ACGT
+    >>> print _decode_seq(binary, 3)
+    ACG
+
+    TODO - Check last char is equals sign for odd sequences?
+    """
+    seq = "".join(_decode_dibase_byte[b] for b in binary)
+    return seq[:seq_len]
+assert _decode_seq('\x12H', 4) == 'ACGT'
+assert _decode_seq('\x12H', 3) == 'ACG'
+
+def _encode_seq(seq):
+    r"""Helper function to encode BAM style sequence (PRIVATE).
+
+    >>> _encode_seq("ACGT") == '\x12H'
+    True
+    >>> _encode_seq("ACG=") == _encode_seq("ACG") == '\x12@'
+    True
+
+    """
+    answer = []
+    for i in range(0, len(seq), 2):
+        answer.append(_encode_dibase_byte[seq[i:i+2]])
+    return "".join(answer)
+assert _encode_seq("ACGT") == '\x12H', _encode_seq("ACGT")
+assert _encode_seq("ACG=") == '\x12@', _encode_seq("ACG=")
+assert _encode_seq("ACG") == '\x12@'
 
 class SamBamReadTags(dict):
     r"""Represents the tags for a SAM/BAM read.
@@ -857,7 +920,11 @@ class SamBamRead(object):
         try:
             seq = self._binary_seq #See BamRead subclass
         except AttributeError:
-            seq = chr(0) * (l_seq // 2) #TODO
+            if self.seq:
+                seq = _encode_seq(self.seq)
+            else:
+                assert False
+                seq = chr(0) * (l_seq // 2) #TODO
         try:
             qual = self._binary_qual #See BamRead subclass
         except AttributeError:
@@ -1122,11 +1189,11 @@ class BamRead(SamBamRead):
         try:
             return self._seq
         except AttributeError:
-            seq = "".join(_decode_dibase_byte[byte] for byte in self._binary_seq)
-            seq = seq[:self._read_len] # remove extra value if odd
+            seq = _decode_seq(self._binary_seq, self._read_len)
             self._seq = seq
             return seq
     def _set_seq(self, value):
+        del self._binary_seq
         self._seq = value
     seq = property(fget = _get_seq, fset = _set_seq,
                    doc = "SEQ - read sequence bases as string, including soft clipped bases")
@@ -1140,6 +1207,7 @@ class BamRead(SamBamRead):
             self._qual = qual
             return qual
     def _set_qual(self, value):
+        del self._binary_qual
         self._qual = value
     qual = property(fget = _get_qual, fset = _set_qual,
                     doc = "QUAL - read quality as FASTQ encoded string, including soft clipped bases")
@@ -1294,7 +1362,7 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     mapped reads. Even then you may want a header for things like read groups.
 
     >>> sam = SamIterator(open("SamBam/ex1_header.sam"))
-    >>> handle = open("saved.bam", "wb")
+    >>> handle = open("saved_from_sam.bam", "wb")
     >>> count = BamWriter(handle, sam)
     >>> handle.close()
     >>> print "Saved %i reads to BAM file" % count
@@ -1303,7 +1371,7 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     And a (silly) example for testing, BAM to BAM,
 
     >>> bam = BamIterator(open("SamBam/ex1_header.bam", "rb"))
-    >>> handle = open("saved.bam", "wb")
+    >>> handle = open("saved_from_bam.bam", "wb")
     >>> count = BamWriter(handle, bam)
     >>> handle.close()
     >>> print "Saved %i reads to BAM file" % count
