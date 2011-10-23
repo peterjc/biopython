@@ -1014,7 +1014,8 @@ class SamBamRead(object):
                            bin_mq_nl, flag_nc, l_seq,
                            next_index, self.pnext, self.tlen)
         data += self.qname + chr(0) + cigar + seq + qual + tags
-        return struct.pack("<I", 1+len(data)) + data
+        #First byte is the length of the REST of the record,
+        return struct.pack("<I", len(data)) + data
 
     #For other FLAG methods, see "magic" after class
     #This one is difference because it flips the bit value,
