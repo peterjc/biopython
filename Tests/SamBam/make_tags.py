@@ -71,4 +71,5 @@ print "SAM done"
 
 assert 0 == os.system("samtools view -S -b tags.sam > tags.bam")
 assert 0 == os.system("samtools index tags.bam")
+assert 0 == os.system("cat tags.bam | gunzip > tags.uncompressed.bam")
 print "BAM done"
