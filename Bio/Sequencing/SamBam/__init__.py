@@ -960,8 +960,12 @@ class SamBamRead(object):
         try:
             cigar = self._binary_cigar #See BamRead subclass
         except AttributeError:
-            cigar = "" #TODO
-        flag_nc = self.flag << 16 | len(cigar)
+            if self.cigar:
+                cigar = [op_len<<4|op for op, op_len in self.cigar]
+                cigar = struct.pack("<%iI" % len(cigar), *cigar)
+            else:
+                cigar = ""
+        flag_nc = self.flag << 16 | (len(cigar)//4)
         if self.rnext == "=":
             next_index = ref_index
         elif self.rnext != "*":
