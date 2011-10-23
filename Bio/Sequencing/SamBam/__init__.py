@@ -979,7 +979,9 @@ class SamBamRead(object):
                 seq = _encode_seq(self.seq)
             else:
                 assert False
-                seq = chr(0) * (l_seq // 2) #TODO
+                seq = chr(0) * ((l_seq+1) // 2) #TODO
+        assert len(seq) == (l_seq+1) // 2, "%r (len %i) for %s (len %i = %i)" \
+               % (seq, len(seq), self.seq, len(self.seq), l_seq)
         try:
             qual = self._binary_qual #See BamRead subclass
         except AttributeError:
@@ -989,6 +991,8 @@ class SamBamRead(object):
                 qual = "".join(chr(ord(q)-33) for q in self.qual)
             else:
                 qual = chr(0xFF) * l_seq
+        assert len(qual) == l_seq, "%r (len %i) for %r (len %i = %i)" \
+               % (qual, len(qual), self.qual, len(self.qual), l_seq)
         try:
             tags = self._binary_tags #See BamRead subclass
         except AttributeError:
