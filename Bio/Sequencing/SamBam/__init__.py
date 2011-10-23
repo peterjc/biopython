@@ -797,8 +797,54 @@ class SamBamReadTags(dict):
 
     def _as_bam(self):
         """Returns the tags binary encodes in BAM formatting (bytes string)."""
-        #TODO - BAM encoding of tags
-        return ""
+        data = ""
+        for key, (code, value) in self.iteritems():
+            assert len(key) ==2, key
+            if code in ["Z", "H"]:
+                #Store as null terminated string, easy
+                assert isinstance(value, basestring), "%s %s %r" % (key, code, value)
+                data += key + code + value + chr(0)
+            elif code == "i":
+                #TODO - Time this with try/except letting struct do bounds checking
+                #Integer, but how much space will we need in BAM?
+                if value >= 0:
+                    #Use an unsigned int
+                    if value < 2**8:
+                        data += key + "C" + struct.pack("<B", value)
+                    elif value < 2**16:
+                        data += key + "S" + struct.pack("<H", value)
+                    elif value < 2**32:
+                        data += key + "I" + struct.pack("<I", value)
+                    else:
+                        raise ValueError("%s:%s:%i too big for BAM unsigned 32bit int" % (key, code, value))
+                else:
+                    #Use a signed int
+                    if -2**7 < value:
+                        data += key + "c" + struct.pack("<b", value)
+                    elif -2**15 < value:
+                        data += key + "s" + struct.pack("<h", value)
+                    elif -2**31 < value:
+                        data += key + "i" + struct.pack("<i", value)
+                    else:
+                        raise ValueError("%s:%s:%i too big for BAM signed 32bit int" % (key, code, value))
+            elif code=="f":
+                #Float
+                data += key + code + struct.pack("<f", value)
+            elif code[0]=="B":
+                #Array of ints/floats etc
+                assert len(code)==2
+                bam2struct = {"c":"b", "C":"B",
+                              "s":"h", "S":"H",
+                              "i":"i", "I":"I",
+                              "f":"f"}
+                data += key + code + struct.pack("<%i%s" % (len(value), bam2struct[code[1]]), *value)
+            elif code=="A":
+                assert len(value)==1 and isinstance(value, basestring)
+                data += key + code + value
+            else:
+                #TODO - BAM encoding of other tag types
+                raise NotImplementedError("TODO - Storing %s tags in BAM (here for tag %s)" % (code, key))
+        return data
 
 
 class SamBamRead(object):
@@ -1508,7 +1554,7 @@ def _comp_float(a,b):
 def _test_misc():
     print "Misc tests..."
     for read in SamIterator(open("SamBam/tags.sam")):
-        #TODO - API for getting tag values
+        #TODO - Test API for getting tag values
         tag = str(read).rstrip("\n").split("\t")[-1]
         assert read.qname == "tag_" + tag, \
                "%s vs tag of %s" % (read.qname, tag)
@@ -1542,6 +1588,16 @@ def _test_misc():
         else:
             assert read.qname == "tag_" + tag, \
                    "Please check %s vs tag of %s" % (read.qname, tag)
+
+    #TODO - Compare values here (currently using diff externally)
+    sam = SamIterator(open("SamBam/tags.sam"))
+    handle = open("tags_from_sam.bam", "wb")
+    count = BamWriter(handle, sam)
+    handle.close()
+    bam = BamIterator(open("SamBam/tags.bam", "rb"))
+    handle = open("tags_from_bam.bam", "wb")
+    count = BamWriter(handle, bam)
+    handle.close()
     print "Done"
 
 def _test():
