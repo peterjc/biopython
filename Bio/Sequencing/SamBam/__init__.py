@@ -238,6 +238,7 @@ class SamIterator(object):
         if line.startswith("\x1f\x8b"):
             raise ValueError("This looks like a BAM file or gzipped file, not a SAM file.")
         if line.startswith("BAM" + chr(1)):
+            #i.e. a Naked uncompressed BAM file without the gzip/BGZF wrapper
             raise ValueError("This looks like an uncompressed BAM file, not a SAM file.")
         while line:
             if line[0] != "@":
@@ -335,8 +336,11 @@ class BamIterator(object):
     >>> count
     3270
 
-    By default a normal compressed BAM file is assumed, but you can use
-    the optional argument gzipped=False if your BAM file is not compressed.
+    By default a normal BAM file is assumed, using the gzip/BGZF wrapper
+    (which may be uncompressed). This parser will also accept 'naked' BAM
+    files without the gzip/BGZF wrapping if you use the optional argument
+    gzipped=False (such BAM files are very unusual though and is intended
+    for debugging low level BAM problems and testing).
 
     >>> count = 0
     >>> with open("SamBam/ex1.uncompressed.bam", "rb") as handle:
@@ -345,8 +349,6 @@ class BamIterator(object):
     >>> count
     3270
 
-    This can be useful if piping uncompressed BAM files between tools at
-    the Unix command line. It may also helpful in debugging BAM problems.
     """
     def __init__(self, handle, required_flag=0, excluded_flag=0, gzipped=True):
         self._handle = handle
@@ -1616,6 +1618,8 @@ def _test_misc():
             #assert str(a) == str(b), "Reads disagree,\n%s\n%s\n" % (a,b)
     compare(SamIterator(open("SamBam/tags.sam")),
             BamIterator(open("SamBam/tags.bam", "rb")))
+    compare(SamIterator(open("SamBam/tags.sam")),
+            BamIterator(open("SamBam/tags.uncompressed.bam", "rb"), gzipped=False))
     for read in SamIterator(open("SamBam/tags.sam")):
         #TODO - Test API for getting tag values
         tag = str(read).rstrip("\n").split("\t")[-1]
