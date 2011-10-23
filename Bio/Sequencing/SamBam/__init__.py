@@ -900,7 +900,7 @@ class SamBamRead(object):
             raise NotImplementedError("TODO - Count CIGAR operators to get SEQ len")
             l_seq = 0 #TODO, use the CIGAR counts
         if self.pos >= 0:
-            bin = reg2bin(self.pos, self.pos + l_seq)
+            bin = reg2bin(self.pos, self.pos + l_seq) #TODO - Fix end point!
         else:
             #Unmapped AND not given a POS anyway (e.g. to match partner)
             #TODO - Check this after clarification from samtools-devel
