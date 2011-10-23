@@ -342,8 +342,9 @@ class BamIterator(object):
     gzipped=False (such BAM files are very unusual though and is intended
     for debugging low level BAM problems and testing).
 
+    >>> import gzip
     >>> count = 0
-    >>> with open("SamBam/ex1.uncompressed.bam", "rb") as handle:
+    >>> with gzip.open("SamBam/ex1.bam", "rb") as handle:
     ...     for read in BamIterator(handle, gzipped=False):
     ...         count += 1
     >>> count
@@ -610,8 +611,8 @@ def _bam_file_read_header(handle):
                             repr(handle.read(25)), flag))
     #FLAG 516 is for embedding a reference sequence in SAM/BAM
     #FLAG 768 is for a dummy read (usually SEQ is * though)
-    if (read_len > 5000 and flag!=516 and flag&768!=768) or read_len <= 0:
-        raise ValueError("A read length of %i probably means the parser is out "
+    if (read_len > 5000 and flag!=516 and flag&768!=768) or read_len < 0:
+        raise ValueError("A sequence length of %i probably means the parser is out "
                          "of sync somehow. Read starts:\n%s\nand the read name "
                          "would be %s with flag %i" \
                          % (read_len, repr(data),
@@ -982,8 +983,12 @@ class SamBamRead(object):
         if self.seq:
             l_seq = len(self.seq)
         else:
-            raise NotImplementedError("TODO - Count CIGAR operators to get SEQ len")
-            l_seq = 0 #TODO, use the CIGAR counts
+            assert not self.qual
+            #Encoding is MIDNSHP=X
+            #Want 'M' = 0, 'I' = 1, 'S' = 4, '=' = 7, 'X' = 8
+            #l_seq = sum(op_len for op, op_len in self.cigar if op in [0,1,4,7,8])
+            #But for BAM we just want the length for the SEQ and QUAL entries
+            l_seq = 0
         if self.pos == 0  and ref_index == 0:
             #Hackery to match samtools on my test files,
             #SAM pos 1 => real pos 0, chr1 gets bin 0
@@ -1025,8 +1030,9 @@ class SamBamRead(object):
             if self.seq:
                 seq = _encode_seq(self.seq)
             else:
-                assert False
-                seq = chr(0) * ((l_seq+1) // 2) #TODO
+                assert l_seq == 0
+                assert not self.qual
+                seq = ""
         assert len(seq) == (l_seq+1) // 2, "%r (len %i) for %s (len %i = %i)" \
                % (seq, len(seq), self.seq, len(self.seq), l_seq)
         try:
@@ -1609,6 +1615,10 @@ def _comp_float(a,b):
 
 def _test_misc():
     print "Misc tests..."
+    import gzip
+    import os
+    import sys
+
     def compare(a_iter, b_iter):
         from itertools import izip_longest
         assert a_iter.nreferences == b_iter.nreferences, \
@@ -1655,7 +1665,7 @@ def _test_misc():
     compare(SamIterator(open("SamBam/tags.sam")),
             BamIterator(open("SamBam/tags.bam", "rb")))
     compare(SamIterator(open("SamBam/tags.sam")),
-            BamIterator(open("SamBam/tags.uncompressed.bam", "rb"), gzipped=False))
+            BamIterator(gzip.open("SamBam/tags.bam"), gzipped=False))
     for read in SamIterator(open("SamBam/tags.sam")):
         #TODO - Test API for getting tag values
         tag = str(read).rstrip("\n").split("\t")[-1]
@@ -1692,7 +1702,6 @@ def _test_misc():
             assert read.qname == "tag_" + tag, \
                    "Please check %s vs tag of %s" % (read.qname, tag)
 
-    import gzip
     try:
         #This is in Python 2.6+, but we need it on Python 3
         from io import BytesIO
@@ -1702,17 +1711,26 @@ def _test_misc():
     for sam_filename, bam_filename in [
         ("SamBam/tags.sam", "SamBam/tags.bam"),
         ("SamBam/ex1_header.sam", "SamBam/ex1_header.bam"),
+        ("SamBam/bins.sam", "SamBam/bins.bam"),
         ]:
         #BAM -> BAM
+        if not os.path.isfile(bam_filename):
+            continue
+        print "%s -> %s check..." % (bam_filename, bam_filename)
         handle = BytesIO()
         count = BamWriter(handle, BamIterator(open(bam_filename, "rb")))
-        assert handle.getvalue() == gzip.open(bam_filename).read(), \
-            "Couldn't reproduce %s -> %s" % (bam_filename, bam_filename)
+        if handle.getvalue() != gzip.open(bam_filename).read():
+            sys.stderr.write("ERROR: Couldn't reproduce %s -> %s\n" \
+                             % (bam_filename, bam_filename))
         #SAM -> BAM
+        if not os.path.isfile(sam_filename):
+            continue
+        print "%s -> %s check..." % (sam_filename, bam_filename)
         handle = BytesIO()
         count = BamWriter(handle, SamIterator(open(sam_filename)))
-        assert handle.getvalue() == gzip.open(bam_filename).read(), \
-            "Couldn't reproduce %s -> %s" % (sam_filename, bam_filename)
+        if handle.getvalue() != gzip.open(bam_filename).read():
+            sys.stderr.write("ERROR: Couldn't reproduce %s -> %s\n" \
+                             % (sam_filename, bam_filename))
         #Comparing SAM output is tricky due to float formatting...
 
     print "Done"
