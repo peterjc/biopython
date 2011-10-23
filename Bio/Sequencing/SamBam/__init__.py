@@ -746,8 +746,7 @@ class SamBamReadTags(dict):
     >>> str(tags)
     'CO:Z:My comment\txx:B:i,1,2,3'
 
-    Note the order of the tags is not important in SAM/BAM, but for
-    consistency we sort them alphabetically.
+    Note the order of the tags is not important in SAM/BAM.
     """
     def __setitem__(self, key, value):
         if len(key) != 2:
@@ -794,7 +793,29 @@ class SamBamReadTags(dict):
                 raise TypeError("H type SAM/BAM tag values must be hexadecimal strings, not:\n%r" % data)
         else:
             raise ValueError("SAM/BAM tag type %r not supported" % code)
+        try:
+            order = self._order
+        except AttributeError:
+            self._order = order = self.keys()
+        if key not in order:
+            order.append(key)
+            assert key in self._order
         return dict.__setitem__(self, key, (code, data))
+
+    def iteritems(self):
+        #TODO - Fix this hack, used to preserve tag order for testing
+        try:
+            order = self._order
+        except AttributeError:
+            order = []
+        for key in order:
+            try:
+                yield key, self[key]
+            except KeyError:
+                pass
+        for key, value in dict.iteritems(self):
+            if key not in order:
+                yield key, value
 
     def __str__(self):
         """Returns the tags tab separated in SAM formatting."""
@@ -804,7 +825,7 @@ class SamBamReadTags(dict):
                 tags.append("%s:B:%s,%s" % (key, code[1:], ",".join(str(v) for v in data)))
             else:
                 tags.append("%s:%s:%s" % (key, code, data))
-        tags.sort() #Want this consistent regardless of Python implementation
+        #tags.sort() #Want this consistent regardless of Python implementation
         return "\t".join(tags)
 
     def _as_bam(self):
