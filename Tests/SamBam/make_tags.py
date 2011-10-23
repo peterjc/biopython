@@ -10,8 +10,7 @@ h.write("@SQ\tSN:chr2\tLN:200\n")
 i_values = [0,1,-1,7,8,9,15,16,17,126,127,128,254,255,256,257,-253,-254,-255,-256,
             32000,33000,-33000,64000,-64000,1234567890,-1234567890,
             2147483647, -2147483647]
-#Stop here due to bug in samtools 0.1.18 with anything outside uint32
-#http://sourceforge.net/mailarchive/message.php?msg_id=28252016
+#Stop here as using i = uint32
 for i in i_values:
     h.write("tag_xx:i:%i\t0\tchr1\t1\t255\t4X\t*\t0\t0\tACGT\t<<<<\txx:i:%i\n" % (i,i))
 
@@ -71,5 +70,4 @@ print "SAM done"
 
 assert 0 == os.system("samtools view -S -b tags.sam > tags.bam")
 assert 0 == os.system("samtools index tags.bam")
-assert 0 == os.system("cat tags.bam | gunzip > tags.uncompressed.bam")
 print "BAM done"
