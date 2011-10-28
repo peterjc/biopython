@@ -426,6 +426,21 @@ class BamIterator(object):
                 mate_ref_name = "*"
             else:
                 mate_ref_name = references[mate_ref_id][0]
+            """
+            #Debug code for testing BIN
+            if cigar_len:
+                #Must decode cigar...
+                mapped_len = 0
+                for value in struct.unpack("<%iI" % cigar_len, raw_cigar):
+                    length = value >> 4
+                    value -= length << 4
+                    if value in [0,2,3,7,8]:
+                        mapped_len += length
+                expected_bin = reg2bin(ref_pos, ref_pos+mapped_len)
+                if bin != expected_bin:
+                    print "%s mapping to %i:%i, expected bin %i, got %i" \
+                    % (read_name, ref_pos, ref_pos+mapped_len, expected_bin, bin)
+            """
             yield BamRead(read_name, flag, ref_name, ref_pos, map_qual,
                           raw_cigar, mate_ref_name, mate_ref_pos,
                           inferred_insert_size, read_len,
@@ -586,8 +601,6 @@ def _bam_file_read_header(handle):
     
     The end offset is also used to determine the end of the tags section.
     """
-    #TODO - Check BBH really works for the bin_mq_ml field, defined by
-    # bin_mq_nl = bin<<16|mapQual<<8|read_name_len (including NULL)
     start_offset = handle.tell()
 
     fmt = "<iiiBBHHHiiii"
@@ -989,25 +1002,16 @@ class SamBamRead(object):
             #l_seq = sum(op_len for op, op_len in self.cigar if op in [0,1,4,7,8])
             #But for BAM we just want the length for the SEQ and QUAL entries
             l_seq = 0
-        if self.pos == 0  and ref_index == 0:
-            #Hackery to match samtools on my test files,
-            #SAM pos 1 => real pos 0, chr1 gets bin 0
-            #SAM pos 1 => real pos 0, chr2 gets bin 4681
-            #TODO - Resolve this oddity.
+        if self.pos < 0:
             bin = 0
-        elif self.pos >= 0:
-            if self.cigar:
-                #Encoding is MIDNSHP=X
-                #Want 'M' = 0, 'D' = 2, 'N' = 3, '=' = 7, 'X' = 8
-                mapped_len = sum(op_len for op, op_len in self.cigar if op in [0,2,3,7,8])
-            else:
-                #Have no CIGAR for unmapped reads (given their partner's position)
-                mapped_len = 0
-            bin = reg2bin(self.pos, self.pos + mapped_len)
+        elif self.cigar:
+            #Encoding is MIDNSHP=X
+            #Want 'M' = 0, 'D' = 2, 'N' = 3, '=' = 7, 'X' = 8
+            bin = reg2bin(self.pos, self.pos + sum(op_len for op, op_len in self.cigar if op in [0,2,3,7,8]))
         else:
-            #Unmapped AND not given a POS anyway (e.g. to match partner)
-            #TODO - Check this after clarification from samtools-devel
-            bin = 0
+            #Have no CIGAR for unmapped reads (given their partner's position)
+            #Do what samtools does:
+            bin = reg2bin(self.pos, self.pos + 1)
         bin_mq_nl = bin<<16 | self.mapq<<8 | (len(self.qname)+1)
         try:
             cigar = self._binary_cigar #See BamRead subclass
