@@ -507,6 +507,7 @@ def reg2bin(beg, end):
 
     """
     assert 0 <= beg <= end < 2**29, "Bad region %i:%i" % (beg, end)
+    end -= 1
     if (beg>>14 == end>>14): return ((1<<15)-1)/7 + (beg>>14)
     if (beg>>17 == end>>17): return ((1<<12)-1)/7 + (beg>>17)
     if (beg>>20 == end>>20): return ((1<<9)-1)/7  + (beg>>20)
@@ -522,6 +523,7 @@ def reg2bins(beg, end):
     (that is 2^29 base pairs). 
     """
     bins = []
+    end -= 1
     for power in [26, 23, 20, 17, 14]:
         for k in range(1 + (beg>>power), 2 + (end>>power)):
             bins.append(k)
