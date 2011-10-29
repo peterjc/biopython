@@ -74,5 +74,115 @@ compression (useful for intermediate files in memory to reduced
 CPU load).
 
 """
+#TODO - Move somewhere else in Bio.* namespace?
 
 import gzip
+
+def open(filename, mode):
+    if "r" in mode.lower():
+        raise NotImplementedError("TODO - Use gzip.open() for now")
+    elif "w" in mode.lower() or "a" in mode.lower():
+        return BgzfWriter(filename, mode)
+    else:
+        raise ValueError("Bad mode %r" % mode)
+
+def make_virtual_offset(block_start_offset, within_block_offset):
+    """Compute a BGZF virtual offset from block start and within block offsets.
+
+    The BAM indexing scheme records read positions using a 64 bit
+    'virtual offset', comprising in C terms:
+
+    within_block_offset<<16 | block_start_offset
+
+    Here block_start_offset is the file offset of the BGZF block
+    start (unsigned integer using up to 64-16 = 48 bits), and
+    within_block_offset within the (decompressed) block (unsigned
+    16 bit integer).
+
+    >>> make_virtual_offset(0,0)
+    0
+    >>> make_virtual_offset(0,1)
+    1
+    >>> make_virtual_offset(0, 2**16 - 1)
+    65535
+    >>> make_virtual_offset(0, 2**16)
+    Traceback (most recent call last):
+    ...
+    ValueError: Require 0 <= within_block_offset < 2**16
+
+    >>> make_virtual_offset(1,0)
+    65536
+    >>> make_virtual_offset(1,1)
+    65537
+    >>> make_virtual_offset(1, 2**16 - 1)
+    131071
+
+    >>> make_virtual_offset(100000,0)
+    6553600000
+    >>> make_virtual_offset(100000,1)
+    6553600001
+    >>> make_virtual_offset(100000,10)
+    6553600010
+
+    >>> make_virtual_offset(2**48,0)
+    Traceback (most recent call last):
+    ...
+    ValueError: Require 0 <= block_start_offset < 2**48
+
+    """
+    if within_block_offset < 0 or within_block_offset >= 2**16:
+        raise ValueError("Require 0 <= within_block_offset < 2**16")
+    if block_start_offset < 0 or block_start_offset >= 2**28:
+        raise ValueError("Require 0 <= block_start_offset < 2**48")
+    return (block_start_offset<<16) | within_block_offset
+
+def split_virtual_offset(virtual_offset):
+    """Divides a 64-bit BGZF virtual offset into block start & within block offsets.
+
+    >>> split_virtual_offset(6553600000)
+    (100000, 0)
+    >>> split_virtual_offset(6553600010)
+    (100000, 10)
+
+    """
+    start = virtual_offset>>16
+    return start, virtual_offset ^ (start<<16)
+
+class _BgzfWriter(object):
+    def __init__(filename, mode):
+        if "w" not in mode.lower() \
+        and "a" not in mode.lower():
+            raise ValueError("Must use write or append mode, not %r" % mode)
+        handle = open(filename, mode)
+        self._handle = handle
+        self._buffer = "" #Bytes string
+
+    def write(self, data):
+        pass
+
+
+def _test():
+    """Run the module's doctests (PRIVATE).
+
+    This will try and locate the unit tests directory, and run the doctests
+    from there in order that the relative paths used in the examples work.
+    """
+    import doctest
+    import os
+    if os.path.isdir(os.path.join("..", "..", "..", "Tests")):
+        print "Runing doctests..."
+        cur_dir = os.path.abspath(os.curdir)
+        os.chdir(os.path.join("..", "..", "..", "Tests"))
+        doctest.testmod()
+        print "Done"
+        del cur_dir
+    elif os.path.isdir(os.path.join("Tests")):
+        print "Runing doctests..."
+        cur_dir = os.path.abspath(os.curdir)
+        os.chdir(os.path.join("Tests"))
+        doctest.testmod()
+        print "Done"
+        del cur_dir
+
+if __name__ == "__main__":
+    _test()
