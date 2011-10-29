@@ -77,6 +77,9 @@ CPU load).
 #TODO - Move somewhere else in Bio.* namespace?
 
 import gzip
+import zlib
+import struct
+import __builtin__ #to access the usual open function
 
 def open(filename, mode):
     if "r" in mode.lower():
@@ -148,18 +151,140 @@ def split_virtual_offset(virtual_offset):
     start = virtual_offset>>16
     return start, virtual_offset ^ (start<<16)
 
-class _BgzfWriter(object):
-    def __init__(filename, mode):
+class BgzfWriter(object):
+
+    def __init__(self, filename, mode, compresslevel=6, answer=None):
         if "w" not in mode.lower() \
         and "a" not in mode.lower():
             raise ValueError("Must use write or append mode, not %r" % mode)
-        handle = open(filename, mode)
+        handle = __builtin__.open(filename, mode)
         self._handle = handle
         self._buffer = "" #Bytes string
+        self.compresslevel = compresslevel
+        self.answer = answer
+
+    def _write_block(self, block):
+        #print "Saving %i bytes" % len(block)
+        assert len(block) < 65536
+        #Giving a negative window bits means no gzip/zlib headers, -15 used in samtools
+        c = zlib.compressobj(self.compresslevel,
+                             zlib.DEFLATED,
+                             -15,
+                             zlib.DEF_MEM_LEVEL,
+                             0)
+        compressed = c.compress(block) + c.flush()
+        del c
+        assert len(compressed) < 65536, "TODO - Didn't compress enough, try less data in this block"
+        crc = zlib.crc32(block)
+        #Should cope with a mix of Python platforms...
+        if crc < 0:
+            crc = struct.pack("<i", crc)
+        else:
+            crc = struct.pack("<I", crc)
+        bsize = struct.pack("<H", len(compressed)+26) #includes -1
+        crc = struct.pack("<I", zlib.crc32(block) & 0xffffffffL)
+        uncompressed_length = struct.pack("<I", len(block))
+        #Fixed 16 bytes,
+        # gzip magic bytes (4) mod time (4),
+        # gzip flag (1), os (1), extra length which is six (2),
+        # sub field which is BC (2), sub field length of two (2),
+        #Variable data,
+        #2 bytes: block length as BC sub field (2)
+        #X bytes: the data
+        #8 bytes: crc (4), uncompressed data length (4)
+        data = "\x1f\x8b\x08\x04\x00\x00\x00\x00" \
+             + "\x00\xff\x06\x00\x42\x43\x02\x00" \
+             + bsize + compressed + crc + uncompressed_length
+        self._handle.write(data)
+
+        if self.answer:
+            print "Checking block, offset %i" % self.answer.tell()
+            expected = self.answer.read(len(data))
+            assert data[:16] == expected[:16], \
+                  "Start %r vs expected %r" % (data[:16], expected[:16])
+            assert struct.unpack("<H", data[16:18]) == struct.unpack("<H", expected[16:18]), \
+                  "Block size %i %r vs expected %i %r" \
+                  % (struct.unpack("<H", data[16:18])[0],
+                     data[16:18],
+                     struct.unpack("<H", expected[16:18])[0],
+                     expected[16:18])
+            for i in range(0, len(compressed)):
+                assert compressed[i] == data[18+i]
+                assert ord(data[18+i]) == ord(expected[18+i]), \
+                    "Compressed differ at byte %i of %i,\n%r\nvs\n%r\nOur crc = %r and len %r\nOur CRC etc %r\n\nExpected CRC etc %r (if in sync)" \
+                    % (i, len(compressed),
+                       data[18+i:18+len(compressed)],
+                       expected[18+i:18+len(compressed)],
+                       crc, uncompressed_length,
+                       data[18+len(compressed):],
+                       expected[18+len(compressed):])
+            assert data[:18+len(compressed)] == expected[:18+len(compressed)], \
+                  "Compressed differs?"
+            if data != expected:
+                assert False
 
     def write(self, data):
-        pass
+        #block_size = 2**16 = 65536
+        data_len = len(data)
+        if len(self._buffer) + data_len < 65536:
+            #print "Cached %r" % data
+            self._buffer += data
+            return
+        else:
+            #print "Got %r, writing out some data..." % data
+            self._buffer += data
+            while len(self._buffer) >= 65536:
+                self._write_block(self._buffer[:65535])
+                self._buffer = self._buffer[65535:]
 
+    def flush(self):
+        while len(self._buffer) >= 65536:
+            self._write_block(self._buffer[:65535])
+            self._buffer = self._buffer[65535:]
+        self._write_block(self._buffer)
+        self._handle.flush()
+
+    def close(self):
+        self.flush()
+        #samtools seems to look for a magic EOF marker, just a 28 byte empty BGZF block:
+        self._handle.write("\x1f\x8b\x08\x04\x00\x00\x00\x00\x00\xff\x06\x00BC")
+        self._handle.write("\x02\x00\x1b\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00")
+        self._handle.flush()
+        self._handle.close()
+
+    def tell(self):
+        """Returns a BGZF 64-bit virtual offset."""
+        return make_virtual_offset(self.handle.tell(), len(self._buffer)) 
+
+
+def _test_misc():
+    import gzip
+
+    from Bio import SeqIO
+
+    temp_file = "temp.bgzf"
+
+    h = __builtin__.open("SamBam/ex1.uncompressed.bam", "rb")
+    data = h.read()
+    h.close()
+
+    #data = "1234567890\nThe End\n"
+    #h = open(temp_file, "w") #bgzf.open!
+
+    h = BgzfWriter(temp_file, "wb") #, answer = __builtin__.open("SamBam/ex1.bam", "rb"))
+    #Force the header to get its own block?
+    h.write(data)
+    h.close()
+
+    h = gzip.open(temp_file)
+    new_data = h.read()
+    h.close()
+
+    assert new_data, "Empty BGZF file?"
+    assert len(data) == len(new_data), \
+           "%i vs %i" % (len(data), len(new_data))
+    assert data == new_data
+    
 
 def _test():
     """Run the module's doctests (PRIVATE).
@@ -174,6 +299,7 @@ def _test():
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..", "..", "..", "Tests"))
         doctest.testmod()
+        _test_misc()
         print "Done"
         del cur_dir
     elif os.path.isdir(os.path.join("Tests")):
@@ -181,6 +307,7 @@ def _test():
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("Tests"))
         doctest.testmod()
+        _test_misc()
         print "Done"
         del cur_dir
 
