@@ -27,11 +27,11 @@
 
 <!-- PDB specific descriptions -->
 <!ELEMENT PDB-block (
-        PDB-block_deposition, 
-        PDB-block_class, 
-        PDB-block_compound, 
-        PDB-block_source, 
-        PDB-block_exp-method?, 
+        PDB-block_deposition,
+        PDB-block_class,
+        PDB-block_compound,
+        PDB-block_source,
+        PDB-block_exp-method?,
         PDB-block_replace?)>
 
 <!-- deposition date  month,year -->
@@ -57,7 +57,7 @@
 
 
 <!ELEMENT PDB-replace (
-        PDB-replace_date, 
+        PDB-replace_date,
         PDB-replace_ids)>
 
 <!ELEMENT PDB-replace_date (Date)>

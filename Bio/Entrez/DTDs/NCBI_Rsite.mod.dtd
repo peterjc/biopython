@@ -27,7 +27,7 @@
 
 
 <!ELEMENT Rsite-ref (
-        Rsite-ref_str | 
+        Rsite-ref_str |
         Rsite-ref_db)>
 
 <!-- may be unparsable -->

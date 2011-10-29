@@ -27,17 +27,17 @@
 
 
 <!ELEMENT HG-Entry (
-        HG-Entry_hg-id, 
-        HG-Entry_version?, 
-        HG-Entry_title?, 
-        HG-Entry_caption?, 
-        HG-Entry_taxid?, 
-        HG-Entry_genes?, 
-        HG-Entry_cr-date?, 
-        HG-Entry_up-date?, 
-        HG-Entry_distances?, 
-        HG-Entry_commentaries?, 
-        HG-Entry_warnings?, 
+        HG-Entry_hg-id,
+        HG-Entry_version?,
+        HG-Entry_title?,
+        HG-Entry_caption?,
+        HG-Entry_taxid?,
+        HG-Entry_genes?,
+        HG-Entry_cr-date?,
+        HG-Entry_up-date?,
+        HG-Entry_distances?,
+        HG-Entry_commentaries?,
+        HG-Entry_warnings?,
         HG-Entry_node?)>
 
 <!ELEMENT HG-Entry_hg-id (%INTEGER;)>
@@ -69,22 +69,22 @@
 
 
 <!ELEMENT HG-Gene (
-        HG-Gene_geneid, 
-        HG-Gene_otherid?, 
-        HG-Gene_symbol?, 
-        HG-Gene_aliases?, 
-        HG-Gene_title, 
-        HG-Gene_taxid, 
-        HG-Gene_prot-gi?, 
-        HG-Gene_prot-acc?, 
-        HG-Gene_prot-len?, 
-        HG-Gene_nuc-gi?, 
-        HG-Gene_nuc-acc?, 
-        HG-Gene_gene-links?, 
-        HG-Gene_prot-links?, 
-        HG-Gene_domains?, 
-        HG-Gene_chr?, 
-        HG-Gene_location?, 
+        HG-Gene_geneid,
+        HG-Gene_otherid?,
+        HG-Gene_symbol?,
+        HG-Gene_aliases?,
+        HG-Gene_title,
+        HG-Gene_taxid,
+        HG-Gene_prot-gi?,
+        HG-Gene_prot-acc?,
+        HG-Gene_prot-len?,
+        HG-Gene_nuc-gi?,
+        HG-Gene_nuc-acc?,
+        HG-Gene_gene-links?,
+        HG-Gene_prot-links?,
+        HG-Gene_domains?,
+        HG-Gene_chr?,
+        HG-Gene_location?,
         HG-Gene_locus-tag?)>
 
 <!ELEMENT HG-Gene_geneid (%INTEGER;)>
@@ -129,15 +129,15 @@
 
 
 <!ELEMENT HG-Stats (
-        HG-Stats_gi1, 
-        HG-Stats_gi2, 
-        HG-Stats_nuc-change, 
-        HG-Stats_nuc-change-jc, 
-        HG-Stats_prot-change, 
-        HG-Stats_ka, 
-        HG-Stats_ks, 
-        HG-Stats_knr, 
-        HG-Stats_knc, 
+        HG-Stats_gi1,
+        HG-Stats_gi2,
+        HG-Stats_nuc-change,
+        HG-Stats_nuc-change-jc,
+        HG-Stats_prot-change,
+        HG-Stats_ka,
+        HG-Stats_ks,
+        HG-Stats_knr,
+        HG-Stats_knc,
         HG-Stats_recip-best?)>
 
 <!ELEMENT HG-Stats_gi1 (%INTEGER;)>
@@ -164,13 +164,13 @@
 
 
 <!ELEMENT HG-Commentary (
-        HG-Commentary_link, 
-        HG-Commentary_description?, 
-        HG-Commentary_caption?, 
-        HG-Commentary_provider?, 
-        HG-Commentary_other-links?, 
-        HG-Commentary_other-commentaries?, 
-        HG-Commentary_taxid?, 
+        HG-Commentary_link,
+        HG-Commentary_description?,
+        HG-Commentary_caption?,
+        HG-Commentary_provider?,
+        HG-Commentary_other-links?,
+        HG-Commentary_other-commentaries?,
+        HG-Commentary_taxid?,
         HG-Commentary_geneid?)>
 
 <!ELEMENT HG-Commentary_link (HG-Link)>
@@ -193,8 +193,8 @@
 
 
 <!ELEMENT HG-CommentarySet (
-        HG-CommentarySet_hg-id?, 
-        HG-CommentarySet_title, 
+        HG-CommentarySet_hg-id?,
+        HG-CommentarySet_title,
         HG-CommentarySet_commentaries)>
 
 <!ELEMENT HG-CommentarySet_hg-id (%INTEGER;)>
@@ -208,7 +208,7 @@
 
 
 <!ELEMENT HG-Link (
-        HG-Link_hypertext, 
+        HG-Link_hypertext,
         HG-Link_url?)>
 
 <!ELEMENT HG-Link_hypertext (#PCDATA)>
@@ -217,10 +217,10 @@
 
 
 <!ELEMENT HG-Domain (
-        HG-Domain_begin, 
-        HG-Domain_end, 
-        HG-Domain_pssm-id?, 
-        HG-Domain_cdd-id?, 
+        HG-Domain_begin,
+        HG-Domain_end,
+        HG-Domain_pssm-id?,
+        HG-Domain_cdd-id?,
         HG-Domain_cdd-name?)>
 
 <!ELEMENT HG-Domain_begin (%INTEGER;)>
@@ -236,11 +236,11 @@
 
 
 <!ELEMENT HG-Node (
-        HG-Node_type, 
-        HG-Node_id, 
-        HG-Node_caption?, 
-        HG-Node_current-node?, 
-        HG-Node_children?, 
+        HG-Node_type,
+        HG-Node_id,
+        HG-Node_caption?,
+        HG-Node_current-node?,
+        HG-Node_children?,
         HG-Node_branch-len?)>
 
 <!ELEMENT HG-Node_type %ENUM;>
@@ -266,7 +266,7 @@
 
 
 <!ELEMENT HG-Node-id (
-        HG-Node-id_id?, 
+        HG-Node-id_id?,
         HG-Node-id_id-type)>
 
 <!ELEMENT HG-Node-id_id (%INTEGER;)>
@@ -281,7 +281,7 @@
 
 
 <!ELEMENT HG-Alignment (
-        HG-Alignment_hg-id, 
+        HG-Alignment_hg-id,
         HG-Alignment_alignment)>
 
 <!ELEMENT HG-Alignment_hg-id (%INTEGER;)>

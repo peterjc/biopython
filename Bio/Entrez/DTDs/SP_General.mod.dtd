@@ -29,15 +29,15 @@
 
 <!-- SWISSPROT specific descriptions -->
 <!ELEMENT SP-block (
-        SP-block_class, 
-        SP-block_extra-acc?, 
-        SP-block_imeth?, 
-        SP-block_plasnm?, 
-        SP-block_seqref?, 
-        SP-block_dbref?, 
-        SP-block_keywords?, 
-        SP-block_created?, 
-        SP-block_sequpd?, 
+        SP-block_class,
+        SP-block_extra-acc?,
+        SP-block_imeth?,
+        SP-block_plasnm?,
+        SP-block_seqref?,
+        SP-block_dbref?,
+        SP-block_keywords?,
+        SP-block_created?,
+        SP-block_sequpd?,
         SP-block_annotupd?)>
 
 <!ELEMENT SP-block_class %ENUM;>

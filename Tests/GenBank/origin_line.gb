@@ -33,7 +33,7 @@ FEATURES             Location/Qualifiers
      gene            20..120
                      /gene="fake"
 BASE COUNT  1311257 a2224835 c2190093 g1309889 t
-ORIGIN      
+ORIGIN
         1 ttaattaact gtcttcgatt gcgtttaatt gacggttttc gattaaaagc ggtaccgggg
        61 tttgggaggt actatggcgg caggaatgct gggcgatctg gttggcaaga tcctcgacaa
       121 gatatcgggc accagtttgc tggcgaccgg gcttttgctg ctgactgcct ttgtcagcgc

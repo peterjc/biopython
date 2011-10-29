@@ -1,35 +1,35 @@
-<!-- NLMMedlineCitation DTD   
+<!-- NLMMedlineCitation DTD
 
      Comments and suggestions are welcome.
      January 1, 2008
-     
-          
-   NOTE:  The use of "Medline" in a DTD or element name does not mean the record 
-    represents a citation from a Medline-selected journal.  When the NLM DTDs and 
-    XML elements were first created, MEDLINE records were the only data exported. 
-    Now NLM exports citations other than MEDLINE records using these tools. To 
+
+
+   NOTE:  The use of "Medline" in a DTD or element name does not mean the record
+    represents a citation from a Medline-selected journal.  When the NLM DTDs and
+    XML elements were first created, MEDLINE records were the only data exported.
+    Now NLM exports citations other than MEDLINE records using these tools. To
     minimize unnecessary disruption to users of the data and tools, NLM has
     retained the original DTD and element names (e.g., NLMMedline DTD, MedlineTA,
-    MedlineJournalInfo)).       
-       
+    MedlineJournalInfo)).
+
   * = 0 or more occurrences (optional element, repeatable)
   ? = 0 or 1 occurrences (optional element, at most 1)
   + = 1 or more occurrences (required element, repeatable)
-  | = choice, one or the other but not both 
+  | = choice, one or the other but not both
   no symbol = required element
 -->
 <!-- ================================================================= -->
-<!--   Revision Notes Section 
+<!--   Revision Notes Section
 
 The following changes were made in the nlmmedlinecitation_080101.dtd:
 
-     a. Changed entity reference from "nlmsharedcatcit_070101.dtd" 
-             to: "nlmsharedcatcit_080101.dtd" 
-     
+     a. Changed entity reference from "nlmsharedcatcit_070101.dtd"
+             to: "nlmsharedcatcit_080101.dtd"
+
      b. Added entity EIdType with doi and pii values
-  
-   
-  
+
+
+
      Historic Revision notes for previous versions of NLMMedlineCitation DTD
      See:
      http://www.nlm.nih.gov/databases/dtd/history_dtd_medlinecitation.html
@@ -52,16 +52,16 @@ The following changes were made in the nlmmedlinecitation_080101.dtd:
 <!-- ================================================================= -->
 <!-- ================================================================= -->
 <!-- Reference to Where the NLM Common DTD via NLMSharedCatCit DTD is located  -->
-<!ENTITY % NlmSharedCatCit PUBLIC "-//NLM//DTD SharedCatCit, 1st January 2008//EN" 
-"nlmsharedcatcit_080101.dtd" >  
+<!ENTITY % NlmSharedCatCit PUBLIC "-//NLM//DTD SharedCatCit, 1st January 2008//EN"
+"nlmsharedcatcit_080101.dtd" >
 %NlmSharedCatCit;
 <!-- =================================================================  -->
 <!-- This is the top level element for MedlineCitation -->
 <!ELEMENT MedlineCitation (%NlmDcmsID.Ref;, %PMID.Ref;, %DateCreated.Ref;, DateCompleted?,
-                           DateRevised?, Article, MedlineJournalInfo, ChemicalList?, 
-                           CitationSubset*, CommentsCorrections?, GeneSymbolList?, 
+                           DateRevised?, Article, MedlineJournalInfo, ChemicalList?,
+                           CitationSubset*, CommentsCorrections?, GeneSymbolList?,
                            MeshHeadingList?, NumberOfReferences?, PersonalNameSubjectList?,
-                           OtherID*, OtherAbstract*, KeywordList*, SpaceFlightMission*, 
+                           OtherID*, OtherAbstract*, KeywordList*, SpaceFlightMission*,
                            InvestigatorList?, GeneralNote*)>
 <!ATTLIST MedlineCitation
 	Owner %Owner; "NLM"
@@ -79,7 +79,7 @@ The following changes were made in the nlmmedlinecitation_080101.dtd:
 <!ELEMENT CommentsCorrections (CommentOn*, CommentIn*, ErratumIn*, ErratumFor*,
                                PartialRetractionIn*, PartialRetractionOf*,
                                RepublishedFrom*, RepublishedIn*, RetractionOf*,
-                               RetractionIn*, UpdateIn*, UpdateOf*, 
+                               RetractionIn*, UpdateIn*, UpdateOf*,
                                SummaryForPatientsIn*, OriginalReportIn*, ReprintOf*, ReprintIn*)>
 <!ELEMENT ErratumFor (%Ref.template;)>
 <!ELEMENT ErratumIn (%Ref.template;)>

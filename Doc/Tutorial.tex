@@ -208,7 +208,7 @@ and HTML formats
   If the ``\verb|import Bio|'' line fails, Biopython is not installed.
   If the second line fails, your version is very out of date.
   If the version string ends with a plus, you don't have an official
-  release, but a snapshot of the in development code. 
+  release, but a snapshot of the in development code.
 
   \item \emph{Where is the latest version of this document?}\\
   If you download a Biopython source code archive, it will include the
@@ -218,7 +218,7 @@ and HTML formats
   \item \url{http://biopython.org/DIST/docs/tutorial/Tutorial.html}
   \item \url{http://biopython.org/DIST/docs/tutorial/Tutorial.pdf}
   \end{itemize}
-  
+
   \item \emph{Which ``Numerical Python'' do I need?} \\
   For Biopython 1.48 or earlier, you need the old Numeric module.
   For Biopython 1.49 onwards, you need the newer NumPy instead.
@@ -231,7 +231,7 @@ and HTML formats
   \item \emph{Why is the} \verb|Seq| \emph{object missing the upper \& lower methods described in this Tutorial?} \\
   You need Biopython 1.53 or later.  Alternatively, use \verb|str(my_seq).upper()| to get an upper case string.
   If you need a Seq object, try \verb|Seq(str(my_seq).upper())| but be careful about blindly re-using the same alphabet.
- 
+
   \item \emph{Why does't the} \verb|Seq| \emph{object translation method support the} \verb|cds| \emph{option described in this Tutorial?} \\
   You need Biopython 1.51 or later.
 
@@ -246,13 +246,13 @@ and HTML formats
 
   \item \emph{What file formats do} \verb|Bio.SeqIO| \emph{and} \verb|Bio.AlignIO| \emph{read and write?} \\
   Check the built in docstrings (\texttt{from Bio import SeqIO}, then \texttt{help(SeqIO)}), or see \url{http://biopython.org/wiki/SeqIO} and \url{http://biopython.org/wiki/AlignIO} on the wiki for the latest listing.
-  
+
   \item \emph{Why don't the } \verb|Bio.SeqIO| \emph{and} \verb|Bio.AlignIO| \emph{input functions let me provide a sequence alphabet?} \\
   You need Biopython 1.49 or later.
 
   \item \emph{Why doesn't} \verb|str(...)| \emph{give me the full sequence of a} \verb|Seq| \emph{object?} \\
   You need Biopython 1.45 or later.  Alternatively, rather than \verb|str(my_seq)|, use \verb|my_seq.tostring()| (which will also work on recent versions of Biopython).
-  
+
   \item \emph{Why doesn't} \verb|Bio.Blast| \emph{work with the latest plain text NCBI blast output?} \\
   The NCBI keep tweaking the plain text output from the BLAST tools, and keeping our parser up to date is/was an ongoing struggle.
   If you aren't using the latest version of Biopython, you could try upgrading.
@@ -272,10 +272,10 @@ and HTML formats
 
   \item \emph{Why doesn't} \verb|Bio.Blast.NCBIXML.read()| \emph{work? The module imports but there is no read function!} \\
   You need Biopython 1.50 or later.  Or, use \texttt{Bio.Blast.NCBIXML.parse(...).next()} instead.
-  
+
   \item \emph{Why doesn't my} \verb|SeqRecord| \emph{object have a} \verb|letter_annotations| \emph{attribute?} \\
   Per-letter-annotation support was added in Biopython 1.50.
-  
+
  \item \emph{Why can't I slice my} \verb|SeqRecord| \emph{to get a sub-record?} \\
   You need Biopython 1.50 or later.
 
@@ -288,7 +288,7 @@ and HTML formats
 
  \item \emph{Why doesn't} \verb|Bio.SeqIO.index()| \emph{work? The module imports fine but there is no index function!} \\
   You need Biopython 1.52 or later.
-  
+
   \item \emph{I looked in a directory for code, but I couldn't find the code that does something. Where's it hidden?} \\
   One thing to know is that we put code in \verb|__init__.py| files. If you are not used to looking for code in this file this can be confusing. The reason we do this is to make the imports easier for users. For instance, instead of having to do a ``repetitive'' import like \verb|from Bio.GenBank import GenBank|, you can just use \verb|from Bio import GenBank|.
 
@@ -369,7 +369,7 @@ That gives us enough to get started delving for more information. So, let's look
 
 A large part of much bioinformatics work involves dealing with the many types of file formats designed to hold biological data. These files are loaded with interesting biological data, and a special challenge is parsing these files into a format so that you can manipulate them with some kind of programming language. However the task of parsing these files can be frustrated by the fact that the formats can change quite regularly, and that formats may contain small subtleties which can break even the most well designed parsers.
 
-We are now going to briefly introduce the \verb|Bio.SeqIO| module -- you can find out more in Chapter~\ref{chapter:Bio.SeqIO}.  We'll start with an online search for our friends, the lady slipper orchids. To keep this introduction simple, we're just using the NCBI website by hand.  Let's just take a look through the nucleotide databases at NCBI, using an Entrez online search (\url{http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?db=Nucleotide}) for everything mentioning the text Cypripedioideae (this is the subfamily of lady slipper orchids).  
+We are now going to briefly introduce the \verb|Bio.SeqIO| module -- you can find out more in Chapter~\ref{chapter:Bio.SeqIO}.  We'll start with an online search for our friends, the lady slipper orchids. To keep this introduction simple, we're just using the NCBI website by hand.  Let's just take a look through the nucleotide databases at NCBI, using an Entrez online search (\url{http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?db=Nucleotide}) for everything mentioning the text Cypripedioideae (this is the subfamily of lady slipper orchids).
 
 When this tutorial was originally written, this search gave us only 94 hits, which we saved as a FASTA formatted text file and as a GenBank formatted text file (files \href{http://biopython.org/DIST/docs/tutorial/examples/ls_orchid.fasta}{\tt ls\_orchid.fasta} and \href{http://biopython.org/DIST/docs/tutorial/examples/ls_orchid.gbk}{\tt ls\_orchid.gbk}, also included with the Biopython source code under {\tt docs/tutorial/examples/}).
 
@@ -963,7 +963,7 @@ Internally these use codon table objects derived from the NCBI information at
 \url{http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi} in a much more readable layout.
 
 As before, let's just focus on two choices: the Standard translation table, and the
-translation table for Vertebrate Mitochondrial DNA. 
+translation table for Vertebrate Mitochondrial DNA.
 
 \begin{verbatim}
 >>> from Bio.Data import CodonTable
@@ -1289,13 +1289,13 @@ The \verb|SeqRecord| class itself is quite simple, and offers the following info
   \item[name] -- A ``common'' name/id for the sequence -- a string. In some cases this will be the same as the accession number, but it could also be a clone name. I think of this as being analagous to the LOCUS id in a GenBank record.
 
   \item[description] -- A human readible description or expressive name for the sequence -- a string.
-  
+
   \item[letter\_annotations] -- Holds per-letter-annotations using a (restricted) dictionary of additional information about the letters in the sequence. The keys are the name of the information, and the information is contained in the value as a Python sequence (i.e. a list, tuple or string) with the same length as the sequence itself.  This is often used for quality scores (e.g. Section~\ref{sec:FASTQ-filtering-example}) or secondary structure information (e.g. from Stockholm/PFAM alignment files).
 
   \item[annotations] -- A dictionary of additional information about the sequence. The keys are the name of the information, and the information is contained in the value. This allows the addition of more ``unstructed'' information to the sequence.
-  
+
   \item[features] -- A list of \verb|SeqFeature| objects with more structured information about the features on a sequence (e.g. position of genes on a genome, or domains on a protein sequence). The structure of sequence features is described below in Section~\ref{sec:seq_features}.
-  
+
   \item[dbxrefs] - A list of database cross-references as strings.
 \end{description}
 
@@ -1553,9 +1553,9 @@ The first level of dealing with sequence features is the \verb|SeqFeature| class
   \item[strand] -- The strand on the sequence that the feature is located on. This may either be $1$ for the top strand, $-1$ for the bottom strand, or $0$ or \texttt{None} for both strands (or if it doesn't matter). Keep in mind that this only really makes sense for double stranded DNA, and not for proteins or RNA.
 
   \item[qualifiers] -- This is a Python dictionary of additional information about the feature. The key is some kind of terse one-word description of what the information contained in the value is about, and the value is the actual information. For example, a common key for a qualifier might be ``evidence'' and the value might be ``computational (non-experimental).'' This is just a way to let the person who is looking at the feature know that it has not be experimentally (i.~e.~in a wet lab) confirmed. Note that other the value will be a list of strings (even when there is only one string). This is a reflection of the feature tables in GenBank/EMBL files.
- 
+
   \item[sub\_features] -- A very important feature of a feature is that it can have additional \verb|sub_features| underneath it. This allows nesting of features, and helps us to deal with things such as the GenBank/EMBL feature lines in a (we hope) intuitive way.
-  
+
 \end{description}
 
 To show an example of SeqFeatures in action, let's take a look at the following feature from a GenBank feature table:
@@ -1715,7 +1715,7 @@ record = SeqRecord(Seq("MMYQQGCFAGGTVLRLAKDLAENNRGARVLVVCSEITAVTFRGPSETHLDSMVGQA
                       +"SSAC", generic_protein),
                    id="gi|14150838|gb|AAK54648.1|AF376133_1",
                    description="chalcone synthase [Cucumis sativus]")
-                   
+
 print record.format("fasta")
 \end{verbatim}
 \noindent which should give:
@@ -1770,7 +1770,7 @@ type: gene
 location: [4342:4780]
 ref: None:None
 strand: 1
-qualifiers: 
+qualifiers:
     Key: db_xref, Value: ['GeneID:2767712']
     Key: gene, Value: ['pim']
     Key: locus_tag, Value: ['YP_pPCP05']
@@ -1780,7 +1780,7 @@ type: CDS
 location: [4342:4780]
 ref: None:None
 strand: 1
-qualifiers: 
+qualifiers:
     Key: codon_start, Value: ['1']
     Key: db_xref, Value: ['GI:45478716', 'GeneID:2767712']
     Key: gene, Value: ['pim']
@@ -1816,7 +1816,7 @@ type: gene
 location: [42:480]
 ref: None:None
 strand: 1
-qualifiers: 
+qualifiers:
     Key: db_xref, Value: ['GeneID:2767712']
     Key: gene, Value: ['pim']
     Key: locus_tag, Value: ['YP_pPCP05']
@@ -1826,7 +1826,7 @@ type: CDS
 location: [42:480]
 ref: None:None
 strand: 1
-qualifiers: 
+qualifiers:
     Key: codon_start, Value: ['1']
     Key: db_xref, Value: ['GI:45478716', 'GeneID:2767712']
     Key: gene, Value: ['pim']
@@ -2208,7 +2208,7 @@ print first_record.annotations.keys()
 print first_record.annotations.values()
 \end{verbatim}
 
-In general, the annotation values are strings, or lists of strings.  One special case is any references in the file get stored as reference objects.  
+In general, the annotation values are strings, or lists of strings.  One special case is any references in the file get stored as reference objects.
 
 Suppose you wanted to extract a list of the species from the \href{http://biopython.org/DIST/docs/tutorial/examples/ls_orchid.gbk}{ls\_orchid.gbk} GenBank file.  The information we want, \emph{Cypripedium irapeanum}, is held in the annotations dictionary under `source' and `organism', which we can access like this:
 
@@ -2226,7 +2226,7 @@ Cypripedium irapeanum
 
 In general, `organism' is used for the scientific name (in Latin, e.g. \textit{Arabidopsis thaliana}),
 while `source' will often be the common name (e.g. thale cress).  In this example, as is often the case,
-the two fields are identical.  
+the two fields are identical.
 
 Now let's go through all the records, building up a list of the species each orchid sequence is from:
 
@@ -2496,7 +2496,7 @@ First you must write your own function to return the key you want (as a string) 
 \begin{verbatim}
 def get_accession(record):
     """"Given a SeqRecord, return the accession number as a string.
-  
+
     e.g. "gi|2765613|emb|Z78488.1|PTZ78488" -> "Z78488.1"
     """
     parts = record.id.split("|")
@@ -2630,7 +2630,7 @@ you want:
 \begin{verbatim}
 def get_acc(identifier):
     """"Given a SeqRecord identifer string, return the accession number as a string.
-  
+
     e.g. "gi|2765613|emb|Z78488.1|PTZ78488" -> "Z78488.1"
     """
     parts = identifier.split("|")
@@ -2683,7 +2683,7 @@ rec3 = SeqRecord(Seq("MVTVEEFRRAQCAEGPATVMAIGTATPSNCVDQSTYPDYYFRITNSEHKVELKEKFKR
                     +"TGEGLEWGVLFGFGPGLTVETVVLHSVAT", generic_protein),
                  id="gi|13925890|gb|AAK49457.1|",
                  description="chalcone synthase [Nicotiana tabacum]")
-               
+
 my_records = [rec1, rec2, rec3]
 \end{verbatim}
 
@@ -2718,7 +2718,7 @@ TGEGLEWGVLFGFGPGLTVETVVLHSVAT
 \end{verbatim}
 
 Suppose you wanted to know how many records the \verb|Bio.SeqIO.write()| function wrote to the handle?
-If your records were in a list you could just use \verb|len(my_records)|, however you can't do that when your records come from a generator/iterator.  Therefore as of Biopython 1.49, the \verb|Bio.SeqIO.write()| function returns the number of \verb|SeqRecord| objects written to the file.   
+If your records were in a list you could just use \verb|len(my_records)|, however you can't do that when your records come from a generator/iterator.  Therefore as of Biopython 1.49, the \verb|Bio.SeqIO.write()| function returns the number of \verb|SeqRecord| objects written to the file.
 
 \subsection{Converting between sequence file formats}
 \label{sec:SeqIO-conversion}
@@ -2914,7 +2914,7 @@ out_handle.close()
 \chapter{Sequence Alignment Input/Output, and Alignment Tools}
 \label{chapter:Bio.AlignIO}
 
-In this chapter we'll discuss the \verb|Bio.AlignIO| module, which is very similar to the \verb|Bio.SeqIO| module from the previous chapter, but deals with \verb|Alignment| objects rather than \verb|SeqRecord| objects. 
+In this chapter we'll discuss the \verb|Bio.AlignIO| module, which is very similar to the \verb|Bio.SeqIO| module from the previous chapter, but deals with \verb|Alignment| objects rather than \verb|SeqRecord| objects.
 This aims to provide a simple interface for working with assorted sequence alignment file formats in a uniform way.
 
 Note that both \verb|Bio.SeqIO| and \verb|Bio.AlignIO| can read and write sequence alignment files.  The appropriate choice will depend largely on what you want to do with the data.
@@ -3334,7 +3334,7 @@ Iota       -CTACTACAG GTG
 
 Its more common to want to load an existing alignment, and save that, perhaps after some simple manipulation like removing certain rows or columns.
 
-Suppose you wanted to know how many alignments the \verb|Bio.AlignIO.write()| function wrote to the handle? If your alignments were in a list like the example above, you could just use \verb|len(my_alignments)|, however you can't do that when your records come from a generator/iterator.  Therefore as of Biopython 1.49, the \verb|Bio.AlignIO.write()| function returns the number of alignments written to the file.   
+Suppose you wanted to know how many alignments the \verb|Bio.AlignIO.write()| function wrote to the handle? If your alignments were in a list like the example above, you could just use \verb|len(my_alignments)|, however you can't do that when your records come from a generator/iterator.  Therefore as of Biopython 1.49, the \verb|Bio.AlignIO.write()| function returns the number of alignments written to the file.
 
 
 \subsection{Converting between sequence alignment file formats}
@@ -3483,7 +3483,7 @@ seq6       FAADDATSQA KAAFDSLTAQ ATEMSGYAWA LVVLVVGATV GIKLFKKFVS
 
 \subsection{Getting your Alignment objects as formatted strings}
 \label{sec:alignment-format-method}
-The \verb|Bio.AlignIO| interface is based on handles, which means if you want to get your alignment(s) into a string in a particular file format you need to do a little bit more work (see below).  
+The \verb|Bio.AlignIO| interface is based on handles, which means if you want to get your alignment(s) into a string in a particular file format you need to do a little bit more work (see below).
 However, you will probably prefer to take advantage of the new \verb|format()| method added to the \verb|Alignment| object in Biopython 1.48.  This takes a single mandatory argument, a lower case string which is supported by \verb|Bio.AlignIO| as an output format.  For example:
 
 \begin{verbatim}
@@ -3524,7 +3524,7 @@ a command line tool on your behalf. Normally you would:
 \item Call the command line tool to process this input file, typically via one of Biopython's
       command line wrappers (which we'll discuss here).
 \item Read the output from the tool, i.e. your aligned sequences, typically using
-      \verb|Bio.AlignIO| (see earlier in this chapter). 
+      \verb|Bio.AlignIO| (see earlier in this chapter).
 \end{enumerate}
 
 All the command line wrappers we're going to talk about in this chapter follow the same style.
@@ -3861,7 +3861,7 @@ Now comes the clever bit using the \verb|subprocess| module, stdin and stdout:
 ...                          stdin=subprocess.PIPE,
 ...                          stdout=subprocess.PIPE,
 ...                          stderr=subprocess.PIPE,
-...                          shell=(sys.platform!="win32"))                     
+...                          shell=(sys.platform!="win32"))
 \end{verbatim}
 
 That should start MUSCLE, but it will be sitting waiting for its FASTA input
@@ -3935,7 +3935,7 @@ Let's start by creating a complete \texttt{needle} command line object in one go
 >>> cline = NeedleCommandline(asequence="alpha.faa", bsequence="beta.faa",
 ...                           gapopen=10, gapextend=0.5, outfile="needle.txt")
 >>> print cline
-needle -outfile=needle.txt -asequence=alpha.faa -bsequence=beta.faa -gapopen=10 -gapextend=0.5 
+needle -outfile=needle.txt -asequence=alpha.faa -bsequence=beta.faa -gapopen=10 -gapextend=0.5
 \end{verbatim}
 
 Why not try running this by hand at the command prompt? You should see it does a
@@ -3979,7 +3979,7 @@ Note that you can also specify (or change or look at) the settings like this:
 >>> cline.gapextend=0.5
 >>> cline.outfile="needle.txt"
 >>> print cline
-needle -outfile=needle.txt -asequence=alpha.faa -bsequence=beta.faa -gapopen=10 -gapextend=0.5 
+needle -outfile=needle.txt -asequence=alpha.faa -bsequence=beta.faa -gapopen=10 -gapextend=0.5
 >>> print cline.outfile
 needle.txt
 \end{verbatim}
@@ -4655,7 +4655,7 @@ The Entrez Programming Utilities can also generate output in other formats, such
 
 \section{Entrez Guidelines}
 \label{sec:entrez-guidelines}
-Before using Biopython to access the NCBI's online resources (via \verb|Bio.Entrez| or some of the other modules), please read the \href{http://www.ncbi.nlm.nih.gov/entrez/query/static/eutils_help.html#UserSystemRequirements}{NCBI's Entrez User Requirements}.  If the NCBI finds you are abusing their systems, they can and will ban your access! 
+Before using Biopython to access the NCBI's online resources (via \verb|Bio.Entrez| or some of the other modules), please read the \href{http://www.ncbi.nlm.nih.gov/entrez/query/static/eutils_help.html#UserSystemRequirements}{NCBI's Entrez User Requirements}.  If the NCBI finds you are abusing their systems, they can and will ban your access!
 
 To paraphrase:
 
@@ -4877,7 +4877,7 @@ Entrez.email = "A.N.Other@example.com"     # Always tell NCBI who you are
 id_list = ["19304878", "18606172", "16403221", "16377612", "14871861", "14630660"]
 search_results = Entrez.read(Entrez.epost("pubmed", id=",".join(id_list)))
 webenv = search_results["WebEnv"]
-query_key = search_results["QueryKey"] 
+query_key = search_results["QueryKey"]
 \end{verbatim}
 \noindent Section~\ref{sec:entrez-webenv} shows how to use the history feature.
 
@@ -4957,7 +4957,7 @@ FEATURES             Location/Qualifiers
                      FWSQPYRIHIKQLSNYSFSFLGYFSSVLENHLVVRNQMLENSFIINLLTKKFDTIAPV
                      ISLIGSLSKAQFCTVLGHPISKPIWTDFSDSDILDRFCRICRNLCRYHSGSSKKQVLY
                      RIKYILRLSCARTLARKHKSTVRTFMRRLGSGLLEEFFMEEE"
-ORIGIN      
+ORIGIN
         1 attttttacg aacctgtgga aatttttggt tatgacaata aatctagttt agtacttgtg
        61 aaacgtttaa ttactcgaat gtatcaacag aattttttga tttcttcggt taatgattct
       121 aaccaaaaag gattttgggg gcacaagcat tttttttctt ctcatttttc ttctcaaatg
@@ -5034,9 +5034,9 @@ To get the output in XML format, which you can parse using the \verb+Bio.Entrez.
 >>> handle = Entrez.efetch(db="nucleotide", id="186972394", retmode="xml")
 >>> record = Entrez.read(handle)
 >>> handle.close()
->>> record[0]["GBSeq_definition"] 
+>>> record[0]["GBSeq_definition"]
 'Selenipedium aequinoctiale maturase K (matK) gene, partial cds; chloroplast'
->>> record[0]["GBSeq_source"] 
+>>> record[0]["GBSeq_source"]
 'chloroplast Selenipedium aequinoctiale'
 \end{verbatim}
 
@@ -5075,7 +5075,7 @@ The \verb+"LinkSetDb"+ key contains the search results, stored as a list consist
 5
 >>> for linksetdb in record[0]["LinkSetDb"]:
 ...     print linksetdb["DbTo"], linksetdb["LinkName"], len(linksetdb["Link"])
-... 
+...
 pubmed pubmed_pubmed 110
 pubmed pubmed_pubmed_combined 6
 pubmed pubmed_pubmed_five 6
@@ -5702,7 +5702,7 @@ In this case, we are just getting the raw records. To get the records in a more 
 
 \noindent We can now step through the records and look at the information we are interested in:
 \begin{verbatim}
->>> for record in records: 
+>>> for record in records:
 >>> ...    print "%s, length %i, with %i features" \
 >>> ...           % (record.name, len(record), len(record.features))
 AY851612, length 892, with 3 features
@@ -5849,10 +5849,10 @@ additional argument of \verb|usehistory="y"|,
 
 \begin{verbatim}
 >>> webenv = search_results["WebEnv"]
->>> query_key = search_results["QueryKey"] 
+>>> query_key = search_results["QueryKey"]
 \end{verbatim}
 
-Having stored these values in variables {\tt session\_cookie} and {\tt query\_key} we can use them as parameters to \verb|Bio.Entrez.efetch()| instead of giving the GI numbers as identifiers.  
+Having stored these values in variables {\tt session\_cookie} and {\tt query\_key} we can use them as parameters to \verb|Bio.Entrez.efetch()| instead of giving the GI numbers as identifiers.
 
 While for small searches you might be OK downloading everything at once, its better download in batches.  You use the {\tt retstart} and {\tt retmax} parameters to specify which range of search results you want returned (starting entry using zero-based counting, and maximum number of results to return).  For example,
 
@@ -5981,7 +5981,7 @@ However, uncompressing a large file takes time, and each time you open the file 
 >>> handle = open("uniprot_sprot.dat")
 \end{verbatim}
 
-As of June 2009, the full Swiss-Prot database downloaded from ExPASy contained 468851 Swiss-Prot records.  One concise way to build up a list of the record descriptions is with a list comprehension: 
+As of June 2009, the full Swiss-Prot database downloaded from ExPASy contained 468851 Swiss-Prot records.  One concise way to build up a list of the record descriptions is with a list comprehension:
 \begin{verbatim}
 >>> from Bio import SwissProt
 >>> handle = open("uniprot_sprot.dat")
@@ -6226,7 +6226,7 @@ To access this web server from a Python script, we use the \verb|Bio.ExPASy| mod
 \subsection{Retrieving a Swiss-Prot record}
 \label{subsec:expasy_swissprot}
 
-Let's say we are looking at chalcone synthases for Orchids (see section~\ref{sec:orchids} for some justification for looking for interesting things about orchids). Chalcone synthase is involved in flavanoid biosynthesis in plants, and flavanoids make lots of cool things like pigment colors and UV protectants. 
+Let's say we are looking at chalcone synthases for Orchids (see section~\ref{sec:orchids} for some justification for looking for interesting things about orchids). Chalcone synthase is involved in flavanoid biosynthesis in plants, and flavanoids make lots of cool things like pigment colors and UV protectants.
 
 If you do a search on Swiss-Prot, you can find three orchid proteins for Chalcone Synthase, id numbers O23729, O23730, O23731. Now, let's write a script which grabs these, and parses out some interesting information.
 
@@ -7154,7 +7154,7 @@ demographies/templates are:
 it. Template name: simple.
 \item[Single population, bottleneck] As seen on figure \ref{fig:bottle}. The parameters
 are current population size (pop\_size on template ne3 on figure), time of expansion,
-given as the generation in the past when it occured (expand\_gen), 
+given as the generation in the past when it occured (expand\_gen),
 effective population size during bottleneck (ne2), time of contraction
 (contract\_gen) and original size in the remote past (ne3). Template name: bottle.
 \item[Island model] The typical island model. The total number of demes is specified
@@ -7607,7 +7607,7 @@ The logistic regression model gives us appropriate values for the parameters $\b
 In the logistic regression model, the probability of belonging to a class depends on the score via the logistic function. For the two classes OP and NOP, we can write this as
 \begin{eqnarray}
 \Pr(\mathrm{OP}|x_1, x_2) & = & \frac{\exp(\beta_0 + \beta_1 x_1 + \beta_2 x_2)}{1+\exp(\beta_0 + \beta_1 x_1 + \beta_2 x_2)} \label{eq:OP} \\
-\Pr(\mathrm{NOP}|x_1, x_2) & = & \frac{1}{1+\exp(\beta_0 + \beta_1 x_1 + \beta_2 x_2)} \label{eq:NOP} 
+\Pr(\mathrm{NOP}|x_1, x_2) & = & \frac{1}{1+\exp(\beta_0 + \beta_1 x_1 + \beta_2 x_2)} \label{eq:NOP}
 \end{eqnarray}
 Using a set of gene pairs for which it is known whether they belong to the same operon (class OP) or to different operons (class NOP), we can calculate the weights $\beta_0$, $\beta_1$, $\beta_2$ by maximizing the log-likelihood corresponding to the probability functions (\ref{eq:OP}) and (\ref{eq:NOP}).
 
@@ -8341,7 +8341,7 @@ bounding box:
 #Full height shafts, giving pointed boxes:
 gd_feature_set.add_feature(feature, sigil="ARROW", color="brown",
                            arrowshaft_height=1.0)
-#Or, thin shafts:                      
+#Or, thin shafts:
 gd_feature_set.add_feature(feature, sigil="ARROW", color="teal",
                            arrowshaft_height=0.2)
 #Or, very thin shafts:
@@ -8567,13 +8567,13 @@ entries = [("Chr I", 30432563),
            ("Chr V", 26992728)]
 
 max_length = max([length for name, length in entries])
-          
+
 chr_diagram = BasicChromosome.Organism()
 for name, length in entries:
    cur_chromosome = BasicChromosome.Chromosome(name)
    #Set the length, adding and extra 20 percent for the tolomeres:
    cur_chromosome.scale_num = max_length * 1.2
-   
+
    #Add an opening telomere
    start = BasicChromosome.TelomereSegment()
    start.scale = 0.1 * max_length
@@ -8655,7 +8655,7 @@ For this discussion, we'll use the GenBank file for the pPCP1 plasmid from
 \textit{Yersinia pestis biovar Microtus}.  The file is included with the
 Biopython unit tests under the GenBank folder, or you can get it from our
 website, \href{http://biopython.org/SRC/biopython/Tests/GenBank/NC_005816.gb}
-{\texttt{NC\_005816.gb}}.  
+{\texttt{NC\_005816.gb}}.
 This file contains one and only one record, so we can read it in as a
 \verb|SeqRecord| using the \verb|Bio.SeqIO.read()| function:
 
@@ -8729,7 +8729,7 @@ def make_shuffle_record(record, new_id):
     random.shuffle(nuc_list)
     return SeqRecord(Seq("".join(nuc_list), record.seq.alphabet), \
            id=new_id, description="Based on %s" % original_rec.id)
-   
+
 original_rec = SeqIO.read(open("NC_005816.gb"),"genbank")
 shuffled_recs = (make_shuffle_record(original_rec, "Shuffled%i" % (i+1)) \
                  for i in range(30))
@@ -8938,10 +8938,10 @@ def trim_adaptor(record, adaptor):
         return record[index+len(adaptor):]
 
 trimmed_reads = (trim_adaptor(record, "GTTGGAACCG") for record in \
-                 SeqIO.parse(open("SRR014849.fastq"), "fastq")) 
-out_handle = open("trimmed.fastq", "w") 
-count = SeqIO.write(trimmed_reads, out_handle, "fastq") 
-out_handle.close() 
+                 SeqIO.parse(open("SRR014849.fastq"), "fastq"))
+out_handle = open("trimmed.fastq", "w")
+count = SeqIO.write(trimmed_reads, out_handle, "fastq")
+out_handle.close()
 print "Saved %i reads" % count
 \end{verbatim}
 
@@ -9151,7 +9151,7 @@ this time we'll start with a plain FASTA file with no pre-marked genes:
 NCBI codon table 11 (see Section~\ref{sec:translation} about translation).
 
 \begin{verbatim}
-from Bio import SeqIO 
+from Bio import SeqIO
 record = SeqIO.read(open("NC_005816.fna"),"fasta")
 table = 11
 min_pro_len = 100
@@ -9202,7 +9202,7 @@ parent sequence by multiplying by three, then adjusting for the frame and
 strand:
 
 \begin{verbatim}
-from Bio import SeqIO 
+from Bio import SeqIO
 record = SeqIO.read(open("NC_005816.gb"),"genbank")
 table = 11
 min_pro_len = 100
@@ -9226,7 +9226,7 @@ def find_orfs_with_trans(seq, trans_table, min_protein_length):
                         end = min(seq_len,frame+aa_end*3+3)
                     else:
                         start = seq_len-frame-aa_end*3-3
-                        end = seq_len-frame-aa_start*3                        
+                        end = seq_len-frame-aa_start*3
                     answer.append((start, end, strand,
                                    trans[aa_start:aa_end]))
                 aa_start = aa_end+1
@@ -10112,7 +10112,7 @@ It's up to you to decide whether you want to write a print-and-compare test scri
 
 Any script with a \verb|test_| prefix in the \verb|Tests| directory will be found and run by \verb|run_tests.py|. Below, we show an example test script \verb|test_Biospam.py| both for a print-and-compare test and for a \verb|unittest|-based test. If you put this script in the Biopython \verb|Tests| directory, then \verb|run_tests.py| will find it and execute the tests contained in it:
 \begin{verbatim}
-$ python run_tests.py     
+$ python run_tests.py
 test_Ace ... ok
 test_AlignIO ... ok
 test_BioSQL ... ok
@@ -10142,22 +10142,22 @@ Here is what you should do to make a print-and-compare test for the
   \begin{itemize}
 
     \item This script should live in the Tests directory
-      
+
      \item The script should test all of the important functionality
      of the module (the more you test the better your test is, of course!).
-    
+
      \item Try to avoid anything which might be platform specific,
      such as printing floating point numbers without using an explicit
      formatting string to avoid having too many decimal places
      (different platforms can give very slightly different values).
 
   \end{itemize}
-      
+
   \item If the script requires files to do the testing, these should go in
        the directory Tests/Biospam (if you just need something generic, like
        a FASTA sequence file, or a GenBank record, try and use an existing
        sample input file instead).
-      
+
   \item Write out the test output and verify the output to be correct.
 
        There are two ways to do this:
@@ -10166,16 +10166,16 @@ Here is what you should do to make a print-and-compare test for the
     \item The long way:
 
     \begin{itemize}
-      
+
      \item Run the script and write its output to a file. On UNIX (including
        Linux and Mac OS X) machines, you would do something like:
        \verb|python test_Biospam.py > test_Biospam| which would write the
        output to the file \verb|test_Biospam|.
-      
+
      \item Manually look at the file \verb|test_Biospam| to make sure the output is correct. When you are sure it is all right and there are no bugs, you need to quickly edit the \verb|test_Biospam| file so that the first line is: `\verb|test_Biospam|' (no quotes).
 
      \item copy the \verb|test_Biospam| file to the directory Tests/output
-    
+
    \end{itemize}
 
    \item The quick way:
@@ -10183,18 +10183,18 @@ Here is what you should do to make a print-and-compare test for the
    \begin{itemize}
       \item Run \verb|python run_tests.py -g test_Biospam.py|. The
             regression testing framework is nifty enough that it'll put
-            the output in the right place in just the way it likes it.  
-      
+            the output in the right place in just the way it likes it.
+
        \item Go to the output (which should be in \verb|Tests/output/test_Biospam|) and double check the output to make sure it is all correct.
 
    \end{itemize}
 
  \end{enumerate}
-      
+
  \item Now change to the Tests directory and run the regression tests
        with \verb|python run_tests.py|. This will run all of the tests, and
        you should see your test run (and pass!).
-      
+
   \item That's it! Now you've got a nice test for your module ready to check in,
   or submit to Biopython.  Congratulations!
 \end{enumerate}
@@ -10282,7 +10282,7 @@ These are the key points of \verb|unittest|-based tests:
 \begin{itemize}
   \item Test cases are stored in classes that derive from
     \verb|unittest.TestCase| and cover one basic aspect of your code
-    
+
   \item You can use methods \verb|setUp| and \verb|tearDown| for any repeated
     code which should be run before and after each test method.  For example,
     the \verb|setUp| method might be used to create an instance of the object
@@ -10517,7 +10517,7 @@ __init__(self,data=None,alphabet=None,
         \item[ACCREP]     Accepted Replacements Matrix
         \item[OBSFREQ]    Observed Frequency Matrix
         \item[EXPFREQ]    Expsected Frequency Matrix
-        \item[SUBS]       Substitution Matrix      
+        \item[SUBS]       Substitution Matrix
         \item[LO]         Log Odds Matrix
       \end{description}
 
@@ -10571,7 +10571,7 @@ C 7  22  27
 
    The following section is layed out in the order by which most people wish to generate a log-odds matrix. Of course, interim matrices can be generated and
    investigated. Most people just want a log-odds matrix, that's all.
-  
+
    \begin{enumerate}
 
    \item Generating an Accepted Replacement Matrix
@@ -10689,7 +10689,7 @@ FreqTable.FreqTable(UserDict.UserDict)
 \begin{enumerate}
 
   \item Attributes:
- 
+
 
   \begin{enumerate}
     \item \verb|alphabet|: A Bio.Alphabet instance.
@@ -10784,7 +10784,7 @@ help answer questions from beginners.  After all, you were a beginner once.
 \section{Contributing Documentation}
 
 We're happy to take feedback or contributions - either via a bug-report or on the Mailing List.
-While reading this tutorial, perhaps you noticed some topics you were interested in which were missing, or not clearly explained.  There is also Biopython's built in documentation (the docstrings, these are also 
+While reading this tutorial, perhaps you noticed some topics you were interested in which were missing, or not clearly explained.  There is also Biopython's built in documentation (the docstrings, these are also
 \href{http://biopython.org/DIST/docs/api}{online}), where again, you may be able to help fill in any blanks.
 
 \section{Contributing cookbook examples}

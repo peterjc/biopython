@@ -41,13 +41,13 @@ FT                   /note="Third note, multiline
 
 FT                   with quotes, and a completely blank line."
 FT                   /note="Fourth note, multiline
-FT                   
+FT
 FT                   with quotes, and an indented blank line."
 FT                   /note=Fifth note, without quotes, single line
 FT                   /note=Sixth note, without
 FT                   quotes, multiline.
 FT                   /note=Seventh note, without
-FT                   
+FT
 FT                   with quotes, and an indented blank line.
 FT                   /note=Eigtht note, without quotes, but with a single very long line which breaks another rule.
 XX

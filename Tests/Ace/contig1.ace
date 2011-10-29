@@ -841,7 +841,7 @@ BL060c5-LR0R.b.ab1 matchElsewhereHighQual phrap 617 631 040217:110357
 
 CT{
 unrelated_Contig repeat phrap 1142 143 122226:722232
-This is the forst line of comment for the unrelated ct tag 
+This is the forst line of comment for the unrelated ct tag
 and this the second
 }
 
@@ -854,7 +854,7 @@ and this the second for c1
 
 WA{
 phrap_params phrap 040203:114710
-phrap 304_nuclsu.fasta.screen -new_ace -retain_duplicates 
+phrap 304_nuclsu.fasta.screen -new_ace -retain_duplicates
 phrap version 0.990329
 }
 

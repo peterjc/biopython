@@ -1,8 +1,8 @@
 TBLASTN 2.0.10 [Aug-26-1999]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -21,13 +21,13 @@ Searching..................................................done
     Posted date:  Nov 26, 1999  5:52 PM
   Number of letters in database: 31,998,854
   Number of sequences in database:  87,792
-  
+
 Lambda     K      H
-   0.320    0.140    0.403 
+   0.320    0.140    0.403
 
 Gapped
 Lambda     K      H
-   0.270   0.0470    0.230 
+   0.270   0.0470    0.230
 
 
 Matrix: BLOSUM62

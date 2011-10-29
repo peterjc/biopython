@@ -1,8 +1,8 @@
 BLASTN 2.0.11 [Jan-20-2000]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -44,13 +44,13 @@ QUERY 181 cag 183
     Posted date:  Feb 11, 2000  2:37 PM
   Number of letters in database: 31,998,854
   Number of sequences in database:  87,792
-  
+
 Lambda     K      H
-    1.37    0.711     1.31 
+    1.37    0.711     1.31
 
 Gapped
 Lambda     K      H
-    1.37    0.711     1.31 
+    1.37    0.711     1.31
 
 
 Matrix: blastn matrix:1 -3

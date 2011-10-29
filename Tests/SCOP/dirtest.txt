@@ -1,4 +1,4 @@
-# dir.cla.scop.txt 
+# dir.cla.scop.txt
 # SCOP release 1.55 (July 2001)  [File format version 1.00]
 # http://scop.mrc-lmb.cam.ac.uk/scop/
 # Copyright (c) 1994-2001 the scop authors; see http://scop.mrc-lmb.cam.ac.uk/scop/lic/copy.html

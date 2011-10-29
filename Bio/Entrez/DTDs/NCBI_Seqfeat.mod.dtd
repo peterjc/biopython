@@ -48,9 +48,9 @@ $Revision: 1.1 $
 *
 -->
 <!ELEMENT Feat-id (
-        Feat-id_gibb | 
-        Feat-id_giim | 
-        Feat-id_local | 
+        Feat-id_gibb |
+        Feat-id_giim |
+        Feat-id_local |
         Feat-id_general)>
 
 <!-- geninfo backbone -->
@@ -70,23 +70,23 @@ $Revision: 1.1 $
 *  sequence feature generalization
 -->
 <!ELEMENT Seq-feat (
-        Seq-feat_id?, 
-        Seq-feat_data, 
-        Seq-feat_partial?, 
-        Seq-feat_except?, 
-        Seq-feat_comment?, 
-        Seq-feat_product?, 
-        Seq-feat_location, 
-        Seq-feat_qual?, 
-        Seq-feat_title?, 
-        Seq-feat_ext?, 
-        Seq-feat_cit?, 
-        Seq-feat_exp-ev?, 
-        Seq-feat_xref?, 
-        Seq-feat_dbxref?, 
-        Seq-feat_pseudo?, 
-        Seq-feat_except-text?, 
-        Seq-feat_ids?, 
+        Seq-feat_id?,
+        Seq-feat_data,
+        Seq-feat_partial?,
+        Seq-feat_except?,
+        Seq-feat_comment?,
+        Seq-feat_product?,
+        Seq-feat_location,
+        Seq-feat_qual?,
+        Seq-feat_title?,
+        Seq-feat_ext?,
+        Seq-feat_cit?,
+        Seq-feat_exp-ev?,
+        Seq-feat_xref?,
+        Seq-feat_dbxref?,
+        Seq-feat_pseudo?,
+        Seq-feat_except-text?,
+        Seq-feat_ids?,
         Seq-feat_exts?)>
 <!--
 *** Feature identifiers ********************************
@@ -161,25 +161,25 @@ $Revision: 1.1 $
 
 
 <!ELEMENT SeqFeatData (
-        SeqFeatData_gene | 
-        SeqFeatData_org | 
-        SeqFeatData_cdregion | 
-        SeqFeatData_prot | 
-        SeqFeatData_rna | 
-        SeqFeatData_pub | 
-        SeqFeatData_seq | 
-        SeqFeatData_imp | 
-        SeqFeatData_region | 
-        SeqFeatData_comment | 
-        SeqFeatData_bond | 
-        SeqFeatData_site | 
-        SeqFeatData_rsite | 
-        SeqFeatData_user | 
-        SeqFeatData_txinit | 
-        SeqFeatData_num | 
-        SeqFeatData_psec-str | 
-        SeqFeatData_non-std-residue | 
-        SeqFeatData_het | 
+        SeqFeatData_gene |
+        SeqFeatData_org |
+        SeqFeatData_cdregion |
+        SeqFeatData_prot |
+        SeqFeatData_rna |
+        SeqFeatData_pub |
+        SeqFeatData_seq |
+        SeqFeatData_imp |
+        SeqFeatData_region |
+        SeqFeatData_comment |
+        SeqFeatData_bond |
+        SeqFeatData_site |
+        SeqFeatData_rsite |
+        SeqFeatData_user |
+        SeqFeatData_txinit |
+        SeqFeatData_num |
+        SeqFeatData_psec-str |
+        SeqFeatData_non-std-residue |
+        SeqFeatData_het |
         SeqFeatData_biosrc)>
 
 <!ELEMENT SeqFeatData_gene (Gene-ref)>
@@ -295,7 +295,7 @@ $Revision: 1.1 $
 
 <!-- both optional because can have one or both -->
 <!ELEMENT SeqFeatXref (
-        SeqFeatXref_id?, 
+        SeqFeatXref_id?,
         SeqFeatXref_data?)>
 
 <!-- the feature copied -->
@@ -312,13 +312,13 @@ $Revision: 1.1 $
 *
 -->
 <!ELEMENT Cdregion (
-        Cdregion_orf?, 
-        Cdregion_frame?, 
-        Cdregion_conflict?, 
-        Cdregion_gaps?, 
-        Cdregion_mismatch?, 
-        Cdregion_code?, 
-        Cdregion_code-break?, 
+        Cdregion_orf?,
+        Cdregion_frame?,
+        Cdregion_conflict?,
+        Cdregion_gaps?,
+        Cdregion_mismatch?,
+        Cdregion_code?,
+        Cdregion_code-break?,
         Cdregion_stops?)>
 
 <!-- just an ORF ? -->
@@ -377,13 +377,13 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Genetic-code_E (
-        Genetic-code_E_name | 
-        Genetic-code_E_id | 
-        Genetic-code_E_ncbieaa | 
-        Genetic-code_E_ncbi8aa | 
-        Genetic-code_E_ncbistdaa | 
-        Genetic-code_E_sncbieaa | 
-        Genetic-code_E_sncbi8aa | 
+        Genetic-code_E_name |
+        Genetic-code_E_id |
+        Genetic-code_E_ncbieaa |
+        Genetic-code_E_ncbi8aa |
+        Genetic-code_E_ncbistdaa |
+        Genetic-code_E_sncbieaa |
+        Genetic-code_E_sncbi8aa |
         Genetic-code_E_sncbistdaa)>
 
 <!-- name of a code -->
@@ -415,15 +415,15 @@ $Revision: 1.1 $
  NCBIstdaa code
 -->
 <!ELEMENT Code-break (
-        Code-break_loc, 
+        Code-break_loc,
         Code-break_aa)>
 
 <!-- location of exception -->
 <!ELEMENT Code-break_loc (Seq-loc)>
 <!-- the amino acid -->
 <!ELEMENT Code-break_aa (
-        Code-break_aa_ncbieaa | 
-        Code-break_aa_ncbi8aa | 
+        Code-break_aa_ncbieaa |
+        Code-break_aa_ncbi8aa |
         Code-break_aa_ncbistdaa)>
 
 <!-- ASCII value of NCBIeaa code -->
@@ -444,8 +444,8 @@ $Revision: 1.1 $
 *
 -->
 <!ELEMENT Imp-feat (
-        Imp-feat_key, 
-        Imp-feat_loc?, 
+        Imp-feat_key,
+        Imp-feat_loc?,
         Imp-feat_descr?)>
 
 <!ELEMENT Imp-feat_key (#PCDATA)>
@@ -458,7 +458,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Gb-qual (
-        Gb-qual_qual, 
+        Gb-qual_qual,
         Gb-qual_val)>
 
 <!ELEMENT Gb-qual_qual (#PCDATA)>

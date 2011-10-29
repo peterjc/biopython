@@ -16,7 +16,7 @@
   Philip Bucher, David Ghosh
   version 1.1
 
-  
+
 
 ********************************************************************
 -->
@@ -32,18 +32,18 @@
 
 
 <!ELEMENT Txinit (
-        Txinit_name, 
-        Txinit_syn?, 
-        Txinit_gene?, 
-        Txinit_protein?, 
-        Txinit_rna?, 
-        Txinit_expression?, 
-        Txinit_txsystem, 
-        Txinit_txdescr?, 
-        Txinit_txorg?, 
-        Txinit_mapping-precise?, 
-        Txinit_location-accurate?, 
-        Txinit_inittype?, 
+        Txinit_name,
+        Txinit_syn?,
+        Txinit_gene?,
+        Txinit_protein?,
+        Txinit_rna?,
+        Txinit_expression?,
+        Txinit_txsystem,
+        Txinit_txdescr?,
+        Txinit_txorg?,
+        Txinit_mapping-precise?,
+        Txinit_location-accurate?,
+        Txinit_inittype?,
         Txinit_evidence?)>
 
 <!-- descriptive name of initiation site -->
@@ -120,9 +120,9 @@
 
 
 <!ELEMENT Tx-evidence (
-        Tx-evidence_exp-code, 
-        Tx-evidence_expression-system?, 
-        Tx-evidence_low-prec-data?, 
+        Tx-evidence_exp-code,
+        Tx-evidence_expression-system?,
+        Tx-evidence_low-prec-data?,
         Tx-evidence_from-homolog?)>
 
 <!ELEMENT Tx-evidence_exp-code %ENUM;>
@@ -132,9 +132,9 @@
     rna-size	-  RNA length measurement
     np-map	-  nuclease protection mapping with homologous sequence ladder
     np-size	-  nuclease protected fragment length measurement
-    pe-seq	-  dideoxy RNA sequencing 
+    pe-seq	-  dideoxy RNA sequencing
     cDNA-seq	-  full-length cDNA sequencing
-    pe-map	-  primer extension mapping with homologous sequence ladder    
+    pe-map	-  primer extension mapping with homologous sequence ladder
     pe-size	-  primer extension product length measurement
     pseudo-seq	-  full-length processed pseudogene sequencing
     rev-pe-map	-  see NOTE (1) below

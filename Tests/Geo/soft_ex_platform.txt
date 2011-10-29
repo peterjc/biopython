@@ -14,18 +14,18 @@
 !Platform_manufacture_protocol =    8. Centrifuge plates at 2000 rpm for 3 minutes.
 !Platform_manufacture_protocol =    9. Remove seals and cover with plate lids. Place in appropriate location of plate cassette. This should be done with first plates just before print run is started to minimize evaporation time before printing. For second and third cassettes, wait until 30 minutes before next cassette is needed to begin centrifugation.
 !Platform_manufacture_protocol =   10. Make sure plates rest behind both holding clips in the cassettes. Push plates back into the cassettes as far as they will go, putting them in the proper position for the server arm.
-!Platform_manufacture_protocol =   11. After the print run is completed, allow plates to dry through passive evaporation in a protected environment.	
-!Platform_manufacture_protocol =   12. For each subsequent preparation of these plates for a print run, add water to the wells instead of sodium phosphate buffer. The amount of water should be decreased by 0.25 µL per print run, as this is the amount drawn up by the pin capillary during each dip.	
+!Platform_manufacture_protocol =   11. After the print run is completed, allow plates to dry through passive evaporation in a protected environment.
+!Platform_manufacture_protocol =   12. For each subsequent preparation of these plates for a print run, add water to the wells instead of sodium phosphate buffer. The amount of water should be decreased by 0.25 µL per print run, as this is the amount drawn up by the pin capillary during each dip.
 !Platform_support = glass
-!Platform_coating = polysine	
+!Platform_coating = polysine
 !Platform_web_link = http://www.microarray.protocols.html
 !Platform_contributor = Jane,Doe
 !Platform_contributor = John,A,Smith
 !Platform_contributor = Hans,van Elton
 !Platform_contributor = John,Smithers Jr
 !Platform_contributor = Jie,D,Chen
-#ID = 
-#GB_ACC = GenBank accession number of sequence used to design oligonucleotide probe   LINK_PRE:"http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Search&db=Nucleotide&term=" 
+#ID =
+#GB_ACC = GenBank accession number of sequence used to design oligonucleotide probe   LINK_PRE:"http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Search&db=Nucleotide&term="
 #Gene_Desc = Gene description
 #Gene_Sym = Gene symbols
 #SEQUENCE = Probe sequence information
@@ -50,7 +50,7 @@ ID	GB_ACC	Gene_Desc	Gene_Sym	SPOT_ID	SEQUENCE
 16	AK004937	RIKEN cDNA 1300007O09 gene	1300007O09Rik		CAGACACAAACCCTAGGTTGTATTGTAGACCGGAGTTTAAGCAGGCACTACCTGTCTGTCTTTTCTTCAT
 17	AK004524	unnamed protein product; hypothetical SOCS domain			CGGAGCCCTGCGCGCCCAGAGCCCCCTCCCACCCGCTTCCACCAAGTGCATGGAGCCAACATCCGCATGG
 18	NM_025999	RIKEN cDNA 2610110L04 gene	2610110L04Rik		TGCATTGATAAATGGAGTGATCGACACAGGAACTGCCCCATTTGTCGCCTACAGATGACTGGAGCAAATG
-19				-- CONTROL	
+19				-- CONTROL
 20	NM_023120	guanine nucleotide binding protein (G protein), beta polypeptide 1-like	Gnb1l		ACCGCCTGGTCCCAGATTTGTCCTCCGAGGCACACAGTCGGCTGTGAACACGCTCCATTTCTGCCCACCA
-!platform_table_end	
+!platform_table_end
 

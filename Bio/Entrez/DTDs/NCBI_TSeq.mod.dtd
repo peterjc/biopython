@@ -25,15 +25,15 @@ $Revision: 1.1 $
 
 
 <!ELEMENT TSeq (
-        TSeq_seqtype, 
-        TSeq_gi?, 
-        TSeq_accver?, 
-        TSeq_sid?, 
-        TSeq_local?, 
-        TSeq_taxid?, 
-        TSeq_orgname?, 
-        TSeq_defline, 
-        TSeq_length, 
+        TSeq_seqtype,
+        TSeq_gi?,
+        TSeq_accver?,
+        TSeq_sid?,
+        TSeq_local?,
+        TSeq_taxid?,
+        TSeq_orgname?,
+        TSeq_defline,
+        TSeq_length,
         TSeq_sequence)>
 
 <!ELEMENT TSeq_seqtype %ENUM;>

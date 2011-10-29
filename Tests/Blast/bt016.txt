@@ -1,8 +1,8 @@
 TBLASTN 2.0.10 [Aug-26-1999]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -30,13 +30,13 @@ gi|1341648|gb|G21322|G21322 human STS WI-12250.                       29  3.7
            for sequence tagged site, clone okam5d07r [Kluyveromyces
            lactis]
            Length = 230
-           
+
  Score = 46.9 bits (109), Expect = 1e-05
  Identities = 25/72 (34%), Positives = 44/72 (60%), Gaps = 3/72 (4%)
  Frame = +1
 
 Query: 108 NWNQVIDTNLTGAFLGSREAIKYFVEN---DIKGNVINMSSVHEMIPWPLFVHYAASKGG 164
-           +W QVIDTN+ G F   + A+     +   D +  V+N+S+V+ ++  P    Y A+K  
+           +W QVIDTN+ G F   + A+     +   D +  V+N+S+V+ ++  P    Y A+K
 Sbjct: 1   SWRQVIDTNINGTFYTLKYALPLMESSSSPDSEAAVVNLSAVNGLVGIPGISPYTATKHA 180
 
 Query: 165 MKLMTETLALEYAPK 179
@@ -46,7 +46,7 @@ Sbjct: 181 VIGITQSVALEYAER 225
 
 >gi|1375419|gb|G27169|G27169 human STS SHGC-31983.
            Length = 594
-           
+
  Score = 43.4 bits (100), Expect = 1e-04
  Identities = 21/73 (28%), Positives = 34/73 (45%)
  Frame = -1
@@ -64,7 +64,7 @@ Sbjct: 132 GMTTGSTLPVEGG 94
            for sequence tagged site, clone okam6d01d [Kluyveromyces
            lactis]
            Length = 199
-           
+
  Score = 39.5 bits (90), Expect = 0.002
  Identities = 18/49 (36%), Positives = 26/49 (52%)
  Frame = -1
@@ -76,7 +76,7 @@ Sbjct: 157 FVDEDLKNKWHSLIPMGREGLPQELVGAYLYFASDASTYTTGSDLLVDG 11
 
 >gi|1375215|gb|G26965|G26965 human STS SHGC-31083.
            Length = 268
-           
+
  Score = 30.9 bits (68), Expect = 0.73
  Identities = 12/37 (32%), Positives = 19/37 (50%)
  Frame = -1
@@ -89,7 +89,7 @@ Sbjct: 268 PMGXXGDPEDVXDVXAXXXXEXSGXITGTSVEVTGGL 158
 >gi|177714|gb|L09988|HUM4STS889 Human Chromosome 4 (clone p4-1095)
            STS4-889.
            Length = 412
-           
+
  Score = 29.3 bits (64), Expect = 2.2
  Identities = 14/34 (41%), Positives = 22/34 (64%)
  Frame = -1
@@ -103,7 +103,7 @@ Sbjct: 316 DKVCAVFGGSRGIGRAVAQLMARKGYRLAVIARN 215
            D6wum9 map between Nkrp1 and Prp strain C57BL/6J,
            sequence tagged site
            Length = 299
-           
+
  Score = 29.3 bits (64), Expect = 2.2
  Identities = 17/55 (30%), Positives = 32/55 (57%), Gaps = 2/55 (3%)
  Frame = -2
@@ -115,7 +115,7 @@ Sbjct: 172 SLSPTQYLIMFPSFLPCPLSHPGPFLLPSSLVIAVFFLPNGIEVSSLGPFSLRTLLN 2
 
 >gi|1341648|gb|G21322|G21322 human STS WI-12250.
            Length = 586
-           
+
  Score = 28.6 bits (62), Expect = 3.7
  Identities = 16/39 (41%), Positives = 20/39 (51%), Gaps = 1/39 (2%)
  Frame = +1
@@ -129,13 +129,13 @@ Sbjct: 220 PVPMQELSKVHWSQFFLTTSPTMTFFFSHYLANYFFRNSI 339
     Posted date:  Nov 26, 1999  5:52 PM
   Number of letters in database: 31,998,854
   Number of sequences in database:  87,792
-  
+
 Lambda     K      H
-   0.315    0.134    0.378 
+   0.315    0.134    0.378
 
 Gapped
 Lambda     K      H
-   0.270   0.0470    0.230 
+   0.270   0.0470    0.230
 
 
 Matrix: BLOSUM62

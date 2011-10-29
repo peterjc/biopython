@@ -13,7 +13,7 @@
 
 /* Functions in this module. */
 
-static char cstringfns_splitany__doc__[] = 
+static char cstringfns_splitany__doc__[] =
 "splitany(str [,sep [,maxsplit [,negate]]]) -> list of strings\n\
 \n\
 Split a string.  Similar to string.split, except that this considers\n\
@@ -30,12 +30,12 @@ static PyObject *cstringfns_splitany(
     /*int negate=0;*/
     PyObject *py_negate=NULL;
     PyObject *strlist, *newstr;
-    unsigned char *str, 
+    unsigned char *str,
 	*sep=" \011\012\013\014\015";  /* whitespace */
     char tosplit[256];
     static char *kwlist[] = {"str", "sep", "maxsplit", "negate", NULL};
 
-    if(!PyArg_ParseTupleAndKeywords(args, keywds, "s|siO", kwlist, 
+    if(!PyArg_ParseTupleAndKeywords(args, keywds, "s|siO", kwlist,
 				    &str, &sep, &maxsplit, &py_negate))
 	return NULL;
     if(maxsplit < 0)
@@ -69,7 +69,7 @@ static PyObject *cstringfns_splitany(
 
 	/* Split the string here. */
 	if(!(newstr = PyString_FromStringAndSize(&str[prev], i-prev))) {
-	    PyErr_SetString(PyExc_SystemError, 
+	    PyErr_SetString(PyExc_SystemError,
 			    "I could not create a new string");
 	    break;
 	}
@@ -85,7 +85,7 @@ static PyObject *cstringfns_splitany(
 	i = strlen(str);
 	/* Add the last one. */
 	if(!(newstr = PyString_FromStringAndSize(&str[prev], i-prev))) {
-	    PyErr_SetString(PyExc_SystemError, 
+	    PyErr_SetString(PyExc_SystemError,
 			    "I could not create a new string");
 	} else {
 	    PyList_Append(strlist, newstr);
@@ -105,7 +105,7 @@ static PyObject *cstringfns_splitany(
 /* Module definition stuff */
 
 static PyMethodDef cstringfnsMethods[] = {
-  {"splitany", (PyCFunction)cstringfns_splitany, METH_VARARGS|METH_KEYWORDS, 
+  {"splitany", (PyCFunction)cstringfns_splitany, METH_VARARGS|METH_KEYWORDS,
    cstringfns_splitany__doc__},
   {NULL, NULL}
 };

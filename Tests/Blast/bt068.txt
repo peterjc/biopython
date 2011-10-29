@@ -1,8 +1,8 @@
 TBLASTN 2.2.16 [Mar-25-2007]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -10,7 +10,7 @@ Query= gi|1710680|sp|P00579.2|RPOD_ECOLI RecName: Full=RNA polymerase
 sigma factor rpoD; AltName: Full=Sigma-70
          (613 letters)
 
-Database: ecoli.nt 
+Database: ecoli.nt
            400 sequences; 4,662,239 total letters
 
 Searching..................................................done
@@ -20,14 +20,14 @@ Searching..................................................done
                                                              Score    E
 Sequences producing significant alignments:                  (bits) Value  N
 
-gb|AE000388.1|AE000388 Escherichia coli K-12 MG1655 section ...   933   0.0    2 
-gb|AE000358.1|AE000358 Escherichia coli K-12 MG1655 section ...   240   1e-063  1 
-gb|AE000422.1|AE000422 Escherichia coli K-12 MG1655 section ...    71   2e-016  2 
-gb|AE000285.1|AE000285 Escherichia coli K-12 MG1655 section ...    42   1e-006  2 
-gb|AE000397.1|AE000397 Escherichia coli K-12 MG1655 section ...    32   0.50   1 
-gb|AE000436.1|AE000436 Escherichia coli K-12 MG1655 section ...    29   3.4    1 
-gb|AE000375.1|AE000375 Escherichia coli K-12 MG1655 section ...    29   3.4    1 
-gb|AE000405.1|AE000405 Escherichia coli K-12 MG1655 section ...    28   6.3    1 
+gb|AE000388.1|AE000388 Escherichia coli K-12 MG1655 section ...   933   0.0    2
+gb|AE000358.1|AE000358 Escherichia coli K-12 MG1655 section ...   240   1e-063  1
+gb|AE000422.1|AE000422 Escherichia coli K-12 MG1655 section ...    71   2e-016  2
+gb|AE000285.1|AE000285 Escherichia coli K-12 MG1655 section ...    42   1e-006  2
+gb|AE000397.1|AE000397 Escherichia coli K-12 MG1655 section ...    32   0.50   1
+gb|AE000436.1|AE000436 Escherichia coli K-12 MG1655 section ...    29   3.4    1
+gb|AE000375.1|AE000375 Escherichia coli K-12 MG1655 section ...    29   3.4    1
+gb|AE000405.1|AE000405 Escherichia coli K-12 MG1655 section ...    28   6.3    1
 
 >gb|AE000388.1|AE000388 Escherichia coli K-12 MG1655 section 278 of 400 of the complete
             genome
@@ -218,9 +218,9 @@ Sbjct: 1070 FEQRVNSDVLTVSTVNSQDQVTQKPLRDSVKQALKNYFAQLNGQDVNDLY 1219
     Posted date:  May 31, 2007 11:31 AM
   Number of letters in database: 4,662,239
   Number of sequences in database:  400
-  
+
 Lambda     K      H
-   0.317    0.132    0.363 
+   0.317    0.132    0.363
 
 
 Matrix: BLOSUM62

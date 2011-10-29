@@ -140,7 +140,7 @@ parse_mask(PyObject* object, PyArrayObject** array,
         PyErr_SetString(PyExc_ValueError, buffer);
         return NULL;
       }
-    } 
+    }
   }
   if(PyArray_DIM(*array, 0) != nrows) /* Checking number of rows */
   { sprintf(message,
@@ -226,7 +226,7 @@ parse_weight (PyObject* object, PyArrayObject** array, const int ndata)
   }
   if(PyArray_NDIM(*array) == 1) /* Checking number of dimensions */
   { /* no checking on last dimension of expected size 1 */
-    if (ndata!=1 && ndata!=PyArray_DIM(*array, 0)) 
+    if (ndata!=1 && ndata!=PyArray_DIM(*array, 0))
     { sprintf(message,
               "weight has incorrect extent (%" NPY_INTP_FMT " expected %d)",
               PyArray_DIM(*array, 0), ndata);
@@ -312,12 +312,12 @@ parse_initialid(PyObject* object, int* nclusters, npy_intp nitems)
         Py_DECREF((PyObject*) clusterid);
         return NULL;
       }
-    } 
+    }
   }
   /* -- Check the size of the array ----------------------------------- */
   if(PyArray_NDIM(array) == 1)
   { /* no checking on last dimension of expected size 1 */
-    if (nitems!=1 && nitems!=PyArray_DIM(array, 0)) 
+    if (nitems!=1 && nitems!=PyArray_DIM(array, 0))
     { sprintf(message,
               "initialid has incorrect extent (%" NPY_INTP_FMT
               " expected %" NPY_INTP_FMT ")",
@@ -415,12 +415,12 @@ parse_clusterid(PyObject* object, PyArrayObject** array, unsigned int nitems,
         PyErr_SetString(PyExc_ValueError, buffer);
         return NULL;
       }
-    } 
+    }
   }
   /* -- Check the array size ------------------------------------------ */
   if(PyArray_NDIM(*array) == 1)
   { /* no checking on last dimension of expected size 1 */
-    if (nitems!=1 && nitems!=PyArray_DIM(*array, 0)) 
+    if (nitems!=1 && nitems!=PyArray_DIM(*array, 0))
     { sprintf(message,
               "clusterid has incorrect extent (%" NPY_INTP_FMT " expected %d)",
               PyArray_DIM(*array, 0), nitems);
@@ -814,7 +814,7 @@ parse_index(PyObject* object, PyArrayObject** array, int* n)
         return NULL;
       }
       *array = (PyArrayObject*) object;
-    } 
+    }
   }
   /* We have an array */
   *n = (int) PyArray_DIM(*array, 0);
@@ -872,9 +872,9 @@ PyNode_init(PyNode *self, PyObject *args, PyObject *kwds)
     double distance = 0.0;
     static char *kwlist[] = {"left", "right", "distance", NULL};
 
-    if (! PyArg_ParseTupleAndKeywords(args, kwds, "ii|d", kwlist, 
+    if (! PyArg_ParseTupleAndKeywords(args, kwds, "ii|d", kwlist,
                                       &left, &right, &distance))
-        return -1; 
+        return -1;
     self->node.left = left;
     self->node.right = right;
     self->node.distance = distance;
@@ -1042,7 +1042,7 @@ PyTree_init(PyTree* self, PyObject* args, PyObject* kwds)
   flag = malloc((2*n+1)*sizeof(int));
   if(flag) /* Otherwise, we're in enough trouble already */
   { int j;
-    for (i = 0; i < 2*n+1; i++) flag[i] = 0; 
+    for (i = 0; i < 2*n+1; i++) flag[i] = 0;
     for (i = 0; i < n; i++)
     { j = nodes[i].left;
       if (j < 0)
@@ -1308,7 +1308,7 @@ static PyObject*
 py_version (PyObject* self)
 {
   return PyString_FromString( CLUSTERVERSION );
-} 
+}
 
 /* kcluster */
 static char kcluster__doc__[] =
@@ -1486,18 +1486,18 @@ py_kcluster (PyObject* self, PyObject* args, PyObject* keywords)
     return NULL;
   }
   /* --------------------------------------------------------------------- */
-  kcluster(NCLUSTERS, 
-      nrows, 
-      ncolumns, 
-      data, 
-      mask, 
+  kcluster(NCLUSTERS,
+      nrows,
+      ncolumns,
+      data,
+      mask,
       weight,
-      TRANSPOSE, 
-      NPASS, 
-      METHOD, 
-      DIST, 
-      PyArray_DATA(aCLUSTERID), 
-      &ERROR, 
+      TRANSPOSE,
+      NPASS,
+      METHOD,
+      DIST,
+      PyArray_DATA(aCLUSTERID),
+      &ERROR,
       &IFOUND);
   /* --------------------------------------------------------------------- */
   free_data(aDATA, data);
@@ -1506,7 +1506,7 @@ py_kcluster (PyObject* self, PyObject* args, PyObject* keywords)
   /* --------------------------------------------------------------------- */
 
   return Py_BuildValue("Ndi", aCLUSTERID, ERROR, IFOUND);
-} 
+}
 /* end of wrapper for kcluster */
 
 /* kmedoids */
@@ -1520,7 +1520,7 @@ static char kmedoids__doc__[] =
 "           #1: a 2D Numerical Python array (in which only the left-lower\n"
 "               part of the array will be accessed);\n"
 "           #2: a 1D Numerical Python array containing the distances\n"
-"               consecutively;\n" 
+"               consecutively;\n"
 "           #3: a list of rows containing the lower-triangular part of\n"
 "               the distance matrix.\n"
 "           Examples are:\n"
@@ -1619,12 +1619,12 @@ py_kmedoids (PyObject* self, PyObject* args, PyObject* keywords)
     return NULL;
   }
   /* --------------------------------------------------------------------- */
-  kmedoids(NCLUSTERS, 
-      nitems, 
-      distances, 
-      NPASS, 
-      PyArray_DATA(aCLUSTERID), 
-      &ERROR, 
+  kmedoids(NCLUSTERS,
+      nitems,
+      distances,
+      NPASS,
+      PyArray_DATA(aCLUSTERID),
+      &ERROR,
       &IFOUND);
   /* --------------------------------------------------------------------- */
   free_distances(DISTANCES, aDISTANCES, distances, nitems);
@@ -1642,7 +1642,7 @@ py_kmedoids (PyObject* self, PyObject* args, PyObject* keywords)
     return NULL;
   }
   return Py_BuildValue("Ndi",aCLUSTERID, ERROR, IFOUND);
-} 
+}
 /* end of wrapper for kmedoids */
 
 /* treecluster */
@@ -1677,7 +1677,7 @@ static char treecluster__doc__[] =
 "           #1: a 2D Numerical Python array (in which only the left-lower\n"
 "               part of the array will be accessed);\n"
 "           #2: a 1D Numerical Python array containing the distances\n"
-"               consecutively;\n" 
+"               consecutively;\n"
 "           #3: a list of rows containing the lower-triangular part of\n"
 "               the distance matrix.\n"
 "           Examples are:\n"
@@ -1867,7 +1867,7 @@ py_treecluster (PyObject* self, PyObject* args, PyObject* keywords)
   tree->nodes = nodes;
   tree->n = nitems-1;
   return (PyObject*) tree;
-} 
+}
 /* end of wrapper for treecluster */
 
 /* somcluster */
@@ -2059,7 +2059,7 @@ py_somcluster (PyObject* self, PyObject* args, PyObject* keywords)
   return Py_BuildValue("NN",
                        PyArray_Return(aCLUSTERID),
                        PyArray_Return(aCELLDATA));
-} 
+}
 /* end of wrapper for somcluster */
 
 /* median */
@@ -2102,7 +2102,7 @@ py_median (PyObject* unused, PyObject* args)
       PyErr_SetString (PyExc_ValueError, buffer);
       return NULL;
     }
-  } 
+  }
   if (PyArray_NDIM(aDATA) != 1 && (PyArray_NDIM(aDATA) > 0 || PyArray_DIM(aDATA, 0) != 1))
   { sprintf(buffer, "median: Argument has incorrect rank (%d expected 1).",
                     PyArray_NDIM(aDATA));
@@ -2126,7 +2126,7 @@ py_median (PyObject* unused, PyObject* args)
   Py_DECREF((PyObject*) aDATA);
   /* --------------------------------------------------------------------- */
   return PyFloat_FromDouble(result);
-} 
+}
 /* end of wrapper for median */
 
 /* mean */
@@ -2168,7 +2168,7 @@ py_mean (PyObject* unused, PyObject* args)
       PyErr_SetString (PyExc_ValueError, buffer);
       return NULL;
     }
-  } 
+  }
   if (PyArray_NDIM(aDATA) != 1 && (PyArray_NDIM(aDATA) > 0 || PyArray_DIM(aDATA, 0) != 1))
   { sprintf(buffer, "mean: Argument has incorrect rank (%d expected 1).",
                     PyArray_NDIM(aDATA));
@@ -2192,7 +2192,7 @@ py_mean (PyObject* unused, PyObject* args)
   Py_DECREF((PyObject*) aDATA);
   /* --------------------------------------------------------------------- */
   return PyFloat_FromDouble(result);
-} 
+}
 /* end of wrapper for mean */
 
 /* clusterdistance */
@@ -2371,7 +2371,7 @@ py_clusterdistance (PyObject* self, PyObject* args, PyObject* keywords)
     return NULL;
   }
   return PyFloat_FromDouble(result);
-} 
+}
 /* end of wrapper for clusterdistance */
 
 /* clustercentroids */
@@ -2523,7 +2523,7 @@ py_clustercentroids(PyObject* self, PyObject* args, PyObject* keywords)
     PyErr_SetString (PyExc_MemoryError, buffer);
   }
   return Py_BuildValue("NN", PyArray_Return(aCDATA), PyArray_Return(aCMASK));
-} 
+}
 /* end of wrapper for clustercentroids */
 
 /* distancematrix */
@@ -2581,7 +2581,7 @@ py_distancematrix (PyObject* self, PyObject* args, PyObject* keywords)
   char DIST = 'e';
   double** distances = NULL;
   int nrows, ncolumns, nelements, ndata;
- 
+
   /* -- Read the input variables ----------------------------------------- */
   static char* kwlist[] = { "data",
                             "mask",

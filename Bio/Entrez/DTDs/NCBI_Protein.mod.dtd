@@ -32,11 +32,11 @@
 *
 -->
 <!ELEMENT Prot-ref (
-        Prot-ref_name?, 
-        Prot-ref_desc?, 
-        Prot-ref_ec?, 
-        Prot-ref_activity?, 
-        Prot-ref_db?, 
+        Prot-ref_name?,
+        Prot-ref_desc?,
+        Prot-ref_ec?,
+        Prot-ref_activity?,
+        Prot-ref_db?,
         Prot-ref_processed?)>
 
 <!-- protein name -->

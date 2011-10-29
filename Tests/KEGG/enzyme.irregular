@@ -55,7 +55,7 @@ COMMENT     A chymotrypsin homologue isolated from Achromobacter lyticus.
 COMMENT     Also hydrolyses lysine amides and esters.
 GENES       MJA: MJ1468
             MTH: MTH995
-STRUCTURES  PDB: 1ARC  1ARB  
+STRUCTURES  PDB: 1ARC  1ARB
 DBLINKS     IUBMB Enzyme Nomenclature: 3.4.21.50
             ExPASy - ENZYME nomenclature database: 3.4.21.50
             WIT (What Is There) Metabolic Reconstruction: 3.4.21.50

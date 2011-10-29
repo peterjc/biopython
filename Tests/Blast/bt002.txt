@@ -1,8 +1,8 @@
 BLASTP 2.0.10 [Aug-26-1999]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -21,12 +21,12 @@ Searching..................................................done
     Posted date:  Oct 11, 1999 11:30 AM
   Number of letters in database: 1,461,753
   Number of sequences in database:  6999
-  
-Lambda     K      H
-   0.310    0.132    0.353 
 
 Lambda     K      H
-   0.270   0.0470    0.230 
+   0.310    0.132    0.353
+
+Lambda     K      H
+   0.270   0.0470    0.230
 
 
 Matrix: BLOSUM62

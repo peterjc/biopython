@@ -94,7 +94,7 @@ REFERENCE   10 (residues 1 to 182)
 COMMENT     VALIDATED REFSEQ: This record has undergone preliminary review of
             the sequence, but has not yet been subject to final review. The
             reference sequence was derived from K00020.1.
-            
+
             Publication Note:  This RefSeq record includes a subset of the
             publications that are available for this gene. Please see the
             Entrez Gene record to access additional publications.
@@ -144,7 +144,7 @@ FEATURES             Location/Qualifiers
                      /db_xref="CCDS:CCDS18318.1"
                      /db_xref="GeneID:15977"
                      /db_xref="MGI:107657"
-ORIGIN      
+ORIGIN
         1 mnnrwilhaa fllcfsttal sinykqlqlq ertnirkcqe lleqlngkin ltyradfkip
        61 memtekmqks ytafaiqeml qnvflvfrnn fsstgwneti vvrlldelhq qtvflktvle
       121 ekqeerltwe msstalhlks yywrvqrylk lmkynsyawm vvraeifrnf liirrltrnf

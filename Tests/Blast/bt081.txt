@@ -37,11 +37,11 @@ Sbjct  1    HMLVSKIKPCMCKYELIRTVKLRMAH  26
 
 
 Lambda     K      H
-   0.318    0.134    0.401 
+   0.318    0.134    0.401
 
 Gapped
 Lambda     K      H
-   0.267   0.0410    0.140 
+   0.267   0.0410    0.140
 
 Effective search space used: 367397307882
 
@@ -57,11 +57,11 @@ gb|AAD11408.1|  hevein-like protein [Sambucus nigra]                   406    5e
 gb|AAD11406.1|  hevein-like protein [Sambucus nigra]                   406    5e-111
 gb|AAD11407.1|  hevein-like protein [Sambucus nigra]                   395    7e-108
 gb|AAL30421.1|AF434174_1  hevein-like protein [Sambucus nigra]         384    2e-104
-gb|AAL30422.1|AF434175_1  hevein-like protein [Sambucus nigra]         279    9e-73 
-gb|AAO17294.1|  chitinase [Ficus carica]                               189    7e-46 
-gb|ACM45713.1|  class I chitinase [Pyrus pyrifolia]                    185    2e-44 
-dbj|BAB40817.2|  endochitinase MCHT-2 [Cucumis melo]                   181    2e-43 
-gb|ABB86300.1|  chitinase [Ficus awkeotsang]                           181    3e-43 
+gb|AAL30422.1|AF434175_1  hevein-like protein [Sambucus nigra]         279    9e-73
+gb|AAO17294.1|  chitinase [Ficus carica]                               189    7e-46
+gb|ACM45713.1|  class I chitinase [Pyrus pyrifolia]                    185    2e-44
+dbj|BAB40817.2|  endochitinase MCHT-2 [Cucumis melo]                   181    2e-43
+gb|ABB86300.1|  chitinase [Ficus awkeotsang]                           181    3e-43
 
 
 >gb|AAD12237.1| hevein-like protein HLPf [Sambucus nigra]
@@ -80,7 +80,7 @@ Query  181  DGCQSQCRDTSRLTDLPRALLRPTNNRNAISKMISKSLFNEMFKHMKDCPSRGFYSYEAF  360
 Sbjct  61   DGCQSQCRDTSRLTDLPRALLRPTNNRNAISKMISKSLFNEMFKHMKDCPSRGFYSYEAF  120
 
 Query  361  ITAARSFPGFCTSGDVATRKREPAAFLsqtsqattg*ssNLNIYLC*EIISTIYICFEIN  540
-            ITAARSFPGFCTSGDVATRKREPAAFLS                                
+            ITAARSFPGFCTSGDVATRKREPAAFLS
 Sbjct  121  ITAARSFPGFCTSGDVATRKREPAAFLS--------------------------------  148
 
 Query  541  LRTWMLGVGGRLDSAVVDPHAWGYCYVNGTTDEQYCTSSNWPCASGKQYNRRGPIQLT  714
@@ -90,11 +90,11 @@ Sbjct  149  -QTSQATTGGRLDSAVVDPHAWGYCYVNGTTDEQYCTSSNWPCASGKQYNRRGPIQLT  205
 
 
 Lambda     K      H
-   0.318    0.134    0.401 
+   0.318    0.134    0.401
 
 Gapped
 Lambda     K      H
-   0.267   0.0410    0.140 
+   0.267   0.0410    0.140
 
 Effective search space used: 967993058520
 
@@ -109,11 +109,11 @@ Length=550
 
 
 Lambda     K      H
-   0.318    0.134    0.401 
+   0.318    0.134    0.401
 
 Gapped
 Lambda     K      H
-   0.267   0.0410    0.140 
+   0.267   0.0410    0.140
 
 Effective search space used: 108443629616
 
@@ -164,11 +164,11 @@ Sbjct  181  EPYNATLSVHQLVENADECMV  201
 
 
 Lambda     K      H
-   0.318    0.134    0.401 
+   0.318    0.134    0.401
 
 Gapped
 Lambda     K      H
-   0.267   0.0410    0.140 
+   0.267   0.0410    0.140
 
 Effective search space used: 165344802738
 
@@ -206,11 +206,11 @@ Sbjct  1    MKNVAKCDTWCELQNPVNHRVFERKLRPKPSGRGHVCLGVTNR-RPSP  47
 
 
 Lambda     K      H
-   0.318    0.134    0.401 
+   0.318    0.134    0.401
 
 Gapped
 Lambda     K      H
-   0.267   0.0410    0.140 
+   0.267   0.0410    0.140
 
 Effective search space used: 147032237429
 
@@ -251,11 +251,11 @@ Sbjct  61   SLVMAVVVNDSDEDGDSRDAVLPQKKKRLWGLVVCHNTTPRFV  103
 
 
 Lambda     K      H
-   0.318    0.134    0.401 
+   0.318    0.134    0.401
 
 Gapped
 Lambda     K      H
-   0.267   0.0410    0.140 
+   0.267   0.0410    0.140
 
 Effective search space used: 75367093081
 
@@ -267,16 +267,16 @@ Length=2551
                                                                       Score     E
 Sequences producing significant alignments:                          (Bits)  Value
 
-sp|Q9TKP6.1|MATK_WISFR  RecName: Full=Maturase K; AltName: Full=I...   948    0.0  
-gb|ACB58148.1|  maturase K [Wisteria frutescens]                       946    0.0  
-gb|ACB58149.1|  maturase K [Wisteria frutescens] >gb|ACB58150.1| ...   945    0.0  
-gb|ACB58142.1|  maturase K [Callerya megasperma]                       944    0.0  
-gb|AAD52903.1|AF142732_1  maturase-like protein [Wisteria sinensi...   936    0.0  
-gb|ACB58143.1|  maturase K [Wisteria brachybotrys]                     928    0.0  
-gb|AAD52904.1|AF142733_1  maturase-like protein [Callerya reticul...   925    0.0  
-gb|AAD52905.1|AF142734_1  maturase-like protein [Callerya atropur...   890    0.0  
-gb|ABS20107.1|  maturase-like protein [Astragalus uliginosus]          887    0.0  
-dbj|BAF57483.1|  maturase [Glycyrrhiza uralensis] >dbj|BAF57484.1...   887    0.0  
+sp|Q9TKP6.1|MATK_WISFR  RecName: Full=Maturase K; AltName: Full=I...   948    0.0
+gb|ACB58148.1|  maturase K [Wisteria frutescens]                       946    0.0
+gb|ACB58149.1|  maturase K [Wisteria frutescens] >gb|ACB58150.1| ...   945    0.0
+gb|ACB58142.1|  maturase K [Callerya megasperma]                       944    0.0
+gb|AAD52903.1|AF142732_1  maturase-like protein [Wisteria sinensi...   936    0.0
+gb|ACB58143.1|  maturase K [Wisteria brachybotrys]                     928    0.0
+gb|AAD52904.1|AF142733_1  maturase-like protein [Callerya reticul...   925    0.0
+gb|AAD52905.1|AF142734_1  maturase-like protein [Callerya atropur...   890    0.0
+gb|ABS20107.1|  maturase-like protein [Astragalus uliginosus]          887    0.0
+dbj|BAF57483.1|  maturase [Glycyrrhiza uralensis] >dbj|BAF57484.1...   887    0.0
 
 
 >sp|Q9TKP6.1|MATK_WISFR RecName: Full=Maturase K; AltName: Full=Intron maturase
@@ -326,11 +326,11 @@ Sbjct  481   STLQRLHRNRIWYLDILFSNDLVNHE  506
 
 
 Lambda     K      H
-   0.318    0.134    0.401 
+   0.318    0.134    0.401
 
 Gapped
 Lambda     K      H
-   0.267   0.0410    0.140 
+   0.267   0.0410    0.140
 
 Effective search space used: 1251086325060
 

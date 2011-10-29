@@ -10,8 +10,8 @@
 
 <b><a href="http://www.ncbi.nlm.nih.gov/htbin-
 post/Entrez/query?uid=9254694&form=6&db=m&Dopt=r">Reference</a>:</b>
-Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 <p>
@@ -76,13 +76,13 @@ blast_tmp 181 cag 183
     Posted date:  Dec 18, 1999  7:45 PM
   Number of letters in database: 32,867,852
   Number of sequences in database:  89,405
-  
+
 Lambda     K      H
-    1.37    0.711     1.31 
+    1.37    0.711     1.31
 
 Gapped
 Lambda     K      H
-    1.37    0.711     1.31 
+    1.37    0.711     1.31
 
 
 Matrix: blastn matrix:1 -3

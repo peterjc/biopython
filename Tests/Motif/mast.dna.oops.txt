@@ -41,7 +41,7 @@ DATABASE AND MOTIFS
 	No overly similar pairs (correlation > 0.60) found.
 
 	Random model letter frequencies (from non-redundant database):
-	A 0.281 C 0.222 G 0.229 T 0.267 
+	A 0.281 C 0.222 G 0.229 T 0.267
 ********************************************************************************
 
 
@@ -100,7 +100,7 @@ SECTION II: MOTIF DIAGRAMS
 	  (lower-numbered) motif occurrences that it overlaps.
 	- The table also shows the E-value of each sequence.
 	- Spacers and motif occurences are indicated by
-	   o -d-    `d' residues separate the end of the preceding motif 
+	   o -d-    `d' residues separate the end of the preceding motif
 		    occurrence and the start of the following motif occurrence
 	   o [sn]  occurrence of motif `n' with p-value less than 0.0001.
 		    A minus sign indicates that the occurrence is on the
@@ -129,12 +129,12 @@ SECTION III: ANNOTATED SEQUENCES
 	  are shown above the actual sequence for each of the high-scoring
 	  sequences from Section I.
 	- A motif occurrence is defined as a position in the sequence whose
-	  match to the motif has POSITION p-value less than 0.0001 as 
+	  match to the motif has POSITION p-value less than 0.0001 as
 	  defined in Section II.
 	- For each sequence, the first line specifies the name of the sequence.
-	- The second (and possibly more) lines give a description of the 
+	- The second (and possibly more) lines give a description of the
 	  sequence.
-	- Following the description line(s) is a line giving the length, 
+	- Following the description line(s) is a line giving the length,
 	  combined p-value, and E-value of the sequence as defined in Section I.
 	- The next line reproduces the motif diagram from Section II.
 	- The entire sequence is printed on the following lines.
@@ -144,7 +144,7 @@ SECTION III: ANNOTATED SEQUENCES
 	  the occurrence is on the reverse complement strand),
 	   o the position p-value of the occurrence,
 	   o the best possible match to the motif (or its reverse complement), and
-	   o columns whose match to the motif has a positive score (indicated 
+	   o columns whose match to the motif has a positive score (indicated
 	     by a plus sign).
 ********************************************************************************
 

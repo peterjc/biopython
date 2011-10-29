@@ -4,29 +4,29 @@ noevent        : ***************************************************************
 noevent        : MEME - Motif discovery tool
 noevent        : ***************************************************************
 _version       : MEME version 3.0 (Release date: 2004/08/18 09:07:01)
-noevent        : 
+noevent        :
 noevent        : For further information on how to interpret these results or to
 noevent        : a copy of the MEME software please access http://meme.sdsc.edu.
-noevent        : 
+noevent        :
 noevent        : This file may be used as input to the MAST algorithm for search
 noevent        : sequence databases for matches to groups of motifs.  MAST is av
 noevent        : for interactive use and downloading at http://meme.sdsc.edu.
 noevent        : ***************************************************************
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
 noevent        : ***************************************************************
 noevent        : REFERENCE
 noevent        : ***************************************************************
 noevent        : If you use this program in your research, please cite:
-noevent        : 
+noevent        :
 noevent        : Timothy L. Bailey and Charles Elkan,
 noevent        : "Fitting a mixture model by expectation maximization to discove
 noevent        : motifs in biopolymers", Proceedings of the Second International
 noevent        : Conference on Intelligent Systems for Molecular Biology, pp. 28
 noevent        : AAAI Press, Menlo Park, California, 1994.
 noevent        : ***************************************************************
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
 noevent        : ***************************************************************
 noevent        : TRAINING SET
 noevent        : ***************************************************************
@@ -39,15 +39,15 @@ _sequence_name : FAS1                     1.0000    800  FAS2
 _sequence_name : ACC1                     1.0000    800  INO1
 _sequence_name : OPI3                     1.0000    800
 noevent        : ***************************************************************
-noevent        : 
+noevent        :
 noevent        : ***************************************************************
 noevent        : COMMAND LINE SUMMARY
 noevent        : ***************************************************************
 noevent        : This information can also be useful in the event you wish to re
 noevent        : problem with the MEME software.
-noevent        : 
+noevent        :
 _commandline   : command: meme -mod oops -dna -revcomp -nmotifs 2 -bfile yeast.n
-noevent        : 
+noevent        :
 noevent        : model:  mod=          oops    nmotifs=         2    evt=
 noevent        : object function=  E-value of product of p-values
 noevent        : width:  minw=            8    maxw=           50    minic=
@@ -64,8 +64,8 @@ noevent        : A 0.304 C 0.196 G 0.196 T 0.304
 noevent        : Background letter frequencies (from yeast.nc.6.freq):
 noevent        : A 0.324 C 0.176 G 0.176 T 0.324
 noevent        : ***************************************************************
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
 noevent        : ***************************************************************
 _add_motif_with: MOTIF  1	width =   12   sites =   7   llr = 95   E-value = 2.0e
 noevent        : ***************************************************************
@@ -76,7 +76,7 @@ noevent        : Simplified        A  :::9:a::::3:
 noevent        : pos.-specific     C  ::a:9:11691a
 noevent        : probability       G  ::::1::94:4:
 noevent        : matrix            T  aa:1::9::11:
-noevent        : 
+noevent        :
 noevent        :          bits    2.5   *        *
 noevent        :                  2.3   *        *
 noevent        :                  2.0   * *  *   *
@@ -88,13 +88,13 @@ noevent        :                  0.8 ********** *
 noevent        :                  0.5 ********** *
 noevent        :                  0.3 ************
 noevent        :                  0.0 ------------
-noevent        : 
+noevent        :
 noevent        : Multilevel           TTCACATGCCGC
 noevent        : consensus                    G A
 noevent        : sequence
-noevent        : 
+noevent        :
 noevent        : ---------------------------------------------------------------
-noevent        : 
+noevent        :
 noevent        : ---------------------------------------------------------------
 motif_name     : 	Motif 1 sites sorted by position p-value
 noevent        : ---------------------------------------------------------------
@@ -108,7 +108,7 @@ add_instance   : CHO1                         +    611  4.23e-07 ACTTTGAACG TTCA
 add_instance   : FAS2                         +    567  9.43e-07 CTCCCGCGTT TTCA
 add_instance   : OPI3                         +    340  3.32e-06 CCAAGCCTCC TTCA
 noevent        : ---------------------------------------------------------------
-noevent        : 
+noevent        :
 noevent        : ---------------------------------------------------------------
 noevent        : 	Motif 1 block diagrams
 noevent        : ---------------------------------------------------------------
@@ -122,7 +122,7 @@ noevent        : CHO1                              4.2e-07  610_[+1]_178
 noevent        : FAS2                              9.4e-07  566_[+1]_222
 noevent        : OPI3                              3.3e-06  339_[+1]_449
 noevent        : ---------------------------------------------------------------
-noevent        : 
+noevent        :
 noevent        : ---------------------------------------------------------------
 noevent        : 	Motif 1 in BLOCKS format
 noevent        : ---------------------------------------------------------------
@@ -135,9 +135,9 @@ noevent        : CHO1                     (  611) TTCACACGGCAC  1
 noevent        : FAS2                     (  567) TTCACATGCTAC  1
 noevent        : OPI3                     (  340) TTCAGATCGCTC  1
 noevent        : //
-noevent        : 
+noevent        :
 noevent        : ---------------------------------------------------------------
-noevent        : 
+noevent        :
 noevent        : ---------------------------------------------------------------
 noevent        : 	Motif 1 position-specific scoring matrix
 noevent        : ---------------------------------------------------------------
@@ -155,7 +155,7 @@ add_to_logodds :   -945    229   -945   -118
 add_to_logodds :    -18    -30    129   -118
 add_to_logodds :   -945    251   -945   -945
 noevent        : ---------------------------------------------------------------
-noevent        : 
+noevent        :
 noevent        : ---------------------------------------------------------------
 noevent        : 	Motif 1 position-specific probability matrix
 noevent        : ---------------------------------------------------------------
@@ -173,16 +173,16 @@ add_to_pssm    :  0.000000  0.857143  0.000000  0.142857
 add_to_pssm    :  0.285714  0.142857  0.428571  0.142857
 add_to_pssm    :  0.000000  1.000000  0.000000  0.000000
 noevent        : ---------------------------------------------------------------
-noevent        : 
-noevent        : 
-noevent        : 
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
+noevent        :
+noevent        :
+noevent        :
 noevent        : Time 20.91 secs.
-noevent        : 
+noevent        :
 noevent        : ***************************************************************
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
 noevent        : ***************************************************************
 _add_motif_with: MOTIF  2	width =   10   sites =   7   llr = 81   E-value = 1.1e
 noevent        : ***************************************************************
@@ -193,7 +193,7 @@ noevent        : Simplified        A  ::1:::9:6:
 noevent        : pos.-specific     C  :a:::a:911
 noevent        : probability       G  3:1aa:1:19
 noevent        : matrix            T  7:7::::11:
-noevent        : 
+noevent        :
 noevent        :          bits    2.5  * ***
 noevent        :                  2.3  * ***
 noevent        :                  2.0  * ***   *
@@ -205,13 +205,13 @@ noevent        :                  0.8 ** ***** *
 noevent        :                  0.5 ******** *
 noevent        :                  0.3 **********
 noevent        :                  0.0 ----------
-noevent        : 
+noevent        :
 noevent        : Multilevel           TCTGGCACAG
 noevent        : consensus            G
 noevent        : sequence
-noevent        : 
+noevent        :
 noevent        : ---------------------------------------------------------------
-noevent        : 
+noevent        :
 noevent        : ---------------------------------------------------------------
 motif_name     : 	Motif 2 sites sorted by position p-value
 noevent        : ---------------------------------------------------------------
@@ -225,7 +225,7 @@ add_instance   : FAS1                         +     44  6.25e-06 TACACGAGGT GCAG
 add_instance   : FAS2                         -    185  8.48e-06 TTCTTGCTTT TCTG
 add_instance   : CHO2                         -    413  8.48e-06 TTTTGCCGTT TCTG
 noevent        : ---------------------------------------------------------------
-noevent        : 
+noevent        :
 noevent        : ---------------------------------------------------------------
 noevent        : 	Motif 2 block diagrams
 noevent        : ---------------------------------------------------------------
@@ -239,7 +239,7 @@ noevent        : FAS1                              6.3e-06  43_[+2]_747
 noevent        : FAS2                              8.5e-06  184_[-2]_606
 noevent        : CHO2                              8.5e-06  412_[-2]_378
 noevent        : ---------------------------------------------------------------
-noevent        : 
+noevent        :
 noevent        : ---------------------------------------------------------------
 noevent        : 	Motif 2 in BLOCKS format
 noevent        : ---------------------------------------------------------------
@@ -252,9 +252,9 @@ noevent        : FAS1                     (   44) GCAGGCACGG  1
 noevent        : FAS2                     (  185) TCTGGCACTC  1
 noevent        : CHO2                     (  413) TCTGGCATCG  1
 noevent        : //
-noevent        : 
+noevent        :
 noevent        : ---------------------------------------------------------------
-noevent        : 
+noevent        :
 noevent        : ---------------------------------------------------------------
 noevent        : 	Motif 2 position-specific scoring matrix
 noevent        : ---------------------------------------------------------------
@@ -270,7 +270,7 @@ add_to_logodds :   -945    229   -945   -118
 add_to_logodds :     82    -30    -30   -118
 add_to_logodds :   -945    -30    229   -945
 noevent        : ---------------------------------------------------------------
-noevent        : 
+noevent        :
 noevent        : ---------------------------------------------------------------
 noevent        : 	Motif 2 position-specific probability matrix
 noevent        : ---------------------------------------------------------------
@@ -286,16 +286,16 @@ add_to_pssm    :  0.000000  0.857143  0.000000  0.142857
 add_to_pssm    :  0.571429  0.142857  0.142857  0.142857
 add_to_pssm    :  0.000000  0.142857  0.857143  0.000000
 noevent        : ---------------------------------------------------------------
-noevent        : 
-noevent        : 
-noevent        : 
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
+noevent        :
+noevent        :
+noevent        :
 noevent        : Time 41.19 secs.
-noevent        : 
+noevent        :
 noevent        : ***************************************************************
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
 noevent        : ***************************************************************
 Running tests on MEME parser
 ************************************************** TESTING meme.dna.oops.txt
@@ -306,49 +306,49 @@ noevent        : ***************************************************************
 noevent        : MAST - Motif Alignment and Search Tool
 noevent        : ***************************************************************
 _version       : 	MAST version 3.0 (Release date: 2004/08/18 09:07:01)
-noevent        : 
+noevent        :
 noevent        : 	For further information on how to interpret these results or t
 noevent        : 	a copy of the MAST software please access http://meme.sdsc.edu
 noevent        : ***************************************************************
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
 noevent        : ***************************************************************
 noevent        : REFERENCE
 noevent        : ***************************************************************
 noevent        : 	If you use this program in your research, please cite:
-noevent        : 
+noevent        :
 noevent        : 	Timothy L. Bailey and Michael Gribskov,
 noevent        : 	"Combining evidence using p-values: application to sequence ho
 noevent        : 	searches", Bioinformatics, 14(48-54), 1998.
 noevent        : ***************************************************************
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
 noevent        : ***************************************************************
 noevent        : DATABASE AND MOTIFS
 noevent        : ***************************************************************
 _database      : 	DATABASE INO_up800.s (nucleotide)
 noevent        : 	Last updated on Mon Aug 16 21:19:59 2004
 noevent        : 	Database contains 7 sequences, 5600 residues
-noevent        : 
+noevent        :
 noevent        : 	Scores for positive and reverse complement strands are combine
-noevent        : 
+noevent        :
 noevent        : 	MOTIFS meme.INO_up800.oops.txt (nucleotide)
 noevent        : 	MOTIF WIDTH BEST POSSIBLE MATCH
 noevent        : 	----- ----- -------------------
 _add_motif     : 	  1    12   TTCACATGCCGC
 _add_motif     : 	  2    10   TCTGGCACAG
-noevent        : 
+noevent        :
 noevent        : 	PAIRWISE MOTIF CORRELATIONS:
 noevent        : 	MOTIF     1
 noevent        : 	----- -----
 noevent        : 	   2   0.32
 noevent        : 	No overly similar pairs (correlation > 0.60) found.
-noevent        : 
+noevent        :
 noevent        : 	Random model letter frequencies (from non-redundant database):
 noevent        : 	A 0.281 C 0.222 G 0.229 T 0.267
 noevent        : ***************************************************************
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
 noevent        : ***************************************************************
 noevent        : SECTION I: HIGH-SCORING SEQUENCES
 noevent        : ***************************************************************
@@ -373,7 +373,7 @@ noevent        : 	  the position-dependent scoring matrix that represents the mo
 noevent        : 	- Sequences shorter than one or more of the motifs are skipped
 noevent        : 	- The table is sorted by increasing E-value.
 noevent        : ***************************************************************
-noevent        : 
+noevent        :
 noevent        : SEQUENCE NAME                      DESCRIPTION
 noevent        : -------------                      -----------
 noevent        : ACC1                               sequence of the region up...
@@ -383,11 +383,11 @@ noevent        : FAS1                               sequence of the region up...
 noevent        : OPI3                               sequence of the region up...
 noevent        : CHO2                               sequence of the region up...
 noevent        : FAS2                               sequence of the region up...
-noevent        : 
+noevent        :
 noevent        : ***************************************************************
-noevent        : 
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
+noevent        :
 noevent        : ***************************************************************
 noevent        : SECTION II: MOTIF DIAGRAMS
 noevent        : ***************************************************************
@@ -410,7 +410,7 @@ noevent        : 	   o [sn]  occurrence of motif `n' with p-value less than 0.00
 noevent        : 		    A minus sign indicates that the occurrence is on the
 noevent        : 		    reverse complement strand.
 noevent        : ***************************************************************
-noevent        : 
+noevent        :
 noevent        : SEQUENCE NAME                      E-VALUE   MOTIF DIAGRAM
 noevent        : -------------                      --------  -------------
 noevent        : ACC1                                6.1e-05  82_[+1]_137_[+2]_5
@@ -421,11 +421,11 @@ noevent        : FAS1                                0.00022  43_[+2]_41_[+1]_69
 noevent        : OPI3                                0.00092  185_[-2]_144_[+1]_
 noevent        : CHO2                                 0.0029  353_[+1]_47_[-2]_3
 noevent        : FAS2                                 0.0093  184_[-2]_372_[+1]_
-noevent        : 
+noevent        :
 noevent        : ***************************************************************
-noevent        : 
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
+noevent        :
 noevent        : ***************************************************************
 noevent        : SECTION III: ANNOTATED SEQUENCES
 noevent        : ***************************************************************
@@ -451,8 +451,8 @@ noevent        : 	   o the best possible match to the motif (or its reverse comp
 noevent        : 	   o columns whose match to the motif has a positive score (in
 noevent        : 	     by a plus sign).
 noevent        : ***************************************************************
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
 *************** _parse_buffer
 *************** _blank_buffer
 _set_current_se: ACC1
@@ -461,24 +461,24 @@ noevent        :   LENGTH = 800  COMBINED P-VALUE = 8.78e-06  E-VALUE =  6.1e-05
 _add_line_to_bu:   DIAGRAM: 82_[+1]_137_[+2]_559
 *************** _add_diagram_from_buffer
 *************** _blank_buffer
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
 *************** _collapse_buffer
 _add_line_to_bu:             [+1]
 _add_line_to_bu:             3.1e-07
 _add_line_to_bu:             TTCACATGCCGC
 _add_line_to_bu:             ++++++++++ +
 _add_line_to_bu: 76   TAAAATCTTCACATGGCCCGGCCGCGCGCGCGTTGTGCCAACAAGTCGCAGTCGAAAT
-noevent        : 
+noevent        :
 *************** _collapse_buffer
 _add_line_to_bu:            [+2]
 _add_line_to_bu:            7.4e-07
 _add_line_to_bu:            TCTGGCACAG
 _add_line_to_bu:            ++++++++++
 _add_line_to_bu: 226  TCGTATTCTGGCACAGTATAGCCTAGCACAATCACTGTCACAATTGTTATCGGTTCTA
-noevent        : 
+noevent        :
 *************** _collapse_buffer
-noevent        : 
+noevent        :
 *************** _parse_buffer
 *************** _blank_buffer
 _set_current_se: CHO1
@@ -487,31 +487,31 @@ noevent        :   LENGTH = 800  COMBINED P-VALUE = 2.30e-05  E-VALUE =  0.00016
 _add_line_to_bu:   DIAGRAM: 152_[+2]_396_[-2]_42_[+1]_17_[+1]_149
 *************** _add_diagram_from_buffer
 *************** _blank_buffer
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
 *************** _collapse_buffer
 _add_line_to_bu:        [+2]
 _add_line_to_bu:        3.9e-05
 _add_line_to_bu:        TCTGGCACAG
 _add_line_to_bu:        ++++++ +
 _add_line_to_bu: 151  CGTCTGGCGCCCTTCCCATTCCGAACCATGTTATATTGAACCATCTGGCGACAAGCAG
-noevent        : 
+noevent        :
 *************** _collapse_buffer
 _add_line_to_bu:                                       [-2]
 _add_line_to_bu:                                       7.4e-07
 _add_line_to_bu:                                       CTGTGCCAGA
 _add_line_to_bu:                                       ++++++++++
 _add_line_to_bu: 526  CAATCCCCACTCCTTCTCAATGTGTGCAGACTTCTGTGCCAGACACTGAATATATATC
-noevent        : 
+noevent        :
 *************** _collapse_buffer
 _add_line_to_bu:                [+1]                         [+1]
 _add_line_to_bu:                8.7e-07                      2.2e-05
 _add_line_to_bu:                TTCACATGCCGC                 TTCACATGCCGC
 _add_line_to_bu:                ++++++ +++ +                 +++++++++  +
 _add_line_to_bu: 601  ACTTTGAACGTTCACACGGCACCCTCACGCCTTTGAGCTTTCACATGGACCCATCTAA
-noevent        : 
+noevent        :
 *************** _collapse_buffer
-noevent        : 
+noevent        :
 *************** _parse_buffer
 *************** _blank_buffer
 _set_current_se: INO1
@@ -520,31 +520,31 @@ noevent        :   LENGTH = 800  COMBINED P-VALUE = 2.71e-05  E-VALUE =  0.00019
 _add_line_to_bu:   DIAGRAM: 282_[-2]_327_[-1]_55_[+1]_102
 *************** _add_diagram_from_buffer
 *************** _blank_buffer
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
 *************** _collapse_buffer
 _add_line_to_bu:                                                               [
 _add_line_to_bu:                                                               1
 _add_line_to_bu:                                                               C
 _add_line_to_bu:                                                               +
 _add_line_to_bu: 226  ACGTTGTATATGAAACGAGTAGTGAACGTTCGTACGATCTTTCACGCAGACATGCGAC
-noevent        : 
+noevent        :
 *************** _collapse_buffer
 _add_line_to_bu:                         [-1]
 _add_line_to_bu:                         4.2e-08
 _add_line_to_bu:                         GCGGCATGTGAA
 _add_line_to_bu:                         ++++++++++++
 _add_line_to_bu: 601  TGCGCTTCGGCGGCTAAATGCGGCATGTGAAAAGTATTGTCTATTTTATCTTCATCCT
-noevent        : 
+noevent        :
 *************** _collapse_buffer
 _add_line_to_bu:                 [+1]
 _add_line_to_bu:                 1.3e-05
 _add_line_to_bu:                 TTCACATGCCGC
 _add_line_to_bu:                 +++++++++ ++
 _add_line_to_bu: 676  AACTTATTTAATTCACATGGAGCAGAGAAAGCGCACCTCTGCGTTGGCGGCAATGTTA
-noevent        : 
+noevent        :
 *************** _collapse_buffer
-noevent        : 
+noevent        :
 *************** _parse_buffer
 *************** _blank_buffer
 _set_current_se: FAS1
@@ -553,22 +553,22 @@ noevent        :   LENGTH = 800  COMBINED P-VALUE = 3.19e-05  E-VALUE =  0.00022
 _add_line_to_bu:   DIAGRAM: 43_[+2]_41_[+1]_694
 *************** _add_diagram_from_buffer
 *************** _blank_buffer
-noevent        : 
+noevent        :
 _add_line_to_bu:                                                 [+2]
 _add_line_to_bu:                                                 2.2e-05
 _add_line_to_bu:                                                 TCTGGCACAG
 _add_line_to_bu:                                                 ++ +++++ +
 _add_line_to_bu: 1    CCGGGTTATAGCAGCGTCTGCTCCGCATCACGATACACGAGGTGCAGGCACGGTTCAC
-noevent        : 
+noevent        :
 *************** _collapse_buffer
 _add_line_to_bu:                         [+1]
 _add_line_to_bu:                         4.2e-08
 _add_line_to_bu:                         TTCACATGCCGC
 _add_line_to_bu:                         ++++++++++++
 _add_line_to_bu: 76   ACAAACGACGGCCAAAAACTTCACATGCCGCCCAGCCAAGCATAATTACGCAACAGCG
-noevent        : 
+noevent        :
 *************** _collapse_buffer
-noevent        : 
+noevent        :
 *************** _parse_buffer
 *************** _blank_buffer
 _set_current_se: OPI3
@@ -577,24 +577,24 @@ noevent        :   LENGTH = 800  COMBINED P-VALUE = 1.32e-04  E-VALUE =  0.00092
 _add_line_to_bu:   DIAGRAM: 185_[-2]_144_[+1]_449
 *************** _add_diagram_from_buffer
 *************** _blank_buffer
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
 *************** _collapse_buffer
 _add_line_to_bu:                                         [-2]
 _add_line_to_bu:                                         7.4e-07
 _add_line_to_bu:                                         CTGTGCCAGA
 _add_line_to_bu:                                         ++++++++++
 _add_line_to_bu: 151  GTTAATCTGATCAACGCTACGCCGATGACAACGGTCTGTGCCAGATCTGGTTTTCCCC
-noevent        : 
+noevent        :
 *************** _collapse_buffer
 _add_line_to_bu:                                             [+1]
 _add_line_to_bu:                                             5.8e-06
 _add_line_to_bu:                                             TTCACATGCCGC
 _add_line_to_bu:                                             ++++ ++ ++ +
 _add_line_to_bu: 301  AACTCCGTCAGGTCTTCCACGTGGAACTGCCAAGCCTCCTTCAGATCGCTCTTGTCGA
-noevent        : 
+noevent        :
 *************** _collapse_buffer
-noevent        : 
+noevent        :
 *************** _parse_buffer
 *************** _blank_buffer
 _set_current_se: CHO2
@@ -603,24 +603,24 @@ noevent        :   LENGTH = 800  COMBINED P-VALUE = 4.18e-04  E-VALUE =   0.0029
 _add_line_to_bu:   DIAGRAM: 353_[+1]_47_[-2]_378
 *************** _add_diagram_from_buffer
 *************** _blank_buffer
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
 *************** _collapse_buffer
 _add_line_to_bu:                                                           [+1]
 _add_line_to_bu:                                                           5.2e-
 _add_line_to_bu:                                                           TTCAC
 _add_line_to_bu:                                                           +++ +
 _add_line_to_bu: 301  ATATATATTTTTGCCTTGGTTTAAATTGGTCAAGACAGTCAATTGCCACACTTTTCTC
-noevent        : 
+noevent        :
 *************** _collapse_buffer
 _add_line_to_bu:                                           [-2]
 _add_line_to_bu:                                           2.9e-05
 _add_line_to_bu:                                           CTGTGCCAGA
 _add_line_to_bu:                                           +  +++++++
 _add_line_to_bu: 376  CGCGAAGTTTTCCACACAAAACTGTGAAAATGAACGGCGATGCCAGAAACGGCAAAAC
-noevent        : 
+noevent        :
 *************** _collapse_buffer
-noevent        : 
+noevent        :
 *************** _parse_buffer
 *************** _blank_buffer
 _set_current_se: FAS2
@@ -629,22 +629,22 @@ noevent        :   LENGTH = 800  COMBINED P-VALUE = 1.33e-03  E-VALUE =   0.0093
 _add_line_to_bu:   DIAGRAM: 184_[-2]_372_[+1]_222
 *************** _add_diagram_from_buffer
 *************** _blank_buffer
-noevent        : 
-noevent        : 
+noevent        :
+noevent        :
 *************** _collapse_buffer
 _add_line_to_bu:                                        [-2]
 _add_line_to_bu:                                        2.9e-05
 _add_line_to_bu:                                        CTGTGCCAGA
 _add_line_to_bu:                                          ++++++++
 _add_line_to_bu: 151  AACAGGGTGTCGGTCATACCGATAAAGCCGTCAAGAGTGCCAGAAAAGCAAGAAAGAA
-noevent        : 
+noevent        :
 *************** _collapse_buffer
 _add_line_to_bu:                                               [+1]
 _add_line_to_bu:                                               1.9e-06
 _add_line_to_bu:                                               TTCACATGCCGC
 _add_line_to_bu:                                               +++++++++  +
 _add_line_to_bu: 526  GCTTAGCAAAATCCAACCATTTTTTTTTTATCTCCCGCGTTTTCACATGCTACCTCAT
-noevent        : 
+noevent        :
 *************** _collapse_buffer
 noevent        : ***************************************************************
 *************** _parse_buffer

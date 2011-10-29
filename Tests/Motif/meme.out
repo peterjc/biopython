@@ -30,13 +30,13 @@ TRAINING SET
 ********************************************************************************
 DATAFILE= test.fa
 ALPHABET= ACGT
-Sequence name            Weight Length  Sequence name            Weight Length  
--------------            ------ ------  -------------            ------ ------  
-SEQ1;                    1.0000    200  SEQ2;                    1.0000    200  
-SEQ3;                    1.0000    200  SEQ4;                    1.0000    200  
-SEQ5;                    1.0000    200  SEQ6;                    1.0000    200  
-SEQ7;                    1.0000    200  SEQ8;                    1.0000    200  
-SEQ9;                    1.0000    200  SEQ10;                   1.0000    200  
+Sequence name            Weight Length  Sequence name            Weight Length
+-------------            ------ ------  -------------            ------ ------
+SEQ1;                    1.0000    200  SEQ2;                    1.0000    200
+SEQ3;                    1.0000    200  SEQ4;                    1.0000    200
+SEQ5;                    1.0000    200  SEQ6;                    1.0000    200
+SEQ7;                    1.0000    200  SEQ8;                    1.0000    200
+SEQ9;                    1.0000    200  SEQ10;                   1.0000    200
 ********************************************************************************
 
 ********************************************************************************
@@ -45,7 +45,7 @@ COMMAND LINE SUMMARY
 This information can also be useful in the event you wish to report a
 problem with the MEME software.
 
-command: meme test.fa -dna -w 10 -dir /home/bartek/MetaMotif/meme 
+command: meme test.fa -dna -w 10 -dir /home/bartek/MetaMotif/meme
 
 model:  mod=         zoops    nmotifs=         1    evt=           inf
 object function=  E-value of product of p-values
@@ -59,9 +59,9 @@ data:   n=            2000    N=              10
 strands: +
 sample: seed=            0    seqfrac=         1
 Letter frequencies in dataset:
-A 0.255 C 0.235 G 0.261 T 0.249 
+A 0.255 C 0.235 G 0.261 T 0.249
 Background letter frequencies (from dataset with add-one prior applied):
-A 0.255 C 0.236 G 0.260 T 0.249 
+A 0.255 C 0.236 G 0.260 T 0.249
 ********************************************************************************
 
 
@@ -76,7 +76,7 @@ pos.-specific     C  a:a:::a:::
 probability       G  :::::::a::
 matrix            T  :a:::a::a:
 
-         bits    2.1 ***  ** * 
+         bits    2.1 ***  ** *
                  1.9 **********
                  1.7 **********
                  1.5 **********
@@ -89,22 +89,22 @@ content          1.0 **********
                  0.0 ----------
 
 Multilevel           CTCAATCGTA
-consensus                      
-sequence                       
-                               
+consensus
+sequence
+
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 	Motif 1 sites sorted by position p-value
 --------------------------------------------------------------------------------
-Sequence name             Start   P-value               Site 
+Sequence name             Start   P-value               Site
 -------------             ----- ---------            ----------
 SEQ10;                        3  8.71e-07         TT CTCAATCGTA GAGTATGCTT
 SEQ9;                        93  8.71e-07 CGCCTAGAAA CTCAATCGTA GAGTATCACG
 SEQ8;                       172  8.71e-07 CCCGGAGTAT CTCAATCGTA GATGAATACC
 SEQ7;                       177  8.71e-07 AAGTCTTTGA CTCAATCGTA GACCCAACAC
 SEQ6;                       105  8.71e-07 GTCAGCCGGT CTCAATCGTA GATCAGAGGC
-SEQ5;                       185  8.71e-07 ACGGGCAAGC CTCAATCGTA GAGGAT    
+SEQ5;                       185  8.71e-07 ACGGGCAAGC CTCAATCGTA GAGGAT
 SEQ4;                       173  8.71e-07 GTTCGAGAGC CTCAATCGTA GATAACCTCT
 SEQ3;                       112  8.71e-07 GTTATATTGG CTCAATCGTA GATGAAACCA
 SEQ2;                       172  8.71e-07 AAGCGTCGTG CTCAATCGTA GATAACAGAG
@@ -132,16 +132,16 @@ SEQ1;                             8.7e-07  51_[1]_139
 	Motif 1 in BLOCKS format
 --------------------------------------------------------------------------------
 BL   MOTIF 1 width=10 seqs=10
-SEQ10;                   (    3) CTCAATCGTA  1 
-SEQ9;                    (   93) CTCAATCGTA  1 
-SEQ8;                    (  172) CTCAATCGTA  1 
-SEQ7;                    (  177) CTCAATCGTA  1 
-SEQ6;                    (  105) CTCAATCGTA  1 
-SEQ5;                    (  185) CTCAATCGTA  1 
-SEQ4;                    (  173) CTCAATCGTA  1 
-SEQ3;                    (  112) CTCAATCGTA  1 
-SEQ2;                    (  172) CTCAATCGTA  1 
-SEQ1;                    (   52) CTCAATCGTA  1 
+SEQ10;                   (    3) CTCAATCGTA  1
+SEQ9;                    (   93) CTCAATCGTA  1
+SEQ8;                    (  172) CTCAATCGTA  1
+SEQ7;                    (  177) CTCAATCGTA  1
+SEQ6;                    (  105) CTCAATCGTA  1
+SEQ5;                    (  185) CTCAATCGTA  1
+SEQ4;                    (  173) CTCAATCGTA  1
+SEQ3;                    (  112) CTCAATCGTA  1
+SEQ2;                    (  172) CTCAATCGTA  1
+SEQ1;                    (   52) CTCAATCGTA  1
 //
 
 --------------------------------------------------------------------------------
@@ -149,33 +149,33 @@ SEQ1;                    (   52) CTCAATCGTA  1
 --------------------------------------------------------------------------------
 	Motif 1 position-specific scoring matrix
 --------------------------------------------------------------------------------
-log-odds matrix: alength= 4 w= 10 n= 1910 bayes= 8.51691 E= 1.1e-022 
-  -997    208   -997   -997 
-  -997   -997   -997    200 
-  -997    208   -997   -997 
-   197   -997   -997   -997 
-   197   -997   -997   -997 
-  -997   -997   -997    200 
-  -997    208   -997   -997 
-  -997   -997    194   -997 
-  -997   -997   -997    200 
-   197   -997   -997   -997 
+log-odds matrix: alength= 4 w= 10 n= 1910 bayes= 8.51691 E= 1.1e-022
+  -997    208   -997   -997
+  -997   -997   -997    200
+  -997    208   -997   -997
+   197   -997   -997   -997
+   197   -997   -997   -997
+  -997   -997   -997    200
+  -997    208   -997   -997
+  -997   -997    194   -997
+  -997   -997   -997    200
+   197   -997   -997   -997
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 	Motif 1 position-specific probability matrix
 --------------------------------------------------------------------------------
-letter-probability matrix: alength= 4 w= 10 nsites= 10 E= 1.1e-022 
- 0.000000  1.000000  0.000000  0.000000 
- 0.000000  0.000000  0.000000  1.000000 
- 0.000000  1.000000  0.000000  0.000000 
- 1.000000  0.000000  0.000000  0.000000 
- 1.000000  0.000000  0.000000  0.000000 
- 0.000000  0.000000  0.000000  1.000000 
- 0.000000  1.000000  0.000000  0.000000 
- 0.000000  0.000000  1.000000  0.000000 
- 0.000000  0.000000  0.000000  1.000000 
- 1.000000  0.000000  0.000000  0.000000 
+letter-probability matrix: alength= 4 w= 10 nsites= 10 E= 1.1e-022
+ 0.000000  1.000000  0.000000  0.000000
+ 0.000000  0.000000  0.000000  1.000000
+ 0.000000  1.000000  0.000000  0.000000
+ 1.000000  0.000000  0.000000  0.000000
+ 1.000000  0.000000  0.000000  0.000000
+ 0.000000  0.000000  0.000000  1.000000
+ 0.000000  1.000000  0.000000  0.000000
+ 0.000000  0.000000  1.000000  0.000000
+ 0.000000  0.000000  0.000000  1.000000
+ 1.000000  0.000000  0.000000  0.000000
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------

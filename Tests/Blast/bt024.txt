@@ -10,8 +10,8 @@
 
 <b><a href="http://www.ncbi.nlm.nih.gov/htbin-
 post/Entrez/query?uid=9254694&form=6&db=m&Dopt=r">Reference</a>:</b>
-Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 <p>
@@ -52,32 +52,32 @@ Sequences producing significant alignments:                        (bits)  Value
 <a name = 1348916> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Nucleotide&list_uids=01348916&dopt=GenBank">gb|G26684|G26684</a> human STS STS_D11570. >gi|1375195|gb|G26945|G26945 human STS
            SHGC-32699.
            Length = 285
-           
+
  Score =  517 bits (261), Expect = e-146
  Identities = 285/285 (100%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 1   gatccctacccttnccgttggtctctntcgctgactcgaggcacctaacatccattcaca 60
            ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 Sbjct: 1   gatccctacccttnccgttggtctctntcgctgactcgaggcacctaacatccattcaca 60
 
-                                                                       
+
 Query: 61  cccaacacaggccagcgacttctggggctcagccacagacatggtttgtnactnttgagc 120
            ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 Sbjct: 61  cccaacacaggccagcgacttctggggctcagccacagacatggtttgtnactnttgagc 120
 
-                                                                       
+
 Query: 121 ttctgttcctagagaatcctagaggcttgattggcccaggctgctgtntgtnctggaggc 180
            ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 Sbjct: 121 ttctgttcctagagaatcctagaggcttgattggcccaggctgctgtntgtnctggaggc 180
 
-                                                                       
+
 Query: 181 aaagaatccctacctcctaggggtgaaaggaaatnaaaatggaaagttcttgtagcgcaa 240
            ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 Sbjct: 181 aaagaatccctacctcctaggggtgaaaggaaatnaaaatggaaagttcttgtagcgcaa 240
 
-                                                        
+
 Query: 241 ggcctgacatgggtagctgctcaataaatgctagtntgttatttc 285
            |||||||||||||||||||||||||||||||||||||||||||||
 Sbjct: 241 ggcctgacatgggtagctgctcaataaatgctagtntgttatttc 285
@@ -88,12 +88,12 @@ Sbjct: 241 ggcctgacatgggtagctgctcaataaatgctagtntgttatttc 285
 <a name = 4516686> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Nucleotide&list_uids=04516686&dopt=GenBank">dbj|AU026763.1|AU026763</a> Rattus norvegicus, OTSUKA clone, OT33.16/752f07, microsatellite
            sequence, sequence tagged site
            Length = 307
-           
+
  Score = 32.2 bits (16), Expect = 1.7
  Identities = 16/16 (100%)
  Strand = Plus / Plus
 
-                           
+
 Query: 221 ggaaagttcttgtagc 236
            ||||||||||||||||
 Sbjct: 32  ggaaagttcttgtagc 47
@@ -103,12 +103,12 @@ Sbjct: 32  ggaaagttcttgtagc 47
 <PRE>
 <a name = 6120827> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Nucleotide&list_uids=06120827&dopt=GenBank">gb|G55508.1|G55508</a> SHGC-100856 Human Homo sapiens STS genomic, sequence tagged site
            Length = 711
-           
+
  Score = 32.2 bits (16), Expect = 1.7
  Identities = 18/19 (94%)
  Strand = Plus / Plus
 
-                              
+
 Query: 210 gaaatnaaaatggaaagtt 228
            ||||| |||||||||||||
 Sbjct: 588 gaaataaaaatggaaagtt 606
@@ -118,12 +118,12 @@ Sbjct: 588 gaaataaaaatggaaagtt 606
 <PRE>
 <a name = 720683> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Nucleotide&list_uids=00720683&dopt=GenBank">gb|G03725|G03725</a> human STS WI-344.
            Length = 246
-           
+
  Score = 32.2 bits (16), Expect = 1.7
  Identities = 16/16 (100%)
  Strand = Plus / Minus
 
-                           
+
 Query: 260 ctcaataaatgctagt 275
            ||||||||||||||||
 Sbjct: 178 ctcaataaatgctagt 163
@@ -136,13 +136,13 @@ Sbjct: 178 ctcaataaatgctagt 163
     Posted date:  Dec 18, 1999  7:45 PM
   Number of letters in database: 32,867,852
   Number of sequences in database:  89,405
-  
+
 Lambda     K      H
-    1.37    0.711     1.31 
+    1.37    0.711     1.31
 
 Gapped
 Lambda     K      H
-    1.37    0.711     1.31 
+    1.37    0.711     1.31
 
 
 Matrix: blastn matrix:1 -3

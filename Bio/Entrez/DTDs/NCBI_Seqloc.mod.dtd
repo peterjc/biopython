@@ -44,24 +44,24 @@ $Revision: 1.1 $
 *
 -->
 <!ELEMENT Seq-id (
-        Seq-id_local | 
-        Seq-id_gibbsq | 
-        Seq-id_gibbmt | 
-        Seq-id_giim | 
-        Seq-id_genbank | 
-        Seq-id_embl | 
-        Seq-id_pir | 
-        Seq-id_swissprot | 
-        Seq-id_patent | 
-        Seq-id_other | 
-        Seq-id_general | 
-        Seq-id_gi | 
-        Seq-id_ddbj | 
-        Seq-id_prf | 
-        Seq-id_pdb | 
-        Seq-id_tpg | 
-        Seq-id_tpe | 
-        Seq-id_tpd | 
+        Seq-id_local |
+        Seq-id_gibbsq |
+        Seq-id_gibbmt |
+        Seq-id_giim |
+        Seq-id_genbank |
+        Seq-id_embl |
+        Seq-id_pir |
+        Seq-id_swissprot |
+        Seq-id_patent |
+        Seq-id_other |
+        Seq-id_general |
+        Seq-id_gi |
+        Seq-id_ddbj |
+        Seq-id_prf |
+        Seq-id_pdb |
+        Seq-id_tpg |
+        Seq-id_tpe |
+        Seq-id_tpd |
         Seq-id_gpipe)>
 
 <!-- local use -->
@@ -118,7 +118,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Patent-seq-id (
-        Patent-seq-id_seqid, 
+        Patent-seq-id_seqid,
         Patent-seq-id_cit)>
 
 <!-- number of sequence in patent -->
@@ -129,9 +129,9 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Textseq-id (
-        Textseq-id_name?, 
-        Textseq-id_accession?, 
-        Textseq-id_release?, 
+        Textseq-id_name?,
+        Textseq-id_accession?,
+        Textseq-id_release?,
         Textseq-id_version?)>
 
 <!ELEMENT Textseq-id_name (#PCDATA)>
@@ -144,8 +144,8 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Giimport-id (
-        Giimport-id_id, 
-        Giimport-id_db?, 
+        Giimport-id_id,
+        Giimport-id_db?,
         Giimport-id_release?)>
 
 <!-- the id to use here -->
@@ -159,8 +159,8 @@ $Revision: 1.1 $
 
 
 <!ELEMENT PDB-seq-id (
-        PDB-seq-id_mol, 
-        PDB-seq-id_chain?, 
+        PDB-seq-id_mol,
+        PDB-seq-id_chain?,
         PDB-seq-id_rel?)>
 
 <!-- the molecule name -->
@@ -180,16 +180,16 @@ $Revision: 1.1 $
 *
 -->
 <!ELEMENT Seq-loc (
-        Seq-loc_null | 
-        Seq-loc_empty | 
-        Seq-loc_whole | 
-        Seq-loc_int | 
-        Seq-loc_packed-int | 
-        Seq-loc_pnt | 
-        Seq-loc_packed-pnt | 
-        Seq-loc_mix | 
-        Seq-loc_equiv | 
-        Seq-loc_bond | 
+        Seq-loc_null |
+        Seq-loc_empty |
+        Seq-loc_whole |
+        Seq-loc_int |
+        Seq-loc_packed-int |
+        Seq-loc_pnt |
+        Seq-loc_packed-pnt |
+        Seq-loc_mix |
+        Seq-loc_equiv |
+        Seq-loc_bond |
         Seq-loc_feat)>
 
 <!-- not placed -->
@@ -222,11 +222,11 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Seq-interval (
-        Seq-interval_from, 
-        Seq-interval_to, 
-        Seq-interval_strand?, 
-        Seq-interval_id, 
-        Seq-interval_fuzz-from?, 
+        Seq-interval_from,
+        Seq-interval_to,
+        Seq-interval_strand?,
+        Seq-interval_id,
+        Seq-interval_fuzz-from?,
         Seq-interval_fuzz-to?)>
 
 <!ELEMENT Seq-interval_from (%INTEGER;)>
@@ -247,9 +247,9 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Seq-point (
-        Seq-point_point, 
-        Seq-point_strand?, 
-        Seq-point_id, 
+        Seq-point_point,
+        Seq-point_strand?,
+        Seq-point_id,
         Seq-point_fuzz?)>
 
 <!ELEMENT Seq-point_point (%INTEGER;)>
@@ -263,9 +263,9 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Packed-seqpnt (
-        Packed-seqpnt_strand?, 
-        Packed-seqpnt_id, 
-        Packed-seqpnt_fuzz?, 
+        Packed-seqpnt_strand?,
+        Packed-seqpnt_id,
+        Packed-seqpnt_fuzz?,
         Packed-seqpnt_points)>
 <!-- strand of nucleic acid -->
 <!ELEMENT Packed-seqpnt_strand (Na-strand)>
@@ -301,7 +301,7 @@ $Revision: 1.1 $
 
 <!-- bond between residues -->
 <!ELEMENT Seq-bond (
-        Seq-bond_a, 
+        Seq-bond_a,
         Seq-bond_b?)>
 
 <!-- connection to a least one residue -->

@@ -1,8 +1,8 @@
 BLASTP 2.2.8 [Jan-05-2004]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -10,7 +10,7 @@ Query= gi|16130963|ref|NP_417539.1| RNA polymerase sigma(70)
 [Escherichia coli K12]
          (613 letters)
 
-Database: NC_000913 
+Database: NC_000913
            4311 sequences; 1,350,842 total letters
 
 
@@ -20,7 +20,7 @@ Results from round 1
                                                                  Score    E
 Sequences producing significant alignments:                      (bits) Value
 
-gi|16130963|ref|NP_417539.1| RNA polymerase sigma(70) [Escherich...  1032   0.0  
+gi|16130963|ref|NP_417539.1| RNA polymerase sigma(70) [Escherich...  1032   0.0
 gi|16130648|ref|NP_417221.1| sigma S factor [Escherichia coli K12]    189   3e-049
 gi|16131333|ref|NP_417918.1| sigma(32) factor [Escherichia coli ...    84   2e-017
 gi|33347603|ref|NP_416432.2| sigma factor 28 [Escherichia coli K12]    63   5e-011
@@ -33,7 +33,7 @@ Results from round 2
 Sequences producing significant alignments:                      (bits) Value
 Sequences used in model and found again:
 
-gi|16130963|ref|NP_417539.1| RNA polymerase sigma(70) [Escherich...  1016   0.0  
+gi|16130963|ref|NP_417539.1| RNA polymerase sigma(70) [Escherich...  1016   0.0
 gi|16130648|ref|NP_417221.1| sigma S factor [Escherichia coli K12]    358   e-100
 gi|16131333|ref|NP_417918.1| sigma(32) factor [Escherichia coli ...   290   2e-079
 gi|33347603|ref|NP_416432.2| sigma factor 28 [Escherichia coli K12]   237   2e-063
@@ -46,12 +46,12 @@ CONVERGED!
     Posted date:  Apr 8, 2004 12:56 AM
   Number of letters in database: 1,350,842
   Number of sequences in database:  4311
-  
-Lambda     K      H
-   0.313    0.141    0.379 
 
 Lambda     K      H
-   0.267   0.0431    0.140 
+   0.313    0.141    0.379
+
+Lambda     K      H
+   0.267   0.0431    0.140
 
 
 Matrix: BLOSUM62

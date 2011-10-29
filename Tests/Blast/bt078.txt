@@ -1,8 +1,8 @@
 BLASTX 2.2.20 [Feb-08-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -12,7 +12,7 @@ chloroplast gene for chloroplast product, partial intron sequence
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -23,8 +23,8 @@ Searching..................................................done
 BLASTX 2.2.20 [Feb-08-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -34,7 +34,7 @@ chloroplast gene for chloroplast product, partial intron sequence
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -45,8 +45,8 @@ Searching..................................................done
 BLASTX 2.2.20 [Feb-08-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -56,7 +56,7 @@ chloroplast gene for chloroplast product, partial intron sequence
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -67,8 +67,8 @@ Searching..................................................done
 BLASTX 2.2.20 [Feb-08-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -79,7 +79,7 @@ sequence
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -140,8 +140,8 @@ Sbjct: 48  EIGIERVNIRPRKLFLLQNLGQY 70
 BLASTX 2.2.20 [Feb-08-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -151,7 +151,7 @@ chloroplast gene for chloroplast product, partial intron sequence
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -162,8 +162,8 @@ Searching..................................................done
 BLASTX 2.2.20 [Feb-08-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -173,7 +173,7 @@ chloroplast gene for chloroplast product, partial intron sequence
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -184,8 +184,8 @@ Searching..................................................done
 BLASTX 2.2.20 [Feb-08-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -195,7 +195,7 @@ chloroplast gene for chloroplast product, partial intron sequence
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -209,13 +209,13 @@ Searching..................................................done
     Posted date:  Jun 4, 2009  5:40 PM
   Number of letters in database: 3,078,807,967
   Number of sequences in database:  8,994,603
-  
+
 Lambda     K      H
-   0.318    0.134    0.401 
+   0.318    0.134    0.401
 
 Gapped
 Lambda     K      H
-   0.267   0.0410    0.140 
+   0.267   0.0410    0.140
 
 
 Matrix: BLOSUM62

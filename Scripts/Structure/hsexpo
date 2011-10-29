@@ -31,19 +31,19 @@ if len(sys.argv)==1:
 # Get the user's options
 parser=OptionParser(usage="usage: %prog [options] <PDB file>")
 
-parser.add_option("-t", "--type", dest="exp", 
+parser.add_option("-t", "--type", dest="exp",
                   help="exposure type (HSEAU, HSEAD, HSEBU, HSEBD, CN, DSSPr, DSSPa, RD, RDa)",
                   default="HSEb")
 
-parser.add_option("-o", "--out", dest="outfile", 
+parser.add_option("-o", "--out", dest="outfile",
                   help="output to PDB file (B factor=exposure)")
 
-parser.add_option("-r", "--radius", dest="radius", type="float", 
-                  help="sphere radius (default 13.0 A)", 
+parser.add_option("-r", "--radius", dest="radius", type="float",
+                  help="sphere radius (default 13.0 A)",
                   default=13.0)
 
-parser.add_option("-m", "--model", dest="model", type="int", 
-                  help="model number (default 0)", 
+parser.add_option("-m", "--model", dest="model", type="int",
+                  help="model number (default 0)",
                   default=0)
 
 (options, args)=parser.parse_args()
@@ -125,7 +125,7 @@ for r in residue_list:
 
         resname=r.get_resname()
 
-        print (("%s %4i %c\t"+format) % (resname, resseq, icode, exposure)) 
+        print (("%s %4i %c\t"+format) % (resname, resseq, icode, exposure))
     else:
         exposure=0.0
 

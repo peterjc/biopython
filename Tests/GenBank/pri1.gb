@@ -41,7 +41,7 @@ FEATURES             Location/Qualifiers
                      /number=1
                      /product="fructose transporter"
 BASE COUNT      206 a    172 c    195 g    168 t
-ORIGIN      
+ORIGIN
         1 gatcatgcat gcactccagc ctgggacaag agcgaaactc cgtctcaaaa aaaaaaaaaa
        61 aaaaaaaaaa aaacagaaaa tgagaaactt tccccaaaca gtattacacg gtgacttggg
       121 caaaactgac tctccaccaa gagacacttg actgtagttt tcctggcagg gagagcatct

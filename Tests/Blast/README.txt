@@ -10,7 +10,7 @@ BLAST OUTPUT FILES (plain text)
 ID    PROGRAM  VER.   QUERY      DATABASE  PARAMETERS     DESCRIPTION
 bt001 blastall 2.0.10 sp:P21297  swissprot -p blastp
 bt002 blastall 2.0.10 sp:Q02112  pdbaa     -p blastp      no hits
-bt003 blastall 2.0.10 sp:P16153  swissprot -p blastp -v 0 no descriptions 
+bt003 blastall 2.0.10 sp:P16153  swissprot -p blastp -v 0 no descriptions
 bt004 blastall 2.0.10 sp:P16153  swissprot -p blastp -b 0 no alignments
 bt005 blastall 2.0.10 sp:P15394  swissprot -p blastp -m 6 master-slave
 bt006 blastpgp 2.0.10 sp:P12921  swissprot -j 10          converges in 1 round
@@ -50,7 +50,7 @@ bt039 blastall 2.0.10 sp:Q08386  swissprot -p blastp      >1 HSP in alignment
 bt040 blastall 2.0.10 sp:Q05362  swissprot -p blastp -v 0 -m 4 no descriptions, master-slave
 bt041 blastall 2.0.11 sp:P21297  swissprot -p blastp
 bt042 blastall 2.0.11 sp:Q02112  pdbaa     -p blastp      no hits
-bt043 blastall 2.0.11 sp:P16153  swissprot -p blastp -v 0 no descriptions 
+bt043 blastall 2.0.11 sp:P16153  swissprot -p blastp -v 0 no descriptions
 bt044 blastall 2.0.11 sp:P16153  swissprot -p blastp -b 0 no alignments
 bt045 blastall 2.0.11 sp:P15394  swissprot -p blastp -m 6 master-slave
 bt046 blastpgp 2.0.11 sp:P12921  swissprot -j 10          converges in 2 rounds
@@ -79,7 +79,7 @@ bt067 blastall 2.2.1  ad-hoc              -p blastx       No 'length of query'
 bt072 NCBIWWW  2.2.4  ad-hoc
 bt073 NCBIWWW  2.2.4  ad-hoc   Confusing sequences line in the database
 bt074 NCBIWWW  2.2.4  ad-hoc              -p blastp       nov 2002 new format
-bt075 blastpgp 2.2.8  ad-hoc from Jer-Yee John Chuang, no Searching... lines 
+bt075 blastpgp 2.2.8  ad-hoc from Jer-Yee John Chuang, no Searching... lines
 bt076 blastall 2.2.15 ad-hoc              -p blastx       no hits, single query
 bt077 blastall 2.2.20 ad-hoc     nr       -p blastx       single query
 bt078 blastall 2.2.20 opuntia    nr       -p blastx       multiple queries, most with no hits

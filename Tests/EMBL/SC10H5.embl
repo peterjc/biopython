@@ -38,15 +38,15 @@ RL   Mol. Microbiol. 21(1):77-96(1996).
 XX
 CC   Notes:
 CC
-CC   Streptomyces coelicolor sequencing at The Sanger Centre is funded 
+CC   Streptomyces coelicolor sequencing at The Sanger Centre is funded
 CC   by the BBSRC.
 CC
-CC   Details of S. coelicolor sequencing at the Sanger Centre 
-CC   are available on the World Wide Web. 
+CC   Details of S. coelicolor sequencing at the Sanger Centre
+CC   are available on the World Wide Web.
 CC   (URL; http://www.sanger.ac.uk/Projects/S_coelicolor/)
 CC
-CC   CDS are numbered using the following system eg SC7B7.01c. 
-CC   SC (S. coelicolor), 7B7 (cosmid name), .01 (first CDS), 
+CC   CDS are numbered using the following system eg SC7B7.01c.
+CC   SC (S. coelicolor), 7B7 (cosmid name), .01 (first CDS),
 CC   c (complementary strand).
 CC
 CC   The more significant matches with motifs in the PROSITE
@@ -58,24 +58,24 @@ CC   Usually the highest scoring match found by fasta -o is given for
 CC   CDS which show significant similarity to other CDS in the database.
 CC   The position of possible ribosome binding site sequences are
 CC   given where these have been used to deduce the initiation codon.
-CC   
-CC   Gene prediction is based on positional base preference in codons 
-CC   using a specially developed Hidden Markov Model (Krogh et al., 
-CC   Nucleic Acids Research, 22(22):4768-4778(1994)) and the FramePlot 
-CC   program of Bibb et al., Gene 30:157-66(1984) as implemented at 
-CC   http://www.nih.go.jp/~jun/cgi-bin/frameplot.pl. CAUTION:  We may  
-CC   not have predicted the correct initiation codon.  Where possible 
-CC   we choose an initiation codon (atg, gtg, ttg or (att)) which is 
-CC   preceded by an upstream ribosome binding site sequence (optimally 
+CC
+CC   Gene prediction is based on positional base preference in codons
+CC   using a specially developed Hidden Markov Model (Krogh et al.,
+CC   Nucleic Acids Research, 22(22):4768-4778(1994)) and the FramePlot
+CC   program of Bibb et al., Gene 30:157-66(1984) as implemented at
+CC   http://www.nih.go.jp/~jun/cgi-bin/frameplot.pl. CAUTION:  We may
+CC   not have predicted the correct initiation codon.  Where possible
+CC   we choose an initiation codon (atg, gtg, ttg or (att)) which is
+CC   preceded by an upstream ribosome binding site sequence (optimally
 CC   5-13bp before the initiation codon).  If this cannot be identified
 CC   we choose the most upstream initiation codon.
-CC     
+CC
 CC   IMPORTANT: This sequence MAY NOT be the entire insert of
 CC   the sequenced clone.  It may be shorter because we only
 CC   sequence overlapping sections once, or longer, because we
 CC   arrange for a small overlap between neighbouring submissions.
 CC
-CC   Cosmid 10H5 lies to the right of 3A7 on the AseI-B genomic restriction 
+CC   Cosmid 10H5 lies to the right of 3A7 on the AseI-B genomic restriction
 CC   fragment.
 XX
 FH   Key             Location/Qualifiers

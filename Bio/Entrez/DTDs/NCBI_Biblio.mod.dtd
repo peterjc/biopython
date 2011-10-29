@@ -50,13 +50,13 @@ $Revision: 1.1 $
  can be many ids for an article
 -->
 <!ELEMENT ArticleId (
-        ArticleId_pubmed | 
-        ArticleId_medline | 
-        ArticleId_doi | 
-        ArticleId_pii | 
-        ArticleId_pmcid | 
-        ArticleId_pmcpid | 
-        ArticleId_pmpid | 
+        ArticleId_pubmed |
+        ArticleId_medline |
+        ArticleId_doi |
+        ArticleId_pii |
+        ArticleId_pmcid |
+        ArticleId_pmcpid |
+        ArticleId_pmpid |
         ArticleId_other)>
 
 <!-- see types below -->
@@ -140,7 +140,7 @@ $Revision: 1.1 $
 
 <!-- done as a structure so fields can be added -->
 <!ELEMENT PubStatusDate (
-        PubStatusDate_pubstatus, 
+        PubStatusDate_pubstatus,
         PubStatusDate_date)>
 <!--
  Status Dates
@@ -159,9 +159,9 @@ $Revision: 1.1 $
  article in journal or book
 -->
 <!ELEMENT Cit-art (
-        Cit-art_title?, 
-        Cit-art_authors?, 
-        Cit-art_from, 
+        Cit-art_title?,
+        Cit-art_authors?,
+        Cit-art_from,
         Cit-art_ids?)>
 
 <!-- title of paper (ANSI requires) -->
@@ -171,8 +171,8 @@ $Revision: 1.1 $
 <!ELEMENT Cit-art_authors (Auth-list)>
 <!-- journal or book -->
 <!ELEMENT Cit-art_from (
-        Cit-art_from_journal | 
-        Cit-art_from_book | 
+        Cit-art_from_journal |
+        Cit-art_from_book |
         Cit-art_from_proc)>
 <!-- Journal citation -->
 <!ELEMENT Cit-art_from_journal (Cit-jour)>
@@ -186,7 +186,7 @@ $Revision: 1.1 $
 
 <!-- Journal citation -->
 <!ELEMENT Cit-jour (
-        Cit-jour_title, 
+        Cit-jour_title,
         Cit-jour_imp)>
 
 <!-- title of journal -->
@@ -196,9 +196,9 @@ $Revision: 1.1 $
 
 <!-- Book citation -->
 <!ELEMENT Cit-book (
-        Cit-book_title, 
-        Cit-book_coll?, 
-        Cit-book_authors, 
+        Cit-book_title,
+        Cit-book_coll?,
+        Cit-book_authors,
         Cit-book_imp)>
 
 <!-- Title of book -->
@@ -214,7 +214,7 @@ $Revision: 1.1 $
 
 <!-- Meeting proceedings -->
 <!ELEMENT Cit-proc (
-        Cit-proc_book, 
+        Cit-proc_book,
         Cit-proc_meet)>
 
 <!-- citation to meeting -->
@@ -231,18 +231,18 @@ $Revision: 1.1 $
  patent citation
 -->
 <!ELEMENT Cit-pat (
-        Cit-pat_title, 
-        Cit-pat_authors, 
-        Cit-pat_country, 
-        Cit-pat_doc-type, 
-        Cit-pat_number?, 
-        Cit-pat_date-issue?, 
-        Cit-pat_class?, 
-        Cit-pat_app-number?, 
-        Cit-pat_app-date?, 
-        Cit-pat_applicants?, 
-        Cit-pat_assignees?, 
-        Cit-pat_priority?, 
+        Cit-pat_title,
+        Cit-pat_authors,
+        Cit-pat_country,
+        Cit-pat_doc-type,
+        Cit-pat_number?,
+        Cit-pat_date-issue?,
+        Cit-pat_class?,
+        Cit-pat_app-number?,
+        Cit-pat_app-date?,
+        Cit-pat_applicants?,
+        Cit-pat_assignees?,
+        Cit-pat_priority?,
         Cit-pat_abstract?)>
 
 <!ELEMENT Cit-pat_title (#PCDATA)>
@@ -288,8 +288,8 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Patent-priority (
-        Patent-priority_country, 
-        Patent-priority_number, 
+        Patent-priority_country,
+        Patent-priority_number,
         Patent-priority_date)>
 
 <!-- Patent country code -->
@@ -303,15 +303,15 @@ $Revision: 1.1 $
 
 <!-- just to identify a patent -->
 <!ELEMENT Id-pat (
-        Id-pat_country, 
-        Id-pat_id, 
+        Id-pat_country,
+        Id-pat_id,
         Id-pat_doc-type?)>
 
 <!-- Patent Document Country -->
 <!ELEMENT Id-pat_country (#PCDATA)>
 
 <!ELEMENT Id-pat_id (
-        Id-pat_id_number | 
+        Id-pat_id_number |
         Id-pat_id_app-number)>
 
 <!-- Patent Document Number -->
@@ -325,8 +325,8 @@ $Revision: 1.1 $
 
 <!-- letter, thesis, or manuscript -->
 <!ELEMENT Cit-let (
-        Cit-let_cit, 
-        Cit-let_man-id?, 
+        Cit-let_cit,
+        Cit-let_man-id?,
         Cit-let_type?)>
 
 <!-- same fields as a book -->
@@ -350,10 +350,10 @@ $Revision: 1.1 $
  citation for a direct submission
 -->
 <!ELEMENT Cit-sub (
-        Cit-sub_authors, 
-        Cit-sub_imp?, 
-        Cit-sub_medium?, 
-        Cit-sub_date?, 
+        Cit-sub_authors,
+        Cit-sub_imp?,
+        Cit-sub_medium?,
+        Cit-sub_date?,
         Cit-sub_descr?)>
 
 <!-- not necessarily authors of the paper -->
@@ -380,16 +380,16 @@ $Revision: 1.1 $
 
 <!-- NOT from ANSI, this is a catchall -->
 <!ELEMENT Cit-gen (
-        Cit-gen_cit?, 
-        Cit-gen_authors?, 
-        Cit-gen_muid?, 
-        Cit-gen_journal?, 
-        Cit-gen_volume?, 
-        Cit-gen_issue?, 
-        Cit-gen_pages?, 
-        Cit-gen_date?, 
-        Cit-gen_serial-number?, 
-        Cit-gen_title?, 
+        Cit-gen_cit?,
+        Cit-gen_authors?,
+        Cit-gen_muid?,
+        Cit-gen_journal?,
+        Cit-gen_volume?,
+        Cit-gen_issue?,
+        Cit-gen_pages?,
+        Cit-gen_date?,
+        Cit-gen_serial-number?,
+        Cit-gen_title?,
         Cit-gen_pmid?)>
 
 <!-- anything, not parsable -->
@@ -427,12 +427,12 @@ $Revision: 1.1 $
 
 <!-- Authorship Group -->
 <!ELEMENT Auth-list (
-        Auth-list_names, 
+        Auth-list_names,
         Auth-list_affil?)>
 
 <!ELEMENT Auth-list_names (
-        Auth-list_names_std | 
-        Auth-list_names_ml | 
+        Auth-list_names_std |
+        Auth-list_names_ml |
         Auth-list_names_str)>
 
 <!-- full citations -->
@@ -455,10 +455,10 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Author (
-        Author_name, 
-        Author_level?, 
-        Author_role?, 
-        Author_affil?, 
+        Author_name,
+        Author_level?,
+        Author_role?,
+        Author_affil?,
         Author_is-corr?)>
 
 <!-- Author, Primary or Secondary -->
@@ -489,22 +489,22 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Affil (
-        Affil_str | 
+        Affil_str |
         Affil_std)>
 
 <!-- unparsed string -->
 <!ELEMENT Affil_str (#PCDATA)>
 <!-- std representation -->
 <!ELEMENT Affil_std (
-        Affil_std_affil?, 
-        Affil_std_div?, 
-        Affil_std_city?, 
-        Affil_std_sub?, 
-        Affil_std_country?, 
-        Affil_std_street?, 
-        Affil_std_email?, 
-        Affil_std_fax?, 
-        Affil_std_phone?, 
+        Affil_std_affil?,
+        Affil_std_div?,
+        Affil_std_city?,
+        Affil_std_sub?,
+        Affil_std_country?,
+        Affil_std_street?,
+        Affil_std_email?,
+        Affil_std_fax?,
+        Affil_std_phone?,
         Affil_std_postal-code?)>
 
 <!-- Author Affiliation, Name -->
@@ -545,15 +545,15 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Title_E (
-        Title_E_name | 
-        Title_E_tsub | 
-        Title_E_trans | 
-        Title_E_jta | 
-        Title_E_iso-jta | 
-        Title_E_ml-jta | 
-        Title_E_coden | 
-        Title_E_issn | 
-        Title_E_abr | 
+        Title_E_name |
+        Title_E_tsub |
+        Title_E_trans |
+        Title_E_jta |
+        Title_E_iso-jta |
+        Title_E_ml-jta |
+        Title_E_coden |
+        Title_E_issn |
+        Title_E_abr |
         Title_E_isbn)>
 
 <!-- Title, Anal,Coll,Mono    AJB -->
@@ -588,19 +588,19 @@ $Revision: 1.1 $
 
 <!-- Imprint group -->
 <!ELEMENT Imprint (
-        Imprint_date, 
-        Imprint_volume?, 
-        Imprint_issue?, 
-        Imprint_pages?, 
-        Imprint_section?, 
-        Imprint_pub?, 
-        Imprint_cprt?, 
-        Imprint_part-sup?, 
-        Imprint_language?, 
-        Imprint_prepub?, 
-        Imprint_part-supi?, 
-        Imprint_retract?, 
-        Imprint_pubstatus?, 
+        Imprint_date,
+        Imprint_volume?,
+        Imprint_issue?,
+        Imprint_pages?,
+        Imprint_section?,
+        Imprint_pub?,
+        Imprint_cprt?,
+        Imprint_part-sup?,
+        Imprint_language?,
+        Imprint_prepub?,
+        Imprint_part-supi?,
+        Imprint_retract?,
+        Imprint_pubstatus?,
         Imprint_history?)>
 
 <!-- date of publication -->
@@ -653,7 +653,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT CitRetract (
-        CitRetract_type, 
+        CitRetract_type,
         CitRetract_exp?)>
 <!-- retraction of an entry -->
 <!ELEMENT CitRetract_type %ENUM;>
@@ -677,8 +677,8 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Meeting (
-        Meeting_number, 
-        Meeting_date, 
+        Meeting_number,
+        Meeting_date,
         Meeting_place?)>
 
 <!ELEMENT Meeting_number (#PCDATA)>

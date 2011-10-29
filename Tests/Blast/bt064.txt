@@ -17,8 +17,8 @@ QBlastInfoEnd
 
 <b><a href="http://www.ncbi.nlm.nih.gov/htbin-
 post/Entrez/query?uid=9254694&form=6&db=m&Dopt=r">Reference</a>:</b>
-Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 <p>
@@ -69,12 +69,12 @@ Sequences producing significant alignments:                        (bits)  Value
  Identities = 68/83 (81%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 249 tacttgttgatattggatcgaacaaactggagaaccaacatgctcacgtcacttttagtc 308
-           ||||||||| | ||||||||||| || ||||  || || |||||||| |||||| |  | 
+           ||||||||| | ||||||||||| || ||||  || || |||||||| |||||| |  |
 Sbjct: 237 tacttgttggtgttggatcgaaccaattggaagacgaatatgctcacatcacttctcatt 296
 
-                                  
+
 Query: 309 ccttacatattcctcagtcttcc 331
            |||||||| ||| ||||||||||
 Sbjct: 297 ccttacatcttcttcagtcttcc 319
@@ -90,12 +90,12 @@ Sbjct: 297 ccttacatcttcttcagtcttcc 319
  Identities = 68/83 (81%)
  Strand = Plus / Plus
 
-                                                                         
+
 Query: 249   tacttgttgatattggatcgaacaaactggagaaccaacatgctcacgtcacttttagtc 308
-             ||||||||| | ||||||||||| || ||||  || || |||||||| |||||| |  | 
+             ||||||||| | ||||||||||| || ||||  || || |||||||| |||||| |  |
 Sbjct: 85104 tacttgttggtgttggatcgaaccaattggaagacgaatatgctcacatcacttctcatt 85163
 
-                                    
+
 Query: 309   ccttacatattcctcagtcttcc 331
              |||||||| ||| ||||||||||
 Sbjct: 85164 ccttacatcttcttcagtcttcc 85186
@@ -111,12 +111,12 @@ Sbjct: 85164 ccttacatcttcttcagtcttcc 85186
  Identities = 68/83 (81%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 249 tacttgttgatattggatcgaacaaactggagaaccaacatgctcacgtcacttttagtc 308
-           ||||||||| | ||||||||||| || ||||  || || |||||||| |||||| |  | 
+           ||||||||| | ||||||||||| || ||||  || || |||||||| |||||| |  |
 Sbjct: 244 tacttgttggtgttggatcgaaccaattggaagacgaatatgctcacatcacttctcatt 303
 
-                                  
+
 Query: 309 ccttacatattcctcagtcttcc 331
            |||||||| ||| ||||||||||
 Sbjct: 304 ccttacatcttcttcagtcttcc 326
@@ -131,7 +131,7 @@ Sbjct: 304 ccttacatcttcttcagtcttcc 326
  Identities = 31/34 (91%)
  Strand = Plus / Minus
 
-                                               
+
 Query: 253   tgttgatattggatcgaacaaactggagaaccaa 286
              |||||||||||||||| || ||||||| ||||||
 Sbjct: 52308 tgttgatattggatcgtaccaactggaaaaccaa 52275
@@ -146,7 +146,7 @@ Sbjct: 52308 tgttgatattggatcgtaccaactggaaaaccaa 52275
  Identities = 31/34 (91%)
  Strand = Plus / Plus
 
-                                              
+
 Query: 253  tgttgatattggatcgaacaaactggagaaccaa 286
             |||||||||||||||| || ||||||| ||||||
 Sbjct: 9146 tgttgatattggatcgtaccaactggaaaaccaa 9179
@@ -162,7 +162,7 @@ Sbjct: 9146 tgttgatattggatcgtaccaactggaaaaccaa 9179
  Identities = 33/37 (89%)
  Strand = Plus / Plus
 
-                                                
+
 Query: 256 tgatattggatcgaacaaactggagaaccaacatgct 292
            ||||||||||| | ||||||||||  |||||||||||
 Sbjct: 316 tgatattggataggacaaactggaagaccaacatgct 352
@@ -178,7 +178,7 @@ Sbjct: 316 tgatattggataggacaaactggaagaccaacatgct 352
  Identities = 21/21 (100%)
  Strand = Plus / Minus
 
-                                 
+
 Query: 61   agaaaatggggagagaaatga 81
             |||||||||||||||||||||
 Sbjct: 9450 agaaaatggggagagaaatga 9430
@@ -193,7 +193,7 @@ Sbjct: 9450 agaaaatggggagagaaatga 9430
  Identities = 20/20 (100%)
  Strand = Plus / Plus
 
-                                 
+
 Query: 207   ggcactcatttcctcaaatg 226
              ||||||||||||||||||||
 Sbjct: 33167 ggcactcatttcctcaaatg 33186
@@ -209,7 +209,7 @@ Sbjct: 33167 ggcactcatttcctcaaatg 33186
  Identities = 20/20 (100%)
  Strand = Plus / Plus
 
-                                 
+
 Query: 156   gcaacaatgaggctcatcaa 175
              ||||||||||||||||||||
 Sbjct: 20459 gcaacaatgaggctcatcaa 20478
@@ -225,7 +225,7 @@ Sbjct: 20459 gcaacaatgaggctcatcaa 20478
  Identities = 47/56 (83%)
  Strand = Plus / Plus
 
-                                                                   
+
 Query: 246 atttacttgttgatattggatcgaacaaactggagaaccaacatgctcacgtcact 301
            ||||||||||| || |||||||| || || |||| |||||| ||||| || |||||
 Sbjct: 212 atttacttgttaattttggatcgtaccaattggaaaaccaagatgcttacatcact 267
@@ -241,7 +241,7 @@ Sbjct: 212 atttacttgttaattttggatcgtaccaattggaaaaccaagatgcttacatcact 267
  Identities = 20/20 (100%)
  Strand = Plus / Plus
 
-                                
+
 Query: 156  gcaacaatgaggctcatcaa 175
             ||||||||||||||||||||
 Sbjct: 8902 gcaacaatgaggctcatcaa 8921
@@ -257,7 +257,7 @@ Sbjct: 8902 gcaacaatgaggctcatcaa 8921
  Identities = 23/24 (95%)
  Strand = Plus / Plus
 
-                                   
+
 Query: 462 ctggtggtggcaccagacttcttt 485
            |||| |||||||||||||||||||
 Sbjct: 640 ctggaggtggcaccagacttcttt 663
@@ -273,7 +273,7 @@ Sbjct: 640 ctggaggtggcaccagacttcttt 663
  Identities = 23/24 (95%)
  Strand = Plus / Plus
 
-                                   
+
 Query: 462 ctggtggtggcaccagacttcttt 485
            |||| |||||||||||||||||||
 Sbjct: 640 ctggaggtggcaccagacttcttt 663
@@ -289,7 +289,7 @@ Sbjct: 640 ctggaggtggcaccagacttcttt 663
  Identities = 23/24 (95%)
  Strand = Plus / Plus
 
-                                   
+
 Query: 462 ctggtggtggcaccagacttcttt 485
            |||| |||||||||||||||||||
 Sbjct: 640 ctggaggtggcaccagacttcttt 663
@@ -305,7 +305,7 @@ Sbjct: 640 ctggaggtggcaccagacttcttt 663
  Identities = 23/24 (95%)
  Strand = Plus / Plus
 
-                                   
+
 Query: 462 ctggtggtggcaccagacttcttt 485
            |||| |||||||||||||||||||
 Sbjct: 640 ctggaggtggcaccagacttcttt 663
@@ -318,13 +318,13 @@ Sbjct: 640 ctggaggtggcaccagacttcttt 663
     Posted date:  Mar 17, 2001  1:49 AM
   Number of letters in database: 2,928,690,202
   Number of sequences in database:  816,659
-  
+
 Lambda     K      H
-    1.37    0.711     1.31 
+    1.37    0.711     1.31
 
 Gapped
 Lambda     K      H
-    1.37    0.711     1.31 
+    1.37    0.711     1.31
 
 
 Matrix: blastn matrix:1 -3

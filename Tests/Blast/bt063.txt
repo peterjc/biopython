@@ -1,12 +1,12 @@
 BLASTP 2.0.14 [Jun-29-2000]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
-Query= aseq 
+Query= aseq
          (82 letters)
 
 Database: SWISS_PROT
@@ -212,17 +212,17 @@ Sbjct: 440 VHWPKFAVPNLQTLANLLSTNLQWLSLDVSAAFYHIPVSPAAV 482
     Posted date:  Jun 21, 2000 12:39 PM
   Number of letters in database: 31,411,157
   Number of sequences in database:  86,593
-  
+
   Database: /dbase/swissprot/main/update/spu
     Posted date:  Jul 30, 2000 11:00 PM
   Number of letters in database: 342,601
   Number of sequences in database:  811
-  
-Lambda     K      H
-   0.318    0.132    0.422 
 
 Lambda     K      H
-   0.270   0.0464    0.230 
+   0.318    0.132    0.422
+
+Lambda     K      H
+   0.270   0.0464    0.230
 
 
 Matrix: BLOSUM62

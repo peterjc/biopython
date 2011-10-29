@@ -9,7 +9,7 @@ for further details, http://www.biopython.org/
 
 
 **Biopython README file**
- 
+
 	"The Biopython Project":http://www.biopython.org/ is an international
 association of developers of freely available Python tools for computational
 molecular biology.
@@ -42,7 +42,7 @@ sudo python setup.py install
 **System Requirements**
 
 o "Python 2.4, 2.5 or 2.6":http://www.python.org/
-  
+
 o "NumPy":http://numpy.scipy.org/ (optional, but strongly recommended)
   This package is only used in the computationally-oriented modules.
   It is required for Bio.Cluster, Bio.PDB and a few other modules.  If you
@@ -103,7 +103,7 @@ the required dependency and re-run the tests.
 
 While we try to ship a robust package, bugs inevitably pop up.  If you
 are having problems that might be caused by a bug in Biopython, it is
-possible that it has already been identified.  Search the 
+possible that it has already been identified.  Search the
 "bug database":http://bugzilla.open-bio.org/ and mailing lists
 to see if it has already been reported (and hopefully fixed).
 
@@ -132,7 +132,7 @@ types of backgrounds. We are always looking for people interested in
 helping with code development, web-site management, documentation
 writing, technical administration, and whatever else comes up.
 
-If you wish to contribute, please visit the 
+If you wish to contribute, please visit the
 "web site":http://www.biopython.org
 and join our "mailing list":http://biopython.org/wiki/Mailing_lists
 

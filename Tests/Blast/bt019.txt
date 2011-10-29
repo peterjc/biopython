@@ -10,8 +10,8 @@
 
 <b><a href="http://www.ncbi.nlm.nih.gov/htbin-
 post/Entrez/query?uid=9254694&form=6&db=m&Dopt=r">Reference</a>:</b>
-Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 <p>
@@ -47,7 +47,7 @@ Sequences producing significant alignments:                        (bits)  Value
 <PRE>
 <a name = 120291> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=00120291&dopt=GenPept">sp|P21297|FLBT_CAUCR</a> FLBT PROTEIN
            Length = 141
-           
+
  Score =  256 bits (646), Expect = 2e-68
  Identities = 127/127 (100%), Positives = 127/127 (100%)
 
@@ -68,7 +68,7 @@ Sbjct: 121 EYEDERL 127
 <PRE>
 <a name = 3024946> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=03024946&dopt=GenPept">sp|Q58368|Y958_METJA</a> HYPOTHETICAL PROTEIN MJ0958 PRECURSOR
            Length = 426
-           
+
  Score = 29.3 bits (64), Expect = 3.4
  Identities = 15/47 (31%), Positives = 23/47 (48%)
 
@@ -84,13 +84,13 @@ Sbjct: 169 ILVLINNTNITELKKFEDDDYYTTFQHYIYQPIFIFTTYDSKAKKFY 215
     Posted date:  Dec 16, 1999  7:53 PM
   Number of letters in database: 29,652,561
   Number of sequences in database:  82,258
-  
+
 Lambda     K      H
-   0.323    0.139    0.392 
+   0.323    0.139    0.392
 
 Gapped
 Lambda     K      H
-   0.270   0.0470    0.230 
+   0.270   0.0470    0.230
 
 
 Matrix: BLOSUM62

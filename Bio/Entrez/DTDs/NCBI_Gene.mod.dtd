@@ -32,13 +32,13 @@
 *
 -->
 <!ELEMENT Gene-ref (
-        Gene-ref_locus?, 
-        Gene-ref_allele?, 
-        Gene-ref_desc?, 
-        Gene-ref_maploc?, 
-        Gene-ref_pseudo?, 
-        Gene-ref_db?, 
-        Gene-ref_syn?, 
+        Gene-ref_locus?,
+        Gene-ref_allele?,
+        Gene-ref_desc?,
+        Gene-ref_maploc?,
+        Gene-ref_pseudo?,
+        Gene-ref_db?,
+        Gene-ref_syn?,
         Gene-ref_locus-tag?)>
 
 <!-- Official gene symbol -->

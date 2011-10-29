@@ -364,7 +364,7 @@ DS CHROMAT_FILE: K26-766c PHD_FILE: K26-766c.phd.1 TIME: Thu Sep 12 15:42:35 199
 
 WA{
 phrap_params phrap 990621:161947
-/usr/local/genome/bin/phrap standard.fasta.screen -new_ace -view 
+/usr/local/genome/bin/phrap standard.fasta.screen -new_ace -view
 phrap version 0.990319
 }
 

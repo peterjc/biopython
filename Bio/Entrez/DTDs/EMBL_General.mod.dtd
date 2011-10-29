@@ -37,7 +37,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT EMBL-dbname (
-        EMBL-dbname_code | 
+        EMBL-dbname_code |
         EMBL-dbname_name)>
 
 <!ELEMENT EMBL-dbname_code %ENUM;>
@@ -67,7 +67,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT EMBL-xref (
-        EMBL-xref_dbname, 
+        EMBL-xref_dbname,
         EMBL-xref_id)>
 
 <!ELEMENT EMBL-xref_dbname (EMBL-dbname)>
@@ -76,12 +76,12 @@ $Revision: 1.1 $
 
 
 <!ELEMENT EMBL-block (
-        EMBL-block_class?, 
-        EMBL-block_div?, 
-        EMBL-block_creation-date, 
-        EMBL-block_update-date, 
-        EMBL-block_extra-acc?, 
-        EMBL-block_keywords?, 
+        EMBL-block_class?,
+        EMBL-block_div?,
+        EMBL-block_creation-date,
+        EMBL-block_update-date,
+        EMBL-block_extra-acc?,
+        EMBL-block_keywords?,
         EMBL-block_xref?)>
 
 <!ELEMENT EMBL-block_class %ENUM;>

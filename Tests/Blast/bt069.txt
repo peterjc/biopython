@@ -1,15 +1,15 @@
 BLASTP 2.2.2 [Jan-08-2002]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
 Query= gi|29294651|ref|NP_803187.1| dicer1 [Homo sapiens]
          (1922 letters)
 
-Database: NC_000964 
+Database: NC_000964
            4105 sequences; 1,221,421 total letters
 
 Searching.........done
@@ -41,11 +41,11 @@ gi|16080045|ref|NP_390871.1| pullulanase [Bacillus subtilis subs...    27  8.8
  Identities = 53/176 (30%), Positives = 83/176 (47%), Gaps = 36/176 (20%)
 
 Query: 1663 ISGFENFEKKINYRFKNKAYLLQAFTHASY---HYNTITDCYQRLEFLGDAILDYLITKH 1719
-            +  F+ F+++I+  F+N+  L QAFTH+SY   H     +  +RLEFLGDA+L+  I++ 
+            +  F+ F+++I+  F+N+  L QAFTH+SY   H     +  +RLEFLGDA+L+  I++
 Sbjct: 17   VEQFKEFQERISVHFQNEKLLYQAFTHSSYVNEHRKKPYEDNERLEFLGDAVLELTISRF 76
 
 Query: 1720 LYEDPRQHSPGVLTDLRSALVNNTIFASLAVKYDYHKYFKAVSPELFHVIDDFVQFQLEK 1779
-            L+      S G LT LR+A+V      SLA +  +                D V    + 
+            L+      S G LT LR+A+V      SLA +  +                D V    +
 Sbjct: 77   LFAKYPAMSEGDLTKLRAAIVCEPSLVSLAHELSF---------------GDLVLLG-KG 120
 
 Query: 1780 NEMQGMXXXXXXXXXXXXXXXXXXVPKAMGDIFESLAGAIYMDSGMS-LETVWQVY 1834
@@ -70,7 +70,7 @@ Sbjct: 59   ERLEFLGDAVLELTISRFLFAKYPAMSEGDLTKLRAAIVCEPSLVSL 105
  Identities = 28/82 (34%), Positives = 41/82 (49%), Gaps = 1/82 (1%)
 
 Query: 503 EVLRKFRAHETNLLIATSIVEEGVDIPKCNLVVRFDLPTEYRSYVQSKGR-ARAPISNYI 561
-           +V+ +F+  E   L+AT +   G+DI   +LV+ +DLP E  SYV   GR  RA      
+           +V+ +F+  E   L+AT +   G+DI   +LV+ +DLP E  SYV   GR  RA
 Sbjct: 281 DVMNEFKRGEYRYLVATDVAARGIDIENISLVINYDLPLEKESYVHRTGRTGRAGNKGKA 340
 
 Query: 562 MLADTDKIKSFEEDLKTYKAIE 583
@@ -118,7 +118,7 @@ Sbjct: 356 GMAMTFITPREKSM------LRAIEQTTKRKMDR 383
  Identities = 25/81 (30%), Positives = 42/81 (50%), Gaps = 5/81 (6%)
 
 Query: 499 RKQEEVLRKFRAHETNLLIATSIVEEGVDIPKCNLVVRFDLPTEYRSYVQSKGR-ARAPI 557
-           R++++V+++    E   +IAT +   G+DI   + V+ ++LP +   YV   GR ARA  
+           R++++V+++    E   +IAT +   G+DI   + V+ ++LP +   YV   GR ARA
 Sbjct: 282 RERKKVMKQINDLEFTYIIATDLAARGIDIKGVSHVINYELPDDLDFYVHRVGRTARAGS 341
 
 Query: 558 SNYIM----LADTDKIKSFEE 574
@@ -146,7 +146,7 @@ Sbjct: 874 ETVMLSFLEGESDVLVSTTIIETGVDIPNVNTLIVFD 910
  Identities = 24/69 (34%), Positives = 38/69 (54%), Gaps = 6/69 (8%)
 
 Query: 503 EVLRKFRAHETNLLIATSIVEEGVDIPKCNLVVRFDLPTE-----YRSYVQSKGR-ARAP 556
-           E++R  R  + ++L+  +++ EG+DIP+ +LV   D   E      RS +Q+ GR AR  
+           E++R  R  + ++L+  +++ EG+DIP+ +LV   D   E      RS +Q+ GR AR
 Sbjct: 486 EIIRDLRLGKYDVLVGINLLREGLDIPEVSLVAILDADKEGFLRSERSLIQTIGRAARNA 545
 
 Query: 557 ISNYIMLAD 565
@@ -226,7 +226,7 @@ Sbjct: 271 IQQQFIHNQLDVICCTNAFGMGVDKPDIRYVIHFHLPQTAEAFMQEIGRA 320
  Identities = 22/76 (28%), Positives = 38/76 (49%), Gaps = 2/76 (2%)
 
 Query: 499 RKQEEVLRKFRAHETNLLIATSIVEEGVDIPKCNLVVRFDLPTEYRSYVQSKGRA--RAP 556
-           +++ E+ R  R  +   +++T+ +E GVDI +  + V    P    S  Q  GRA  R  
+           +++ E+ R  R  +   +++T+ +E GVDI +  + V    P    S  Q  GRA  R
 Sbjct: 331 KERREIERGLREGDILGVVSTNALELGVDIGQLQVCVMTGYPGSVASAWQQAGRAGRRHG 390
 
 Query: 557 ISNYIMLADTDKIKSF 572
@@ -242,7 +242,7 @@ Sbjct: 391 ESLIIMVANSTPIDQY 406
  Identities = 26/116 (22%), Positives = 47/116 (40%), Gaps = 20/116 (17%)
 
 Query: 491 NKQMEAEFRKQEEVLRK-------FRAHETNLLIATSIVEEGVDIPKCNLVVRFDLPTEY 543
-           NK M+ E  ++ +VL K       F   + + L+    ++EG  I               
+           NK M+ E  ++ +VL K       F   + + L+    ++EG  I
 Sbjct: 37  NKMMQIEDMEKHDVLNKNLMDVFMFSKQQDSTLVQA--LQEGKTIKNVK----------- 83
 
 Query: 544 RSYVQSKGRARAPISNYIMLADTDKIKSFEEDLKTYKAIEKILRNKCSKSVDTGET 599
@@ -266,13 +266,13 @@ Sbjct: 361  DECGMPSNGTGVGNDIASERRMARKFIADCV 391
     Posted date:  Jun 21, 2009 11:38 AM
   Number of letters in database: 1,221,421
   Number of sequences in database:  4105
-  
+
 Lambda     K      H
-   0.319    0.136    0.407 
+   0.319    0.136    0.407
 
 Gapped
 Lambda     K      H
-   0.267   0.0410    0.140 
+   0.267   0.0410    0.140
 
 
 Matrix: BLOSUM62
@@ -303,8 +303,8 @@ S2: 59 (27.3 bits)
 BLASTP 2.2.2 [Jan-08-2002]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -312,7 +312,7 @@ Query= gi|155030234|ref|NP_037367.3| ribonuclease III, nuclear isoform
 1 [Homo sapiens]
          (1374 letters)
 
-Database: NC_000964 
+Database: NC_000964
            4105 sequences; 1,221,421 total letters
 
 Searching.........done
@@ -345,7 +345,7 @@ Query: 1162 LFIHFPDHHEGHLTLLRSSLVNNRTQAKVAEELGMQEYAITNDKTKRPVA-LRTKTLADL 1220
 Sbjct: 77   LFAKYPAMSEGDLTKLRAAIVCEPSLVSLAHELSFGDLVLLGKGEEMTGGRKRPALLADV 136
 
 Query: 1221 LESFIAALYIDKDLEYVHTFMNVCFFPRLKEFILNQDWNDPKSQLQQCCLTLRTEGKEPD 1280
-             E+FI ALY+D+ LE V +F+ V  FP++ +   +    D KSQLQ+    ++ +GK   
+             E+FI ALY+D+ LE V +F+ V  FP++ +   +    D KSQLQ+    ++ +GK
 Sbjct: 137  FEAFIGALYLDQGLEPVESFLKVYVFPKINDGAFSHVM-DFKSQLQE---YVQRDGK--G 190
 
 Query: 1281 IPLYKTLQTVGPSHARTYTVAVYFKGERIGCGKGPSIQQAEMGAAMDALEK 1331
@@ -358,7 +358,7 @@ Sbjct: 191  SLEYKISNEKGPAHNREFEAIVSLKGEPLGVGNGRSKKEAEQHAAQEALAK 241
  Identities = 40/105 (38%), Positives = 55/105 (52%)
 
 Query: 965  NERLEFLGDAVVEFLTSVHLYYLFPSLEEGGLATYRTAIVQNQHLAMLAKKLELDRFMLY 1024
-            NERLEFLGDAV+E   S  L+  +P++ EG L   R AIV    L  LA +L     +L 
+            NERLEFLGDAV+E   S  L+  +P++ EG L   R AIV    L  LA +L     +L
 Sbjct: 58   NERLEFLGDAVLELTISRFLFAKYPAMSEGDLTKLRAAIVCEPSLVSLAHELSFGDLVLL 117
 
 Query: 1025 AHGPDLCRESDLRHAMANCFEALIGAVYLEGSLEEAKQLFGRLLF 1069
@@ -374,7 +374,7 @@ Sbjct: 118  GKGEEMTGGRKRPALLADVFEAFIGALYLDQGLEPVESFLKVYVF 162
  Identities = 21/74 (28%), Positives = 37/74 (49%), Gaps = 8/74 (10%)
 
 Query: 1188 AKVAEELGMQEYAITNDKTKRPVALRTKTLADLLESFIAALYIDKDL-EYVHTFMNVCFF 1246
-            ++V+  LGM E AI    T+ P+A   K   D +++      ++ DL E++HT + +   
+            ++V+  LGM E AI    T+ P+A   K   D +++      ++ DL E++HT + +
 Sbjct: 3375 SRVSRFLGMTEPAIPEPATQAPLAQENK---DEVKTLSIEKRLEHDLKEHIHTLLKI--- 3428
 
 Query: 1247 PRLKEFILNQDWND 1260
@@ -390,7 +390,7 @@ Sbjct: 3429 -SKDRLNLNKNWAD 3441
  Identities = 20/77 (25%), Positives = 38/77 (48%), Gaps = 14/77 (18%)
 
 Query: 787 DPQYQKLWKSYVKLRHLLANSPKVKQTDKQKLAQREE-------------ALQKIRQKNT 833
-           + +YQ L K   +L+ +LAN  KV +  +++L + +E              L+ I  ++ 
+           + +YQ L K   +L+ +LAN  KV +  +++L + +E              L+ I  ++
 Sbjct: 441 EEEYQSLVKLIAELKDILANEYKVLEIIREELTEIKERFNDERRTEIVTSGLETIEDEDL 500
 
 Query: 834 MRRE-VTVELSSQGFWK 849
@@ -467,13 +467,13 @@ Sbjct: 278 GFDDALIMREQYKKRLDYVYDRLVSMGLDVVKPSGAFYIFPSIKSFGMTSF 328
     Posted date:  Jun 21, 2009 11:38 AM
   Number of letters in database: 1,221,421
   Number of sequences in database:  4105
-  
+
 Lambda     K      H
-   0.321    0.137    0.424 
+   0.321    0.137    0.424
 
 Gapped
 Lambda     K      H
-   0.267   0.0410    0.140 
+   0.267   0.0410    0.140
 
 
 Matrix: BLOSUM62

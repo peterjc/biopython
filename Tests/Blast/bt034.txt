@@ -10,8 +10,8 @@
 
 <b><a href="http://www.ncbi.nlm.nih.gov/htbin-
 post/Entrez/query?uid=9254694&form=6&db=m&Dopt=r">Reference</a>:</b>
-Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 <p>
@@ -57,11 +57,11 @@ Sbjct: 458 DLQLLIKAVNLFPAGRNSRWDVIANYMNIHSSSGVKRTAKDVISEVR 504
 
 <PRE>
 Query: 34  FPAGTNSRWEVIANYMNIHSSSGVKRTAKDVIGKAKSLQKLDPHQKDDINKKAFDKFKKE 213
-           +PAGT +RWE +   +N        R+A+DVI  A  ++++   +++D  K      ++ 
+           +PAGT +RWE +   +N        R+A+DVI  A  ++++   +++D  K      ++
 Sbjct: 159 YPAGTPNRWEQMGRVLN--------RSAEDVIAMAGKMKQM---KQEDYTKLLMTTIQQS 207
 
 Query: 214 HGVVPQADNATPSERFXGPYTDFTPXTTEXQKLXEQALNTYPVNTXERWXXIAVAVPGRX 393
-             V  ++++                 +   QK  E AL  YP  T ERW  I+  +  + 
+             V  ++++                 +   QK  E AL  YP  T ERW  I+  +  +
 Sbjct: 208 VPVEEKSED---------------DWSQAEQKAFETALQKYPKGTDERWERISEEIGSKT 252
 
 Query: 394 KE 399
@@ -86,7 +86,7 @@ Sbjct: 332 DLSQLTRSMVKFPGGTPGRWDKIAHELG--------RSVTDVTTKAKELK 373
 
 <PRE>
 Query: 52  SRWEVIANYMNIHSSSGVKRTAKDVIGKAKSLQKLDPHQKDDINKKAFDKFKKEHGVVPQ 231
-           +RW+   +Y        V R+ KDV   ++SL  LD +QK     +A       H +   
+           +RW+   +Y        V R+ KDV   ++SL  LD +QK     +A       H +
 Sbjct: 75  NRWKSFISY--------VTRSRKDVKTVSRSLSNLDLYQKCSKEIRADQDISLLHSI--- 123
 
 Query: 232 ADNATPSERFXGPYTDFTPXTTEXQKLXEQALNTYPVNT 348
@@ -101,13 +101,13 @@ Sbjct: 124 -------ETKLFPYINFTALNS------EQSHNFWPVHT 149
     Posted date:  Dec 18, 1999  8:26 PM
   Number of letters in database: 29,652,561
   Number of sequences in database:  82,258
-  
+
 Lambda     K      H
-   0.318    0.135    0.401 
+   0.318    0.135    0.401
 
 Gapped
 Lambda     K      H
-   0.270   0.0470    0.230 
+   0.270   0.0470    0.230
 
 
 Matrix: BLOSUM62

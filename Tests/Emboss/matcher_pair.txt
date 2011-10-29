@@ -26,7 +26,7 @@
 # Similarity:    88/145 (60.7%)
 # Gaps:           8/145 ( 5.5%)
 # Score: 264
-# 
+#
 #
 #=======================================
 
@@ -57,7 +57,7 @@ HBB_HUMAN        102 ENFRLLGNVLVCVLAHHFGKEFTPPVQAAYQKVVAGVANALAHKY    146
 # Similarity:     9/13 (69.2%)
 # Gaps:           0/13 ( 0.0%)
 # Score: 32
-# 
+#
 #
 #=======================================
 
@@ -80,7 +80,7 @@ HBB_HUMAN        132 QKVVAGVANALAH    144
 # Similarity:    10/18 (55.6%)
 # Gaps:           0/18 ( 0.0%)
 # Score: 28
-# 
+#
 #
 #=======================================
 
@@ -103,7 +103,7 @@ HBB_HUMAN         18 KVNVDEVGGEALGRLLVV     35
 # Similarity:     6/10 (60.0%)
 # Gaps:           0/10 ( 0.0%)
 # Score: 23
-# 
+#
 #
 #=======================================
 
@@ -126,7 +126,7 @@ HBB_HUMAN         69 LGAFSDGLAH     78
 # Similarity:     8/10 (80.0%)
 # Gaps:           0/10 ( 0.0%)
 # Score: 23
-# 
+#
 #
 #=======================================
 

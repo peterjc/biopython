@@ -15,7 +15,7 @@
 
 /************************************** Exported Functions ***********/
 
-static char clistfns_count__doc__[] = 
+static char clistfns_count__doc__[] =
 "count(items) -> dict of counts of each item\n\
 \n\
 Count the number of times each item appears in a list of data.\n\
@@ -38,7 +38,7 @@ static PyObject *clistfns_count(PyObject *self, PyObject *args)
 
     if(!(counts = PyDict_New()))
 	return NULL;
-    
+
     /* Go through the loop, counting how often each item appears. */
     i = 0;
     while(1) {
@@ -58,17 +58,17 @@ static PyObject *clistfns_count(PyObject *self, PyObject *args)
 	PyDict_SetItem(counts, item, newcount);
 	Py_DECREF(newcount);
 	Py_DECREF(item);
-	if(PyErr_Occurred()) 
+	if(PyErr_Occurred())
 	    return NULL;
 
 	i++;
     }
-    
+
     return counts;
 }
 
 
-static char clistfns_contents__doc__[] = 
+static char clistfns_contents__doc__[] =
 "contents(items) -> dict of item -> percentage\n\
 \n\
 Summarize the contents of the list in terms of the percentages of each\n\
@@ -96,7 +96,7 @@ static PyObject *clistfns_contents(PyObject *self, PyObject *args)
 	PyErr_SetString(PyExc_ValueError, "I couldn't get length of item.");
 	return NULL;
     }
-    
+
     counts = clistfns_count(self, args);
     if(!counts || PyErr_Occurred())
 	return NULL;
@@ -136,7 +136,7 @@ static PyObject *clistfns_contents(PyObject *self, PyObject *args)
     }
     Py_DECREF(countitems);
     Py_DECREF(counts);
-    
+
     return percentages;
 }
 

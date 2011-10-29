@@ -72,11 +72,11 @@ DISEASE     MIM: 103700  Alcohol dehydrogenase (class I), alpha polypeptide
             MIM: 103730  Alcohol dehydrogenase (class I), gamma polypeptide
             MIM: 103740  Alcohol dehydrogenase (class II), pi polypeptide
             MIM: 600086  Alcohol dehydrogenase-7
-STRUCTURES  PDB: 1A4U  1A71  1A72  1ADB  1ADC  1ADF  1ADG  1AGN  1AXE  1AXG  
-                 1B14  1B15  1B16  1B2L  1BTO  1CDO  1D1S  1D1T  1DDA  1DEH  
-                 1E3E  1E3I  1E3L  1EE2  1HDX  1HDY  1HDZ  1HET  1HEU  1HF3  
-                 1HLD  1HSO  1HSZ  1HT0  1HTB  1LDE  1LDY  1QLH  1QLJ  1TEH  
-                 2OHX  2OXI  3BTO  3HUD  5ADH  6ADH  7ADH  
+STRUCTURES  PDB: 1A4U  1A71  1A72  1ADB  1ADC  1ADF  1ADG  1AGN  1AXE  1AXG
+                 1B14  1B15  1B16  1B2L  1BTO  1CDO  1D1S  1D1T  1DDA  1DEH
+                 1E3E  1E3I  1E3L  1EE2  1HDX  1HDY  1HDZ  1HET  1HEU  1HF3
+                 1HLD  1HSO  1HSZ  1HT0  1HTB  1LDE  1LDY  1QLH  1QLJ  1TEH
+                 2OHX  2OXI  3BTO  3HUD  5ADH  6ADH  7ADH
 DBLINKS     IUBMB Enzyme Nomenclature: 1.1.1.1
             ExPASy - ENZYME nomenclature database: 1.1.1.1
             WIT (What Is There) Metabolic Reconstruction: 1.1.1.1
@@ -108,8 +108,8 @@ GENES       CEL: F11A5.12
                  3296(HSD17BP1) 51478(HSD17B7)
 DISEASE     MIM: 109685  Hydroxysteroid (17-beta) dehydrogenase 2
             MIM: 264300  Hydroxysteroid (17-beta) dehydrogenase 3
-STRUCTURES  PDB: 1FDT  1FDS  1FDV  1FDW  1IOL  3DHE  1EQU  1DHT  1BHS  1A27  
-                 1FDU  
+STRUCTURES  PDB: 1FDT  1FDS  1FDV  1FDW  1IOL  3DHE  1EQU  1DHT  1BHS  1A27
+                 1FDU
 DBLINKS     IUBMB Enzyme Nomenclature: 1.1.1.62
             ExPASy - ENZYME nomenclature database: 1.1.1.62
             WIT (What Is There) Metabolic Reconstruction: 1.1.1.62
@@ -339,7 +339,7 @@ SUBSTRATE   Acetic ester
 PRODUCT     Alcohol
             Acetate
 GENES       MMU: 95428(Es17)
-STRUCTURES  PDB: 1BS9  1G66  2AXE  
+STRUCTURES  PDB: 1BS9  1G66  2AXE
 DBLINKS     IUBMB Enzyme Nomenclature: 3.1.1.6
             ExPASy - ENZYME nomenclature database: 3.1.1.6
             WIT (What Is There) Metabolic Reconstruction: 3.1.1.6
@@ -372,5 +372,5 @@ GENES       ECO: ECOLI_2245(ackA)
             SYN: sll1299(ackA)
 DBLINKS     University of Geneva ENZYME DATA BANK: 2.7.2.1
             WIT (What Is There) Metabolic Reconstruction: 2.7.2.1
-            PIR: B49338  B49935  E64239  KIECAA  
+            PIR: B49338  B49935  E64239  KIECAA
 ///

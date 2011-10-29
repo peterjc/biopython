@@ -12,7 +12,7 @@
 
 /* Functions in this module. */
 
-static char cMarkovModel__logadd__doc__[] = 
+static char cMarkovModel__logadd__doc__[] =
 "_logadd(logx, logy) -> log(x+y)\n";
 
 static PyObject *cMarkovModel__logadd(PyObject *self, PyObject *args)
@@ -39,7 +39,7 @@ static PyObject *cMarkovModel__logadd(PyObject *self, PyObject *args)
     sum = minxy + log(exp(logx-minxy) + exp(logy-minxy));
     return PyFloat_FromDouble(sum);
 }
-	
+
 
 /* Module definition stuff */
 

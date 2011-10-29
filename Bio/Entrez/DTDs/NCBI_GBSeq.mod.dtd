@@ -95,35 +95,35 @@ $Revision: 1.1 $
 ********
 -->
 <!ELEMENT GBSeq (
-        GBSeq_locus, 
-        GBSeq_length, 
-        GBSeq_strandedness?, 
-        GBSeq_moltype, 
-        GBSeq_topology?, 
-        GBSeq_division, 
-        GBSeq_update-date, 
-        GBSeq_create-date?, 
-        GBSeq_update-release?, 
-        GBSeq_create-release?, 
-        GBSeq_definition, 
-        GBSeq_primary-accession?, 
-        GBSeq_entry-version?, 
-        GBSeq_accession-version?, 
-        GBSeq_other-seqids?, 
-        GBSeq_secondary-accessions?, 
-        GBSeq_project?, 
-        GBSeq_keywords?, 
-        GBSeq_segment?, 
-        GBSeq_source?, 
-        GBSeq_organism?, 
-        GBSeq_taxonomy?, 
-        GBSeq_references?, 
-        GBSeq_comment?, 
-        GBSeq_primary?, 
-        GBSeq_source-db?, 
-        GBSeq_database-reference?, 
-        GBSeq_feature-table?, 
-        GBSeq_sequence?, 
+        GBSeq_locus,
+        GBSeq_length,
+        GBSeq_strandedness?,
+        GBSeq_moltype,
+        GBSeq_topology?,
+        GBSeq_division,
+        GBSeq_update-date,
+        GBSeq_create-date?,
+        GBSeq_update-release?,
+        GBSeq_create-release?,
+        GBSeq_definition,
+        GBSeq_primary-accession?,
+        GBSeq_entry-version?,
+        GBSeq_accession-version?,
+        GBSeq_other-seqids?,
+        GBSeq_secondary-accessions?,
+        GBSeq_project?,
+        GBSeq_keywords?,
+        GBSeq_segment?,
+        GBSeq_source?,
+        GBSeq_organism?,
+        GBSeq_taxonomy?,
+        GBSeq_references?,
+        GBSeq_comment?,
+        GBSeq_primary?,
+        GBSeq_source-db?,
+        GBSeq_database-reference?,
+        GBSeq_feature-table?,
+        GBSeq_sequence?,
         GBSeq_contig?)>
 
 <!ELEMENT GBSeq_locus (#PCDATA)>
@@ -198,14 +198,14 @@ $Revision: 1.1 $
 
 
 <!ELEMENT GBReference (
-        GBReference_reference, 
-        GBReference_position?, 
-        GBReference_authors?, 
-        GBReference_consortium?, 
-        GBReference_title?, 
-        GBReference_journal, 
-        GBReference_xref?, 
-        GBReference_pubmed?, 
+        GBReference_reference,
+        GBReference_position?,
+        GBReference_authors?,
+        GBReference_consortium?,
+        GBReference_title?,
+        GBReference_journal,
+        GBReference_xref?,
+        GBReference_pubmed?,
         GBReference_remark?)>
 
 <!ELEMENT GBReference_reference (#PCDATA)>
@@ -231,7 +231,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT GBXref (
-        GBXref_dbname, 
+        GBXref_dbname,
         GBXref_id)>
 
 <!ELEMENT GBXref_dbname (#PCDATA)>
@@ -240,12 +240,12 @@ $Revision: 1.1 $
 
 
 <!ELEMENT GBFeature (
-        GBFeature_key, 
-        GBFeature_location, 
-        GBFeature_intervals?, 
-        GBFeature_operator?, 
-        GBFeature_partial5?, 
-        GBFeature_partial3?, 
+        GBFeature_key,
+        GBFeature_location,
+        GBFeature_intervals?,
+        GBFeature_operator?,
+        GBFeature_partial5?,
+        GBFeature_partial3?,
         GBFeature_quals?)>
 
 <!ELEMENT GBFeature_key (#PCDATA)>
@@ -268,11 +268,11 @@ $Revision: 1.1 $
 
 
 <!ELEMENT GBInterval (
-        GBInterval_from?, 
-        GBInterval_to?, 
-        GBInterval_point?, 
-        GBInterval_iscomp?, 
-        GBInterval_interbp?, 
+        GBInterval_from?,
+        GBInterval_to?,
+        GBInterval_point?,
+        GBInterval_iscomp?,
+        GBInterval_interbp?,
         GBInterval_accession)>
 
 <!ELEMENT GBInterval_from (%INTEGER;)>
@@ -293,7 +293,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT GBQualifier (
-        GBQualifier_name, 
+        GBQualifier_name,
         GBQualifier_value?)>
 
 <!ELEMENT GBQualifier_name (#PCDATA)>

@@ -36,18 +36,18 @@ $Revision: 1.1 $
  regular medline record
 -->
 <!ELEMENT Medline-entry (
-        Medline-entry_uid?, 
-        Medline-entry_em, 
-        Medline-entry_cit, 
-        Medline-entry_abstract?, 
-        Medline-entry_mesh?, 
-        Medline-entry_substance?, 
-        Medline-entry_xref?, 
-        Medline-entry_idnum?, 
-        Medline-entry_gene?, 
-        Medline-entry_pmid?, 
-        Medline-entry_pub-type?, 
-        Medline-entry_mlfield?, 
+        Medline-entry_uid?,
+        Medline-entry_em,
+        Medline-entry_cit,
+        Medline-entry_abstract?,
+        Medline-entry_mesh?,
+        Medline-entry_substance?,
+        Medline-entry_xref?,
+        Medline-entry_idnum?,
+        Medline-entry_gene?,
+        Medline-entry_pmid?,
+        Medline-entry_pub-type?,
+        Medline-entry_mlfield?,
         Medline-entry_status?)>
 
 <!-- MEDLINE UID, sometimes not yet available if from PubMed -->
@@ -105,8 +105,8 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Medline-mesh (
-        Medline-mesh_mp?, 
-        Medline-mesh_term, 
+        Medline-mesh_mp?,
+        Medline-mesh_term,
         Medline-mesh_qual?)>
 
 <!-- TRUE if main point (*) -->
@@ -122,7 +122,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Medline-qual (
-        Medline-qual_mp?, 
+        Medline-qual_mp?,
         Medline-qual_subh)>
 
 <!-- TRUE if main point -->
@@ -135,8 +135,8 @@ $Revision: 1.1 $
 
 <!-- medline substance records -->
 <!ELEMENT Medline-rn (
-        Medline-rn_type, 
-        Medline-rn_cit?, 
+        Medline-rn_type,
+        Medline-rn_cit?,
         Medline-rn_name)>
 <!-- type of record -->
 <!ELEMENT Medline-rn_type %ENUM;>
@@ -160,7 +160,7 @@ $Revision: 1.1 $
 
 <!-- medline cross reference records -->
 <!ELEMENT Medline-si (
-        Medline-si_type, 
+        Medline-si_type,
         Medline-si_cit?)>
 <!-- type of xref -->
 <!ELEMENT Medline-si_type %ENUM;>
@@ -204,8 +204,8 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Medline-field (
-        Medline-field_type, 
-        Medline-field_str, 
+        Medline-field_type,
+        Medline-field_str,
         Medline-field_ids?)>
 <!-- Keyed type -->
 <!ELEMENT Medline-field_type (%INTEGER;)>
@@ -230,7 +230,7 @@ $Revision: 1.1 $
 
 <!-- reference to a document -->
 <!ELEMENT DocRef (
-        DocRef_type, 
+        DocRef_type,
         DocRef_uid)>
 
 <!ELEMENT DocRef_type (%INTEGER;)>

@@ -1,4 +1,4 @@
-<!--    
+<!--
                 This is the Current DTD for Entrez eInfo
 $Id: eInfo_020511.dtd,v 1.1 2008-05-13 11:17:44 mdehoon Exp $
 -->
@@ -50,5 +50,5 @@ $Id: eInfo_020511.dtd,v 1.1 2008-05-13 11:17:44 mdehoon Exp $
 				LastUpdate,
 				FieldList,
 				LinkList?)>
-				
+
 <!ELEMENT	eInfoResult	(DbList|DbInfo|ERROR)>

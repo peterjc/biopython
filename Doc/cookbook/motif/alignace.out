@@ -1,5 +1,5 @@
 AlignACE 4.0 05/13/04
-./AlignACE -i test.fa 
+./AlignACE -i test.fa
 Parameter values:
  expect =      	10
  gcback =      	0.38

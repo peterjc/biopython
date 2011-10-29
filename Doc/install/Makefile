@@ -4,7 +4,7 @@ FILENAME=Installation
 
 all: ${FILENAME}.pdf ${FILENAME}.html ${FILENAME}.txt
 
-clean: 
+clean:
 	rm -f ${FILENAME}.aux
 	rm -f ${FILENAME}.log
 	rm -f ${FILENAME}.out

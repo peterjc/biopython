@@ -1,8 +1,8 @@
 BLASTX 2.0.10 [Aug-26-1999]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -24,7 +24,7 @@ gi|1730688|sp|P53745|YN8X_YEAST HYPOTHETICAL 68.1 KD PROTEIN IN...    29  7.4
 
 >gi|1731448|sp|P54103|ZRF1_MOUSE ZUOTIN RELATED FACTOR-1
            Length = 514
-           
+
  Score = 86.6 bits (211), Expect = 3e-17
  Identities = 41/47 (87%), Positives = 44/47 (93%)
  Frame = +1
@@ -37,17 +37,17 @@ Sbjct: 458 DLQLLIKAVNLFPAGRNSRWDVIANYMNIHSSSGVKRTAKDVISEVR 504
 >gi|465911|sp|P34454|YMA9_CAEEL HYPOTHETICAL 31.6 KD PROTEIN F54F2.9
            IN CHROMOSOME III
            Length = 275
-           
+
  Score = 41.8 bits (96), Expect = 0.001
  Identities = 30/122 (24%), Positives = 54/122 (43%)
  Frame = +1
 
 Query: 34  FPAGTNSRWEVIANYMNIHSSSGVKRTAKDVIGKAKSLQKLDPHQKDDINKKAFDKFKKE 213
-           +PAGT +RWE +   +N        R+A+DVI  A  ++++   +++D  K      ++ 
+           +PAGT +RWE +   +N        R+A+DVI  A  ++++   +++D  K      ++
 Sbjct: 159 YPAGTPNRWEQMGRVLN--------RSAEDVIAMAGKMKQM---KQEDYTKLLMTTIQQS 207
 
 Query: 214 HGVVPQADNATPSERFXGPYTDFTPXTTEXQKLXEQALNTYPVNTXERWXXIAVAVPGRX 393
-             V  ++++                 +   QK  E AL  YP  T ERW  I+  +  + 
+             V  ++++                 +   QK  E AL  YP  T ERW  I+  +  +
 Sbjct: 208 VPVEEKSED---------------DWSQAEQKAFETALQKYPKGTDERWERISEEIGSKT 252
 
 Query: 394 KE 399
@@ -57,7 +57,7 @@ Sbjct: 253 KK 254
 
 >gi|2494160|sp|Q61712|MTJ1_MOUSE DNAJ PROTEIN HOMOLOG MTJ1
            Length = 552
-           
+
  Score = 36.7 bits (83), Expect = 0.033
  Identities = 17/36 (47%), Positives = 19/36 (52%)
  Frame = +1
@@ -79,13 +79,13 @@ Sbjct: 332 DLSQLTRSMVKFPGGTPGRWDKIAHELG--------RSVTDVTTKAKELK 373
 >gi|1730688|sp|P53745|YN8X_YEAST HYPOTHETICAL 68.1 KD PROTEIN IN
            BIO3-FRE4 INTERGENIC REGION
            Length = 580
-           
+
  Score = 29.0 bits (63), Expect = 7.4
  Identities = 27/99 (27%), Positives = 41/99 (41%)
  Frame = +1
 
 Query: 52  SRWEVIANYMNIHSSSGVKRTAKDVIGKAKSLQKLDPHQKDDINKKAFDKFKKEHGVVPQ 231
-           +RW+   +Y        V R+ KDV   ++SL  LD +QK     +A       H +   
+           +RW+   +Y        V R+ KDV   ++SL  LD +QK     +A       H +
 Sbjct: 75  NRWKSFISY--------VTRSRKDVKTVSRSLSNLDLYQKCSKEIRADQDISLLHSI--- 123
 
 Query: 232 ADNATPSERFXGPYTDFTPXTTEXQKLXEQALNTYPVNT 348
@@ -97,13 +97,13 @@ Sbjct: 124 -------ETKLFPYINFTALNS------EQSHNFWPVHT 149
     Posted date:  Nov 15, 1999  2:55 PM
   Number of letters in database: 29,652,561
   Number of sequences in database:  82,258
-  
+
 Lambda     K      H
-   0.318    0.135    0.401 
+   0.318    0.135    0.401
 
 Gapped
 Lambda     K      H
-   0.270   0.0470    0.230 
+   0.270   0.0470    0.230
 
 
 Matrix: BLOSUM62

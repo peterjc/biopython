@@ -35,25 +35,25 @@ $Revision: 1.1 $
    in special structures, such as a ByteStore, but it's just a hint.
    AsnTool stores StringStores in ByteStore structures.
  OCTET STRINGs are also stored in ByteStores by AsnTool
- 
- typedef struct bsunit {             /* for building multiline strings 
- Nlm_Handle str;            /* the string piece 
+
+ typedef struct bsunit {             /* for building multiline strings
+ Nlm_Handle str;            /* the string piece
  Nlm_Int2 len_avail,
  len;
- struct bsunit PNTR next; }       /* the next one 
+ struct bsunit PNTR next; }       /* the next one
  Nlm_BSUnit, PNTR Nlm_BSUnitPtr;
- 
+
  typedef struct bytestore {
- Nlm_Int4 seekptr,       /* current position 
- totlen,             /* total stored data length in bytes 
- chain_offset;       /* offset in ByteStore of first byte in curchain 
- Nlm_BSUnitPtr chain,       /* chain of elements 
- curchain;           /* the BSUnit containing seekptr 
+ Nlm_Int4 seekptr,       /* current position
+ totlen,             /* total stored data length in bytes
+ chain_offset;       /* offset in ByteStore of first byte in curchain
+ Nlm_BSUnitPtr chain,       /* chain of elements
+ curchain;           /* the BSUnit containing seekptr
  } Nlm_ByteStore, PNTR Nlm_ByteStorePtr;
 
  AsnTool incorporates this as a primitive type, so the definition
    is here just for completeness
- 
+
   StringStore ::= [APPLICATION 1] IMPLICIT OCTET STRING
 
  BigInt is really an INTEGER. It is used to warn the receiving code to expect
@@ -68,7 +68,7 @@ $Revision: 1.1 $
 
 -->
 <!ELEMENT Date (
-        Date_str | 
+        Date_str |
         Date_std)>
 
 <!-- for those unparsed dates -->
@@ -79,12 +79,12 @@ $Revision: 1.1 $
 
 <!-- NOTE: this is NOT a unix tm struct -->
 <!ELEMENT Date-std (
-        Date-std_year, 
-        Date-std_month?, 
-        Date-std_day?, 
-        Date-std_season?, 
-        Date-std_hour?, 
-        Date-std_minute?, 
+        Date-std_year,
+        Date-std_month?,
+        Date-std_day?,
+        Date-std_season?,
+        Date-std_hour?,
+        Date-std_minute?,
         Date-std_second?)>
 
 <!-- full year (including 1900) -->
@@ -114,7 +114,7 @@ $Revision: 1.1 $
  or  { "member", id 8882224 }
 -->
 <!ELEMENT Dbtag (
-        Dbtag_db, 
+        Dbtag_db,
         Dbtag_tag)>
 
 <!-- name of database or system -->
@@ -128,7 +128,7 @@ $Revision: 1.1 $
 
 -->
 <!ELEMENT Object-id (
-        Object-id_id | 
+        Object-id_id |
         Object-id_str)>
 
 <!ELEMENT Object-id_id (%INTEGER;)>
@@ -140,10 +140,10 @@ $Revision: 1.1 $
 
 -->
 <!ELEMENT Person-id (
-        Person-id_dbtag | 
-        Person-id_name | 
-        Person-id_ml | 
-        Person-id_str | 
+        Person-id_dbtag |
+        Person-id_name |
+        Person-id_ml |
+        Person-id_str |
         Person-id_consortium)>
 
 <!-- any defined database tag -->
@@ -166,12 +166,12 @@ $Revision: 1.1 $
 
 <!-- Structured names -->
 <!ELEMENT Name-std (
-        Name-std_last, 
-        Name-std_first?, 
-        Name-std_middle?, 
-        Name-std_full?, 
-        Name-std_initials?, 
-        Name-std_suffix?, 
+        Name-std_last,
+        Name-std_first?,
+        Name-std_middle?,
+        Name-std_full?,
+        Name-std_initials?,
+        Name-std_suffix?,
         Name-std_title?)>
 
 <!ELEMENT Name-std_last (#PCDATA)>
@@ -198,17 +198,17 @@ $Revision: 1.1 $
 *   uncertainties in integer values
 -->
 <!ELEMENT Int-fuzz (
-        Int-fuzz_p-m | 
-        Int-fuzz_range | 
-        Int-fuzz_pct | 
-        Int-fuzz_lim | 
+        Int-fuzz_p-m |
+        Int-fuzz_range |
+        Int-fuzz_pct |
+        Int-fuzz_lim |
         Int-fuzz_alt)>
 
 <!-- plus or minus fixed amount -->
 <!ELEMENT Int-fuzz_p-m (%INTEGER;)>
 <!-- max to min -->
 <!ELEMENT Int-fuzz_range (
-        Int-fuzz_range_max, 
+        Int-fuzz_range_max,
         Int-fuzz_range_min)>
 
 <!ELEMENT Int-fuzz_range_max (%INTEGER;)>
@@ -253,8 +253,8 @@ $Revision: 1.1 $
 *    used by Seq-feat and Seq-descr
 -->
 <!ELEMENT User-object (
-        User-object_class?, 
-        User-object_type, 
+        User-object_class?,
+        User-object_type,
         User-object_data)>
 
 <!-- endeavor which designed this object -->
@@ -268,8 +268,8 @@ $Revision: 1.1 $
 
 
 <!ELEMENT User-field (
-        User-field_label, 
-        User-field_num?, 
+        User-field_label,
+        User-field_num?,
         User-field_data)>
 
 <!-- field label -->
@@ -279,17 +279,17 @@ $Revision: 1.1 $
 <!ELEMENT User-field_num (%INTEGER;)>
 <!-- field contents -->
 <!ELEMENT User-field_data (
-        User-field_data_str | 
-        User-field_data_int | 
-        User-field_data_real | 
-        User-field_data_bool | 
-        User-field_data_os | 
-        User-field_data_object | 
-        User-field_data_strs | 
-        User-field_data_ints | 
-        User-field_data_reals | 
-        User-field_data_oss | 
-        User-field_data_fields | 
+        User-field_data_str |
+        User-field_data_int |
+        User-field_data_real |
+        User-field_data_bool |
+        User-field_data_os |
+        User-field_data_object |
+        User-field_data_strs |
+        User-field_data_ints |
+        User-field_data_reals |
+        User-field_data_oss |
+        User-field_data_fields |
         User-field_data_objects)>
 
 <!ELEMENT User-field_data_str (#PCDATA)>

@@ -35,8 +35,8 @@
  for tRNAs
 -->
 <!ELEMENT RNA-ref (
-        RNA-ref_type, 
-        RNA-ref_pseudo?, 
+        RNA-ref_type,
+        RNA-ref_pseudo?,
         RNA-ref_ext?)>
 <!-- type of RNA feature -->
 <!ELEMENT RNA-ref_type %ENUM;>
@@ -58,7 +58,7 @@
 
 
 <!ELEMENT RNA-ref_ext (
-        RNA-ref_ext_name | 
+        RNA-ref_ext_name |
         RNA-ref_ext_tRNA)>
 
 <!-- for naming "other" type -->
@@ -68,14 +68,14 @@
 
 <!-- tRNA feature extensions -->
 <!ELEMENT Trna-ext (
-        Trna-ext_aa?, 
-        Trna-ext_codon?, 
+        Trna-ext_aa?,
+        Trna-ext_codon?,
         Trna-ext_anticodon?)>
 <!-- aa this carries -->
 <!ELEMENT Trna-ext_aa (
-        Trna-ext_aa_iupacaa | 
-        Trna-ext_aa_ncbieaa | 
-        Trna-ext_aa_ncbi8aa | 
+        Trna-ext_aa_iupacaa |
+        Trna-ext_aa_ncbieaa |
+        Trna-ext_aa_ncbi8aa |
         Trna-ext_aa_ncbistdaa)>
 
 <!ELEMENT Trna-ext_aa_iupacaa (%INTEGER;)>

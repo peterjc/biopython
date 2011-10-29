@@ -33,7 +33,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..740
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgatgagacc gtggaataaa
        61 cgatcgagtg aatccggagg accggtgtac tcagctcacc gggggcattg ctcccgtggt
       121 gaccctgatt tgttgttggg ccgcctcggg agcgtccatg gcgggtttga acctctagcc
@@ -83,7 +83,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..753
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagaca acagaatata
        61 tgatcgagtg aatctggagg acctgtggta actcagctcg tcgtggcact gcttttgtcg
       121 tgaccctgct ttgttgttgg gcctcctcaa gagctttcat ggcaggtttg aactttagta
@@ -133,7 +133,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..748
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagaca gcagaacata
        61 cgatcgagtg aatccggagg acccgtggtt acacggctca ccgtggcttt gctctcgtgg
       121 tgaacccggt ttgcgaccgg gccgcctcgg gaactttcat ggcgggtttg aacgtctagc
@@ -183,7 +183,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..744
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgaaaca acataataaa
        61 cgattgagtg aatctggagg acttgtggta atttggctcg ctagggatat ccttttgtgg
       121 tgaccatgat ttgtcattgg gcctcattga gagctttcat ggcgggtttg aacctctagc
@@ -233,7 +233,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..733
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 acggcgagct gccgaaggac attgttgaga cagcagaata tacgattgag tgaatctgga
        61 ggacttgtgg ttatttggct cgctagggat ttccttttgt ggtgaccatg atttgtcatt
       121 gggcctcatt gagagctttc atggcgggtt tgaacctcta gcacggtgca gtttgcacca
@@ -283,7 +283,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..718
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagaca gtagaatata
        61 tgatcgagtg aatctggatg acctgtggtt actcggctcg cctgatttgt tgttgggctt
       121 ccttaggagc ttacatggcg ggtttgaacc tctaccacgg tgcagtttgc gccaagtcat
@@ -332,7 +332,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..730
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagaca gtagaatata
        61 tgatcgagtg aatctggagg acctgtggtt actcggctcc cctgatttgt tgttgggctt
       121 ccttaggagc ttacatgccg ggtttgaacc tctaccacgg tgcagtttgc gccaagtcat
@@ -382,7 +382,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..704
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 tgttgagata gcagaatata catcgagtga atccggagga cctgtggtta ttcggcttgc
        61 cgagggcttt gcttttgtgg tgacccaaat ttgtcgttgg gcctcctcgg gagctttcat
       121 ggcaggtttc aaactctagc acggcacagt ttgtgccaag tcatatgaag catcaccgac
@@ -431,7 +431,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..740
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagata gtagaatata
        61 tgattgagtg aatatggagg acatgtggtt acttggctcg tcagtgcttt gcttttgtgg
       121 tgaccttaat tgggcctcct taggagcttt catggcgggt tcaaaccttt agcacggcgc
@@ -481,7 +481,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..709
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaaccagg tttccgtagg tgaacctgcg gcaggatcat tgttgagaca gcagaatata
        61 tgatcgagtg aatccggtgg acttgtggtt actcagctcg acataggctt tgcttttgcg
       121 gtgaccctaa cttgtcattg ggcctcctcc caagctttcc ttgtgggtgt gaacctctag
@@ -530,7 +530,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..700
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagaca gcagaatata
        61 tgatcgagtg aatccggtgg acttgtggtt actcagctcg acataggctt tgcttttgcg
       121 gtgaccctaa tttgtcattg ggcctccccc caagctttcc ttgtgggttt gaacctctag
@@ -579,7 +579,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..726
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 gtaggtgaac ctgcggaagg atcattgttg agacagtaga atatatgatc gagtgaatcc
        61 ggtggacttg tggttactca gctcgacata ggcttggctt tggcggtgac cctaatttgc
       121 cattgggcct cctccaaagc tttccttgtg ggtttgaacc tctagcacgg tgcagtatgc
@@ -629,7 +629,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..753
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagaca gcagaatata
        61 tgatcgagtg aatccggtgg acttgtggtt actcagctcg ccataggctt tgcttttgcg
       121 gtgaccctaa tttgtcattg ggcctcctcc aaagctttcc ttgtgggttt gaacctctag
@@ -680,7 +680,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..699
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 atatgatcga gtgaatctgg tggacttgtg gttactcagc tcgccatagg ctttgctttt
        61 gcggtgaccc taatttgtca ttgggcctcc tcccaagctt tccttgtggg tttgaacctc
       121 tagcacggtg cagtatgcac caagtcatat gaagcattgc cgatgaatga cattattgtc
@@ -729,7 +729,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..658
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg ggaggatcat tgttgagata gtagaatatt
        61 cgatcgagtg aatccggagg acttgtggtt actcggctcg tcgaaggctt aacttttgtg
       121 gtgaccctga tttgtagttg ggcatcctcg agagctttta tggcgggttt gagcctctat
@@ -777,7 +777,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..752
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagaca gtagaatata
        61 cgatcgagtg aatccagagg acttgtggtt actcggctcg tccaagtctt agcttttgtg
       121 gccctgattt gtcgttgggc atcctcagga gattttatgg cgggtttgaa cctctatcac
@@ -827,7 +827,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..726
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagaca gtataatata
        61 tgatcgagtg aatccggagg acttgtggtt actcggctcg tccaagtctt agcttttgtg
       121 gccctgattt gtcgttgggc atcctcagga gcttttatgg cgggtttgaa cctctatcac
@@ -877,7 +877,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..765
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgctgagacc gtagaataaa
        61 cgatcgagtt aatctggagg accggtgtac ttcgatctcc caggggcttt cgctactgtg
       121 gtggcctttg atctgccatc gggcctcctt gggagtgttc ttgaaggcga tcaaacttct
@@ -927,7 +927,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..755
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tggaccttcg ggaggatcat ttttgaagcc cccaaatata
        61 cgatcgagat aatccggagg accggtgtac tttggtctcc caggggcttc cgccgctgtg
       121 gtgaccatga tttcccatcg aacctccttg ggagagttct ctatggcaat tgaacccttg
@@ -977,7 +977,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..742
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagacc gccaaataca
        61 cgatcgagtt aatccggagg accggtgtac tttggtctcc caggggcttc cgccgctgtg
       121 gtgaccatga tttgccatcg agcctcattg ggagatttct ccatggcaat tgaacccttg
@@ -1027,7 +1027,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..762
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tggaccttcg ggaggatcat ttttgaagcc cccaaaaaaa
        61 cgatcgaatt aatccggagg gccggtgtag tttggtctcc caggggcctt ggctactgtg
       121 gtgaccgtga atttccgtcg aaccctctgg gaggaattct tgatggcaaa tgaaaccctt
@@ -1077,7 +1077,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..745
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaaccttcg gaaggatcat tgttgagacc cccaaaaaaa
        61 cgatcgagtt aatccggagg accggtgtag tttggtctcc caggggcttt ggctactgtg
       121 gtggccgtga atttccgtcg aacctccttg ggagaattct tgatggcaat tgaacccttg
@@ -1127,7 +1127,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..750
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 ctaaccaggg ttccgaggtg accttcggga ggattccttt ttaagccccc gaaaaaacga
        61 tcgaattaaa ccggaggacc ggtttaattt ggtctcccca ggggctttcc ccccttggtg
       121 gccgtgaatt tccatcgaac ccccctggga gaattcttgg tggccaatgg acccttggcc
@@ -1177,7 +1177,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..731
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagacc gccaaatata
        61 cgatcgagtt aatccggagg accggtgtag tttggtctcc caggggcttt cgccgctgtg
       121 gtgaccgtga tttgccatcg agcctccttg ggagatttct tgatggcaat tgaacccttg
@@ -1227,7 +1227,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..741
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagacc gccaaatata
        61 cgatcgagtt aatccggagg accggtgtag tttggtctcc caggggcttt cgccgctgtg
       121 gtgaccgtga tttgccatcg agcctccttg ggagatttct tgatggcaat tgaacccttg
@@ -1277,7 +1277,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..740
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagacc cccaaaaaaa
        61 cgatcgagtt aatccggagg accggtgtag tttggtctcc caggggcttt ggctactgtg
       121 gtgaccgtga atttccgtcg agcctccttg ggagatttct tgatggcaat tgaacccttg
@@ -1327,7 +1327,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..727
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagacc gcaaaatata
        61 cgatcgagtt aatccggagg actggtgtag tttggtctcc caggggcgtt ggctactgcg
       121 gtgaccatga ttttccatcg agcctcctcg ggagatttct tgatggcaat tgaacccttg
@@ -1377,7 +1377,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..711
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagacc gccaaatata
        61 cgatcgagtt aatccggagg actggtgtag tttggtctcc caggggcggt ggctactgcg
       121 gtgaccatga tattccatcg agcctcctcg ggagatttct tgatggcaat tgaacccgtg
@@ -1426,7 +1426,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..743
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaaccttcg gaaggatcat tgttgagacc gcaaaatata
        61 cgatcgagtt aatccggagg actggtgtag tttgtctccc aggggcgttg gctactgcgg
       121 tgaccatgat tttccatcga gcctcctcgg gagatttctt gatggcaatt gaacccttgg
@@ -1476,7 +1476,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..727
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaaccagg tttccgtagg tgaacctccg gaaggatcct tgttgagacc gccaaatata
        61 cgatcgagtt aatccggagg accggtgtag tttggtctcc caggggcttt cgccgctgtg
       121 gtgtccgtga tttaccatcg agcctccttg ggagatttct tgatggcaat tgaacccatg
@@ -1526,7 +1526,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..757
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaaccagg tttccgtagg tgaacctccg gaaggatcat tgttgagacc gccaaatata
        61 cgatcgagtt aatccggagg accggtgtag tttggtctcc caggggcttt cgcccctgtg
       121 gtgaccgtga tttgccatcg agcctccttg ggagatttct tgatggcaat tgaacccatg
@@ -1576,7 +1576,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..770
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagacc gcaaaatata
        61 cgatcgagtt aatccggagg accggtgtag tttggtctcc caggggcttt ggttactgtg
       121 gtgaccgtga ctttgccgtc gagcctcctt gggagatttc ttgatggaaa ttgaaccctt
@@ -1626,7 +1626,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..767
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggctcat tgttgagacc gcaaaataat
        61 tgatcgagtt aatccggagg accggtgtag tttggtctcc caggggcttt ggttactgtg
       121 gtgaccgtga ctttgccgtc gagcctcctt gggagatttc ttgatggcaa ttgaaccctt
@@ -1676,7 +1676,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..759
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gagggatcat tgttgagatc gcataataat
        61 tgatcgagat aatccagagg atcggtttac tttggtcacc cttgggcgcc tgctattgcg
       121 gtgacctaga ttttccatgg agggagcctc cttgggagct ttcttgccgg cgatctaacc
@@ -1726,7 +1726,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..750
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaaggtcat tgttgagatc acataataat
        61 tgatcgagtt actccagagg atcagtttac tccggtcacc catgggtgct tgctattgcg
       121 gtgacctaga tttgccatgg agcctccttg ggagttttct tgccggcgat cttacccttg
@@ -1776,7 +1776,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..788
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtg aatccagagg atcagtttac tttggtcgcc catgggcgct tgctattgcg
       121 gtgacctaga tttgccatgg agcctccttg ggagctttct tgccggcgat ctaacccttg
@@ -1827,7 +1827,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..774
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc gcataataat
        61 tgatcgagtt aatccagagg atcggtttac tttggtcacc cttgggcgcc tgctattgcg
       121 gtgacctaga tttgccatgg agggagcctc cttgggagct ttcttgccgg cgatctaacc
@@ -1877,7 +1877,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..789
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctccg gaaggatcat tgttgagatc acataataat
        61 tgatcgagat aatccagagg atcggtttac tttggtcacc catgggcgct tgctattgcg
       121 gtgacctaga gttgccatgg agagcctcct tgggagcttt cttgccggcg atctaaccct
@@ -1928,7 +1928,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..688
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgaggtc gcataataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc catggacatt tactgttgca
       121 gtgacctaga tttaccatcg ggcctccttg ggaactttcc tgctggcgat ctataccctt
@@ -1977,7 +1977,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..719
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg attccgtagg tgaacctgcg gaaggatcat tgttgagatc gcataataat
        61 tgatcgagtt aatctggagg atcggtttac tttggtcacc catgggcatt ttctgttgca
       121 gtgacctaga atttccatcg ggcctccctg ggagctttcc tgctggcgat ctataccctt
@@ -2026,7 +2026,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..743
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc gcataataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc cacgggcatt tgctgttgca
       121 gtgacctaga atttgccatc gagcctcctt gggagctttc ttgctggcga tctataccct
@@ -2076,7 +2076,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..737
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc gcataataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc cacgggcatt tgctgttgca
       121 gtgacctaga tttgccatcg ggcctcctta ggagctttct tgctggcgat ctataccctt
@@ -2126,7 +2126,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..728
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc catgggcatt tgctgttgca
       121 gtgaccgaga tttgccatcg agcctccttg ggagctttct tgctggcgat ctgaacccta
@@ -2176,7 +2176,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..740
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc cgagggcatt tgctattgca
       121 gtgaccgaga tttgccatcg agcctccttg ggagctttct tgctggcgat ctaaacccga
@@ -2226,7 +2226,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..696
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 ctgtaggtga acctgcggaa ggatcattgt tgagatcacg caataattga tcgagttaat
        61 ctggaggatc agtttacttt ggtcacccat gggcatttgt tattgcagtg accgagattt
       121 gccatcgagc ctccttggga gctttcttgc tggcgatctt aaccctagcc cggcgcagtt
@@ -2275,7 +2275,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..732
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt actctggagg atcagtttac tttggtcacc catgggcatt tgctattgca
       121 gtgaccggga tttgccatcg agcctccttg ggagctttct tgctggcgat ctaaacccta
@@ -2325,7 +2325,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..731
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtcacgagg tttccgtagg tgaatctgcg ggaggatcat tgttgagatc acataataat
        61 tgatcgagat tatctggagg atcagtttac tttggtcacc catggacatt tgctattgca
       121 gtgcccgaga tttgccatcg agcctccttg ggagctttct tgctggcgat ctaaacccta
@@ -2375,7 +2375,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..735
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 ctgaacctgg tgtccgaagg tgaatctgcg gatggatcat tgttgagata tcataataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc atgggcattt gctattgcag
       121 tgaccgagat ttgccatcga gcctccttgg gagctttctt gctggcgatc taaaccctag
@@ -2425,7 +2425,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..720
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctggg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc catgggcatt tggctattgc
       121 agtgaccgag agtttaccat cgagcctcca tgggagcttt cttgctggcg atctaaaccc
@@ -2474,7 +2474,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..740
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc catgggcatt tgctattgca
       121 gtgaccgaga tttgccatcg agcctccttg ggagctttct tgctggcgat ctaaacccta
@@ -2524,7 +2524,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..629
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 tctactgcag tgaccgagat ttgccatcga gcctcctggg agctttcttg ctggcgatct
        61 aaaccgtagc ccggcgcagt tttgcgccaa gtcatatgac acataattgg tgaagggggc
       121 ggcatgctgc cttgaccctc cccaaattat tttttaacaa ctctcngcaa cggatatctc
@@ -2572,7 +2572,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..572
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc catgggcatt tgctattgca
       121 gtgaccgaga tttgccatcg agcctccttg ggagctttct tgctggcgat ctaaacccta
@@ -2619,7 +2619,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..587
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc catgggcatt tgctattgca
       121 gtgaccgaga tttgccatcg agcctccttg ggagctttct tgctggcgat ctaaacccta
@@ -2666,7 +2666,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..700
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatcaggagg atcaggttac tttggtcacc catgggcatt tgctgtttca
       121 gtgacctaga tttgccatcg agccgaacta aacccttgcc cggcgcagat ttgcgccaat
@@ -2716,7 +2716,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..636
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctccg gaaggatcag tgttgagatc acataataat
        61 tgatcgagtt aatctggggg atcagtttac tttggtcacc catgggcatt tgctgttgca
       121 gtggcctaga gtttgccatc gagccgatct aaacccttgc ccggcgcagt tttgcgccaa
@@ -2765,7 +2765,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..716
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acatgataat
        61 tgatcgagtt aatctggagg atcagtttgc tttggtcacc catgggcatt tgctgttgca
       121 gtgacctaga tttgccatcg agccgatcta aacccttgcc cggcgcagtt ttgcgccaag
@@ -2814,7 +2814,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..592
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acatgataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc catgggcatt tgctgttgta
       121 gtgacctaga tttgccatcg agccgatcta aacccttgcc cggcgcagtt ttgcgccaag
@@ -2861,7 +2861,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..716
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc catgggcatc tgctcttgca
       121 gtgacctgga tttgccatcg agcctccttg ggagctttct tgctggcgat ctaaacccgt
@@ -2910,7 +2910,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..733
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acgtaataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc catgggcatc tgctctttca
       121 gtgacctgga tttgccatcg agcctccttg ggagctttct tgctggcgat ctaaaccctt
@@ -2960,7 +2960,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..626
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgggtt aatctggagg atcagtttac tttggtcacc catgggcatc tgctcttgta
       121 gtgacctgga tttgccatcg agcctccatg ggagctttct tggtggcgat ctaaaccctt
@@ -3008,7 +3008,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..737
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atcagtttac tttagtcacc catgggcatc tgctcttgca
       121 gtgacctgga tttgccatcg agcctccttg ggagctttct tgctggcgat ctaaatcgtt
@@ -3058,7 +3058,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..740
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctagagg atcggtttac tttggtcacc catgggcatc tgctcttaca
       121 gtgacctgga tttgccatcg agcctccttg ggagctgtct tgctggcgat ctaaatcgtt
@@ -3108,7 +3108,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..574
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctagagg atcagtttac tttggtcacc catgggcatc tgctcttaca
       121 gtgacctgga tttgccatcg agcctccttg ggagctttct tgctggcgat ctaaatcgtt
@@ -3155,7 +3155,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..594
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atcagtttac tttagtcacc catgggcatc tgctcttgca
       121 gtgacctgga tttgccatcg agcctccttg ggagctttct tgctggcgat ctaaattcgt
@@ -3202,7 +3202,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..610
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc gcataataat
        61 tgattgagtt aatctggagg atcagtttac tttggtcact catgggaatc tgctcttgta
       121 gtgacctgga tttgccatcg agcctccttg ggagctttct tgatggcgat ctgaaccctt
@@ -3250,7 +3250,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..730
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc catgggcatc tgctcttgca
       121 gtgacctgga tttgccatcg agcctccttg ggagctttct tgctggcgat ctaaaccctt
@@ -3300,7 +3300,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..641
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc catgggcatc tgctcttgta
       121 gtgacctgga tttgccatcg agccttcatg ggagctttct tgctggcgat ctaaaccctt
@@ -3348,7 +3348,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..702
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atcagtttac tttggtcacc catgggcatc tgctcttgca
       121 gtgacctgga tttgccatcg agcctccttg ggagctttct tgctggcgat ctaaaccctt
@@ -3398,7 +3398,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..733
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgagcggaag ggtcattgtt gagatcacat aataattgat
        61 cggttgagtc tggaggatca gtttactttg gtcacccatg ggcatctgct cttgtagtga
       121 cctggattgc catcgagcct ccttgggagc tttcttgctg gagatctaaa cccttgcccg
@@ -3449,7 +3449,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..738
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggttcat tgttgagatc acataatcat
        61 tgttcggttg agtctggagg atcagtttac tttggtcacc atgggcatct gctcttgtag
       121 tgacctggat tgccatcgag cctccttggg agctttcttg ctggggatct aaaccctcgc
@@ -3499,7 +3499,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..736
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtcacgagg tctccggatg tgaccctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctgcagg atctgtttac tttggtcacc catgggcatt tgctgttgaa
       121 gtgacctaga tttgccatcg agcctccttg ggagatttct tgttggcgag atctaaaccc
@@ -3549,7 +3549,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..732
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctccg gaaggatcat tgttgagatc acataataat
        61 tgatcgaggt aatctggagg atctgtttac tttggtcacc catgggcagt tgctgctgga
       121 gtgacctaga atttccatcg agcctccttg ggagctttct tgttggcgag atctaaaccc
@@ -3599,7 +3599,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..745
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctccg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atctgtttac tttggtcacc catgagcatt tgctgttgaa
       121 gtgacctaga tttgccatcg agcctccttg ggagctttct tgttggcgag atctaaaccc
@@ -3649,7 +3649,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..744
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atctgtttac tttggtcacc catgagcatt tgctgttgaa
       121 gtgacctaga tttgccatcg agcctccttg ggagctttct tgttggcgag atctaaaccc
@@ -3699,7 +3699,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..738
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atctgtttac tttggtcacc catgagcatt tgctgttgaa
       121 gtgacctaga tttgccatcg agcctccttg ggagctttct tgttggcgag atctaaaccc
@@ -3749,7 +3749,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..739
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctccg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atctgtttac tttggtcacc catgggcatt ttctgttgta
       121 gtgacctaga atttccatcg agcctccttg ggagctttct tgttggcgag atctaaaccc
@@ -3799,7 +3799,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..740
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atctgtttac tttggtcacc catgagcatt tgctgttgaa
       121 gtgacctaga atttgccatc gagcctcctt gggagctttc ttgttggcga gatctaaacc
@@ -3849,7 +3849,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..745
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaaccagg tttccgtagg tggaccttcg ggaggatcat ttttgagatc acataaaaat
        61 tgatcgagtt aatctggagg aactttttac tttggtcacc catgaacaat ttcttttgga
       121 gtgacctaga atttccatcg aacccccttg ggaactttct ttttggcgag aactaaaccc
@@ -3899,7 +3899,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..695
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagat aatctggagg atctgtttac tttggtcacc catgagcatt tgctgttgaa
       121 gtgacctaga tttaccatcg agcctccttg ggagctttct tgttggcgag atctaaaccc
@@ -3948,7 +3948,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..745
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atctgtttac tttggtcacc catgagcatt tgctgttgaa
       121 gtgacctaga gttgccatcg agcctccttg ggagctttct tgttggcgag atctaaaccc
@@ -3998,7 +3998,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..743
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atctatttac tttggtcacc catgagcatt tgctgttgaa
       121 gtgacctaga tttgccatca agcctccttg ggagctttct ttttggcgag atctaaaccc
@@ -4048,7 +4048,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..730
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgtacctccg gaaggatcat tgttgagatc acataataat
        61 tgatcgagat aatctggagg atctgtttac tttggtcacc catgggcatt tgctgttgta
       121 gtgacctaga tttccatgga gcccccctgg gagctttctt gctggcgaga tctaaacccg
@@ -4098,7 +4098,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..706
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 ggaaggatca ttgctgatat cacataataa ttgatcgagt taagctggag gatctgttta
        61 ctttggtcat ccatgagcat ttactgttga agtgacctag atttgccatc gagcctcctt
       121 gggagctttc ttgttgccga gatctaaacc cttgcccggc gcagttttgc gccaagtcat
@@ -4147,7 +4147,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..744
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atctgtttac tttggtcacc catgagcatt tgctgttgaa
       121 gtgacctaga tttgccatcg agcctccttg ggagctttct tgttggcgag atctaaaccc
@@ -4197,7 +4197,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..742
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atctgtttac tttggtcacc catgagcatt tgctgttgaa
       121 gtgacctaga attgccatcg agcctccttg ggagctttct tgttggcgag atctaaaccc
@@ -4247,7 +4247,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..694
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg attccgtagg tgaacctgcg ggaggatcat tgttgagatc acataataat
        61 tgatcgagta atctggagga tctgtttact ttggtcaccc atgggcattt cctgttgaag
       121 tgacctagag ttgccatcga gcctccctgg gagctttctt gttggcgaga actaaaccct
@@ -4296,7 +4296,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..712
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctccg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atctgtttac tttggtcacc catgagcatt tcctgttgaa
       121 gtgacctaga tttgccatcg agcctccttg ggagctttct tgttggcgag atctaaaccc
@@ -4345,7 +4345,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..715
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgggtt aatctggagg atctgtttac tttggtcacc catgagcatt tgctgttgaa
       121 gtgacctaga attgccatcg agcctccttg ggagctttct tgttggcgag atctaaaccc
@@ -4394,7 +4394,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..688
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg gtgaactgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atctgtttac ttgggtcacc catgggcatt tgctgttgaa
       121 gtgacctaga tttgccatcg agcctccttg ggagcatcct tgttggcgat atctaaaccc
@@ -4443,7 +4443,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..784
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tgaacctgcg gaaggatcat tgttgagatc acataataat
        61 tgatcgagtt aatctggagg atctgtttac ttgggtcacc catgggcatt tgctgttgaa
       121 gtgacctaga tttgccatcg agcctccttg ggagctttct tgttggcgat atctaaaccc
@@ -4494,7 +4494,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..721
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 gtaggtgaac ctgcggaagg atcattgttg agatcacata ataattgatc gagttaatct
        61 ggaggatctg tttactttgg tcacccatgg gcatttgctg ttgaagtgac ctagatttgc
       121 catcgagcct ccttgggagc tttcttgttg gcgagatcta aacccttgcc cggcggagtt
@@ -4544,7 +4544,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..703
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 ggaaggtcat tgccgatatc acataataat tgatcgagtt aatctggagg atctgtttac
        61 ttggtcaccc atgagcattt gctgttgaag tgacctagat ttgccatcga gcctccttgg
       121 gagttttctt gttggcgaga tctaaaccct tgcccggcgg agttgtgcgc caagtcatat
@@ -4593,7 +4593,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..744
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cgtaacaagg tttccgtagg tggacctccg ggaggatcat tgttgagatc acataataat
        61 tgatcgaggt aatctggagg atctgcatat tttggtcacc catgggcaat ttctgttgta
       121 gtgacctaga atttccatcg accctccttg ggagcattct tgttggcgag aactaaaccc
@@ -4643,7 +4643,7 @@ FEATURES             Location/Qualifiers
                      /product="5.8S ribosomal RNA"
      misc_feature    551..592
                      /note="internal transcribed spacer 2"
-ORIGIN      
+ORIGIN
         1 cattgttgag atcacataat aattgatcga gttaatctgg aggatctgtt tactttggtc
        61 acccatgggc atttgctgtt gaagtgacct agatttgcca tcgagcctcc ttgggagctt
       121 tcttgttggc gagatctaaa cccctgcccg gcggagttgg gcgccaagtc atatgacaca

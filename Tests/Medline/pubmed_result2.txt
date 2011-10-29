@@ -13,18 +13,18 @@ PG  - 10
 AB  - BACKGROUND: Benchmarking algorithms in structural bioinformatics often involves
       the construction of datasets of proteins with given sequence and structural
       properties. The SCOP database is a manually curated structural classification
-      which groups together proteins on the basis of structural similarity. The ASTRAL 
+      which groups together proteins on the basis of structural similarity. The ASTRAL
       compendium provides non redundant subsets of SCOP domains on the basis of
-      sequence similarity such that no two domains in a given subset share more than a 
+      sequence similarity such that no two domains in a given subset share more than a
       defined degree of sequence similarity. Taken together these two resources provide
       a 'ground truth' for assessing structural bioinformatics algorithms. We present a
       small and easy to use API written in python to enable construction of datasets
       from these resources. RESULTS: We have designed a set of python modules to
       provide an abstraction of the SCOP and ASTRAL databases. The modules are designed
       to work as part of the Biopython distribution. Python users can now manipulate
-      and use the SCOP hierarchy from within python programs, and use ASTRAL to return 
+      and use the SCOP hierarchy from within python programs, and use ASTRAL to return
       sequences of domains in SCOP, as well as clustered representations of SCOP from
-      ASTRAL. CONCLUSION: The modules make the analysis and generation of datasets for 
+      ASTRAL. CONCLUSION: The modules make the analysis and generation of datasets for
       use in structural genomics easier and more principled.
 AD  - Bioinformatics, Institute of Cell and Molecular Science, School of Medicine and
       Dentistry, Queen Mary, University of London, London EC1 6BQ, UK.
@@ -78,9 +78,9 @@ DP  - 2006 Mar 1
 TI  - GenomeDiagram: a python package for the visualization of large-scale genomic
       data.
 PG  - 616-7
-AB  - SUMMARY: We present GenomeDiagram, a flexible, open-source Python module for the 
+AB  - SUMMARY: We present GenomeDiagram, a flexible, open-source Python module for the
       visualization of large-scale genomic, comparative genomic and other data with
-      reference to a single chromosome or other biological sequence. GenomeDiagram may 
+      reference to a single chromosome or other biological sequence. GenomeDiagram may
       be used to generate publication-quality vector graphics, rastered images and
       in-line streamed graphics for webpages. The package integrates with datatypes
       from the BioPython project, and is available for Windows, Linux and Mac OS X
@@ -138,15 +138,15 @@ DP  - 2004 Jun 12
 TI  - Open source clustering software.
 PG  - 1453-4
 AB  - SUMMARY: We have implemented k-means clustering, hierarchical clustering and
-      self-organizing maps in a single multipurpose open-source library of C routines, 
+      self-organizing maps in a single multipurpose open-source library of C routines,
       callable from other C and C++ programs. Using this library, we have created an
       improved version of Michael Eisen's well-known Cluster program for Windows, Mac
       OS X and Linux/Unix. In addition, we generated a Python and a Perl interface to
       the C Clustering Library, thereby combining the flexibility of a scripting
       language with the speed of C. AVAILABILITY: The C Clustering Library and the
-      corresponding Python C extension module Pycluster were released under the Python 
+      corresponding Python C extension module Pycluster were released under the Python
       License, while the Perl module Algorithm::Cluster was released under the Artistic
-      License. The GUI code Cluster 3.0 for Windows, Macintosh and Linux/Unix, as well 
+      License. The GUI code Cluster 3.0 for Windows, Macintosh and Linux/Unix, as well
       as the corresponding command-line program, were released under the same license
       as the original Cluster code. The complete source code is available at
       http://bonsai.ims.u-tokyo.ac.jp/mdehoon/software/cluster. Alternatively,

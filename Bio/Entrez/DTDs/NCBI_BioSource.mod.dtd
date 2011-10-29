@@ -34,10 +34,10 @@
 ********************************************************************
 -->
 <!ELEMENT BioSource (
-        BioSource_genome?, 
-        BioSource_origin?, 
-        BioSource_org, 
-        BioSource_subtype?, 
+        BioSource_genome?,
+        BioSource_origin?,
+        BioSource_org,
+        BioSource_subtype?,
         BioSource_is-focus?)>
 <!-- biological context -->
 <!ELEMENT BioSource_genome (%INTEGER;)>
@@ -97,8 +97,8 @@
 
 
 <!ELEMENT SubSource (
-        SubSource_subtype, 
-        SubSource_name, 
+        SubSource_subtype,
+        SubSource_name,
         SubSource_attrib?)>
 
 <!ELEMENT SubSource_subtype (%INTEGER;)>

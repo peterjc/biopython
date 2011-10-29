@@ -42,18 +42,18 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Pub (
-        Pub_gen | 
-        Pub_sub | 
-        Pub_medline | 
-        Pub_muid | 
-        Pub_article | 
-        Pub_journal | 
-        Pub_book | 
-        Pub_proc | 
-        Pub_patent | 
-        Pub_pat-id | 
-        Pub_man | 
-        Pub_equiv | 
+        Pub_gen |
+        Pub_sub |
+        Pub_medline |
+        Pub_muid |
+        Pub_article |
+        Pub_journal |
+        Pub_book |
+        Pub_proc |
+        Pub_patent |
+        Pub_pat-id |
+        Pub_man |
+        Pub_equiv |
         Pub_pmid)>
 
 <!-- general or generic unparsed -->
@@ -95,12 +95,12 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Pub-set (
-        Pub-set_pub | 
-        Pub-set_medline | 
-        Pub-set_article | 
-        Pub-set_journal | 
-        Pub-set_book | 
-        Pub-set_proc | 
+        Pub-set_pub |
+        Pub-set_medline |
+        Pub-set_article |
+        Pub-set_journal |
+        Pub-set_book |
+        Pub-set_proc |
         Pub-set_patent)>
 
 <!ELEMENT Pub-set_pub (Pub*)>

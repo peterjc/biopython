@@ -1,24 +1,24 @@
 <!-- NLMCommon DTD
 
      Comments and suggestions are welcome.
-     January 1, 2008 
+     January 1, 2008
 
-             
-     This is the DTD for data elements that are shared 
-     among various applications at the U.S. National Library of Medicine. 
- 
-    NOTE:  The use of "Medline" in a DTD or element name does not mean the record 
-    represents a citation from a Medline-selected journal.  When the NLM DTDs and 
-    XML elements were first created, MEDLINE records were the only data exported. 
-    Now NLM exports citations other than MEDLINE records using these tools. To 
+
+     This is the DTD for data elements that are shared
+     among various applications at the U.S. National Library of Medicine.
+
+    NOTE:  The use of "Medline" in a DTD or element name does not mean the record
+    represents a citation from a Medline-selected journal.  When the NLM DTDs and
+    XML elements were first created, MEDLINE records were the only data exported.
+    Now NLM exports citations other than MEDLINE records using these tools. To
     minimize unnecessary disruption to users of the data and tools, NLM has
     retained the original DTD and element names (e.g., NLMMedline DTD, MedlineTA,
-    MedlineJournalInfo)).       
+    MedlineJournalInfo)).
 
   * = 0 or more occurrences (optional element, repeatable)
   ? = 0 or 1 occurrences (optional element, at most 1)
   + = 1 or more occurrences (required element, repeatable)
-   | = choice, one or the other but not both 
+   | = choice, one or the other but not both
   no symbol = required element
 -->
 <!--    NLMCommon.dtd
@@ -28,35 +28,35 @@
 -->
 <!-- ====================================================================== -->
 <!--   Revision Notes Section
-    
+
     The following changes were made in the nlmcommon_080101.dtd:
-    
+
      a. Added ELocationID in Article
-            
-     b. Added EIdType and ValidYN as attributes to ELocationID 
+
+     b. Added EIdType and ValidYN as attributes to ELocationID
 
      c. Added ISSNLinking to MedlineJournalInfo
 
      d. Investigator & InvestigatorList were moved from nlmsharedcatcit dtd to
         nlmcommon dtd
-            
+
      Historic Revision notes for previous versions of NLMCommon DTD
      See:
      http://www.nlm.nih.gov/databases/dtd/history_dtd_nlmcommon.html
 -->
 <!-- ================================================================= -->
-<!--     internal DTD entities             -->   
+<!--     internal DTD entities             -->
 <!ENTITY % Abstract "(AbstractText,CopyrightInformation?)">
 <!ENTITY % personal.name "(LastName,(ForeName|(FirstName,MiddleName?))?,
                            Initials?,Suffix?)">
 <!ENTITY % author.name "(%personal.name; | CollectiveName)">
 <!ENTITY % data.template "#PCDATA">
 <!ENTITY % ImprintType "(Current | Original)">
-<!ENTITY % IndexingStatus "(Ceased-publication |  Continued-by-another-indexed-title | 
+<!ENTITY % IndexingStatus "(Ceased-publication |  Continued-by-another-indexed-title |
                             Currently-indexed |  Currently-indexed-Title-changed |
-                            Date-range-of-indexed-citations-unspecified | 
+                            Date-range-of-indexed-citations-unspecified |
                             Deselected) #IMPLIED">
-<!ENTITY % IndexingTreatment "(Unknown | Full | Selective | ReferencedIn | 
+<!ENTITY % IndexingTreatment "(Unknown | Full | Selective | ReferencedIn |
                                ReferencedInNoDetails) #IMPLIED">
 <!ENTITY % normal.date "(Year,Month,Day,(Hour,(Minute,Second?)?)?)">
 <!ENTITY % pub.date "((Year, ((Month, Day?) | Season)?) | MedlineDate)">
@@ -68,7 +68,7 @@
 <!-- This is the top level element for Article -->
 <!ELEMENT Article ((Journal | Book), %ArticleTitle.Ref;,
                   ((Pagination, ELocationID*) | ELocationID+),
-                   Abstract?, Affiliation?, AuthorList?, Language+, DataBankList?, 
+                   Abstract?, Affiliation?, AuthorList?, Language+, DataBankList?,
                     GrantList?, %PublicationType.Ref;, VernacularTitle?,
                     ArticleDate*)>
 <!-- ================================================================= -->
@@ -128,7 +128,7 @@
 <!ELEMENT FirstName (#PCDATA)>
 <!ELEMENT ForeName (#PCDATA)>
 <!ELEMENT Frequency (#PCDATA)>
-<!ATTLIST Frequency 
+<!ATTLIST Frequency
           FrequencyType (Current | Former) "Current"
 >
 <!ELEMENT Grant (%GrantID.Ref;, %Acronym.Ref;, %Agency.Ref;)>
@@ -170,7 +170,7 @@
 <!ELEMENT OtherInformation (#PCDATA)>
 <!ELEMENT Pagination ((StartPage, EndPage?, MedlinePgn?) | MedlinePgn)>
 <!ELEMENT Place (#PCDATA)>
-<!ATTLIST Place  
+<!ATTLIST Place
        ImprintType %ImprintType; "Current"
 >
 <!ELEMENT PlaceCode (#PCDATA)>
@@ -179,7 +179,7 @@
 <!ELEMENT PubDate (%pub.date;)>
 <!ELEMENT PublicationEndYear (#PCDATA)>
 <!ELEMENT PublicationFirstYear (#PCDATA)>
-<!ELEMENT PublicationInfo (Country?, PlaceCode?, Imprint*, Place*, 
+<!ELEMENT PublicationInfo (Country?, PlaceCode?, Imprint*, Place*,
                            Publisher*, DateIssued*,  ProjectedPublicationDate?,
                            PublicationFirstYear?, PublicationEndYear?, Edition?,
                            DatesOfSerialPublication*, Frequency*)>

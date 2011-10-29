@@ -1,8 +1,8 @@
 BLASTP 2.0.10 [Aug-26-1999]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -23,7 +23,7 @@ gi|3024745|sp|O26320|THSA_METTH PROBABLE THERMOSOME SUBUNIT A         29  4.5
 
 >gi|120291|sp|P21297|FLBT_CAUCR FLBT PROTEIN
            Length = 141
-           
+
  Score =  284 bits (718), Expect = 7e-77
  Identities = 141/141 (100%), Positives = 141/141 (100%)
 
@@ -43,7 +43,7 @@ Sbjct: 121 EYEDERLGHVSSGVSAGGDAG 141
 >gi|3024946|sp|Q58368|Y958_METJA HYPOTHETICAL PROTEIN MJ0958
            PRECURSOR
            Length = 426
-           
+
  Score = 29.3 bits (64), Expect = 3.4
  Identities = 15/47 (31%), Positives = 23/47 (48%)
 
@@ -54,12 +54,12 @@ Sbjct: 169 ILVLINNTNITELKKFEDDDYYTTFQHYIYQPIFIFTTYDSKAKKFY 215
 
 >gi|3024745|sp|O26320|THSA_METTH PROBABLE THERMOSOME SUBUNIT A
            Length = 542
-           
+
  Score = 29.0 bits (63), Expect = 4.5
  Identities = 31/107 (28%), Positives = 46/107 (42%), Gaps = 9/107 (8%)
 
 Query: 34  KASVLREKDIMQPDQVTTPARHIYFPVMMMYLDEVGAEKFYEEFATRLNEFMGVVRNPVV 93
-           +A V+ EK I   D+V T       P  +  +     +   EE    L + +GVV +   
+           +A V+ EK I   D+V T       P  +  +     +   EE    L + +GVV +
 Sbjct: 339 EAGVIYEKKIF--DEVLTFIEECRDPKAISIILRGSTKHVAEEMERALEDAIGVVAS--T 394
 
 Query: 94  LQDCIAISKHVMAREYYKALMLSRKLIEYEDERLGHVSSGVSAGGDA 140
@@ -71,13 +71,13 @@ Sbjct: 395 LED-----REVVAGGGAPEVEIARKLREYADTISGREQLAVSAFADA 436
     Posted date:  Nov 15, 1999  2:55 PM
   Number of letters in database: 29,652,561
   Number of sequences in database:  82,258
-  
+
 Lambda     K      H
-   0.321    0.138    0.390 
+   0.321    0.138    0.390
 
 Gapped
 Lambda     K      H
-   0.270   0.0470    0.230 
+   0.270   0.0470    0.230
 
 
 Matrix: BLOSUM62

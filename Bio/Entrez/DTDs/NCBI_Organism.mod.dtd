@@ -34,11 +34,11 @@
 *
 -->
 <!ELEMENT Org-ref (
-        Org-ref_taxname?, 
-        Org-ref_common?, 
-        Org-ref_mod?, 
-        Org-ref_db?, 
-        Org-ref_syn?, 
+        Org-ref_taxname?,
+        Org-ref_common?,
+        Org-ref_mod?,
+        Org-ref_db?,
+        Org-ref_syn?,
         Org-ref_orgname?)>
 
 <!-- preferred formal name -->
@@ -66,19 +66,19 @@
 
 
 <!ELEMENT OrgName (
-        OrgName_name?, 
-        OrgName_attrib?, 
-        OrgName_mod?, 
-        OrgName_lineage?, 
-        OrgName_gcode?, 
-        OrgName_mgcode?, 
+        OrgName_name?,
+        OrgName_attrib?,
+        OrgName_mod?,
+        OrgName_lineage?,
+        OrgName_gcode?,
+        OrgName_mgcode?,
         OrgName_div?)>
 
 <!ELEMENT OrgName_name (
-        OrgName_name_binomial | 
-        OrgName_name_virus | 
-        OrgName_name_hybrid | 
-        OrgName_name_namedhybrid | 
+        OrgName_name_binomial |
+        OrgName_name_virus |
+        OrgName_name_hybrid |
+        OrgName_name_namedhybrid |
         OrgName_name_partial)>
 
 <!-- genus/species type name -->
@@ -115,8 +115,8 @@
 
 
 <!ELEMENT OrgMod (
-        OrgMod_subtype, 
-        OrgMod_subname, 
+        OrgMod_subtype,
+        OrgMod_subname,
         OrgMod_attrib?)>
 
 <!ELEMENT OrgMod_subtype (%INTEGER;)>
@@ -179,8 +179,8 @@
 
 
 <!ELEMENT BinomialOrgName (
-        BinomialOrgName_genus, 
-        BinomialOrgName_species?, 
+        BinomialOrgName_genus,
+        BinomialOrgName_species?,
         BinomialOrgName_subspecies?)>
 
 <!-- required -->
@@ -199,8 +199,8 @@
 
 
 <!ELEMENT TaxElement (
-        TaxElement_fixed-level, 
-        TaxElement_level?, 
+        TaxElement_fixed-level,
+        TaxElement_level?,
         TaxElement_name)>
 
 <!ELEMENT TaxElement_fixed-level (%INTEGER;)>

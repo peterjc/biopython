@@ -1,12 +1,12 @@
 BLASTP 2.0.12 [Apr-21-2000]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
-Query= aaaa 
+Query= aaaa
          (889 letters)
 
 Database: /dbase/swissprot/main/release/sp;
@@ -53,7 +53,7 @@ CC24_YEAST P11433 saccharomyces cerevisiae (baker's yeast). ...    31  8.6
 >100K_RAT Q62671 rattus norvegicus (rat). 100 kda protein (ec 6.3.2.-).
            7/1999
            Length = 889
-           
+
  Score = 1516 bits (3882), Expect = 0.0
  Identities = 765/889 (86%), Positives = 765/889 (86%)
 
@@ -82,7 +82,7 @@ Query: 301 SILTELGGFEVKESKFRREMEKLRNQQSRDLSLEVDRDRDLLIQQTMRQLNNHFGRRCAT 360
 Sbjct: 301 SILTELGGFEVKESKFRREMEKLRNQQSRDLSLEVDRDRDLLIQQTMRQLNNHFGRRCAT 360
 
 Query: 361 TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQX 420
-           TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQ 
+           TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQ
 Sbjct: 361 TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQR 420
 
 Query: 421 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXQLSIDTRPFRPASEGNPSDDPDP 480
@@ -121,7 +121,7 @@ Sbjct: 841 SITIRPPDDQHLPTANTCISRLYVPLYSSKQILKQKLLLAIKTKNFGFV 889
 >HYDP_DROME P51592 drosophila melanogaster (fruit fly). hyperplastic discs
             protein (hyd protein) (ec 6.3.2.-). 12/1998
             Length = 2895
-            
+
  Score =  513 bits (1308), Expect = e-145
  Identities = 281/634 (44%), Positives = 375/634 (58%), Gaps = 32/634 (5%)
 
@@ -134,7 +134,7 @@ Query: 323  LRNQQSRDLSL-EVDRDRDLLIQQTMRQLNNHFGR--RCATTPMAVHRVKVTFKDEPGEG 379
 Sbjct: 2345 LRNGQQRDLVLCKLERNRESLIVQTFKELNTQFGNQSRRIQPPITFNRVKVTFKDEPGEG 2404
 
 Query: 380  SGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQXXXXXXXXXXXXXXXXXXXX 439
-            SGVARSFYT+IA+A L++ K+PNL+ +Q      H+  +                     
+            SGVARSFYT+IA+A L++ K+PNL+ +Q      H+  +
 Sbjct: 2405 SGVARSFYTSIAEALLASAKIPNLESVQVGTN--HSKYVVPFSSILRTTVSGSSRDQSTL 2462
 
 Query: 440  XXXXXXXXXXXXXXXXXXQLSIDTRPFRPASEGN---PSDDPDPLPAHRQALGERLYPRV 496
@@ -142,7 +142,7 @@ Query: 440  XXXXXXXXXXXXXXXXXXQLSIDTRPFRPASEGN---PSDDPDPLPAHRQALGERLYPRV 496
 Sbjct: 2463 QRRGSNSKILWRSARERKALNLDARPYTPPNSSDNATPESLNDHLSVHLQQIGERLYPKI 2522
 
 Query: 497  QAMQPAFASKITGMXXXXXXXXXXXXXXXXXXXRARVEEAMELIVAHGRENGAXXXXXXX 556
-             ++    A KITGM                   R +V EA+E+I    +   +       
+             ++    A KITGM                   R +V EA+E+I    +   +
 Sbjct: 2523 HSINQTHAPKITGMLLEIPTPQLLSVISSDETLRQKVNEAIEIITFKQKSETSA------ 2576
 
 Query: 557  XXXXXEKVQENRKRHGSSRSVVXXXXXXXXXXXXNAPLFYQPGKRGFYTPRPGKNTEARL 616
@@ -154,7 +154,7 @@ Query: 617  NCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILAS 676
 Sbjct: 2623 NAFRNIGRLIGLCLLQNELLPLFLQRHVLKYILRRKIKFHDLAFFDPALYESFRQIIQNA 2682
 
 Query: 677  QSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYVRKYAEHRMLVV 736
-            Q+ + +   + M+L F +DL KEEG G  ELIP G ++ V+ + +Y       ++   + 
+            Q+ + +   + M+L F +DL KEEG G  ELIP G ++ V+ + +Y       ++   +
 Sbjct: 2683 QTKEGEETINRMELCFVIDLMKEEGCGNRELIPGGRDV-VSHRVIYSSTSDAIQNIDXIK 2741
 
 Query: 737  A-EQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAE 795
@@ -174,7 +174,7 @@ Sbjct: 2862 NTCISRLYIPLYSSKSILRSKMLMAIKSKNFGFV 2895
  Identities = 69/209 (33%), Positives = 107/209 (51%), Gaps = 26/209 (12%)
 
 Query: 3    SARGDFLNYALSLMRSHNDEHSDVLPVLDVCSLKHVAYVFQALIYWIKAMNQQTTLDTPQ 62
-            ++R DF  Y LSLMRSH  EH D LPVLD+ +L+H+AYV  A +Y+++  N     D   
+            ++R DF  Y LSLMRSH  EH D LPVLD+ +L+H+AYV  A +Y+++  N     D
 Sbjct: 1913 NSRRDFFTYCLSLMRSHTSEHRDALPVLDITALRHIAYVLDAFVYYMR--NDSGFYDKQD 1970
 
 Query: 63   XXXXXXXXXXXXGIXXXXXXXXXXXXTSQSATLNDKDDE------SLPA--ETGQNHPFF 114
@@ -182,7 +182,7 @@ Query: 63   XXXXXXXXXXXXGIXXXXXXXXXXXXTSQSATLNDKDDE------SLPA--ETGQNHPFF 114
 Sbjct: 1971 SISGR--------INNLSPMTESYDTDDELANLEEFNADVQMSASSMPSGSQGTRRHAFF 2022
 
 Query: 115  RRSDSMTFLGCIPPNPFEVPLAEAIPLADQPHLLQPNARKEDLFGRPSQGLYSSSAGSGK 174
-             RS+S   LGC  P  FE+PL  A+PLAD+PHLLQPN+++++LF      + +++  SG 
+             RS+S   LGC  P  FE+PL  A+PLAD+PHLLQPN+++++LF      + +++  SG
 Sbjct: 2023 ARSESTLTLGCSAPEGFELPLDMAMPLADKPHLLQPNSKRQELFANLPLLVTTNANNSG- 2081
 
 Query: 175  CLVEVTMD---RNCLEVLPTKMSYAANLK 200
@@ -193,12 +193,12 @@ Sbjct: 2082 ----ATNDGDGASIFDYTPTRLGFSNSLK 2106
 >PUB1_SCHPO Q92462 schizosaccharomyces pombe (fission yeast).
            ubiquitin--protein ligase pub1 (ec 6.3.2.-). 12/1998
            Length = 767
-           
+
  Score = 94.8 bits (232), Expect = 7e-19
  Identities = 69/267 (25%), Positives = 116/267 (42%), Gaps = 22/267 (8%)
 
 Query: 606 PRPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVM 665
-           P  G N E  LN F+ IGR++GL +               K++L +KV   D    D   
+           P  G N E  LN F+ IGR++GL +               K++L +KV   D    D
 Sbjct: 491 PHSGINPE-HLNYFKFIGRVIGLAIFHRRFVDAFFVVSFYKMILQKKVTLQDMESMDAEY 549
 
 Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYV 725
@@ -206,7 +206,7 @@ Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYV 725
 Sbjct: 550 YRSLVWILDNDITGVLDLTFSVEDNCFGEVVT-------IDLKPNGRNIEVTEENKREYV 602
 
 Query: 726 RKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTS 785
-                 R+    E+  +A  +G  +++P+  +      +  LL+ G  E++++     T 
+                 R+    E+  +A  +G  +++P+  +      +  LL+ G  E++++     T
 Sbjct: 603 DLVTVWRIQKRIEEQFNAFHEGFSELIPQELINVFDERELELLIGGISEIDMEDWKKHTD 662
 
 Query: 786 FNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQ-------P 838
@@ -221,7 +221,7 @@ Sbjct: 716 RKFTIEKAGEPNKLPKAHTCFNRLDLP 742
 >RSP5_YEAST P39940 saccharomyces cerevisiae (baker's yeast). ubiquitin--protein
            ligase rsp5 (ec 6.3.2.-). 7/1999
            Length = 809
-           
+
  Score = 92.8 bits (227), Expect = 3e-18
  Identities = 71/267 (26%), Positives = 122/267 (45%), Gaps = 22/267 (8%)
 
@@ -234,11 +234,11 @@ Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYV 725
 Sbjct: 592 YNSLNWMLENSIDGVLDLTFSADDERFGEVVT-------VDLKPDGRNIEVTDGNKKEYV 644
 
 Query: 726 RKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTS 785
-             Y + R++   ++   A   G  +++P++ +      +  LL+ G  E++++     T 
+             Y + R++   ++   A   G  +++P++ +      +  LL+ G  E++++     T
 Sbjct: 645 ELYTQWRIVDRVQEQFKAFMDGFNELIPEDLVTVFDERELELLIGGIAEIDIEDWKKHTD 704
 
 Query: 786 FNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPS---- 841
-           +     + +++++Q   WFW  V      +R  L+ F T +  +P +  GF+ +      
+           +     + +++++Q   WFW  V      +R  L+ F T +  +P +  GF+ +
 Sbjct: 705 Y--RGYQESDEVIQ---WFWKCVSEWDNEQRARLLQFTTGTSRIPVN--GFKDLQGSDGP 757
 
 Query: 842 --ITIRPPDD-QHLPTANTCISRLYVP 865
@@ -249,24 +249,24 @@ Sbjct: 758 RRFTIEKAGEVQQLPKSHTCFNRVDLP 784
 >NED4_HUMAN P46934 homo sapiens (human). nedd-4 protein (ec 6.3.2.-) (kiaa0093)
            (fragment). 7/1999
            Length = 927
-           
+
  Score = 87.8 bits (214), Expect = 9e-17
  Identities = 72/268 (26%), Positives = 122/268 (44%), Gaps = 23/268 (8%)
 
 Query: 606 PRPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVM 665
-           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D   
+           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D
 Sbjct: 649 PNSGLCNEDHLSYFKFIGRVAGMAVYHGKLLDGFFIRPFYKMMLHKPITLHDMESVDSEY 708
 
 Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQV---ELIPNGVNIPVTPQNVY 722
-           Y SLR ++     +D     + +DL F +D   EE  GQ    EL   G  I VT +N  
+           Y SLR ++     +D     + +DL F +D   EE  GQ    EL   G  I VT +N
 Sbjct: 709 YNSLRWIL----ENDP----TELDLRFIID---EELFGQTHQHELKNGGSEIVVTNKNKK 757
 
 Query: 723 EYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLIS 782
-           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V     
+           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V
 Sbjct: 758 EYIYLVIQWRFVNRIQKQMAAFKEGFFELIPQDLIKIFDENELELLMCGLGDVDVNDWRE 817
 
 Query: 783 FTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLP----ASEEGFQP 838
-            T + +    N + +    +WFW  V  M   +R  L+ F T +  +P    A   G   
+            T + +    N + +    +WFW  V  M   +R  L+ F T +  +P    A   G
 Sbjct: 818 HTKYKNGYSANHQVI----QWFWKAVLMMDSEKRIRLLQFVTGTSRVPMNGFAELYGSNG 873
 
 Query: 839 MPSITIRP-PDDQHLPTANTCISRLYVP 865
@@ -277,24 +277,24 @@ Sbjct: 874 PQSFTVEQWGTPEKLPRAHTCFNRLDLP 901
 >NED4_MOUSE P46935 mus musculus (mouse). nedd-4 protein (ec 6.3.2.-)
            (fragment). 11/1997
            Length = 957
-           
+
  Score = 87.0 bits (212), Expect = 1e-16
  Identities = 73/270 (27%), Positives = 120/270 (44%), Gaps = 27/270 (10%)
 
 Query: 606 PRPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVM 665
-           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D   
+           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D
 Sbjct: 679 PNSGLCNEDHLSYFKFIGRVAGMAVYHGKLLDGFFIRPFYKMMLQKLITLHDMESVDSEY 738
 
 Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQV---ELIPNGVNIPVTPQNVY 722
-           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N  
+           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N
 Sbjct: 739 YSSLRWILENDPTE--------LDLRFIID---EELFGQTHQHELKTGGSEIVVTNKNKK 787
 
 Query: 723 EYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLIS 782
-           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V     
+           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V
 Sbjct: 788 EYIYLVIQWRFVNRIQKQMAAFKEGFFELIPQDLIKIFDENELELLMCGLGDVDVNDWRE 847
 
 Query: 783 FTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLP----ASEEGFQP 838
-            T + +    N + +     WFW  V  M   +R  L+ F T +  +P    A   G   
+            T + +    N + +     WFW  V  M   +R  L+ F T +  +P    A   G
 Sbjct: 848 HTKYKNGYSMNHQVI----HWFWKAVWMMDSEKRIRLLQFVTGTSRVPMNGFAELYGSNG 903
 
 Query: 839 MPSITIR---PPDDQHLPTANTCISRLYVP 865
@@ -305,7 +305,7 @@ Sbjct: 904 PQSFTVEQWGTPD--KLPRAHTCFNRLDLP 931
 >URB1_RAT P51593 rattus norvegicus (rat). dna binding protein ure-b1 (ec
            6.3.2.-). 10/1996
            Length = 310
-           
+
  Score = 85.4 bits (208), Expect = 4e-16
  Identities = 65/250 (26%), Positives = 110/250 (44%), Gaps = 19/250 (7%)
 
@@ -318,7 +318,7 @@ Query: 683 AVFSAMDLAFAVDLCKEEGGGQV-ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVAEQPL 741
 Sbjct: 99  VSTLGYDLTFSTEV-QEFGVCEVRDLKPNGANILVTEENKKEYVHLVCQMRMTGAIRKQL 157
 
 Query: 742 HAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAEKLLQFK 801
-            A  +G  +++PK  +   T ++  LL  G   +++  L S T ++     + +      
+            A  +G  +++PK  +   T ++  LL  G   +++  L S T ++     + +
 Sbjct: 158 AAFLEGFYEIIPKRLISIFTEQELELLYTGLPTIDIDDLKSNTEYHKYQSNSIQ-----I 212
 
 Query: 802 RWFWSIVERMSMTERQDLVYFWTSSPSLP----ASEEGFQPMPSITIRPPD--DQHLPTA 855
@@ -334,7 +334,7 @@ Sbjct: 273 HTCFNQLDLP 282
            6.3.2.-) (oncogenic protein- associated protein e6-ap)
            (human papillomavirus e6-associated protein). 5/2000
            Length = 875
-           
+
  Score = 83.9 bits (204), Expect = 1e-15
  Identities = 68/249 (27%), Positives = 117/249 (46%), Gaps = 12/249 (4%)
 
@@ -343,11 +343,11 @@ Query: 619 FRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILASQS 678
 Sbjct: 612 FTLIGIVLGLAIYNNCILDVHFPMVVYRKLMGKKGTFRDLGDSHPVLYQSLKDLLEYEGN 671
 
 Query: 679 SDADAVFSAMDLAFAVDLCKEEGGGQV-ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVA 737
-            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +    
+            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +
 Sbjct: 672 VEDD-----MMITFQISQTDLFGNPMMYDLKENGDKIPITNENRKEFVNLYSDYILNKSV 726
 
 Query: 738 EQPLHAMRKGLLDVLPKNSLEDL-TAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAEK 796
-           E+   A R+G   V  ++ L+ L   E+  LL+ G   ++ Q L   T +  + G   + 
+           E+   A R+G   V  ++ L+ L   E+  LL+ G   ++ Q L   T +  + G   +
 Sbjct: 727 EKQFKAFRRGFHMVTNESPLKYLFRPEEIELLICGSRNLDFQALEETTEY--DGGYTRDS 784
 
 Query: 797 LLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPSITIRPPDDQHLPTAN 856
@@ -362,20 +362,20 @@ Sbjct: 842 TCFNVLLLP 850
 >HUL5_YEAST P53119 saccharomyces cerevisiae (baker's yeast). probable
            ubiquitin--protein ligase hul5 (ec 6.3.2.-). 5/2000
            Length = 910
-           
+
  Score = 83.1 bits (202), Expect = 2e-15
  Identities = 67/252 (26%), Positives = 125/252 (49%), Gaps = 21/252 (8%)
 
 Query: 622 IGRILGLCLLQNELCPITLNRHVIKVLL----GRKVNWHDFAFFDPVMYESLRQLILASQ 677
-           +G+++G CL ++ L  ++     +K LL    G   ++ D   +D V+Y +L +L+  + 
+           +G+++G CL ++ L  ++     +K LL    G   ++ D   +D V+Y +L +L+  +
 Sbjct: 647 LGKVVGKCLYEHVLIDVSFADFFLKKLLNYSNGFLSSFSDLGSYDSVLYNNLIKLL--NM 704
 
 Query: 678 SSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVA 737
-           ++D      ++DL F +D   E     V+LIPNG    VT  NV  YV K  ++++    
+           ++D      ++DL F +D   E     V+LIPNG    VT  NV  YV K  ++++
 Sbjct: 705 TTDE---IKSLDLTFEIDE-PESSAKVVDLIPNGSKTYVTKDNVLLYVTKVTDYKLNKRC 760
 
 Query: 738 EQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGE-VNVQMLISFTSFNDESGENAEK 796
-            +P+ A   GL  ++  + +E   + + ++L++G  + +++  L S T +     E+   
+            +P+ A   GL  ++  + +E   + + ++L++G  + +++  L S T +     E+
 Sbjct: 761 FKPVSAFHGGLSVIIAPHWMEMFNSIELQMLISGERDNIDLDDLKSNTEYGGYKEED--- 817
 
 Query: 797 LLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPM-PSITIRPPDDQ--HLP 853
@@ -391,12 +391,12 @@ Sbjct: 874 TASTCVNLLKLP 885
            6.3.2.-) (oncogenic protein- associated protein e6-ap).
            5/2000
            Length = 885
-           
+
  Score = 81.5 bits (198), Expect = 6e-15
  Identities = 67/243 (27%), Positives = 114/243 (46%), Gaps = 12/243 (4%)
 
 Query: 625 ILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILASQSSDADAV 684
-           ILGL +  N +  +     V + L+G+K  + D     PV+Y+SL+ L+    S + D  
+           ILGL +  N +  +     V + L+G+K  + D     PV+Y+SL+ L+    S + D
 Sbjct: 628 ILGLAIYNNCILDVHFPMVVYRKLMGKKGTFRDLGDSHPVLYQSLKDLLEYEGSVEDD-- 685
 
 Query: 685 FSAMDLAFAVDLCKEEGGGQV-ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVAEQPLHA 743
@@ -419,7 +419,7 @@ Sbjct: 858 LLP 860
 >HUL4_YEAST P40985 saccharomyces cerevisiae (baker's yeast). probable
            ubiquitin--protein ligase hul4 (ec 6.3.2.-). 5/2000
            Length = 892
-           
+
  Score = 69.5 bits (167), Expect = 3e-11
  Identities = 58/264 (21%), Positives = 114/264 (42%), Gaps = 16/264 (6%)
 
@@ -447,7 +447,7 @@ Sbjct: 841 FKISLLGSHDSDDLPLAHTCFNEI 864
 >UFD4_YEAST P33202 saccharomyces cerevisiae (baker's yeast). ubiquitin fusion
             degradation protein 4 (ub fusion protein 4). 11/1997
             Length = 1483
-            
+
  Score = 58.2 bits (138), Expect = 7e-08
  Identities = 51/210 (24%), Positives = 92/210 (43%), Gaps = 17/210 (8%)
 
@@ -456,11 +456,11 @@ Query: 662  DPVMYESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNV 721
 Sbjct: 1259 DPLLAKSLKYIVA---NKDDNMTLESLSLTFTVP-----GNDDIELIPGGCNKSLNSSNV 1310
 
 Query: 722  YEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLI 781
-             EY+    +  +    E+ L A  +G   V     +  L  ++  + + G  E +  M  
+             EY+    +  +    E+ L A  +G   V     +  L  ++  + + G  E +  M
 Sbjct: 1311 EEYIHGVIDQILGKGIEKQLKAFIEGFSKVFSYERMLILFPDEL-VDIFGRVEEDWSMAT 1369
 
 Query: 782  SFTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLP-ASEEGFQPMP 840
-             +T+ N E G   +  +     F SI+      ER+  + F T SP LP    +   P  
+             +T+ N E G   +  +     F SI+      ER+  + F T SP LP    +   P
 Sbjct: 1370 LYTNLNAEHGYTMDSSIIHD--FISIISAFGKHERRLFLQFLTGSPKLPIGGFKSLNPKF 1427
 
 Query: 841  SITIRPPD-----DQHLPTANTCISRLYVP 865
@@ -470,20 +470,20 @@ Sbjct: 1428 TVVLKHAEDGLTADEYLPSVMTCANYLKLP 1457
 
 >Y032_HUMAN Q15034 homo sapiens (human). hypothetical protein kiaa0032. 5/2000
             Length = 1050
-            
+
  Score = 56.2 bits (133), Expect = 3e-07
  Identities = 60/255 (23%), Positives = 97/255 (37%), Gaps = 21/255 (8%)
 
 Query: 617  NCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILAS 676
-            N F  IG   GL +  + +  +     + K LL  K    D     P    SL++L L  
+            N F  IG   GL +  + +  +     + K LL  K    D     P    SL++L L
 Sbjct: 786  NWFHLIGITCGLAIYNSTVVDLHFPLALYKKLLNVKPGLEDLKELSPTEGRSLQEL-LDY 844
 
 Query: 677  QSSDADAVFSAMDLAFAVDLCKEEGG--GQVELIPNGVNIPVTPQNVYEYVRKYAEHRML 734
-               D +  F    L F +  C+E  G   Q +LIP G N+ V   N  E+V  Y  +   
+               D +  F    L F +  C+E  G   Q +LIP G N+ V   N  E+V  Y  +
 Sbjct: 845  PGEDVEETFC---LNFTI--CRESYGVIEQKKLIPGGDNVTVCKDNRQEFVDAYVNYVFQ 899
 
 Query: 735  VVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENA 794
-            +   +   A   G L V     LE     + R ++ G    N + L     +  +     
+            +   +   A   G L V     LE     + R ++ G    N + L     +  +
 Sbjct: 900  ISVHEWYTAFSSGFLKVCGGKVLELFQPSELRAMMVGNSNYNWEELEETAIYKGDYSATH 959
 
 Query: 795  EKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPSITI----RPPDDQ 850
@@ -498,7 +498,7 @@ Sbjct: 1011 YLPVAHTCYNLLDLP 1025
 >TR12_HUMAN Q14669 homo sapiens (human). thyroid receptor interacting protein 12
             (trip12) (kiaa0045). 12/1998
             Length = 1992
-            
+
  Score = 50.4 bits (118), Expect = 2e-05
  Identities = 63/289 (21%), Positives = 116/289 (39%), Gaps = 34/289 (11%)
 
@@ -511,11 +511,11 @@ Query: 663  PVMYES---LRQLILASQSSDADAVFSAMDLAFAVDL-----CKEEGGG---------QV 705
 Sbjct: 1743 PVVARSVYHLEDIVRQKKRLEQDKSQTKESLQYALETLTMNGCSVEDLGLDFTLPGFPNI 1802
 
 Query: 706  ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDF 765
-            EL   G +IPVT  N+ EY+R      +     +   + R G   V P + L+    E+ 
+            EL   G +IPVT  N+ EY+R      +     +   + R G   V P + L+    E+
 Sbjct: 1803 ELKKGGKDIPVTIHNLEEYLRLVIFWALNEGVSRQFDSFRDGFESVFPLSHLQYFYPEEL 1862
 
 Query: 766  RLLVNGCGEVNVQMLISFTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTS 825
-              L+ G                 + G   +   +  ++ + I+      +++  + F T 
+              L+ G                 + G   +   +  ++ + I+      +++  + F T
 Sbjct: 1863 DQLLCGSKADTWDAKTLMECCRPDHGYTHDS--RAVKFLFEILSSFDNEQQRLFLQFVTG 1920
 
 Query: 826  SPSLPASEEGFQPM-PSITI--------RPPDDQHLPTANTCISRLYVP 865
@@ -526,7 +526,7 @@ Sbjct: 1921 SPRLPVG--GFRSLNPPLTIVRKTFESTENPDD-FLPSVMTCVNYLKLP 1966
 >PAB1_MOUSE P29341 mus musculus (mouse). polyadenylate-binding protein 1
            (poly(a) binding protein 1) (pabp 1). 7/1998
            Length = 636
-           
+
  Score = 49.2 bits (115), Expect = 3e-05
  Identities = 25/70 (35%), Positives = 36/70 (50%)
 
@@ -542,7 +542,7 @@ Sbjct: 614 LQAHQAKEAA 623
 >PAB1_HUMAN P11940 homo sapiens (human). polyadenylate-binding protein 1
            (poly(a) binding protein 1) (pabp 1). 7/1998
            Length = 636
-           
+
  Score = 48.8 bits (114), Expect = 5e-05
  Identities = 25/70 (35%), Positives = 35/70 (49%)
 
@@ -558,7 +558,7 @@ Sbjct: 614 LQAHQAKEAA 623
 >PABP_XENLA P20965 xenopus laevis (african clawed frog). polyadenylate-binding
            protein (poly(a) binding protein) (pabp). 7/1998
            Length = 633
-           
+
  Score = 48.0 bits (112), Expect = 8e-05
  Identities = 25/70 (35%), Positives = 34/70 (47%)
 
@@ -574,7 +574,7 @@ Sbjct: 612 LQAHQAKEAA 621
 >PABP_DROME P21187 drosophila melanogaster (fruit fly). polyadenylate-binding
            protein (poly(a) binding protein) (pabp). 2/1995
            Length = 632
-           
+
  Score = 41.4 bits (95), Expect = 0.008
  Identities = 21/59 (35%), Positives = 29/59 (48%)
 
@@ -587,7 +587,7 @@ Sbjct: 567 KQILGERLYPMIEHMHANLAGKITGMLLEIENSELLHMIEDQEALKAKVEEAVAVLQVH 625
            polyadenylate-binding protein 5 (poly(a) binding protein
            5) (pabp 5). 11/1995
            Length = 668
-           
+
  Score = 37.1 bits (84), Expect = 0.15
  Identities = 17/57 (29%), Positives = 29/57 (50%)
 
@@ -600,7 +600,7 @@ Sbjct: 590 HPRMLGDHLYPLVEQQEPANPAKVTGMLLEMDQAEILHLLESPEALKAKVSEALDVL 646
            polyadenylate-binding protein 2 (poly(a) binding protein
            2) (pabp 2). 12/1998
            Length = 629
-           
+
  Score = 34.4 bits (77), Expect = 0.99
  Identities = 18/56 (32%), Positives = 28/56 (49%)
 
@@ -613,7 +613,7 @@ Sbjct: 556 RTMLGEVLYPLVEQVEAESAAKVTGMLLEMDQTEVLHLLESPEALKAKVAEAMDVL 611
            (dna polymerase alpha holoenzyme-associated protein p1)
            (p1-mcm3). 5/2000
            Length = 812
-           
+
  Score = 33.6 bits (75), Expect = 1.7
  Identities = 23/87 (26%), Positives = 38/87 (43%), Gaps = 1/87 (1%)
 
@@ -630,7 +630,7 @@ Sbjct: 656 KVLEKEKKRKKASEDESDLEDEEEKSQ 682
            polyadenylate-binding protein (poly(a) binding protein)
            (pabp). 7/1998
            Length = 653
-           
+
  Score = 32.5 bits (72), Expect = 3.8
  Identities = 18/61 (29%), Positives = 26/61 (42%)
 
@@ -646,12 +646,12 @@ Sbjct: 641 L 641
 >PROB_SERMA P17856 serratia marcescens. glutamate 5-kinase (ec 2.7.2.11)
            (gamma-glutamyl kinase) (gk). 10/1996
            Length = 367
-           
+
  Score = 31.7 bits (70), Expect = 6.6
  Identities = 29/99 (29%), Positives = 40/99 (40%), Gaps = 14/99 (14%)
 
 Query: 279 RWRLSLELFGRVFMEDVGAEP----GSILTELGGFEVKESKFRREMEKLRNQQSRDLSLE 334
-           RW       G + ++D   E     GS L   G  EVK    R E+ ++RN   RDL+  
+           RW       G + ++D   E     GS L   G  EVK    R E+ ++RN   RDL+
 Sbjct: 267 RWIFGAPPAGEITVDDGAVEAMMARGSSLLPKGIREVKGDFSRGEVIRIRNLTGRDLAHG 326
 
 Query: 335 VDRDRDLLIQQTMRQLNNHFGRRCATT------PMAVHR 367
@@ -662,12 +662,12 @@ Sbjct: 327 VSRYN----SDAMRMIAGHHSQEISEILGYEYGPVAVHR 361
 >ST20_CANAL Q92212 candida albicans (yeast). serine/threonine-protein kinase
            ste20 homolog (ec 2.7.1.-). 5/2000
            Length = 1230
-           
+
  Score = 31.3 bits (69), Expect = 8.6
  Identities = 26/100 (26%), Positives = 46/100 (46%), Gaps = 3/100 (3%)
 
 Query: 309 FEVKESKFRREMEKLRNQQSRDLSLEVDRDRDLLIQQTMRQLNNHFGRRCATTPMAVHRV 368
-           +E++++K++   +KLR +++R+L  E+ R R+   +Q  +Q         A+    +   
+           +E++++K++   +KLR +++R+L  E+ R R+   +Q  +Q         A+    +
 Sbjct: 839 YEIQQTKYQEAQQKLREKKARELE-EIQRLREKNERQNRQQETGQNNADTASGGSNIAPP 897
 
 Query: 369 KVTFKDEPGEGSGVARSFYTA--IAQAFLSNEKLPNLDCI 406
@@ -677,12 +677,12 @@ Sbjct: 898 VPVPNKKPPSGSGGGRDAKQAALIAQKKREEKKRKNLQII 937
 
 >KEND_HUMAN O95613 homo sapiens (human). kendrin (kiaa0402). 5/2000
             Length = 3321
-            
+
  Score = 31.3 bits (69), Expect = 8.6
  Identities = 23/90 (25%), Positives = 44/90 (48%), Gaps = 10/90 (11%)
 
 Query: 176  LVEVTMDRNCLEVLPTKMSYAANLK-NVMNMQNRQKKAGEDQSMLAEEA---------DS 225
-            L E+  +   L+V+ T+ S    LK  + N+Q  QK+  ++++   E+          + 
+            L E+  +   L+V+ T+ S    LK  + N+Q  QK+  ++++   E+          +
 Sbjct: 1683 LRELEEENTSLKVIYTRSSEIEELKATIENLQENQKRLQKEKAEEIEQLHEVIEKLQHEL 1742
 
 Query: 226  SKPGPSAHDVAAQLKSSLLAEIGLTESEGP 255
@@ -693,12 +693,12 @@ Sbjct: 1743 SLMGPVVHEVSDSQAGSLQSELLCSQAGGP 1772
 >FIXK_RHIME P13295 rhizobium meliloti (sinorhizobium meliloti). nitrogen
            fixation regulation protein fixk. 5/2000
            Length = 211
-           
+
  Score = 31.3 bits (69), Expect = 8.6
  Identities = 22/74 (29%), Positives = 39/74 (51%), Gaps = 10/74 (13%)
 
 Query: 691 AFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVA---EQPLHAMRKG 747
-           AF VDLC+ +GGG+       + +P++ Q++ +Y+    E    VV    E+ L A+R  
+           AF VDLC+ +GGG+       + +P++ Q++ +Y+    E    VV    E+ L A+R
 Sbjct: 142 AFLVDLCERQGGGR------QLRLPMSRQDIADYLGLTIETVSRVVTKLKERSLIALRDA 195
 
 Query: 748 -LLDVLPKNSLEDL 760
@@ -709,12 +709,12 @@ Sbjct: 196 RTIDIMKPEALRSL 209
 >CC24_YEAST P11433 saccharomyces cerevisiae (baker's yeast). cell division
            control protein 24 (calcium regulatory protein). 7/1999
            Length = 854
-           
+
  Score = 31.3 bits (69), Expect = 8.6
  Identities = 24/78 (30%), Positives = 35/78 (44%), Gaps = 8/78 (10%)
 
 Query: 610 KNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAF--FDPVMYE 667
-           K  EA L+  +NI R +      NE    T N  V+K L GR VNW  +    F  ++Y 
+           K  EA L+  +NI R +      NE    T N  V+K L GR VNW  +    F  ++Y
 Sbjct: 435 KELEAALDISKNIARSI------NENQRRTENHQVVKKLYGRVVNWKGYRISKFGELLYF 488
 
 Query: 668 SLRQLILASQSSDADAVF 685
@@ -765,7 +765,7 @@ SYQ_YEAST P13188 saccharomyces cerevisiae (baker's yeast). g...    31  8.4
 >100K_RAT Q62671 rattus norvegicus (rat). 100 kda protein (ec 6.3.2.-).
            7/1999
            Length = 889
-           
+
  Score = 1236 bits (3163), Expect = 0.0
  Identities = 765/889 (86%), Positives = 765/889 (86%)
 
@@ -794,7 +794,7 @@ Query: 301 SILTELGGFEVKESKFRREMEKLRNQQSRDLSLEVDRDRDLLIQQTMRQLNNHFGRRCAT 360
 Sbjct: 301 SILTELGGFEVKESKFRREMEKLRNQQSRDLSLEVDRDRDLLIQQTMRQLNNHFGRRCAT 360
 
 Query: 361 TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQX 420
-           TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQ 
+           TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQ
 Sbjct: 361 TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQR 420
 
 Query: 421 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXQLSIDTRPFRPASEGNPSDDPDP 480
@@ -833,7 +833,7 @@ Sbjct: 841 SITIRPPDDQHLPTANTCISRLYVPLYSSKQILKQKLLLAIKTKNFGFV 889
 >HYDP_DROME P51592 drosophila melanogaster (fruit fly). hyperplastic discs
             protein (hyd protein) (ec 6.3.2.-). 12/1998
             Length = 2895
-            
+
  Score =  709 bits (1810), Expect = 0.0
  Identities = 281/635 (44%), Positives = 374/635 (58%), Gaps = 34/635 (5%)
 
@@ -846,7 +846,7 @@ Query: 323  LRNQQSRDLSL-EVDRDRDLLIQQTMRQLNNHFGR--RCATTPMAVHRVKVTFKDEPGEG 379
 Sbjct: 2345 LRNGQQRDLVLCKLERNRESLIVQTFKELNTQFGNQSRRIQPPITFNRVKVTFKDEPGEG 2404
 
 Query: 380  SGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQXXXXXXXXXXXXXXXXXXXX 439
-            SGVARSFYT+IA+A L++ K+PNL+ +Q      H+  +                     
+            SGVARSFYT+IA+A L++ K+PNL+ +Q      H+  +
 Sbjct: 2405 SGVARSFYTSIAEALLASAKIPNLESVQVGTN--HSKYVVPFSSILRTTVSGSSRDQSTL 2462
 
 Query: 440  XXXXXXXXXXXXXXXXXXQLSIDTRPFRPASEGN---PSDDPDPLPAHRQALGERLYPRV 496
@@ -854,7 +854,7 @@ Query: 440  XXXXXXXXXXXXXXXXXXQLSIDTRPFRPASEGN---PSDDPDPLPAHRQALGERLYPRV 496
 Sbjct: 2463 QRRGSNSKILWRSARERKALNLDARPYTPPNSSDNATPESLNDHLSVHLQQIGERLYPKI 2522
 
 Query: 497  QAMQPAFASKITGMXXXXXXXXXXXXXXXXXXXRARVEEAMELIVAHGRENGAXXXXXXX 556
-             ++    A KITGM                   R +V EA+E+I    +   +       
+             ++    A KITGM                   R +V EA+E+I    +   +
 Sbjct: 2523 HSINQTHAPKITGMLLEIPTPQLLSVISSDETLRQKVNEAIEIITFKQKSETSA------ 2576
 
 Query: 557  XXXXXEKVQENRKRHGSSRSVVXXXXXXXXXXXXNAPLFYQPGKRGFYTPRPGKNTEARL 616
@@ -866,7 +866,7 @@ Query: 617  NCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILAS 676
 Sbjct: 2623 NAFRNIGRLIGLCLLQNELLPLFLQRHVLKYILRRKIKFHDLAFFDPALYESFRQIIQNA 2682
 
 Query: 677  QSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYVRKYAEHRM-LV 735
-            Q+ + +   + M+L F +DL KEEG G  ELIP G ++ V+ + +Y       ++   + 
+            Q+ + +   + M+L F +DL KEEG G  ELIP G ++ V+ + +Y       ++   +
 Sbjct: 2683 QTKEGEETINRMELCFVIDLMKEEGCGNRELIPGGRDV-VSHRVIYSSTSDAIQNIDXIK 2741
 
 Query: 736  VAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAE 795
@@ -886,7 +886,7 @@ Sbjct: 2861 ANTCISRLYIPLYSSKSILRSKMLMAIKSKNFGFV 2895
  Identities = 69/209 (33%), Positives = 107/209 (51%), Gaps = 26/209 (12%)
 
 Query: 3    SARGDFLNYALSLMRSHNDEHSDVLPVLDVCSLKHVAYVFQALIYWIKAMNQQTTLDTPQ 62
-            ++R DF  Y LSLMRSH  EH D LPVLD+ +L+H+AYV  A +Y+++  N     D   
+            ++R DF  Y LSLMRSH  EH D LPVLD+ +L+H+AYV  A +Y+++  N     D
 Sbjct: 1913 NSRRDFFTYCLSLMRSHTSEHRDALPVLDITALRHIAYVLDAFVYYMR--NDSGFYDKQD 1970
 
 Query: 63   XXXXXXXXXXXXGIXXXXXXXXXXXXTSQSATLNDKDDE------SLPA--ETGQNHPFF 114
@@ -894,7 +894,7 @@ Query: 63   XXXXXXXXXXXXGIXXXXXXXXXXXXTSQSATLNDKDDE------SLPA--ETGQNHPFF 114
 Sbjct: 1971 SISGR--------INNLSPMTESYDTDDELANLEEFNADVQMSASSMPSGSQGTRRHAFF 2022
 
 Query: 115  RRSDSMTFLGCIPPNPFEVPLAEAIPLADQPHLLQPNARKEDLFGRPSQGLYSSSAGSGK 174
-             RS+S   LGC  P  FE+PL  A+PLAD+PHLLQPN+++++LF      + +++  SG 
+             RS+S   LGC  P  FE+PL  A+PLAD+PHLLQPN+++++LF      + +++  SG
 Sbjct: 2023 ARSESTLTLGCSAPEGFELPLDMAMPLADKPHLLQPNSKRQELFANLPLLVTTNANNSG- 2081
 
 Query: 175  CLVEVTMD---RNCLEVLPTKMSYAANLK 200
@@ -905,24 +905,24 @@ Sbjct: 2082 ----ATNDGDGASIFDYTPTRLGFSNSLK 2106
 >NED4_HUMAN P46934 homo sapiens (human). nedd-4 protein (ec 6.3.2.-) (kiaa0093)
            (fragment). 7/1999
            Length = 927
-           
+
  Score =  344 bits (873), Expect = 4e-94
  Identities = 72/268 (26%), Positives = 119/268 (43%), Gaps = 23/268 (8%)
 
 Query: 606 PRPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVM 665
-           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D   
+           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D
 Sbjct: 649 PNSGLCNEDHLSYFKFIGRVAGMAVYHGKLLDGFFIRPFYKMMLHKPITLHDMESVDSEY 708
 
 Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQV---ELIPNGVNIPVTPQNVY 722
-           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N  
+           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N
 Sbjct: 709 YNSLRWILENDPTE--------LDLRFIID---EELFGQTHQHELKNGGSEIVVTNKNKK 757
 
 Query: 723 EYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLIS 782
-           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V     
+           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V
 Sbjct: 758 EYIYLVIQWRFVNRIQKQMAAFKEGFFELIPQDLIKIFDENELELLMCGLGDVDVNDWRE 817
 
 Query: 783 FTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLP----ASEEGFQP 838
-            T + +    N     Q  +WFW  V  M   +R  L+ F T +  +P    A   G   
+            T + +    N     Q  +WFW  V  M   +R  L+ F T +  +P    A   G
 Sbjct: 818 HTKYKNGYSANH----QVIQWFWKAVLMMDSEKRIRLLQFVTGTSRVPMNGFAELYGSNG 873
 
 Query: 839 MPSITIRP-PDDQHLPTANTCISRLYVP 865
@@ -933,12 +933,12 @@ Sbjct: 874 PQSFTVEQWGTPEKLPRAHTCFNRLDLP 901
 >PUB1_SCHPO Q92462 schizosaccharomyces pombe (fission yeast).
            ubiquitin--protein ligase pub1 (ec 6.3.2.-). 12/1998
            Length = 767
-           
+
  Score =  343 bits (870), Expect = 1e-93
  Identities = 69/265 (26%), Positives = 115/265 (43%), Gaps = 18/265 (6%)
 
 Query: 606 PRPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVM 665
-           P  G N E  LN F+ IGR++GL +               K++L +KV   D    D   
+           P  G N E  LN F+ IGR++GL +               K++L +KV   D    D
 Sbjct: 491 PHSGINPE-HLNYFKFIGRVIGLAIFHRRFVDAFFVVSFYKMILQKKVTLQDMESMDAEY 549
 
 Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYV 725
@@ -946,11 +946,11 @@ Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYV 725
 Sbjct: 550 YRSLVWILDNDITGVLDLTFSVEDNCFGEVVT-------IDLKPNGRNIEVTEENKREYV 602
 
 Query: 726 RKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTS 785
-                 R+    E+  +A  +G  +++P+  +      +  LL+ G  E++++     T 
+                 R+    E+  +A  +G  +++P+  +      +  LL+ G  E++++     T
 Sbjct: 603 DLVTVWRIQKRIEEQFNAFHEGFSELIPQELINVFDERELELLIGGISEIDMEDWKKHTD 662
 
 Query: 786 FNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE----EGFQPMPS 841
-           +   S  +     Q  +WFW +++  S  ++  L+ F T +  +P +     +G      
+           +   S  +     Q  +WFW +++  S  ++  L+ F T +  +P +     +G
 Sbjct: 663 YRSYSEND-----QIIKWFWELMDEWSNEKKSRLLQFTTGTSRIPVNGFKDLQGSDGPRK 717
 
 Query: 842 ITIR-PPDDQHLPTANTCISRLYVP 865
@@ -961,24 +961,24 @@ Sbjct: 718 FTIEKAGEPNKLPKAHTCFNRLDLP 742
 >NED4_MOUSE P46935 mus musculus (mouse). nedd-4 protein (ec 6.3.2.-)
            (fragment). 11/1997
            Length = 957
-           
+
  Score =  343 bits (870), Expect = 1e-93
  Identities = 72/268 (26%), Positives = 117/268 (42%), Gaps = 23/268 (8%)
 
 Query: 606 PRPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVM 665
-           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D   
+           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D
 Sbjct: 679 PNSGLCNEDHLSYFKFIGRVAGMAVYHGKLLDGFFIRPFYKMMLQKLITLHDMESVDSEY 738
 
 Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQV---ELIPNGVNIPVTPQNVY 722
-           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N  
+           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N
 Sbjct: 739 YSSLRWILENDPTE--------LDLRFIID---EELFGQTHQHELKTGGSEIVVTNKNKK 787
 
 Query: 723 EYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLIS 782
-           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V     
+           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V
 Sbjct: 788 EYIYLVIQWRFVNRIQKQMAAFKEGFFELIPQDLIKIFDENELELLMCGLGDVDVNDWRE 847
 
 Query: 783 FTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLP----ASEEGFQP 838
-            T + +    N     Q   WFW  V  M   +R  L+ F T +  +P    A   G   
+            T + +    N     Q   WFW  V  M   +R  L+ F T +  +P    A   G
 Sbjct: 848 HTKYKNGYSMNH----QVIHWFWKAVWMMDSEKRIRLLQFVTGTSRVPMNGFAELYGSNG 903
 
 Query: 839 MPSITIRP-PDDQHLPTANTCISRLYVP 865
@@ -989,7 +989,7 @@ Sbjct: 904 PQSFTVEQWGTPDKLPRAHTCFNRLDLP 931
 >RSP5_YEAST P39940 saccharomyces cerevisiae (baker's yeast). ubiquitin--protein
            ligase rsp5 (ec 6.3.2.-). 7/1999
            Length = 809
-           
+
  Score =  325 bits (825), Expect = 2e-88
  Identities = 69/265 (26%), Positives = 116/265 (43%), Gaps = 18/265 (6%)
 
@@ -1002,11 +1002,11 @@ Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYV 725
 Sbjct: 592 YNSLNWMLENSIDGVLDLTFSADDERFGEVVT-------VDLKPDGRNIEVTDGNKKEYV 644
 
 Query: 726 RKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTS 785
-             Y + R++   ++   A   G  +++P++ +      +  LL+ G  E++++     T 
+             Y + R++   ++   A   G  +++P++ +      +  LL+ G  E++++     T
 Sbjct: 645 ELYTQWRIVDRVQEQFKAFMDGFNELIPEDLVTVFDERELELLIGGIAEIDIEDWKKHTD 704
 
 Query: 786 FNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE----EGFQPMPS 841
-           +      +     +  +WFW  V      +R  L+ F T +  +P +     +G      
+           +      +     +  +WFW  V      +R  L+ F T +  +P +     +G
 Sbjct: 705 YRGYQESD-----EVIQWFWKCVSEWDNEQRARLLQFTTGTSRIPVNGFKDLQGSDGPRR 759
 
 Query: 842 ITIRPPDD-QHLPTANTCISRLYVP 865
@@ -1018,7 +1018,7 @@ Sbjct: 760 FTIEKAGEVQQLPKSHTCFNRVDLP 784
            6.3.2.-) (oncogenic protein- associated protein e6-ap)
            (human papillomavirus e6-associated protein). 5/2000
            Length = 875
-           
+
  Score =  314 bits (795), Expect = 6e-85
  Identities = 67/249 (26%), Positives = 116/249 (45%), Gaps = 12/249 (4%)
 
@@ -1027,11 +1027,11 @@ Query: 619 FRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILASQS 678
 Sbjct: 612 FTLIGIVLGLAIYNNCILDVHFPMVVYRKLMGKKGTFRDLGDSHPVLYQSLKDLLEYEGN 671
 
 Query: 679 SDADAVFSAMDLAFAVDLCKEEGGGQV-ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVA 737
-            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +    
+            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +
 Sbjct: 672 VEDD-----MMITFQISQTDLFGNPMMYDLKENGDKIPITNENRKEFVNLYSDYILNKSV 726
 
 Query: 738 EQPLHAMRKGLLDVLPKNSLED-LTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAEK 796
-           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   + 
+           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   +
 Sbjct: 727 EKQFKAFRRGFHMVTNESPLKYLFRPEEIELLICGSRNLDFQALEETTEY--DGGYTRDS 784
 
 Query: 797 LLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPSITIRPPDDQHLPTAN 856
@@ -1047,7 +1047,7 @@ Sbjct: 842 TCFNVLLLP 850
            6.3.2.-) (oncogenic protein- associated protein e6-ap).
            5/2000
            Length = 885
-           
+
  Score =  302 bits (765), Expect = 2e-81
  Identities = 67/249 (26%), Positives = 115/249 (45%), Gaps = 13/249 (5%)
 
@@ -1056,11 +1056,11 @@ Query: 619 FRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILASQS 678
 Sbjct: 623 FTLIGIL-GLAIYNNCILDVHFPMVVYRKLMGKKGTFRDLGDSHPVLYQSLKDLLEYEGS 681
 
 Query: 679 SDADAVFSAMDLAFAVDLCKEEGGGQV-ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVA 737
-            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +    
+            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +
 Sbjct: 682 VEDD-----MMITFQISQTDLFGNPMMYDLKENGDKIPITNENRKEFVISYSDYILNKSV 736
 
 Query: 738 EQPLHAMRKGLLDVLPKNSLED-LTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAEK 796
-           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   E 
+           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   E
 Sbjct: 737 EKQFKAFRRGFHMVTNESPLKYLFRPEEIELLICGSRNLDFQALEETTEY--DGGYTRES 794
 
 Query: 797 LLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPSITIRPPDDQHLPTAN 856
@@ -1075,7 +1075,7 @@ Sbjct: 852 TCFNVLLLP 860
 >HUL4_YEAST P40985 saccharomyces cerevisiae (baker's yeast). probable
            ubiquitin--protein ligase hul4 (ec 6.3.2.-). 5/2000
            Length = 892
-           
+
  Score =  281 bits (711), Expect = 4e-75
  Identities = 58/271 (21%), Positives = 116/271 (42%), Gaps = 16/271 (5%)
 
@@ -1088,11 +1088,11 @@ Query: 664 VMYESLRQLILASQSSDADAVFSAMDLAFAV------DLCKEEGGGQVELIPNGVNIPVT 717
 Sbjct: 660 ETSRNLIKMLNYTEDNFEDVFSLTFETTYRNNNWILNDSKSSKEYVTVELCENGRNVPIT 719
 
 Query: 718 PQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPK-NSLEDLTAEDFRLLVNGCGE-- 774
-             N +E+V K+ E  +    E   +    G   V  + NS++   +E+   LV G  E  
+             N +E+V K+ E  +    E   +    G   V  + NS++   +E+   LV G  E
 Sbjct: 720 QSNKHEFVMKWVEFYLEKSIEPQYNKFVSGFKRVFAECNSIKLFNSEELERLVCGDEEQT 779
 
 Query: 775 -VNVQMLISFTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE 833
-             + + L S T +     +++  +     WFW I+E      ++ L+ F T+S  +PA+ 
+             + + L S T +     +++  +     WFW I+E      ++ L+ F T+S  +PA+
 Sbjct: 780 KFDFKSLRSVTKYVGGFSDDSRAVC----WFWEIIESWDYPLQKKLLQFVTASDRIPATG 835
 
 Query: 834 EGFQPMPSITIRPPDDQHLPTANTCISRLYV 864
@@ -1103,7 +1103,7 @@ Sbjct: 836 ISTIPFKISLLGSHDSDDLPLAHTCFNEICL 866
 >URB1_RAT P51593 rattus norvegicus (rat). dna binding protein ure-b1 (ec
            6.3.2.-). 10/1996
            Length = 310
-           
+
  Score =  280 bits (709), Expect = 8e-75
  Identities = 65/250 (26%), Positives = 109/250 (43%), Gaps = 19/250 (7%)
 
@@ -1116,7 +1116,7 @@ Query: 683 AVFSAMDLAFAVDLCKEEGGGQV-ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVAEQPL 741
 Sbjct: 99  VSTLGYDLTFSTEV-QEFGVCEVRDLKPNGANILVTEENKKEYVHLVCQMRMTGAIRKQL 157
 
 Query: 742 HAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAEKLLQFK 801
-            A  +G  +++PK  +   T ++  LL  G   +++  L S T ++     + +      
+            A  +G  +++PK  +   T ++  LL  G   +++  L S T ++     + +
 Sbjct: 158 AAFLEGFYEIIPKRLISIFTEQELELLYTGLPTIDIDDLKSNTEYHKYQSNSIQ-----I 212
 
 Query: 802 RWFWSIVERMSMTERQDLVYFWTSSPSLP----ASEEGFQPMPSITIRPPD--DQHLPTA 855
@@ -1131,7 +1131,7 @@ Sbjct: 273 HTCFNQLDLP 282
 >TR12_HUMAN Q14669 homo sapiens (human). thyroid receptor interacting protein 12
             (trip12) (kiaa0045). 12/1998
             Length = 1992
-            
+
  Score =  272 bits (687), Expect = 3e-72
  Identities = 58/286 (20%), Positives = 109/286 (37%), Gaps = 28/286 (9%)
 
@@ -1144,11 +1144,11 @@ Query: 663  PVMYES---LRQLILASQSSDADAVFSAMDLAFAVDL-----CKEE---------GGGQV 705
 Sbjct: 1743 PVVARSVYHLEDIVRQKKRLEQDKSQTKESLQYALETLTMNGCSVEDLGLDFTLPGFPNI 1802
 
 Query: 706  ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDF 765
-            EL   G +IPVT  N+ EY+R      +     +   + R G   V P + L+    E+ 
+            EL   G +IPVT  N+ EY+R      +     +   + R G   V P + L+    E+
 Sbjct: 1803 ELKKGGKDIPVTIHNLEEYLRLVIFWALNEGVSRQFDSFRDGFESVFPLSHLQYFYPEEL 1862
 
 Query: 766  RLLVNGCGEVNVQMLISFTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTS 825
-              L+ G                 + G   +   +  ++ + I+      +++  + F T 
+              L+ G                 + G   +   +  ++ + I+      +++  + F T
 Sbjct: 1863 DQLLCGSKADTWDAKTLMECCRPDHGYTHDS--RAVKFLFEILSSFDNEQQRLFLQFVTG 1920
 
 Query: 826  SPSLPASEEGFQPMPSITIRP------PDDQHLPTANTCISRLYVP 865
@@ -1158,7 +1158,7 @@ Sbjct: 1921 SPRLPVGGFRSLNPPLTIVRKTFESTENPDDFLPSVMTCVNYLKLP 1966
 
 >Y032_HUMAN Q15034 homo sapiens (human). hypothetical protein kiaa0032. 5/2000
             Length = 1050
-            
+
  Score =  270 bits (684), Expect = 6e-72
  Identities = 58/256 (22%), Positives = 96/256 (36%), Gaps = 15/256 (5%)
 
@@ -1167,11 +1167,11 @@ Query: 613  EARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQL 672
 Sbjct: 782  FVEHNWFHLIGITCGLAIYNSTVVDLHFPLALYKKLLNVKPGLEDLKELSPTEGRSLQEL 841
 
 Query: 673  ILASQSSDADAVFSAMDLAFAVDLCKEEGGG--QVELIPNGVNIPVTPQNVYEYVRKYAE 730
-            +      D +  F    L F +  C+E  G   Q +LIP G N+ V   N  E+V  Y  
+            +      D +  F    L F +  C+E  G   Q +LIP G N+ V   N  E+V  Y
 Sbjct: 842  LDY-PGEDVEETFC---LNFTI--CRESYGVIEQKKLIPGGDNVTVCKDNRQEFVDAYVN 895
 
 Query: 731  HRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDES 790
-            +   +   +   A   G L V     LE     + R ++ G    N + L     +  + 
+            +   +   +   A   G L V     LE     + R ++ G    N + L     +  +
 Sbjct: 896  YVFQISVHEWYTAFSSGFLKVCGGKVLELFQPSELRAMMVGNSNYNWEELEETAIYKGDY 955
 
 Query: 791  GENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPS-ITIRPPDD 849
@@ -1186,12 +1186,12 @@ Sbjct: 1010 EYLPVAHTCYNLLDLP 1025
 >HUL5_YEAST P53119 saccharomyces cerevisiae (baker's yeast). probable
            ubiquitin--protein ligase hul5 (ec 6.3.2.-). 5/2000
            Length = 910
-           
+
  Score =  251 bits (633), Expect = 6e-66
  Identities = 68/259 (26%), Positives = 126/259 (48%), Gaps = 21/259 (8%)
 
 Query: 615 RLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLL----GRKVNWHDFAFFDPVMYESLR 670
-           +L     +G+++G CL ++ L  ++     +K LL    G   ++ D   +D V+Y +L 
+           +L     +G+++G CL ++ L  ++     +K LL    G   ++ D   +D V+Y +L
 Sbjct: 640 KLKYIWFLGKVVGKCLYEHVLIDVSFADFFLKKLLNYSNGFLSSFSDLGSYDSVLYNNLI 699
 
 Query: 671 QLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYVRKYAE 730
@@ -1199,11 +1199,11 @@ Query: 671 QLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYVRKYAE 730
 Sbjct: 700 KLLN--MTTDE---IKSLDLTFEIDE-PESSAKVVDLIPNGSKTYVTKDNVLLYVTKVTD 753
 
 Query: 731 HRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGE-VNVQMLISFTSFNDE 789
-           +++     +P+ A   GL  ++  + +E   + + ++L++G  + +++  L S T +   
+           +++     +P+ A   GL  ++  + +E   + + ++L++G  + +++  L S T +
 Sbjct: 754 YKLNKRCFKPVSAFHGGLSVIIAPHWMEMFNSIELQMLISGERDNIDLDDLKSNTEYGGY 813
 
 Query: 790 SGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPM-PSITIRPPD 848
-             E+     Q    FW ++      E+ + + F TS P  P   +GF+ + P   IR   
+             E+     Q    FW ++      E+ + + F TS P  P   +GF+ + P   IR
 Sbjct: 814 KEED-----QTIVDFWEVLNEFKFEEKLNFLKFVTSVPQAP--LQGFKALDPKFGIRNAG 866
 
 Query: 849 DQ--HLPTANTCISRLYVP 865
@@ -1214,16 +1214,16 @@ Sbjct: 867 TEKYRLPTASTCVNLLKLP 885
 >UFD4_YEAST P33202 saccharomyces cerevisiae (baker's yeast). ubiquitin fusion
             degradation protein 4 (ub fusion protein 4). 11/1997
             Length = 1483
-            
+
  Score =  224 bits (566), Expect = 4e-58
  Identities = 60/277 (21%), Positives = 109/277 (38%), Gaps = 29/277 (10%)
 
 Query: 607  RPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLG------------RKVN 654
-             P  N E  +  F  +G  +   LL N +     ++   ++L               +  
+             P  N E  +  F  +G  +   LL N +     ++   ++L               +
 Sbjct: 1192 NPFSNNEKVIELFGYLGTFVARSLLDNRILDFRFSKVFFELLHRMSTPNVTTVPSDVETC 1251
 
 Query: 655  WHDFAFFDPVMYESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNI 714
-                   DP++ +SL+ ++      D +    ++ L F V      G   +ELIP G N 
+                   DP++ +SL+ ++      D +    ++ L F V      G   +ELIP G N
 Sbjct: 1252 LLMIELVDPLLAKSLKYIVAN---KDDNMTLESLSLTFTVP-----GNDDIELIPGGCNK 1303
 
 Query: 715  PVTPQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGE 774
@@ -1231,7 +1231,7 @@ Query: 715  PVTPQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGE 774
 Sbjct: 1304 SLNSSNVEEYIHGVIDQILGKGIEKQLKAFIEGFSKVFSYERMLILFPDEL-VDIFGRVE 1362
 
 Query: 775  VNVQMLISFTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLP-ASE 833
-             +  M   +T+ N E G   +  +     F SI+      ER+  + F T SP LP    
+             +  M   +T+ N E G   +  +     F SI+      ER+  + F T SP LP
 Sbjct: 1363 EDWSMATLYTNLNAEHGYTMDSSI--IHDFISIISAFGKHERRLFLQFLTGSPKLPIGGF 1420
 
 Query: 834  EGFQPMPSITIRPPD-----DQHLPTANTCISRLYVP 865
@@ -1242,7 +1242,7 @@ Sbjct: 1421 KSLNPKFTVVLKHAEDGLTADEYLPSVMTCANYLKLP 1457
 >PAB1_HUMAN P11940 homo sapiens (human). polyadenylate-binding protein 1
            (poly(a) binding protein 1) (pabp 1). 7/1998
            Length = 636
-           
+
  Score = 88.6 bits (216), Expect = 5e-17
  Identities = 25/70 (35%), Positives = 35/70 (49%)
 
@@ -1258,7 +1258,7 @@ Sbjct: 614 LQAHQAKEAA 623
 >PABP_XENLA P20965 xenopus laevis (african clawed frog). polyadenylate-binding
            protein (poly(a) binding protein) (pabp). 7/1998
            Length = 633
-           
+
  Score = 88.2 bits (215), Expect = 6e-17
  Identities = 25/70 (35%), Positives = 34/70 (47%)
 
@@ -1274,7 +1274,7 @@ Sbjct: 612 LQAHQAKEAA 621
 >PAB1_MOUSE P29341 mus musculus (mouse). polyadenylate-binding protein 1
            (poly(a) binding protein 1) (pabp 1). 7/1998
            Length = 636
-           
+
  Score = 87.8 bits (214), Expect = 8e-17
  Identities = 25/70 (35%), Positives = 36/70 (50%)
 
@@ -1290,7 +1290,7 @@ Sbjct: 614 LQAHQAKEAA 623
 >PABP_DROME P21187 drosophila melanogaster (fruit fly). polyadenylate-binding
            protein (poly(a) binding protein) (pabp). 2/1995
            Length = 632
-           
+
  Score = 67.2 bits (161), Expect = 1e-10
  Identities = 22/72 (30%), Positives = 30/72 (41%)
 
@@ -1307,7 +1307,7 @@ Sbjct: 620 AVLQVHRVTEPA 631
            polyadenylate-binding protein (poly(a) binding protein)
            (pabp). 7/1998
            Length = 653
-           
+
  Score = 44.2 bits (102), Expect = 0.001
  Identities = 18/62 (29%), Positives = 26/62 (41%)
 
@@ -1316,7 +1316,7 @@ Query: 480 PLPAHRQALGERLYPRVQAMQPAFASKITGMXXXXXXXXXXXXXXXXXXXRARVEEAMEL 539
 Sbjct: 581 PEESRKQVLGELLYPKVFVREEKLSGKITGMLLEMPNSELLELLEDDSALNERVNEAIGV 640
 
 Query: 540 IV 541
-           + 
+           +
 Sbjct: 641 LQ 642
 
 
@@ -1324,7 +1324,7 @@ Sbjct: 641 LQ 642
            polyadenylate-binding protein 2 (poly(a) binding protein
            2) (pabp 2). 12/1998
            Length = 629
-           
+
  Score = 43.0 bits (99), Expect = 0.003
  Identities = 18/63 (28%), Positives = 28/63 (43%)
 
@@ -1341,7 +1341,7 @@ Sbjct: 609 DVL 611
            polyadenylate-binding protein 5 (poly(a) binding protein
            5) (pabp 5). 11/1995
            Length = 668
-           
+
  Score = 42.6 bits (98), Expect = 0.003
  Identities = 17/60 (28%), Positives = 29/60 (48%)
 
@@ -1355,7 +1355,7 @@ Sbjct: 587 PDKHPRMLGDHLYPLVEQQEPANPAKVTGMLLEMDQAEILHLLESPEALKAKVSEALDVL 646
            protein acbp-67) (polyadenylate tail-binding protein).
            2/1996
            Length = 576
-           
+
  Score = 41.1 bits (94), Expect = 0.010
  Identities = 20/49 (40%), Positives = 23/49 (46%), Gaps = 6/49 (12%)
 
@@ -1367,28 +1367,28 @@ Sbjct: 484 PPQGGFPRNANDNNQFYQQKQRQALGEQLYKKVSAKTSNEEAAGKITGM 532
 >RNR_AQUAE O67834 aquifex aeolicus. ribonuclease r (ec 3.1.-.-) (rnase r)
            (vacb protein homolog). 5/2000
            Length = 705
-           
+
  Score = 33.3 bits (74), Expect = 2.2
  Identities = 17/92 (18%), Positives = 25/92 (26%), Gaps = 13/92 (14%)
 
 Query: 686 SAMDLAFAVDLCKEEGGGQ---VELIPNGVNIPVTPQNVYEYVRKY-AEHRMLVVAEQPL 741
-               L F +D  K         +EL P G            YV      + +    E   
+               L F +D  K         +EL P G            YV      + +    E
 Sbjct: 243 LREQLCFTIDPEKAGDFDDAVAIELTPEGY--------YKLYVHIADVSYYVREGTETDK 294
 
 Query: 742 HAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCG 773
-            A ++G     P  +L  L  E     +    
+            A ++G     P  +L  L  E     +
 Sbjct: 295 EAYKRGFTYYFPDRALHML-PEKLSAKLCSLR 325
 
 
 >NIRA_EMENI P28348 emericella nidulans (aspergillus nidulans). nitrogen
            assimilation transcription factor nira. 4/1993
            Length = 892
-           
+
  Score = 32.9 bits (73), Expect = 2.9
  Identities = 22/95 (23%), Positives = 35/95 (36%)
 
 Query: 219 LAEEADSSKPGPSAHDVAAQLKSSLLAEIGLTESEGPPLTSFRPQCSFMGMVISHDMLLG 278
-           +A +  S+  GP +      ++ S  A++   E+  P  T  RP  +  G V S      
+           +A +  S+  GP +      ++ S  A++   E+  P  T  RP  +  G V S
 Sbjct: 702 VASQYSSTPSGPVSVSAMRAVQRSFSAQLAHNEARQPEPTYLRPVSTSYGPVPSTQSAQE 761
 
 Query: 279 RWRLSLELFGRVFMEDVGAEPGSILTELGGFEVKE 313
@@ -1400,24 +1400,24 @@ Sbjct: 762 QWYSPTEAQFRAFTAAHSMPTTSAQSPLTTFDTPE 796
            transcriptional regulatory protein in las1-ccp1
            intergenic region. 2/1995
            Length = 863
-           
+
  Score = 31.3 bits (69), Expect = 8.4
  Identities = 26/238 (10%), Positives = 59/238 (23%), Gaps = 45/238 (18%)
 
 Query: 600 KRGFYTPRP-GKNTEARLNCFRN----IGRILGLCLLQNELC----PITLNRHVIKVLLG 650
-           KR F+  +   KN +  +  F      I  +  L LL  E+        + +   K    
+           KR F+  +   KN +  +  F      I  +  L LL  E+        + +   K
 Sbjct: 523 KRNFHILKSLSKNEKETMRHFDFEMEWIIDLFSLSLLHGEMIFYEYDCNITK-FYK---- 577
 
 Query: 651 RKVNWHDFAFFDPVMYESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPN 710
-              ++ D       + E        S + + D++           +  +        I  
+              ++ D       + E        S + + D++           +  +        I
 Sbjct: 578 ---SFQDLWDMVIHISEKCYNYFFNSDALEVDSLTKFYTNRIVEIVANKVLVIVPAFILR 634
 
 Query: 711 GVN-IPVTPQNVY---EYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKN----------- 755
-           G     +   +     E++   +         +     RK     +              
+           G     +   +     E++   +         +     RK     +
 Sbjct: 635 GDRFKTIQYADKKKMIEFLYGVSSVYFNEFGFEYYRCFRKMFTAKIAYKILNRSCEKDAW 694
 
 Query: 756 -SLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAEKLLQFKRWFWSIVERMS 812
-             +      + +L  NG   ++   +                +      F   V++  
+             +      + +L  NG   ++   +                +      F   V++
 Sbjct: 695 RIILKFLLNELKLEDNGDSYIDYNDMRLN------------DICPIILEFQETVQKYD 740
 
 
@@ -1425,12 +1425,12 @@ Sbjct: 695 RIILKFLLNELKLEDNGDSYIDYNDMRLN------------DICPIILEFQETVQKYD 740
            synthetase (ec 6.1.1.18) (glutamine--trna ligase)
            (glnrs). 11/1997
            Length = 809
-           
+
  Score = 31.3 bits (69), Expect = 8.4
  Identities = 20/117 (17%), Positives = 44/117 (37%), Gaps = 18/117 (15%)
 
 Query: 671 QLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPN-GVNIPVTPQNVYEYVRKYA 729
-           +LI+    +        +D AF       E   ++ +  N GV I +T   V  YV +Y 
+           +LI+    +        +D AF       E   ++ +  N GV I +T   V  YV +Y
 Sbjct: 71  ELIVNGIINGDLKTSLQVDAAFKYVKANGEASTKMGMNENSGVGIEITEDQVRNYVMQYI 130
 
 Query: 730 E----------HRMLVVAEQPLHAMRK-------GLLDVLPKNSLEDLTAEDFRLLV 769
@@ -1479,7 +1479,7 @@ RNR_AQUAE O67834 aquifex aeolicus. ribonuclease r (ec 3.1.-....    32  3.7
 >100K_RAT Q62671 rattus norvegicus (rat). 100 kda protein (ec 6.3.2.-).
            7/1999
            Length = 889
-           
+
  Score = 1228 bits (3143), Expect = 0.0
  Identities = 765/889 (86%), Positives = 765/889 (86%)
 
@@ -1508,7 +1508,7 @@ Query: 301 SILTELGGFEVKESKFRREMEKLRNQQSRDLSLEVDRDRDLLIQQTMRQLNNHFGRRCAT 360
 Sbjct: 301 SILTELGGFEVKESKFRREMEKLRNQQSRDLSLEVDRDRDLLIQQTMRQLNNHFGRRCAT 360
 
 Query: 361 TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQX 420
-           TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQ 
+           TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQ
 Sbjct: 361 TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQR 420
 
 Query: 421 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXQLSIDTRPFRPASEGNPSDDPDP 480
@@ -1547,7 +1547,7 @@ Sbjct: 841 SITIRPPDDQHLPTANTCISRLYVPLYSSKQILKQKLLLAIKTKNFGFV 889
 >HYDP_DROME P51592 drosophila melanogaster (fruit fly). hyperplastic discs
             protein (hyd protein) (ec 6.3.2.-). 12/1998
             Length = 2895
-            
+
  Score =  702 bits (1792), Expect = 0.0
  Identities = 281/635 (44%), Positives = 374/635 (58%), Gaps = 34/635 (5%)
 
@@ -1560,7 +1560,7 @@ Query: 323  LRNQQSRDLSL-EVDRDRDLLIQQTMRQLNNHFGR--RCATTPMAVHRVKVTFKDEPGEG 379
 Sbjct: 2345 LRNGQQRDLVLCKLERNRESLIVQTFKELNTQFGNQSRRIQPPITFNRVKVTFKDEPGEG 2404
 
 Query: 380  SGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQXXXXXXXXXXXXXXXXXXXX 439
-            SGVARSFYT+IA+A L++ K+PNL+ +Q      H+  +                     
+            SGVARSFYT+IA+A L++ K+PNL+ +Q      H+  +
 Sbjct: 2405 SGVARSFYTSIAEALLASAKIPNLESVQVGTN--HSKYVVPFSSILRTTVSGSSRDQSTL 2462
 
 Query: 440  XXXXXXXXXXXXXXXXXXQLSIDTRPFRPASEGN---PSDDPDPLPAHRQALGERLYPRV 496
@@ -1568,7 +1568,7 @@ Query: 440  XXXXXXXXXXXXXXXXXXQLSIDTRPFRPASEGN---PSDDPDPLPAHRQALGERLYPRV 496
 Sbjct: 2463 QRRGSNSKILWRSARERKALNLDARPYTPPNSSDNATPESLNDHLSVHLQQIGERLYPKI 2522
 
 Query: 497  QAMQPAFASKITGMXXXXXXXXXXXXXXXXXXXRARVEEAMELIVAHGRENGAXXXXXXX 556
-             ++    A KITGM                   R +V EA+E+I    +   +       
+             ++    A KITGM                   R +V EA+E+I    +   +
 Sbjct: 2523 HSINQTHAPKITGMLLEIPTPQLLSVISSDETLRQKVNEAIEIITFKQKSETSA------ 2576
 
 Query: 557  XXXXXEKVQENRKRHGSSRSVVXXXXXXXXXXXXNAPLFYQPGKRGFYTPRPGKNTEARL 616
@@ -1580,7 +1580,7 @@ Query: 617  NCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILAS 676
 Sbjct: 2623 NAFRNIGRLIGLCLLQNELLPLFLQRHVLKYILRRKIKFHDLAFFDPALYESFRQIIQNA 2682
 
 Query: 677  QSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYVRKYAEHRM-LV 735
-            Q+ + +   + M+L F +DL KEEG G  ELIP G ++ V+ + +Y       ++   + 
+            Q+ + +   + M+L F +DL KEEG G  ELIP G ++ V+ + +Y       ++   +
 Sbjct: 2683 QTKEGEETINRMELCFVIDLMKEEGCGNRELIPGGRDV-VSHRVIYSSTSDAIQNIDXIK 2741
 
 Query: 736  VAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAE 795
@@ -1600,7 +1600,7 @@ Sbjct: 2861 ANTCISRLYIPLYSSKSILRSKMLMAIKSKNFGFV 2895
  Identities = 69/209 (33%), Positives = 107/209 (51%), Gaps = 26/209 (12%)
 
 Query: 3    SARGDFLNYALSLMRSHNDEHSDVLPVLDVCSLKHVAYVFQALIYWIKAMNQQTTLDTPQ 62
-            ++R DF  Y LSLMRSH  EH D LPVLD+ +L+H+AYV  A +Y+++  N     D   
+            ++R DF  Y LSLMRSH  EH D LPVLD+ +L+H+AYV  A +Y+++  N     D
 Sbjct: 1913 NSRRDFFTYCLSLMRSHTSEHRDALPVLDITALRHIAYVLDAFVYYMR--NDSGFYDKQD 1970
 
 Query: 63   XXXXXXXXXXXXGIXXXXXXXXXXXXTSQSATLNDKDDE------SLPA--ETGQNHPFF 114
@@ -1608,7 +1608,7 @@ Query: 63   XXXXXXXXXXXXGIXXXXXXXXXXXXTSQSATLNDKDDE------SLPA--ETGQNHPFF 114
 Sbjct: 1971 SISGR--------INNLSPMTESYDTDDELANLEEFNADVQMSASSMPSGSQGTRRHAFF 2022
 
 Query: 115  RRSDSMTFLGCIPPNPFEVPLAEAIPLADQPHLLQPNARKEDLFGRPSQGLYSSSAGSGK 174
-             RS+S   LGC  P  FE+PL  A+PLAD+PHLLQPN+++++LF      + +++  SG 
+             RS+S   LGC  P  FE+PL  A+PLAD+PHLLQPN+++++LF      + +++  SG
 Sbjct: 2023 ARSESTLTLGCSAPEGFELPLDMAMPLADKPHLLQPNSKRQELFANLPLLVTTNANNSG- 2081
 
 Query: 175  CLVEVTMD---RNCLEVLPTKMSYAANLK 200
@@ -1619,12 +1619,12 @@ Sbjct: 2082 ----ATNDGDGASIFDYTPTRLGFSNSLK 2106
 >PUB1_SCHPO Q92462 schizosaccharomyces pombe (fission yeast).
            ubiquitin--protein ligase pub1 (ec 6.3.2.-). 12/1998
            Length = 767
-           
+
  Score =  340 bits (864), Expect = 5e-93
  Identities = 69/265 (26%), Positives = 115/265 (43%), Gaps = 18/265 (6%)
 
 Query: 606 PRPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVM 665
-           P  G N E  LN F+ IGR++GL +               K++L +KV   D    D   
+           P  G N E  LN F+ IGR++GL +               K++L +KV   D    D
 Sbjct: 491 PHSGINPE-HLNYFKFIGRVIGLAIFHRRFVDAFFVVSFYKMILQKKVTLQDMESMDAEY 549
 
 Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYV 725
@@ -1632,11 +1632,11 @@ Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYV 725
 Sbjct: 550 YRSLVWILDNDITGVLDLTFSVEDNCFGEVVT-------IDLKPNGRNIEVTEENKREYV 602
 
 Query: 726 RKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTS 785
-                 R+    E+  +A  +G  +++P+  +      +  LL+ G  E++++     T 
+                 R+    E+  +A  +G  +++P+  +      +  LL+ G  E++++     T
 Sbjct: 603 DLVTVWRIQKRIEEQFNAFHEGFSELIPQELINVFDERELELLIGGISEIDMEDWKKHTD 662
 
 Query: 786 FNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE----EGFQPMPS 841
-           +   S  +     Q  +WFW +++  S  ++  L+ F T +  +P +     +G      
+           +   S  +     Q  +WFW +++  S  ++  L+ F T +  +P +     +G
 Sbjct: 663 YRSYSEND-----QIIKWFWELMDEWSNEKKSRLLQFTTGTSRIPVNGFKDLQGSDGPRK 717
 
 Query: 842 ITIRPP-DDQHLPTANTCISRLYVP 865
@@ -1647,24 +1647,24 @@ Sbjct: 718 FTIEKAGEPNKLPKAHTCFNRLDLP 742
 >NED4_HUMAN P46934 homo sapiens (human). nedd-4 protein (ec 6.3.2.-) (kiaa0093)
            (fragment). 7/1999
            Length = 927
-           
+
  Score =  339 bits (860), Expect = 1e-92
  Identities = 72/268 (26%), Positives = 119/268 (43%), Gaps = 23/268 (8%)
 
 Query: 606 PRPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVM 665
-           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D   
+           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D
 Sbjct: 649 PNSGLCNEDHLSYFKFIGRVAGMAVYHGKLLDGFFIRPFYKMMLHKPITLHDMESVDSEY 708
 
 Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQV---ELIPNGVNIPVTPQNVY 722
-           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N  
+           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N
 Sbjct: 709 YNSLRWILENDPTE--------LDLRFIID---EELFGQTHQHELKNGGSEIVVTNKNKK 757
 
 Query: 723 EYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLIS 782
-           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V     
+           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V
 Sbjct: 758 EYIYLVIQWRFVNRIQKQMAAFKEGFFELIPQDLIKIFDENELELLMCGLGDVDVNDWRE 817
 
 Query: 783 FTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLP----ASEEGFQP 838
-            T + +    N     Q  +WFW  V  M   +R  L+ F T +  +P    A   G   
+            T + +    N     Q  +WFW  V  M   +R  L+ F T +  +P    A   G
 Sbjct: 818 HTKYKNGYSANH----QVIQWFWKAVLMMDSEKRIRLLQFVTGTSRVPMNGFAELYGSNG 873
 
 Query: 839 MPSITIRP-PDDQHLPTANTCISRLYVP 865
@@ -1675,24 +1675,24 @@ Sbjct: 874 PQSFTVEQWGTPEKLPRAHTCFNRLDLP 901
 >NED4_MOUSE P46935 mus musculus (mouse). nedd-4 protein (ec 6.3.2.-)
            (fragment). 11/1997
            Length = 957
-           
+
  Score =  339 bits (859), Expect = 2e-92
  Identities = 72/268 (26%), Positives = 117/268 (42%), Gaps = 23/268 (8%)
 
 Query: 606 PRPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVM 665
-           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D   
+           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D
 Sbjct: 679 PNSGLCNEDHLSYFKFIGRVAGMAVYHGKLLDGFFIRPFYKMMLQKLITLHDMESVDSEY 738
 
 Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQV---ELIPNGVNIPVTPQNVY 722
-           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N  
+           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N
 Sbjct: 739 YSSLRWILENDPTE--------LDLRFIID---EELFGQTHQHELKTGGSEIVVTNKNKK 787
 
 Query: 723 EYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLIS 782
-           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V     
+           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V
 Sbjct: 788 EYIYLVIQWRFVNRIQKQMAAFKEGFFELIPQDLIKIFDENELELLMCGLGDVDVNDWRE 847
 
 Query: 783 FTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLP----ASEEGFQP 838
-            T + +    N     Q   WFW  V  M   +R  L+ F T +  +P    A   G   
+            T + +    N     Q   WFW  V  M   +R  L+ F T +  +P    A   G
 Sbjct: 848 HTKYKNGYSMNH----QVIHWFWKAVWMMDSEKRIRLLQFVTGTSRVPMNGFAELYGSNG 903
 
 Query: 839 MPSITIRP-PDDQHLPTANTCISRLYVP 865
@@ -1703,7 +1703,7 @@ Sbjct: 904 PQSFTVEQWGTPDKLPRAHTCFNRLDLP 931
 >RSP5_YEAST P39940 saccharomyces cerevisiae (baker's yeast). ubiquitin--protein
            ligase rsp5 (ec 6.3.2.-). 7/1999
            Length = 809
-           
+
  Score =  330 bits (836), Expect = 1e-89
  Identities = 69/265 (26%), Positives = 116/265 (43%), Gaps = 18/265 (6%)
 
@@ -1716,11 +1716,11 @@ Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYV 725
 Sbjct: 592 YNSLNWMLENSIDGVLDLTFSADDERFGEVVT-------VDLKPDGRNIEVTDGNKKEYV 644
 
 Query: 726 RKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTS 785
-             Y + R++   ++   A   G  +++P++ +      +  LL+ G  E++++     T 
+             Y + R++   ++   A   G  +++P++ +      +  LL+ G  E++++     T
 Sbjct: 645 ELYTQWRIVDRVQEQFKAFMDGFNELIPEDLVTVFDERELELLIGGIAEIDIEDWKKHTD 704
 
 Query: 786 FNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE----EGFQPMPS 841
-           +      +     +  +WFW  V      +R  L+ F T +  +P +     +G      
+           +      +     +  +WFW  V      +R  L+ F T +  +P +     +G
 Sbjct: 705 YRGYQESD-----EVIQWFWKCVSEWDNEQRARLLQFTTGTSRIPVNGFKDLQGSDGPRR 759
 
 Query: 842 ITIRPPDD-QHLPTANTCISRLYVP 865
@@ -1732,7 +1732,7 @@ Sbjct: 760 FTIEKAGEVQQLPKSHTCFNRVDLP 784
            6.3.2.-) (oncogenic protein- associated protein e6-ap)
            (human papillomavirus e6-associated protein). 5/2000
            Length = 875
-           
+
  Score =  316 bits (801), Expect = 1e-85
  Identities = 67/249 (26%), Positives = 116/249 (45%), Gaps = 12/249 (4%)
 
@@ -1741,11 +1741,11 @@ Query: 619 FRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILASQS 678
 Sbjct: 612 FTLIGIVLGLAIYNNCILDVHFPMVVYRKLMGKKGTFRDLGDSHPVLYQSLKDLLEYEGN 671
 
 Query: 679 SDADAVFSAMDLAFAVDLCKEEGGGQV-ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVA 737
-            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +    
+            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +
 Sbjct: 672 VEDD-----MMITFQISQTDLFGNPMMYDLKENGDKIPITNENRKEFVNLYSDYILNKSV 726
 
 Query: 738 EQPLHAMRKGLLDVLPKNSLED-LTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAEK 796
-           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   + 
+           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   +
 Sbjct: 727 EKQFKAFRRGFHMVTNESPLKYLFRPEEIELLICGSRNLDFQALEETTEY--DGGYTRDS 784
 
 Query: 797 LLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPSITIRPPDDQHLPTAN 856
@@ -1761,7 +1761,7 @@ Sbjct: 842 TCFNVLLLP 850
            6.3.2.-) (oncogenic protein- associated protein e6-ap).
            5/2000
            Length = 885
-           
+
  Score =  306 bits (775), Expect = 1e-82
  Identities = 67/249 (26%), Positives = 114/249 (44%), Gaps = 13/249 (5%)
 
@@ -1770,11 +1770,11 @@ Query: 619 FRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILASQS 678
 Sbjct: 623 FTLIGIL-GLAIYNNCILDVHFPMVVYRKLMGKKGTFRDLGDSHPVLYQSLKDLLEYEGS 681
 
 Query: 679 SDADAVFSAMDLAFAVDLCKEEGGGQV-ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVA 737
-            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +    
+            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +
 Sbjct: 682 VEDD-----MMITFQISQTDLFGNPMMYDLKENGDKIPITNENRKEFVISYSDYILNKSV 736
 
 Query: 738 EQPLHAMRKGLLDVLPKNSLED-LTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAEK 796
-           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   E 
+           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   E
 Sbjct: 737 EKQFKAFRRGFHMVTNESPLKYLFRPEEIELLICGSRNLDFQALEETTEY--DGGYTRES 794
 
 Query: 797 LLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPSITIRPPDDQHLPTAN 856
@@ -1789,7 +1789,7 @@ Sbjct: 852 TCFNVLLLP 860
 >HUL4_YEAST P40985 saccharomyces cerevisiae (baker's yeast). probable
            ubiquitin--protein ligase hul4 (ec 6.3.2.-). 5/2000
            Length = 892
-           
+
  Score =  289 bits (733), Expect = 1e-77
  Identities = 58/271 (21%), Positives = 116/271 (42%), Gaps = 16/271 (5%)
 
@@ -1802,11 +1802,11 @@ Query: 664 VMYESLRQLILASQSSDADAVFSAMDLAFAV------DLCKEEGGGQVELIPNGVNIPVT 717
 Sbjct: 660 ETSRNLIKMLNYTEDNFEDVFSLTFETTYRNNNWILNDSKSSKEYVTVELCENGRNVPIT 719
 
 Query: 718 PQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPK-NSLEDLTAEDFRLLVNGCGE-- 774
-             N +E+V K+ E  +    E   +    G   V  + NS++   +E+   LV G  E  
+             N +E+V K+ E  +    E   +    G   V  + NS++   +E+   LV G  E
 Sbjct: 720 QSNKHEFVMKWVEFYLEKSIEPQYNKFVSGFKRVFAECNSIKLFNSEELERLVCGDEEQT 779
 
 Query: 775 -VNVQMLISFTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE 833
-             + + L S T +     +++  +     WFW I+E      ++ L+ F T+S  +PA+ 
+             + + L S T +     +++  +     WFW I+E      ++ L+ F T+S  +PA+
 Sbjct: 780 KFDFKSLRSVTKYVGGFSDDSRAVC----WFWEIIESWDYPLQKKLLQFVTASDRIPATG 835
 
 Query: 834 EGFQPMPSITIRPPDDQHLPTANTCISRLYV 864
@@ -1817,7 +1817,7 @@ Sbjct: 836 ISTIPFKISLLGSHDSDDLPLAHTCFNEICL 866
 >TR12_HUMAN Q14669 homo sapiens (human). thyroid receptor interacting protein 12
             (trip12) (kiaa0045). 12/1998
             Length = 1992
-            
+
  Score =  284 bits (719), Expect = 5e-76
  Identities = 58/286 (20%), Positives = 109/286 (37%), Gaps = 28/286 (9%)
 
@@ -1830,11 +1830,11 @@ Query: 663  PVMYES---LRQLILASQSSDADAVFSAMDLAFAVDL-----CKEE---------GGGQV 705
 Sbjct: 1743 PVVARSVYHLEDIVRQKKRLEQDKSQTKESLQYALETLTMNGCSVEDLGLDFTLPGFPNI 1802
 
 Query: 706  ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDF 765
-            EL   G +IPVT  N+ EY+R      +     +   + R G   V P + L+    E+ 
+            EL   G +IPVT  N+ EY+R      +     +   + R G   V P + L+    E+
 Sbjct: 1803 ELKKGGKDIPVTIHNLEEYLRLVIFWALNEGVSRQFDSFRDGFESVFPLSHLQYFYPEEL 1862
 
 Query: 766  RLLVNGCGEVNVQMLISFTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTS 825
-              L+ G                 + G   +   +  ++ + I+      +++  + F T 
+              L+ G                 + G   +   +  ++ + I+      +++  + F T
 Sbjct: 1863 DQLLCGSKADTWDAKTLMECCRPDHGYTHDS--RAVKFLFEILSSFDNEQQRLFLQFVTG 1920
 
 Query: 826  SPSLPASEEGFQPMPSITIRP------PDDQHLPTANTCISRLYVP 865
@@ -1845,7 +1845,7 @@ Sbjct: 1921 SPRLPVGGFRSLNPPLTIVRKTFESTENPDDFLPSVMTCVNYLKLP 1966
 >URB1_RAT P51593 rattus norvegicus (rat). dna binding protein ure-b1 (ec
            6.3.2.-). 10/1996
            Length = 310
-           
+
  Score =  279 bits (707), Expect = 1e-74
  Identities = 65/250 (26%), Positives = 109/250 (43%), Gaps = 19/250 (7%)
 
@@ -1858,7 +1858,7 @@ Query: 683 AVFSAMDLAFAVDLCKEEGGGQV-ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVAEQPL 741
 Sbjct: 99  VSTLGYDLTFSTEV-QEFGVCEVRDLKPNGANILVTEENKKEYVHLVCQMRMTGAIRKQL 157
 
 Query: 742 HAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAEKLLQFK 801
-            A  +G  +++PK  +   T ++  LL  G   +++  L S T ++     + +      
+            A  +G  +++PK  +   T ++  LL  G   +++  L S T ++     + +
 Sbjct: 158 AAFLEGFYEIIPKRLISIFTEQELELLYTGLPTIDIDDLKSNTEYHKYQSNSIQ-----I 212
 
 Query: 802 RWFWSIVERMSMTERQDLVYFWTSSPSLP----ASEEGFQPMPSITIRPPD--DQHLPTA 855
@@ -1872,7 +1872,7 @@ Sbjct: 273 HTCFNQLDLP 282
 
 >Y032_HUMAN Q15034 homo sapiens (human). hypothetical protein kiaa0032. 5/2000
             Length = 1050
-            
+
  Score =  274 bits (694), Expect = 4e-73
  Identities = 58/256 (22%), Positives = 96/256 (36%), Gaps = 15/256 (5%)
 
@@ -1881,11 +1881,11 @@ Query: 613  EARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQL 672
 Sbjct: 782  FVEHNWFHLIGITCGLAIYNSTVVDLHFPLALYKKLLNVKPGLEDLKELSPTEGRSLQEL 841
 
 Query: 673  ILASQSSDADAVFSAMDLAFAVDLCKEEGGG--QVELIPNGVNIPVTPQNVYEYVRKYAE 730
-            +      D +  F    L F +  C+E  G   Q +LIP G N+ V   N  E+V  Y  
+            +      D +  F    L F +  C+E  G   Q +LIP G N+ V   N  E+V  Y
 Sbjct: 842  LDY-PGEDVEETFC---LNFTI--CRESYGVIEQKKLIPGGDNVTVCKDNRQEFVDAYVN 895
 
 Query: 731  HRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDES 790
-            +   +   +   A   G L V     LE     + R ++ G    N + L     +  + 
+            +   +   +   A   G L V     LE     + R ++ G    N + L     +  +
 Sbjct: 896  YVFQISVHEWYTAFSSGFLKVCGGKVLELFQPSELRAMMVGNSNYNWEELEETAIYKGDY 955
 
 Query: 791  GENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPS-ITIRPPDD 849
@@ -1900,16 +1900,16 @@ Sbjct: 1010 EYLPVAHTCYNLLDLP 1025
 >UFD4_YEAST P33202 saccharomyces cerevisiae (baker's yeast). ubiquitin fusion
             degradation protein 4 (ub fusion protein 4). 11/1997
             Length = 1483
-            
+
  Score =  259 bits (655), Expect = 2e-68
  Identities = 60/277 (21%), Positives = 109/277 (38%), Gaps = 29/277 (10%)
 
 Query: 607  RPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLG------------RKVN 654
-             P  N E  +  F  +G  +   LL N +     ++   ++L               +  
+             P  N E  +  F  +G  +   LL N +     ++   ++L               +
 Sbjct: 1192 NPFSNNEKVIELFGYLGTFVARSLLDNRILDFRFSKVFFELLHRMSTPNVTTVPSDVETC 1251
 
 Query: 655  WHDFAFFDPVMYESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNI 714
-                   DP++ +SL+ ++      D +    ++ L F V      G   +ELIP G N 
+                   DP++ +SL+ ++      D +    ++ L F V      G   +ELIP G N
 Sbjct: 1252 LLMIELVDPLLAKSLKYIVAN---KDDNMTLESLSLTFTVP-----GNDDIELIPGGCNK 1303
 
 Query: 715  PVTPQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGE 774
@@ -1917,7 +1917,7 @@ Query: 715  PVTPQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGE 774
 Sbjct: 1304 SLNSSNVEEYIHGVIDQILGKGIEKQLKAFIEGFSKVFSYERMLILFPDEL-VDIFGRVE 1362
 
 Query: 775  VNVQMLISFTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE- 833
-             +  M   +T+ N E G   +  +     F SI+      ER+  + F T SP LP    
+             +  M   +T+ N E G   +  +     F SI+      ER+  + F T SP LP
 Sbjct: 1363 EDWSMATLYTNLNAEHGYTMDSSI--IHDFISIISAFGKHERRLFLQFLTGSPKLPIGGF 1420
 
 Query: 834  EGFQPMPSITIRPPD-----DQHLPTANTCISRLYVP 865
@@ -1928,12 +1928,12 @@ Sbjct: 1421 KSLNPKFTVVLKHAEDGLTADEYLPSVMTCANYLKLP 1457
 >HUL5_YEAST P53119 saccharomyces cerevisiae (baker's yeast). probable
            ubiquitin--protein ligase hul5 (ec 6.3.2.-). 5/2000
            Length = 910
-           
+
  Score =  257 bits (649), Expect = 8e-68
  Identities = 68/259 (26%), Positives = 125/259 (48%), Gaps = 21/259 (8%)
 
 Query: 615 RLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLL----GRKVNWHDFAFFDPVMYESLR 670
-           +L     +G+++G CL ++ L  ++     +K LL    G   ++ D   +D V+Y +L 
+           +L     +G+++G CL ++ L  ++     +K LL    G   ++ D   +D V+Y +L
 Sbjct: 640 KLKYIWFLGKVVGKCLYEHVLIDVSFADFFLKKLLNYSNGFLSSFSDLGSYDSVLYNNLI 699
 
 Query: 671 QLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYVRKYAE 730
@@ -1941,11 +1941,11 @@ Query: 671 QLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYVRKYAE 730
 Sbjct: 700 KLLN--MTTDE---IKSLDLTFEIDE-PESSAKVVDLIPNGSKTYVTKDNVLLYVTKVTD 753
 
 Query: 731 HRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCG-EVNVQMLISFTSFNDE 789
-           +++     +P+ A   GL  ++  + +E   + + ++L++G    +++  L S T +   
+           +++     +P+ A   GL  ++  + +E   + + ++L++G    +++  L S T +
 Sbjct: 754 YKLNKRCFKPVSAFHGGLSVIIAPHWMEMFNSIELQMLISGERDNIDLDDLKSNTEYGGY 813
 
 Query: 790 SGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPM-PSITIRPPD 848
-             E+     Q    FW ++      E+ + + F TS P  P   +GF+ + P   IR   
+             E+     Q    FW ++      E+ + + F TS P  P   +GF+ + P   IR
 Sbjct: 814 KEED-----QTIVDFWEVLNEFKFEEKLNFLKFVTSVPQAP--LQGFKALDPKFGIRNAG 866
 
 Query: 849 DQ--HLPTANTCISRLYVP 865
@@ -1956,7 +1956,7 @@ Sbjct: 867 TEKYRLPTASTCVNLLKLP 885
 >PABP_DROME P21187 drosophila melanogaster (fruit fly). polyadenylate-binding
            protein (poly(a) binding protein) (pabp). 2/1995
            Length = 632
-           
+
  Score = 88.2 bits (215), Expect = 6e-17
  Identities = 22/72 (30%), Positives = 30/72 (41%)
 
@@ -1972,12 +1972,12 @@ Sbjct: 620 AVLQVHRVTEPA 631
 >PAB1_HUMAN P11940 homo sapiens (human). polyadenylate-binding protein 1
            (poly(a) binding protein 1) (pabp 1). 7/1998
            Length = 636
-           
+
  Score = 87.4 bits (213), Expect = 1e-16
  Identities = 25/71 (35%), Positives = 35/71 (49%)
 
 Query: 479 DPLPAHRQALGERLYPRVQAMQPAFASKITGMXXXXXXXXXXXXXXXXXXXRARVEEAME 538
-            P    +Q LGERL+P +QAM P  A KITGM                   R++V+EA+ 
+            P    +Q LGERL+P +QAM P  A KITGM                   R++V+EA+
 Sbjct: 553 APPQEQKQMLGERLFPLIQAMHPTLAGKITGMLLEIDNSELLHMLESPESLRSKVDEAVA 612
 
 Query: 539 LIVAHGRENGA 549
@@ -1988,12 +1988,12 @@ Sbjct: 613 VLQAHQAKEAA 623
 >PABP_XENLA P20965 xenopus laevis (african clawed frog). polyadenylate-binding
            protein (poly(a) binding protein) (pabp). 7/1998
            Length = 633
-           
+
  Score = 86.2 bits (210), Expect = 2e-16
  Identities = 25/71 (35%), Positives = 34/71 (47%)
 
 Query: 479 DPLPAHRQALGERLYPRVQAMQPAFASKITGMXXXXXXXXXXXXXXXXXXXRARVEEAME 538
-            P    +Q LGERL+P +QAM P  A KITGM                   R +V+EA+ 
+            P    +Q LGERL+P +QAM P  A KITGM                   R +V+EA+
 Sbjct: 551 APPQEQKQMLGERLFPLIQAMHPTLAGKITGMLLEIDNSELLHMLESPESLRLKVDEAVA 610
 
 Query: 539 LIVAHGRENGA 549
@@ -2004,12 +2004,12 @@ Sbjct: 611 VLQAHQAKEAA 621
 >PAB1_MOUSE P29341 mus musculus (mouse). polyadenylate-binding protein 1
            (poly(a) binding protein 1) (pabp 1). 7/1998
            Length = 636
-           
+
  Score = 85.9 bits (209), Expect = 3e-16
  Identities = 25/71 (35%), Positives = 36/71 (50%)
 
 Query: 479 DPLPAHRQALGERLYPRVQAMQPAFASKITGMXXXXXXXXXXXXXXXXXXXRARVEEAME 538
-            P    +Q LGERL+P +QAM P+ A KITGM                   R++V+EA+ 
+            P    +Q LGERL+P +QAM P+ A KITGM                   R++V+EA+
 Sbjct: 553 APPQEQKQMLGERLFPLIQAMHPSLAGKITGMLLEIDNSELLHMLESPESLRSKVDEAVA 612
 
 Query: 539 LIVAHGRENGA 549
@@ -2021,7 +2021,7 @@ Sbjct: 613 VLQAHQAKEAA 623
            polyadenylate-binding protein 2 (poly(a) binding protein
            2) (pabp 2). 12/1998
            Length = 629
-           
+
  Score = 47.7 bits (111), Expect = 1e-04
  Identities = 18/63 (28%), Positives = 28/63 (43%)
 
@@ -2038,16 +2038,16 @@ Sbjct: 609 DVL 611
            polyadenylate-binding protein (poly(a) binding protein)
            (pabp). 7/1998
            Length = 653
-           
+
  Score = 45.0 bits (104), Expect = 7e-04
  Identities = 22/80 (27%), Positives = 30/80 (37%), Gaps = 6/80 (7%)
 
 Query: 468 PASEGNPSDDPD------PLPAHRQALGERLYPRVQAMQPAFASKITGMXXXXXXXXXXX 521
-           PA  G P           P  + +Q LGE LYP+V   +   + KITGM           
+           PA  G P           P  + +Q LGE LYP+V   +   + KITGM
 Sbjct: 563 PAVPGMPERFTAADLAAVPEESRKQVLGELLYPKVFVREEKLSGKITGMLLEMPNSELLE 622
 
 Query: 522 XXXXXXXXRARVEEAMELIV 541
-                     RV EA+ ++ 
+                     RV EA+ ++
 Sbjct: 623 LLEDDSALNERVNEAIGVLQ 642
 
 
@@ -2055,7 +2055,7 @@ Sbjct: 623 LLEDDSALNERVNEAIGVLQ 642
            polyadenylate-binding protein 5 (poly(a) binding protein
            5) (pabp 5). 11/1995
            Length = 668
-           
+
  Score = 43.8 bits (101), Expect = 0.001
  Identities = 17/62 (27%), Positives = 29/62 (46%)
 
@@ -2073,7 +2073,7 @@ Sbjct: 645 VL 646
            protein acbp-67) (polyadenylate tail-binding protein).
            2/1996
            Length = 576
-           
+
  Score = 41.8 bits (96), Expect = 0.006
  Identities = 20/49 (40%), Positives = 23/49 (46%), Gaps = 6/49 (12%)
 
@@ -2085,12 +2085,12 @@ Sbjct: 484 PPQGGFPRNANDNNQFYQQKQRQALGEQLYKKVSAKTSNEEAAGKITGM 532
 >NIRA_EMENI P28348 emericella nidulans (aspergillus nidulans). nitrogen
            assimilation transcription factor nira. 4/1993
            Length = 892
-           
+
  Score = 32.9 bits (73), Expect = 2.9
  Identities = 22/95 (23%), Positives = 35/95 (36%)
 
 Query: 219 LAEEADSSKPGPSAHDVAAQLKSSLLAEIGLTESEGPPLTSFRPQCSFMGMVISHDMLLG 278
-           +A +  S+  GP +      ++ S  A++   E+  P  T  RP  +  G V S      
+           +A +  S+  GP +      ++ S  A++   E+  P  T  RP  +  G V S
 Sbjct: 702 VASQYSSTPSGPVSVSAMRAVQRSFSAQLAHNEARQPEPTYLRPVSTSYGPVPSTQSAQE 761
 
 Query: 279 RWRLSLELFGRVFMEDVGAEPGSILTELGGFEVKE 313
@@ -2101,16 +2101,16 @@ Sbjct: 762 QWYSPTEAQFRAFTAAHSMPTTSAQSPLTTFDTPE 796
 >RNR_AQUAE O67834 aquifex aeolicus. ribonuclease r (ec 3.1.-.-) (rnase r)
            (vacb protein homolog). 5/2000
            Length = 705
-           
+
  Score = 32.5 bits (72), Expect = 3.7
  Identities = 17/92 (18%), Positives = 25/92 (26%), Gaps = 13/92 (14%)
 
 Query: 686 SAMDLAFAVDLCKEEGGGQ---VELIPNGVNIPVTPQNVYEYVRKY-AEHRMLVVAEQPL 741
-               L F +D  K         +EL P G            YV      + +    E   
+               L F +D  K         +EL P G            YV      + +    E
 Sbjct: 243 LREQLCFTIDPEKAGDFDDAVAIELTPEGY--------YKLYVHIADVSYYVREGTETDK 294
 
 Query: 742 HAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCG 773
-            A ++G     P  +L  L  E     +    
+            A ++G     P  +L  L  E     +
 Sbjct: 295 EAYKRGFTYYFPDRALHML-PEKLSAKLCSLR 325
 
 
@@ -2155,7 +2155,7 @@ NIRA_EMENI P28348 emericella nidulans (aspergillus nidulans)...    33  2.9
 >100K_RAT Q62671 rattus norvegicus (rat). 100 kda protein (ec 6.3.2.-).
            7/1999
            Length = 889
-           
+
  Score = 1225 bits (3136), Expect = 0.0
  Identities = 765/889 (86%), Positives = 765/889 (86%)
 
@@ -2184,7 +2184,7 @@ Query: 301 SILTELGGFEVKESKFRREMEKLRNQQSRDLSLEVDRDRDLLIQQTMRQLNNHFGRRCAT 360
 Sbjct: 301 SILTELGGFEVKESKFRREMEKLRNQQSRDLSLEVDRDRDLLIQQTMRQLNNHFGRRCAT 360
 
 Query: 361 TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQX 420
-           TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQ 
+           TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQ
 Sbjct: 361 TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQR 420
 
 Query: 421 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXQLSIDTRPFRPASEGNPSDDPDP 480
@@ -2223,7 +2223,7 @@ Sbjct: 841 SITIRPPDDQHLPTANTCISRLYVPLYSSKQILKQKLLLAIKTKNFGFV 889
 >HYDP_DROME P51592 drosophila melanogaster (fruit fly). hyperplastic discs
             protein (hyd protein) (ec 6.3.2.-). 12/1998
             Length = 2895
-            
+
  Score =  696 bits (1776), Expect = 0.0
  Identities = 281/635 (44%), Positives = 374/635 (58%), Gaps = 34/635 (5%)
 
@@ -2236,7 +2236,7 @@ Query: 323  LRNQQSRDLSL-EVDRDRDLLIQQTMRQLNNHFGR--RCATTPMAVHRVKVTFKDEPGEG 379
 Sbjct: 2345 LRNGQQRDLVLCKLERNRESLIVQTFKELNTQFGNQSRRIQPPITFNRVKVTFKDEPGEG 2404
 
 Query: 380  SGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQXXXXXXXXXXXXXXXXXXXX 439
-            SGVARSFYT+IA+A L++ K+PNL+ +Q      H+  +                     
+            SGVARSFYT+IA+A L++ K+PNL+ +Q      H+  +
 Sbjct: 2405 SGVARSFYTSIAEALLASAKIPNLESVQVGTN--HSKYVVPFSSILRTTVSGSSRDQSTL 2462
 
 Query: 440  XXXXXXXXXXXXXXXXXXQLSIDTRPFRPASEGN---PSDDPDPLPAHRQALGERLYPRV 496
@@ -2244,7 +2244,7 @@ Query: 440  XXXXXXXXXXXXXXXXXXQLSIDTRPFRPASEGN---PSDDPDPLPAHRQALGERLYPRV 496
 Sbjct: 2463 QRRGSNSKILWRSARERKALNLDARPYTPPNSSDNATPESLNDHLSVHLQQIGERLYPKI 2522
 
 Query: 497  QAMQPAFASKITGMXXXXXXXXXXXXXXXXXXXRARVEEAMELIVAHGRENGAXXXXXXX 556
-             ++    A KITGM                   R +V EA+E+I    +   +       
+             ++    A KITGM                   R +V EA+E+I    +   +
 Sbjct: 2523 HSINQTHAPKITGMLLEIPTPQLLSVISSDETLRQKVNEAIEIITFKQKSETSA------ 2576
 
 Query: 557  XXXXXEKVQENRKRHGSSRSVVXXXXXXXXXXXXNAPLFYQPGKRGFYTPRPGKNTEARL 616
@@ -2256,7 +2256,7 @@ Query: 617  NCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILAS 676
 Sbjct: 2623 NAFRNIGRLIGLCLLQNELLPLFLQRHVLKYILRRKIKFHDLAFFDPALYESFRQIIQNA 2682
 
 Query: 677  QSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYVRKYAEHRM-LV 735
-            Q+ + +   + M+L F +DL KEEG G  ELIP G ++ V+ + +Y       ++   + 
+            Q+ + +   + M+L F +DL KEEG G  ELIP G ++ V+ + +Y       ++   +
 Sbjct: 2683 QTKEGEETINRMELCFVIDLMKEEGCGNRELIPGGRDV-VSHRVIYSSTSDAIQNIDXIK 2741
 
 Query: 736  VAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAE 795
@@ -2276,7 +2276,7 @@ Sbjct: 2861 ANTCISRLYIPLYSSKSILRSKMLMAIKSKNFGFV 2895
  Identities = 69/209 (33%), Positives = 107/209 (51%), Gaps = 26/209 (12%)
 
 Query: 3    SARGDFLNYALSLMRSHNDEHSDVLPVLDVCSLKHVAYVFQALIYWIKAMNQQTTLDTPQ 62
-            ++R DF  Y LSLMRSH  EH D LPVLD+ +L+H+AYV  A +Y+++  N     D   
+            ++R DF  Y LSLMRSH  EH D LPVLD+ +L+H+AYV  A +Y+++  N     D
 Sbjct: 1913 NSRRDFFTYCLSLMRSHTSEHRDALPVLDITALRHIAYVLDAFVYYMR--NDSGFYDKQD 1970
 
 Query: 63   XXXXXXXXXXXXGIXXXXXXXXXXXXTSQSATLNDKDDE------SLPA--ETGQNHPFF 114
@@ -2284,7 +2284,7 @@ Query: 63   XXXXXXXXXXXXGIXXXXXXXXXXXXTSQSATLNDKDDE------SLPA--ETGQNHPFF 114
 Sbjct: 1971 SISGR--------INNLSPMTESYDTDDELANLEEFNADVQMSASSMPSGSQGTRRHAFF 2022
 
 Query: 115  RRSDSMTFLGCIPPNPFEVPLAEAIPLADQPHLLQPNARKEDLFGRPSQGLYSSSAGSGK 174
-             RS+S   LGC  P  FE+PL  A+PLAD+PHLLQPN+++++LF      + +++  SG 
+             RS+S   LGC  P  FE+PL  A+PLAD+PHLLQPN+++++LF      + +++  SG
 Sbjct: 2023 ARSESTLTLGCSAPEGFELPLDMAMPLADKPHLLQPNSKRQELFANLPLLVTTNANNSG- 2081
 
 Query: 175  CLVEVTMD---RNCLEVLPTKMSYAANLK 200
@@ -2295,12 +2295,12 @@ Sbjct: 2082 ----ATNDGDGASIFDYTPTRLGFSNSLK 2106
 >PUB1_SCHPO Q92462 schizosaccharomyces pombe (fission yeast).
            ubiquitin--protein ligase pub1 (ec 6.3.2.-). 12/1998
            Length = 767
-           
+
  Score =  341 bits (866), Expect = 3e-93
  Identities = 69/265 (26%), Positives = 115/265 (43%), Gaps = 18/265 (6%)
 
 Query: 606 PRPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVM 665
-           P  G N E  LN F+ IGR++GL +               K++L +KV   D    D   
+           P  G N E  LN F+ IGR++GL +               K++L +KV   D    D
 Sbjct: 491 PHSGINPE-HLNYFKFIGRVIGLAIFHRRFVDAFFVVSFYKMILQKKVTLQDMESMDAEY 549
 
 Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYV 725
@@ -2308,11 +2308,11 @@ Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYV 725
 Sbjct: 550 YRSLVWILDNDITGVLDLTFSVEDNCFGEVVT-------IDLKPNGRNIEVTEENKREYV 602
 
 Query: 726 RKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTS 785
-                 R+    E+  +A  +G  +++P+  +      +  LL+ G  E++++     T 
+                 R+    E+  +A  +G  +++P+  +      +  LL+ G  E++++     T
 Sbjct: 603 DLVTVWRIQKRIEEQFNAFHEGFSELIPQELINVFDERELELLIGGISEIDMEDWKKHTD 662
 
 Query: 786 FNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE----EGFQPMPS 841
-           +   S  +     Q  +WFW +++  S  ++  L+ F T +  +P +     +G      
+           +   S  +     Q  +WFW +++  S  ++  L+ F T +  +P +     +G
 Sbjct: 663 YRSYSEND-----QIIKWFWELMDEWSNEKKSRLLQFTTGTSRIPVNGFKDLQGSDGPRK 717
 
 Query: 842 ITIRPP-DDQHLPTANTCISRLYVP 865
@@ -2323,24 +2323,24 @@ Sbjct: 718 FTIEKAGEPNKLPKAHTCFNRLDLP 742
 >NED4_HUMAN P46934 homo sapiens (human). nedd-4 protein (ec 6.3.2.-) (kiaa0093)
            (fragment). 7/1999
            Length = 927
-           
+
  Score =  340 bits (862), Expect = 9e-93
  Identities = 71/268 (26%), Positives = 119/268 (43%), Gaps = 23/268 (8%)
 
 Query: 606 PRPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVM 665
-           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D   
+           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D
 Sbjct: 649 PNSGLCNEDHLSYFKFIGRVAGMAVYHGKLLDGFFIRPFYKMMLHKPITLHDMESVDSEY 708
 
 Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQV---ELIPNGVNIPVTPQNVY 722
-           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N  
+           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N
 Sbjct: 709 YNSLRWILENDPTE--------LDLRFIID---EELFGQTHQHELKNGGSEIVVTNKNKK 757
 
 Query: 723 EYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLIS 782
-           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V     
+           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V
 Sbjct: 758 EYIYLVIQWRFVNRIQKQMAAFKEGFFELIPQDLIKIFDENELELLMCGLGDVDVNDWRE 817
 
 Query: 783 FTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE----EGFQP 838
-            T + +    N     Q  +WFW  V  M   +R  L+ F T +  +P +      G   
+            T + +    N     Q  +WFW  V  M   +R  L+ F T +  +P +      G
 Sbjct: 818 HTKYKNGYSANH----QVIQWFWKAVLMMDSEKRIRLLQFVTGTSRVPMNGFAELYGSNG 873
 
 Query: 839 MPSITIRP-PDDQHLPTANTCISRLYVP 865
@@ -2351,24 +2351,24 @@ Sbjct: 874 PQSFTVEQWGTPEKLPRAHTCFNRLDLP 901
 >NED4_MOUSE P46935 mus musculus (mouse). nedd-4 protein (ec 6.3.2.-)
            (fragment). 11/1997
            Length = 957
-           
+
  Score =  339 bits (861), Expect = 1e-92
  Identities = 71/268 (26%), Positives = 117/268 (43%), Gaps = 23/268 (8%)
 
 Query: 606 PRPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVM 665
-           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D   
+           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D
 Sbjct: 679 PNSGLCNEDHLSYFKFIGRVAGMAVYHGKLLDGFFIRPFYKMMLQKLITLHDMESVDSEY 738
 
 Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQV---ELIPNGVNIPVTPQNVY 722
-           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N  
+           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N
 Sbjct: 739 YSSLRWILENDPTE--------LDLRFIID---EELFGQTHQHELKTGGSEIVVTNKNKK 787
 
 Query: 723 EYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLIS 782
-           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V     
+           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V
 Sbjct: 788 EYIYLVIQWRFVNRIQKQMAAFKEGFFELIPQDLIKIFDENELELLMCGLGDVDVNDWRE 847
 
 Query: 783 FTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE----EGFQP 838
-            T + +    N     Q   WFW  V  M   +R  L+ F T +  +P +      G   
+            T + +    N     Q   WFW  V  M   +R  L+ F T +  +P +      G
 Sbjct: 848 HTKYKNGYSMNH----QVIHWFWKAVWMMDSEKRIRLLQFVTGTSRVPMNGFAELYGSNG 903
 
 Query: 839 MPSITIRP-PDDQHLPTANTCISRLYVP 865
@@ -2379,7 +2379,7 @@ Sbjct: 904 PQSFTVEQWGTPDKLPRAHTCFNRLDLP 931
 >RSP5_YEAST P39940 saccharomyces cerevisiae (baker's yeast). ubiquitin--protein
            ligase rsp5 (ec 6.3.2.-). 7/1999
            Length = 809
-           
+
  Score =  331 bits (839), Expect = 4e-90
  Identities = 69/265 (26%), Positives = 116/265 (43%), Gaps = 18/265 (6%)
 
@@ -2392,11 +2392,11 @@ Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYV 725
 Sbjct: 592 YNSLNWMLENSIDGVLDLTFSADDERFGEVVT-------VDLKPDGRNIEVTDGNKKEYV 644
 
 Query: 726 RKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTS 785
-             Y + R++   ++   A   G  +++P++ +      +  LL+ G  E++++     T 
+             Y + R++   ++   A   G  +++P++ +      +  LL+ G  E++++     T
 Sbjct: 645 ELYTQWRIVDRVQEQFKAFMDGFNELIPEDLVTVFDERELELLIGGIAEIDIEDWKKHTD 704
 
 Query: 786 FNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE----EGFQPMPS 841
-           +      +     +  +WFW  V      +R  L+ F T +  +P +     +G      
+           +      +     +  +WFW  V      +R  L+ F T +  +P +     +G
 Sbjct: 705 YRGYQESD-----EVIQWFWKCVSEWDNEQRARLLQFTTGTSRIPVNGFKDLQGSDGPRR 759
 
 Query: 842 ITIRPPDD-QHLPTANTCISRLYVP 865
@@ -2408,7 +2408,7 @@ Sbjct: 760 FTIEKAGEVQQLPKSHTCFNRVDLP 784
            6.3.2.-) (oncogenic protein- associated protein e6-ap)
            (human papillomavirus e6-associated protein). 5/2000
            Length = 875
-           
+
  Score =  316 bits (802), Expect = 9e-86
  Identities = 67/249 (26%), Positives = 116/249 (45%), Gaps = 12/249 (4%)
 
@@ -2417,11 +2417,11 @@ Query: 619 FRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILASQS 678
 Sbjct: 612 FTLIGIVLGLAIYNNCILDVHFPMVVYRKLMGKKGTFRDLGDSHPVLYQSLKDLLEYEGN 671
 
 Query: 679 SDADAVFSAMDLAFAVDLCKEEGGGQV-ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVA 737
-            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +    
+            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +
 Sbjct: 672 VEDD-----MMITFQISQTDLFGNPMMYDLKENGDKIPITNENRKEFVNLYSDYILNKSV 726
 
 Query: 738 EQPLHAMRKGLLDVLPKNSLED-LTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAEK 796
-           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   + 
+           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   +
 Sbjct: 727 EKQFKAFRRGFHMVTNESPLKYLFRPEEIELLICGSRNLDFQALEETTEY--DGGYTRDS 784
 
 Query: 797 LLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPSITIRPPDDQHLPTAN 856
@@ -2437,7 +2437,7 @@ Sbjct: 842 TCFNVLLLP 850
            6.3.2.-) (oncogenic protein- associated protein e6-ap).
            5/2000
            Length = 885
-           
+
  Score =  307 bits (777), Expect = 8e-83
  Identities = 67/249 (26%), Positives = 114/249 (44%), Gaps = 13/249 (5%)
 
@@ -2446,11 +2446,11 @@ Query: 619 FRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILASQS 678
 Sbjct: 623 FTLIGIL-GLAIYNNCILDVHFPMVVYRKLMGKKGTFRDLGDSHPVLYQSLKDLLEYEGS 681
 
 Query: 679 SDADAVFSAMDLAFAVDLCKEEGGGQV-ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVA 737
-            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +    
+            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +
 Sbjct: 682 VEDD-----MMITFQISQTDLFGNPMMYDLKENGDKIPITNENRKEFVISYSDYILNKSV 736
 
 Query: 738 EQPLHAMRKGLLDVLPKNSLED-LTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAEK 796
-           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   E 
+           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   E
 Sbjct: 737 EKQFKAFRRGFHMVTNESPLKYLFRPEEIELLICGSRNLDFQALEETTEY--DGGYTRES 794
 
 Query: 797 LLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPSITIRPPDDQHLPTAN 856
@@ -2465,7 +2465,7 @@ Sbjct: 852 TCFNVLLLP 860
 >HUL4_YEAST P40985 saccharomyces cerevisiae (baker's yeast). probable
            ubiquitin--protein ligase hul4 (ec 6.3.2.-). 5/2000
            Length = 892
-           
+
  Score =  290 bits (735), Expect = 7e-78
  Identities = 58/271 (21%), Positives = 116/271 (42%), Gaps = 16/271 (5%)
 
@@ -2478,11 +2478,11 @@ Query: 664 VMYESLRQLILASQSSDADAVFSAMDLAFAV------DLCKEEGGGQVELIPNGVNIPVT 717
 Sbjct: 660 ETSRNLIKMLNYTEDNFEDVFSLTFETTYRNNNWILNDSKSSKEYVTVELCENGRNVPIT 719
 
 Query: 718 PQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPK-NSLEDLTAEDFRLLVNGCGE-- 774
-             N +E+V K+ E  +    E   +    G   V  + NS++   +E+   LV G  E  
+             N +E+V K+ E  +    E   +    G   V  + NS++   +E+   LV G  E
 Sbjct: 720 QSNKHEFVMKWVEFYLEKSIEPQYNKFVSGFKRVFAECNSIKLFNSEELERLVCGDEEQT 779
 
 Query: 775 -VNVQMLISFTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE 833
-             + + L S T +     +++  +     WFW I+E      ++ L+ F T+S  +PA+ 
+             + + L S T +     +++  +     WFW I+E      ++ L+ F T+S  +PA+
 Sbjct: 780 KFDFKSLRSVTKYVGGFSDDSRAVC----WFWEIIESWDYPLQKKLLQFVTASDRIPATG 835
 
 Query: 834 EGFQPMPSITIRPPDDQHLPTANTCISRLYV 864
@@ -2493,7 +2493,7 @@ Sbjct: 836 ISTIPFKISLLGSHDSDDLPLAHTCFNEICL 866
 >TR12_HUMAN Q14669 homo sapiens (human). thyroid receptor interacting protein 12
             (trip12) (kiaa0045). 12/1998
             Length = 1992
-            
+
  Score =  284 bits (720), Expect = 4e-76
  Identities = 58/286 (20%), Positives = 109/286 (37%), Gaps = 28/286 (9%)
 
@@ -2506,11 +2506,11 @@ Query: 663  PVMYES---LRQLILASQSSDADAVFSAMDLAFAVDL-----CKEE---------GGGQV 705
 Sbjct: 1743 PVVARSVYHLEDIVRQKKRLEQDKSQTKESLQYALETLTMNGCSVEDLGLDFTLPGFPNI 1802
 
 Query: 706  ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDF 765
-            EL   G +IPVT  N+ EY+R      +     +   + R G   V P + L+    E+ 
+            EL   G +IPVT  N+ EY+R      +     +   + R G   V P + L+    E+
 Sbjct: 1803 ELKKGGKDIPVTIHNLEEYLRLVIFWALNEGVSRQFDSFRDGFESVFPLSHLQYFYPEEL 1862
 
 Query: 766  RLLVNGCGEVNVQMLISFTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTS 825
-              L+ G                 + G   +   +  ++ + I+      +++  + F T 
+              L+ G                 + G   +   +  ++ + I+      +++  + F T
 Sbjct: 1863 DQLLCGSKADTWDAKTLMECCRPDHGYTHDS--RAVKFLFEILSSFDNEQQRLFLQFVTG 1920
 
 Query: 826  SPSLPASEEGFQPMPSITIRP------PDDQHLPTANTCISRLYVP 865
@@ -2521,7 +2521,7 @@ Sbjct: 1921 SPRLPVGGFRSLNPPLTIVRKTFESTENPDDFLPSVMTCVNYLKLP 1966
 >URB1_RAT P51593 rattus norvegicus (rat). dna binding protein ure-b1 (ec
            6.3.2.-). 10/1996
            Length = 310
-           
+
  Score =  280 bits (708), Expect = 1e-74
  Identities = 65/250 (26%), Positives = 109/250 (43%), Gaps = 19/250 (7%)
 
@@ -2534,7 +2534,7 @@ Query: 683 AVFSAMDLAFAVDLCKEEGGGQV-ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVAEQPL 741
 Sbjct: 99  VSTLGYDLTFSTEV-QEFGVCEVRDLKPNGANILVTEENKKEYVHLVCQMRMTGAIRKQL 157
 
 Query: 742 HAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAEKLLQFK 801
-            A  +G  +++PK  +   T ++  LL  G   +++  L S T ++     + +      
+            A  +G  +++PK  +   T ++  LL  G   +++  L S T ++     + +
 Sbjct: 158 AAFLEGFYEIIPKRLISIFTEQELELLYTGLPTIDIDDLKSNTEYHKYQSNSIQ-----I 212
 
 Query: 802 RWFWSIVERMSMTERQDLVYFWTSSPSLP----ASEEGFQPMPSITIRPPD--DQHLPTA 855
@@ -2548,7 +2548,7 @@ Sbjct: 273 HTCFNQLDLP 282
 
 >Y032_HUMAN Q15034 homo sapiens (human). hypothetical protein kiaa0032. 5/2000
             Length = 1050
-            
+
  Score =  275 bits (696), Expect = 3e-73
  Identities = 58/256 (22%), Positives = 96/256 (36%), Gaps = 15/256 (5%)
 
@@ -2557,11 +2557,11 @@ Query: 613  EARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQL 672
 Sbjct: 782  FVEHNWFHLIGITCGLAIYNSTVVDLHFPLALYKKLLNVKPGLEDLKELSPTEGRSLQEL 841
 
 Query: 673  ILASQSSDADAVFSAMDLAFAVDLCKEEGGG--QVELIPNGVNIPVTPQNVYEYVRKYAE 730
-            +      D +  F    L F +  C+E  G   Q +LIP G N+ V   N  E+V  Y  
+            +      D +  F    L F +  C+E  G   Q +LIP G N+ V   N  E+V  Y
 Sbjct: 842  LDY-PGEDVEETFC---LNFTI--CRESYGVIEQKKLIPGGDNVTVCKDNRQEFVDAYVN 895
 
 Query: 731  HRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDES 790
-            +   +   +   A   G L V     LE     + R ++ G    N + L     +  + 
+            +   +   +   A   G L V     LE     + R ++ G    N + L     +  +
 Sbjct: 896  YVFQISVHEWYTAFSSGFLKVCGGKVLELFQPSELRAMMVGNSNYNWEELEETAIYKGDY 955
 
 Query: 791  GENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPS-ITIRPPDD 849
@@ -2576,16 +2576,16 @@ Sbjct: 1010 EYLPVAHTCYNLLDLP 1025
 >UFD4_YEAST P33202 saccharomyces cerevisiae (baker's yeast). ubiquitin fusion
             degradation protein 4 (ub fusion protein 4). 11/1997
             Length = 1483
-            
+
  Score =  259 bits (656), Expect = 1e-68
  Identities = 60/277 (21%), Positives = 109/277 (38%), Gaps = 29/277 (10%)
 
 Query: 607  RPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLG------------RKVN 654
-             P  N E  +  F  +G  +   LL N +     ++   ++L               +  
+             P  N E  +  F  +G  +   LL N +     ++   ++L               +
 Sbjct: 1192 NPFSNNEKVIELFGYLGTFVARSLLDNRILDFRFSKVFFELLHRMSTPNVTTVPSDVETC 1251
 
 Query: 655  WHDFAFFDPVMYESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNI 714
-                   DP++ +SL+ ++      D +    ++ L F V      G   +ELIP G N 
+                   DP++ +SL+ ++      D +    ++ L F V      G   +ELIP G N
 Sbjct: 1252 LLMIELVDPLLAKSLKYIVAN---KDDNMTLESLSLTFTVP-----GNDDIELIPGGCNK 1303
 
 Query: 715  PVTPQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGE 774
@@ -2593,7 +2593,7 @@ Query: 715  PVTPQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGE 774
 Sbjct: 1304 SLNSSNVEEYIHGVIDQILGKGIEKQLKAFIEGFSKVFSYERMLILFPDEL-VDIFGRVE 1362
 
 Query: 775  VNVQMLISFTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE- 833
-             +  M   +T+ N E G   +  +     F SI+      ER+  + F T SP LP    
+             +  M   +T+ N E G   +  +     F SI+      ER+  + F T SP LP
 Sbjct: 1363 EDWSMATLYTNLNAEHGYTMDSSI--IHDFISIISAFGKHERRLFLQFLTGSPKLPIGGF 1420
 
 Query: 834  EGFQPMPSITIRPPD-----DQHLPTANTCISRLYVP 865
@@ -2604,12 +2604,12 @@ Sbjct: 1421 KSLNPKFTVVLKHAEDGLTADEYLPSVMTCANYLKLP 1457
 >HUL5_YEAST P53119 saccharomyces cerevisiae (baker's yeast). probable
            ubiquitin--protein ligase hul5 (ec 6.3.2.-). 5/2000
            Length = 910
-           
+
  Score =  258 bits (652), Expect = 4e-68
  Identities = 68/259 (26%), Positives = 125/259 (48%), Gaps = 21/259 (8%)
 
 Query: 615 RLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLL----GRKVNWHDFAFFDPVMYESLR 670
-           +L     +G+++G CL ++ L  ++     +K LL    G   ++ D   +D V+Y +L 
+           +L     +G+++G CL ++ L  ++     +K LL    G   ++ D   +D V+Y +L
 Sbjct: 640 KLKYIWFLGKVVGKCLYEHVLIDVSFADFFLKKLLNYSNGFLSSFSDLGSYDSVLYNNLI 699
 
 Query: 671 QLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYVRKYAE 730
@@ -2617,11 +2617,11 @@ Query: 671 QLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYVRKYAE 730
 Sbjct: 700 KLLN--MTTDE---IKSLDLTFEIDE-PESSAKVVDLIPNGSKTYVTKDNVLLYVTKVTD 753
 
 Query: 731 HRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCG-EVNVQMLISFTSFNDE 789
-           +++     +P+ A   GL  ++  + +E   + + ++L++G    +++  L S T +   
+           +++     +P+ A   GL  ++  + +E   + + ++L++G    +++  L S T +
 Sbjct: 754 YKLNKRCFKPVSAFHGGLSVIIAPHWMEMFNSIELQMLISGERDNIDLDDLKSNTEYGGY 813
 
 Query: 790 SGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPM-PSITIRPPD 848
-             E+     Q    FW ++      E+ + + F TS P  P   +GF+ + P   IR   
+             E+     Q    FW ++      E+ + + F TS P  P   +GF+ + P   IR
 Sbjct: 814 KEED-----QTIVDFWEVLNEFKFEEKLNFLKFVTSVPQAP--LQGFKALDPKFGIRNAG 866
 
 Query: 849 DQ--HLPTANTCISRLYVP 865
@@ -2632,12 +2632,12 @@ Sbjct: 867 TEKYRLPTASTCVNLLKLP 885
 >PAB1_HUMAN P11940 homo sapiens (human). polyadenylate-binding protein 1
            (poly(a) binding protein 1) (pabp 1). 7/1998
            Length = 636
-           
+
  Score = 86.6 bits (211), Expect = 2e-16
  Identities = 25/71 (35%), Positives = 35/71 (49%)
 
 Query: 479 DPLPAHRQALGERLYPRVQAMQPAFASKITGMXXXXXXXXXXXXXXXXXXXRARVEEAME 538
-            P    +Q LGERL+P +QAM P  A KITGM                   R++V+EA+ 
+            P    +Q LGERL+P +QAM P  A KITGM                   R++V+EA+
 Sbjct: 553 APPQEQKQMLGERLFPLIQAMHPTLAGKITGMLLEIDNSELLHMLESPESLRSKVDEAVA 612
 
 Query: 539 LIVAHGRENGA 549
@@ -2648,7 +2648,7 @@ Sbjct: 613 VLQAHQAKEAA 623
 >PABP_DROME P21187 drosophila melanogaster (fruit fly). polyadenylate-binding
            protein (poly(a) binding protein) (pabp). 2/1995
            Length = 632
-           
+
  Score = 85.9 bits (209), Expect = 3e-16
  Identities = 22/72 (30%), Positives = 30/72 (41%)
 
@@ -2664,12 +2664,12 @@ Sbjct: 620 AVLQVHRVTEPA 631
 >PABP_XENLA P20965 xenopus laevis (african clawed frog). polyadenylate-binding
            protein (poly(a) binding protein) (pabp). 7/1998
            Length = 633
-           
+
  Score = 85.5 bits (208), Expect = 4e-16
  Identities = 25/71 (35%), Positives = 34/71 (47%)
 
 Query: 479 DPLPAHRQALGERLYPRVQAMQPAFASKITGMXXXXXXXXXXXXXXXXXXXRARVEEAME 538
-            P    +Q LGERL+P +QAM P  A KITGM                   R +V+EA+ 
+            P    +Q LGERL+P +QAM P  A KITGM                   R +V+EA+
 Sbjct: 551 APPQEQKQMLGERLFPLIQAMHPTLAGKITGMLLEIDNSELLHMLESPESLRLKVDEAVA 610
 
 Query: 539 LIVAHGRENGA 549
@@ -2680,12 +2680,12 @@ Sbjct: 611 VLQAHQAKEAA 621
 >PAB1_MOUSE P29341 mus musculus (mouse). polyadenylate-binding protein 1
            (poly(a) binding protein 1) (pabp 1). 7/1998
            Length = 636
-           
+
  Score = 85.5 bits (208), Expect = 4e-16
  Identities = 25/71 (35%), Positives = 36/71 (50%)
 
 Query: 479 DPLPAHRQALGERLYPRVQAMQPAFASKITGMXXXXXXXXXXXXXXXXXXXRARVEEAME 538
-            P    +Q LGERL+P +QAM P+ A KITGM                   R++V+EA+ 
+            P    +Q LGERL+P +QAM P+ A KITGM                   R++V+EA+
 Sbjct: 553 APPQEQKQMLGERLFPLIQAMHPSLAGKITGMLLEIDNSELLHMLESPESLRSKVDEAVA 612
 
 Query: 539 LIVAHGRENGA 549
@@ -2697,16 +2697,16 @@ Sbjct: 613 VLQAHQAKEAA 623
            polyadenylate-binding protein (poly(a) binding protein)
            (pabp). 7/1998
            Length = 653
-           
+
  Score = 78.1 bits (189), Expect = 7e-14
  Identities = 22/80 (27%), Positives = 30/80 (37%), Gaps = 6/80 (7%)
 
 Query: 468 PASEGNPSDDPD------PLPAHRQALGERLYPRVQAMQPAFASKITGMXXXXXXXXXXX 521
-           PA  G P           P  + +Q LGE LYP+V   +   + KITGM           
+           PA  G P           P  + +Q LGE LYP+V   +   + KITGM
 Sbjct: 563 PAVPGMPERFTAADLAAVPEESRKQVLGELLYPKVFVREEKLSGKITGMLLEMPNSELLE 622
 
 Query: 522 XXXXXXXXRARVEEAMELIV 541
-                     RV EA+ ++ 
+                     RV EA+ ++
 Sbjct: 623 LLEDDSALNERVNEAIGVLQ 642
 
 
@@ -2714,7 +2714,7 @@ Sbjct: 623 LLEDDSALNERVNEAIGVLQ 642
            polyadenylate-binding protein 2 (poly(a) binding protein
            2) (pabp 2). 12/1998
            Length = 629
-           
+
  Score = 66.0 bits (158), Expect = 3e-10
  Identities = 18/63 (28%), Positives = 28/63 (43%)
 
@@ -2731,7 +2731,7 @@ Sbjct: 609 DVL 611
            polyadenylate-binding protein 5 (poly(a) binding protein
            5) (pabp 5). 11/1995
            Length = 668
-           
+
  Score = 51.2 bits (120), Expect = 9e-06
  Identities = 17/62 (27%), Positives = 29/62 (46%)
 
@@ -2749,7 +2749,7 @@ Sbjct: 645 VL 646
            protein acbp-67) (polyadenylate tail-binding protein).
            2/1996
            Length = 576
-           
+
  Score = 45.3 bits (105), Expect = 5e-04
  Identities = 20/49 (40%), Positives = 23/49 (46%), Gaps = 6/49 (12%)
 
@@ -2761,28 +2761,28 @@ Sbjct: 484 PPQGGFPRNANDNNQFYQQKQRQALGEQLYKKVSAKTSNEEAAGKITGM 532
 >RNR_AQUAE O67834 aquifex aeolicus. ribonuclease r (ec 3.1.-.-) (rnase r)
            (vacb protein homolog). 5/2000
            Length = 705
-           
+
  Score = 32.9 bits (73), Expect = 2.9
  Identities = 17/92 (18%), Positives = 25/92 (26%), Gaps = 13/92 (14%)
 
 Query: 686 SAMDLAFAVDLCKEEGGGQ---VELIPNGVNIPVTPQNVYEYVRKY-AEHRMLVVAEQPL 741
-               L F +D  K         +EL P G            YV      + +    E   
+               L F +D  K         +EL P G            YV      + +    E
 Sbjct: 243 LREQLCFTIDPEKAGDFDDAVAIELTPEGY--------YKLYVHIADVSYYVREGTETDK 294
 
 Query: 742 HAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCG 773
-            A ++G     P  +L  L  E     +    
+            A ++G     P  +L  L  E     +
 Sbjct: 295 EAYKRGFTYYFPDRALHML-PEKLSAKLCSLR 325
 
 
 >NIRA_EMENI P28348 emericella nidulans (aspergillus nidulans). nitrogen
            assimilation transcription factor nira. 4/1993
            Length = 892
-           
+
  Score = 32.9 bits (73), Expect = 2.9
  Identities = 22/95 (23%), Positives = 35/95 (36%)
 
 Query: 219 LAEEADSSKPGPSAHDVAAQLKSSLLAEIGLTESEGPPLTSFRPQCSFMGMVISHDMLLG 278
-           +A +  S+  GP +      ++ S  A++   E+  P  T  RP  +  G V S      
+           +A +  S+  GP +      ++ S  A++   E+  P  T  RP  +  G V S
 Sbjct: 702 VASQYSSTPSGPVSVSAMRAVQRSFSAQLAHNEARQPEPTYLRPVSTSYGPVPSTQSAQE 761
 
 Query: 279 RWRLSLELFGRVFMEDVGAEPGSILTELGGFEVKE 313
@@ -2833,7 +2833,7 @@ CONVERGED!
 >100K_RAT Q62671 rattus norvegicus (rat). 100 kda protein (ec 6.3.2.-).
            7/1999
            Length = 889
-           
+
  Score = 1214 bits (3106), Expect = 0.0
  Identities = 765/889 (86%), Positives = 765/889 (86%)
 
@@ -2862,7 +2862,7 @@ Query: 301 SILTELGGFEVKESKFRREMEKLRNQQSRDLSLEVDRDRDLLIQQTMRQLNNHFGRRCAT 360
 Sbjct: 301 SILTELGGFEVKESKFRREMEKLRNQQSRDLSLEVDRDRDLLIQQTMRQLNNHFGRRCAT 360
 
 Query: 361 TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQX 420
-           TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQ 
+           TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQ
 Sbjct: 361 TPMAVHRVKVTFKDEPGEGSGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQR 420
 
 Query: 421 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXQLSIDTRPFRPASEGNPSDDPDP 480
@@ -2901,7 +2901,7 @@ Sbjct: 841 SITIRPPDDQHLPTANTCISRLYVPLYSSKQILKQKLLLAIKTKNFGFV 889
 >HYDP_DROME P51592 drosophila melanogaster (fruit fly). hyperplastic discs
             protein (hyd protein) (ec 6.3.2.-). 12/1998
             Length = 2895
-            
+
  Score =  689 bits (1758), Expect = 0.0
  Identities = 281/635 (44%), Positives = 374/635 (58%), Gaps = 34/635 (5%)
 
@@ -2914,7 +2914,7 @@ Query: 323  LRNQQSRDLSL-EVDRDRDLLIQQTMRQLNNHFGR--RCATTPMAVHRVKVTFKDEPGEG 379
 Sbjct: 2345 LRNGQQRDLVLCKLERNRESLIVQTFKELNTQFGNQSRRIQPPITFNRVKVTFKDEPGEG 2404
 
 Query: 380  SGVARSFYTAIAQAFLSNEKLPNLDCIQNANKGTHTSLMQXXXXXXXXXXXXXXXXXXXX 439
-            SGVARSFYT+IA+A L++ K+PNL+ +Q      H+  +                     
+            SGVARSFYT+IA+A L++ K+PNL+ +Q      H+  +
 Sbjct: 2405 SGVARSFYTSIAEALLASAKIPNLESVQVGTN--HSKYVVPFSSILRTTVSGSSRDQSTL 2462
 
 Query: 440  XXXXXXXXXXXXXXXXXXQLSIDTRPFRPASEGN---PSDDPDPLPAHRQALGERLYPRV 496
@@ -2922,7 +2922,7 @@ Query: 440  XXXXXXXXXXXXXXXXXXQLSIDTRPFRPASEGN---PSDDPDPLPAHRQALGERLYPRV 496
 Sbjct: 2463 QRRGSNSKILWRSARERKALNLDARPYTPPNSSDNATPESLNDHLSVHLQQIGERLYPKI 2522
 
 Query: 497  QAMQPAFASKITGMXXXXXXXXXXXXXXXXXXXRARVEEAMELIVAHGRENGAXXXXXXX 556
-             ++    A KITGM                   R +V EA+E+I    +   +       
+             ++    A KITGM                   R +V EA+E+I    +   +
 Sbjct: 2523 HSINQTHAPKITGMLLEIPTPQLLSVISSDETLRQKVNEAIEIITFKQKSETSA------ 2576
 
 Query: 557  XXXXXEKVQENRKRHGSSRSVVXXXXXXXXXXXXNAPLFYQPGKRGFYTPRPGKNTEARL 616
@@ -2934,7 +2934,7 @@ Query: 617  NCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILAS 676
 Sbjct: 2623 NAFRNIGRLIGLCLLQNELLPLFLQRHVLKYILRRKIKFHDLAFFDPALYESFRQIIQNA 2682
 
 Query: 677  QSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYVRKYAEHRM-LV 735
-            Q+ + +   + M+L F +DL KEEG G  ELIP G ++ V+ + +Y       ++   + 
+            Q+ + +   + M+L F +DL KEEG G  ELIP G ++ V+ + +Y       ++   +
 Sbjct: 2683 QTKEGEETINRMELCFVIDLMKEEGCGNRELIPGGRDV-VSHRVIYSSTSDAIQNIDXIK 2741
 
 Query: 736  VAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAE 795
@@ -2954,7 +2954,7 @@ Sbjct: 2861 ANTCISRLYIPLYSSKSILRSKMLMAIKSKNFGFV 2895
  Identities = 69/209 (33%), Positives = 107/209 (51%), Gaps = 26/209 (12%)
 
 Query: 3    SARGDFLNYALSLMRSHNDEHSDVLPVLDVCSLKHVAYVFQALIYWIKAMNQQTTLDTPQ 62
-            ++R DF  Y LSLMRSH  EH D LPVLD+ +L+H+AYV  A +Y+++  N     D   
+            ++R DF  Y LSLMRSH  EH D LPVLD+ +L+H+AYV  A +Y+++  N     D
 Sbjct: 1913 NSRRDFFTYCLSLMRSHTSEHRDALPVLDITALRHIAYVLDAFVYYMR--NDSGFYDKQD 1970
 
 Query: 63   XXXXXXXXXXXXGIXXXXXXXXXXXXTSQSATLNDKDDE------SLPA--ETGQNHPFF 114
@@ -2962,7 +2962,7 @@ Query: 63   XXXXXXXXXXXXGIXXXXXXXXXXXXTSQSATLNDKDDE------SLPA--ETGQNHPFF 114
 Sbjct: 1971 SISGR--------INNLSPMTESYDTDDELANLEEFNADVQMSASSMPSGSQGTRRHAFF 2022
 
 Query: 115  RRSDSMTFLGCIPPNPFEVPLAEAIPLADQPHLLQPNARKEDLFGRPSQGLYSSSAGSGK 174
-             RS+S   LGC  P  FE+PL  A+PLAD+PHLLQPN+++++LF      + +++  SG 
+             RS+S   LGC  P  FE+PL  A+PLAD+PHLLQPN+++++LF      + +++  SG
 Sbjct: 2023 ARSESTLTLGCSAPEGFELPLDMAMPLADKPHLLQPNSKRQELFANLPLLVTTNANNSG- 2081
 
 Query: 175  CLVEVTMD---RNCLEVLPTKMSYAANLK 200
@@ -2973,12 +2973,12 @@ Sbjct: 2082 ----ATNDGDGASIFDYTPTRLGFSNSLK 2106
 >PUB1_SCHPO Q92462 schizosaccharomyces pombe (fission yeast).
            ubiquitin--protein ligase pub1 (ec 6.3.2.-). 12/1998
            Length = 767
-           
+
  Score =  342 bits (867), Expect = 2e-93
  Identities = 69/265 (26%), Positives = 115/265 (43%), Gaps = 18/265 (6%)
 
 Query: 606 PRPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVM 665
-           P  G N E  LN F+ IGR++GL +               K++L +KV   D    D   
+           P  G N E  LN F+ IGR++GL +               K++L +KV   D    D
 Sbjct: 491 PHSGINPE-HLNYFKFIGRVIGLAIFHRRFVDAFFVVSFYKMILQKKVTLQDMESMDAEY 549
 
 Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYV 725
@@ -2986,11 +2986,11 @@ Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYV 725
 Sbjct: 550 YRSLVWILDNDITGVLDLTFSVEDNCFGEVVT-------IDLKPNGRNIEVTEENKREYV 602
 
 Query: 726 RKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTS 785
-                 R+    E+  +A  +G  +++P+  +      +  LL+ G  E++++     T 
+                 R+    E+  +A  +G  +++P+  +      +  LL+ G  E++++     T
 Sbjct: 603 DLVTVWRIQKRIEEQFNAFHEGFSELIPQELINVFDERELELLIGGISEIDMEDWKKHTD 662
 
 Query: 786 FNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE----EGFQPMPS 841
-           +   S  +     Q  +WFW +++  S  ++  L+ F T +  +P +     +G      
+           +   S  +     Q  +WFW +++  S  ++  L+ F T +  +P +     +G
 Sbjct: 663 YRSYSEND-----QIIKWFWELMDEWSNEKKSRLLQFTTGTSRIPVNGFKDLQGSDGPRK 717
 
 Query: 842 ITIRPP-DDQHLPTANTCISRLYVP 865
@@ -3001,24 +3001,24 @@ Sbjct: 718 FTIEKAGEPNKLPKAHTCFNRLDLP 742
 >NED4_HUMAN P46934 homo sapiens (human). nedd-4 protein (ec 6.3.2.-) (kiaa0093)
            (fragment). 7/1999
            Length = 927
-           
+
  Score =  341 bits (865), Expect = 4e-93
  Identities = 71/268 (26%), Positives = 119/268 (43%), Gaps = 23/268 (8%)
 
 Query: 606 PRPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVM 665
-           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D   
+           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D
 Sbjct: 649 PNSGLCNEDHLSYFKFIGRVAGMAVYHGKLLDGFFIRPFYKMMLHKPITLHDMESVDSEY 708
 
 Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQV---ELIPNGVNIPVTPQNVY 722
-           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N  
+           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N
 Sbjct: 709 YNSLRWILENDPTE--------LDLRFIID---EELFGQTHQHELKNGGSEIVVTNKNKK 757
 
 Query: 723 EYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLIS 782
-           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V     
+           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V
 Sbjct: 758 EYIYLVIQWRFVNRIQKQMAAFKEGFFELIPQDLIKIFDENELELLMCGLGDVDVNDWRE 817
 
 Query: 783 FTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE----EGFQP 838
-            T + +    N     Q  +WFW  V  M   +R  L+ F T +  +P +      G   
+            T + +    N     Q  +WFW  V  M   +R  L+ F T +  +P +      G
 Sbjct: 818 HTKYKNGYSANH----QVIQWFWKAVLMMDSEKRIRLLQFVTGTSRVPMNGFAELYGSNG 873
 
 Query: 839 MPSITIRP-PDDQHLPTANTCISRLYVP 865
@@ -3029,24 +3029,24 @@ Sbjct: 874 PQSFTVEQWGTPEKLPRAHTCFNRLDLP 901
 >NED4_MOUSE P46935 mus musculus (mouse). nedd-4 protein (ec 6.3.2.-)
            (fragment). 11/1997
            Length = 957
-           
+
  Score =  340 bits (864), Expect = 5e-93
  Identities = 71/268 (26%), Positives = 117/268 (43%), Gaps = 23/268 (8%)
 
 Query: 606 PRPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVM 665
-           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D   
+           P  G   E  L+ F+ IGR+ G+ +   +L      R   K++L + +  HD    D
 Sbjct: 679 PNSGLCNEDHLSYFKFIGRVAGMAVYHGKLLDGFFIRPFYKMMLQKLITLHDMESVDSEY 738
 
 Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQV---ELIPNGVNIPVTPQNVY 722
-           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N  
+           Y SLR ++    +         +DL F +D   EE  GQ    EL   G  I VT +N
 Sbjct: 739 YSSLRWILENDPTE--------LDLRFIID---EELFGQTHQHELKTGGSEIVVTNKNKK 787
 
 Query: 723 EYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLIS 782
-           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V     
+           EY+    + R +   ++ + A ++G  +++P++ ++     +  LL+ G G+V+V
 Sbjct: 788 EYIYLVIQWRFVNRIQKQMAAFKEGFFELIPQDLIKIFDENELELLMCGLGDVDVNDWRE 847
 
 Query: 783 FTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE----EGFQP 838
-            T + +    N     Q   WFW  V  M   +R  L+ F T +  +P +      G   
+            T + +    N     Q   WFW  V  M   +R  L+ F T +  +P +      G
 Sbjct: 848 HTKYKNGYSMNH----QVIHWFWKAVWMMDSEKRIRLLQFVTGTSRVPMNGFAELYGSNG 903
 
 Query: 839 MPSITIRP-PDDQHLPTANTCISRLYVP 865
@@ -3057,7 +3057,7 @@ Sbjct: 904 PQSFTVEQWGTPDKLPRAHTCFNRLDLP 931
 >RSP5_YEAST P39940 saccharomyces cerevisiae (baker's yeast). ubiquitin--protein
            ligase rsp5 (ec 6.3.2.-). 7/1999
            Length = 809
-           
+
  Score =  331 bits (840), Expect = 3e-90
  Identities = 69/265 (26%), Positives = 116/265 (43%), Gaps = 18/265 (6%)
 
@@ -3070,11 +3070,11 @@ Query: 666 YESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYV 725
 Sbjct: 592 YNSLNWMLENSIDGVLDLTFSADDERFGEVVT-------VDLKPDGRNIEVTDGNKKEYV 644
 
 Query: 726 RKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTS 785
-             Y + R++   ++   A   G  +++P++ +      +  LL+ G  E++++     T 
+             Y + R++   ++   A   G  +++P++ +      +  LL+ G  E++++     T
 Sbjct: 645 ELYTQWRIVDRVQEQFKAFMDGFNELIPEDLVTVFDERELELLIGGIAEIDIEDWKKHTD 704
 
 Query: 786 FNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE----EGFQPMPS 841
-           +      +     +  +WFW  V      +R  L+ F T +  +P +     +G      
+           +      +     +  +WFW  V      +R  L+ F T +  +P +     +G
 Sbjct: 705 YRGYQESD-----EVIQWFWKCVSEWDNEQRARLLQFTTGTSRIPVNGFKDLQGSDGPRR 759
 
 Query: 842 ITIRPPDD-QHLPTANTCISRLYVP 865
@@ -3086,7 +3086,7 @@ Sbjct: 760 FTIEKAGEVQQLPKSHTCFNRVDLP 784
            6.3.2.-) (oncogenic protein- associated protein e6-ap)
            (human papillomavirus e6-associated protein). 5/2000
            Length = 875
-           
+
  Score =  316 bits (802), Expect = 9e-86
  Identities = 67/249 (26%), Positives = 116/249 (45%), Gaps = 12/249 (4%)
 
@@ -3095,11 +3095,11 @@ Query: 619 FRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILASQS 678
 Sbjct: 612 FTLIGIVLGLAIYNNCILDVHFPMVVYRKLMGKKGTFRDLGDSHPVLYQSLKDLLEYEGN 671
 
 Query: 679 SDADAVFSAMDLAFAVDLCKEEGGGQV-ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVA 737
-            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +    
+            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +
 Sbjct: 672 VEDD-----MMITFQISQTDLFGNPMMYDLKENGDKIPITNENRKEFVNLYSDYILNKSV 726
 
 Query: 738 EQPLHAMRKGLLDVLPKNSLED-LTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAEK 796
-           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   + 
+           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   +
 Sbjct: 727 EKQFKAFRRGFHMVTNESPLKYLFRPEEIELLICGSRNLDFQALEETTEY--DGGYTRDS 784
 
 Query: 797 LLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPSITIRPPDDQHLPTAN 856
@@ -3115,7 +3115,7 @@ Sbjct: 842 TCFNVLLLP 850
            6.3.2.-) (oncogenic protein- associated protein e6-ap).
            5/2000
            Length = 885
-           
+
  Score =  307 bits (777), Expect = 8e-83
  Identities = 67/249 (26%), Positives = 114/249 (44%), Gaps = 13/249 (5%)
 
@@ -3124,11 +3124,11 @@ Query: 619 FRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQLILASQS 678
 Sbjct: 623 FTLIGIL-GLAIYNNCILDVHFPMVVYRKLMGKKGTFRDLGDSHPVLYQSLKDLLEYEGS 681
 
 Query: 679 SDADAVFSAMDLAFAVDLCKEEGGGQV-ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVA 737
-            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +    
+            + D     M + F +      G   + +L  NG  IP+T +N  E+V  Y+++ +
 Sbjct: 682 VEDD-----MMITFQISQTDLFGNPMMYDLKENGDKIPITNENRKEFVISYSDYILNKSV 736
 
 Query: 738 EQPLHAMRKGLLDVLPKNSLED-LTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAEK 796
-           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   E 
+           E+   A R+G   V  ++ L+     E+  LL+ G   ++ Q L   T +  + G   E
 Sbjct: 737 EKQFKAFRRGFHMVTNESPLKYLFRPEEIELLICGSRNLDFQALEETTEY--DGGYTRES 794
 
 Query: 797 LLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPSITIRPPDDQHLPTAN 856
@@ -3143,7 +3143,7 @@ Sbjct: 852 TCFNVLLLP 860
 >HUL4_YEAST P40985 saccharomyces cerevisiae (baker's yeast). probable
            ubiquitin--protein ligase hul4 (ec 6.3.2.-). 5/2000
            Length = 892
-           
+
  Score =  290 bits (735), Expect = 7e-78
  Identities = 58/271 (21%), Positives = 116/271 (42%), Gaps = 16/271 (5%)
 
@@ -3156,11 +3156,11 @@ Query: 664 VMYESLRQLILASQSSDADAVFSAMDLAFAV------DLCKEEGGGQVELIPNGVNIPVT 717
 Sbjct: 660 ETSRNLIKMLNYTEDNFEDVFSLTFETTYRNNNWILNDSKSSKEYVTVELCENGRNVPIT 719
 
 Query: 718 PQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPK-NSLEDLTAEDFRLLVNGCGE-- 774
-             N +E+V K+ E  +    E   +    G   V  + NS++   +E+   LV G  E  
+             N +E+V K+ E  +    E   +    G   V  + NS++   +E+   LV G  E
 Sbjct: 720 QSNKHEFVMKWVEFYLEKSIEPQYNKFVSGFKRVFAECNSIKLFNSEELERLVCGDEEQT 779
 
 Query: 775 -VNVQMLISFTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE 833
-             + + L S T +     +++  +     WFW I+E      ++ L+ F T+S  +PA+ 
+             + + L S T +     +++  +     WFW I+E      ++ L+ F T+S  +PA+
 Sbjct: 780 KFDFKSLRSVTKYVGGFSDDSRAVC----WFWEIIESWDYPLQKKLLQFVTASDRIPATG 835
 
 Query: 834 EGFQPMPSITIRPPDDQHLPTANTCISRLYV 864
@@ -3171,7 +3171,7 @@ Sbjct: 836 ISTIPFKISLLGSHDSDDLPLAHTCFNEICL 866
 >TR12_HUMAN Q14669 homo sapiens (human). thyroid receptor interacting protein 12
             (trip12) (kiaa0045). 12/1998
             Length = 1992
-            
+
  Score =  284 bits (720), Expect = 4e-76
  Identities = 58/286 (20%), Positives = 109/286 (37%), Gaps = 28/286 (9%)
 
@@ -3184,11 +3184,11 @@ Query: 663  PVMYES---LRQLILASQSSDADAVFSAMDLAFAVDL-----CKEE---------GGGQV 705
 Sbjct: 1743 PVVARSVYHLEDIVRQKKRLEQDKSQTKESLQYALETLTMNGCSVEDLGLDFTLPGFPNI 1802
 
 Query: 706  ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDF 765
-            EL   G +IPVT  N+ EY+R      +     +   + R G   V P + L+    E+ 
+            EL   G +IPVT  N+ EY+R      +     +   + R G   V P + L+    E+
 Sbjct: 1803 ELKKGGKDIPVTIHNLEEYLRLVIFWALNEGVSRQFDSFRDGFESVFPLSHLQYFYPEEL 1862
 
 Query: 766  RLLVNGCGEVNVQMLISFTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTS 825
-              L+ G                 + G   +   +  ++ + I+      +++  + F T 
+              L+ G                 + G   +   +  ++ + I+      +++  + F T
 Sbjct: 1863 DQLLCGSKADTWDAKTLMECCRPDHGYTHDS--RAVKFLFEILSSFDNEQQRLFLQFVTG 1920
 
 Query: 826  SPSLPASEEGFQPMPSITIRP------PDDQHLPTANTCISRLYVP 865
@@ -3199,7 +3199,7 @@ Sbjct: 1921 SPRLPVGGFRSLNPPLTIVRKTFESTENPDDFLPSVMTCVNYLKLP 1966
 >URB1_RAT P51593 rattus norvegicus (rat). dna binding protein ure-b1 (ec
            6.3.2.-). 10/1996
            Length = 310
-           
+
  Score =  280 bits (709), Expect = 8e-75
  Identities = 64/250 (25%), Positives = 107/250 (42%), Gaps = 19/250 (7%)
 
@@ -3212,7 +3212,7 @@ Query: 683 AVFSAMDLAFAVDLCKEEGGGQV-ELIPNGVNIPVTPQNVYEYVRKYAEHRMLVVAEQPL 741
 Sbjct: 99  VSTLGYDLTFSTEV-QEFGVCEVRDLKPNGANILVTEENKKEYVHLVCQMRMTGAIRKQL 157
 
 Query: 742 HAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDESGENAEKLLQFK 801
-            A  +G  +++PK  +   T ++  LL  G   +++  L S T ++     + +      
+            A  +G  +++PK  +   T ++  LL  G   +++  L S T ++     + +
 Sbjct: 158 AAFLEGFYEIIPKRLISIFTEQELELLYTGLPTIDIDDLKSNTEYHKYQSNSIQ-----I 212
 
 Query: 802 RWFWSIVERMSMTERQDLVYFWTSSPSLPASE----EGFQPMPSITIRPPD--DQHLPTA 855
@@ -3226,7 +3226,7 @@ Sbjct: 273 HTCFNQLDLP 282
 
 >Y032_HUMAN Q15034 homo sapiens (human). hypothetical protein kiaa0032. 5/2000
             Length = 1050
-            
+
  Score =  275 bits (697), Expect = 2e-73
  Identities = 58/256 (22%), Positives = 96/256 (36%), Gaps = 15/256 (5%)
 
@@ -3235,11 +3235,11 @@ Query: 613  EARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLGRKVNWHDFAFFDPVMYESLRQL 672
 Sbjct: 782  FVEHNWFHLIGITCGLAIYNSTVVDLHFPLALYKKLLNVKPGLEDLKELSPTEGRSLQEL 841
 
 Query: 673  ILASQSSDADAVFSAMDLAFAVDLCKEEGGG--QVELIPNGVNIPVTPQNVYEYVRKYAE 730
-            +      D +  F    L F +  C+E  G   Q +LIP G N+ V   N  E+V  Y  
+            +      D +  F    L F +  C+E  G   Q +LIP G N+ V   N  E+V  Y
 Sbjct: 842  LDY-PGEDVEETFC---LNFTI--CRESYGVIEQKKLIPGGDNVTVCKDNRQEFVDAYVN 895
 
 Query: 731  HRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGEVNVQMLISFTSFNDES 790
-            +   +   +   A   G L V     LE     + R ++ G    N + L     +  + 
+            +   +   +   A   G L V     LE     + R ++ G    N + L     +  +
 Sbjct: 896  YVFQISVHEWYTAFSSGFLKVCGGKVLELFQPSELRAMMVGNSNYNWEELEETAIYKGDY 955
 
 Query: 791  GENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPS-ITIRPPDD 849
@@ -3254,16 +3254,16 @@ Sbjct: 1010 EYLPVAHTCYNLLDLP 1025
 >UFD4_YEAST P33202 saccharomyces cerevisiae (baker's yeast). ubiquitin fusion
             degradation protein 4 (ub fusion protein 4). 11/1997
             Length = 1483
-            
+
  Score =  260 bits (657), Expect = 9e-69
  Identities = 60/277 (21%), Positives = 109/277 (38%), Gaps = 29/277 (10%)
 
 Query: 607  RPGKNTEARLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLLG------------RKVN 654
-             P  N E  +  F  +G  +   LL N +     ++   ++L               +  
+             P  N E  +  F  +G  +   LL N +     ++   ++L               +
 Sbjct: 1192 NPFSNNEKVIELFGYLGTFVARSLLDNRILDFRFSKVFFELLHRMSTPNVTTVPSDVETC 1251
 
 Query: 655  WHDFAFFDPVMYESLRQLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNI 714
-                   DP++ +SL+ ++      D +    ++ L F V      G   +ELIP G N 
+                   DP++ +SL+ ++      D +    ++ L F V      G   +ELIP G N
 Sbjct: 1252 LLMIELVDPLLAKSLKYIVAN---KDDNMTLESLSLTFTVP-----GNDDIELIPGGCNK 1303
 
 Query: 715  PVTPQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGE 774
@@ -3271,7 +3271,7 @@ Query: 715  PVTPQNVYEYVRKYAEHRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCGE 774
 Sbjct: 1304 SLNSSNVEEYIHGVIDQILGKGIEKQLKAFIEGFSKVFSYERMLILFPDEL-VDIFGRVE 1362
 
 Query: 775  VNVQMLISFTSFNDESGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASE- 833
-             +  M   +T+ N E G   +  +     F SI+      ER+  + F T SP LP    
+             +  M   +T+ N E G   +  +     F SI+      ER+  + F T SP LP
 Sbjct: 1363 EDWSMATLYTNLNAEHGYTMDSSI--IHDFISIISAFGKHERRLFLQFLTGSPKLPIGGF 1420
 
 Query: 834  EGFQPMPSITIRPPD-----DQHLPTANTCISRLYVP 865
@@ -3282,12 +3282,12 @@ Sbjct: 1421 KSLNPKFTVVLKHAEDGLTADEYLPSVMTCANYLKLP 1457
 >HUL5_YEAST P53119 saccharomyces cerevisiae (baker's yeast). probable
            ubiquitin--protein ligase hul5 (ec 6.3.2.-). 5/2000
            Length = 910
-           
+
  Score =  258 bits (651), Expect = 5e-68
  Identities = 66/258 (25%), Positives = 120/258 (45%), Gaps = 19/258 (7%)
 
 Query: 615 RLNCFRNIGRILGLCLLQNELCPITLNRHVIKVLL----GRKVNWHDFAFFDPVMYESLR 670
-           +L     +G+++G CL ++ L  ++     +K LL    G   ++ D   +D V+Y +L 
+           +L     +G+++G CL ++ L  ++     +K LL    G   ++ D   +D V+Y +L
 Sbjct: 640 KLKYIWFLGKVVGKCLYEHVLIDVSFADFFLKKLLNYSNGFLSSFSDLGSYDSVLYNNLI 699
 
 Query: 671 QLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYVRKYAE 730
@@ -3295,11 +3295,11 @@ Query: 671 QLILASQSSDADAVFSAMDLAFAVDLCKEEGGGQVELIPNGVNIPVTPQNVYEYVRKYAE 730
 Sbjct: 700 KLLN--MTTDE---IKSLDLTFEIDE-PESSAKVVDLIPNGSKTYVTKDNVLLYVTKVTD 753
 
 Query: 731 HRMLVVAEQPLHAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCG-EVNVQMLISFTSFNDE 789
-           +++     +P+ A   GL  ++  + +E   + + ++L++G    +++  L S T +   
+           +++     +P+ A   GL  ++  + +E   + + ++L++G    +++  L S T +
 Sbjct: 754 YKLNKRCFKPVSAFHGGLSVIIAPHWMEMFNSIELQMLISGERDNIDLDDLKSNTEYGGY 813
 
 Query: 790 SGENAEKLLQFKRWFWSIVERMSMTERQDLVYFWTSSPSLPASEEGFQPMPSITIRPPDD 849
-             E+     Q    FW ++      E+ + + F TS P  P         P   IR    
+             E+     Q    FW ++      E+ + + F TS P  P         P   IR
 Sbjct: 814 KEED-----QTIVDFWEVLNEFKFEEKLNFLKFVTSVPQAPLQGFKALD-PKFGIRNAGT 867
 
 Query: 850 Q--HLPTANTCISRLYVP 865
@@ -3310,7 +3310,7 @@ Sbjct: 868 EKYRLPTASTCVNLLKLP 885
 >PABP_DROME P21187 drosophila melanogaster (fruit fly). polyadenylate-binding
            protein (poly(a) binding protein) (pabp). 2/1995
            Length = 632
-           
+
  Score = 80.8 bits (196), Expect = 1e-14
  Identities = 22/73 (30%), Positives = 30/73 (40%)
 
@@ -3326,7 +3326,7 @@ Sbjct: 619 VAVLQVHRVTEPA 631
 >PAB1_HUMAN P11940 homo sapiens (human). polyadenylate-binding protein 1
            (poly(a) binding protein 1) (pabp 1). 7/1998
            Length = 636
-           
+
  Score = 80.0 bits (194), Expect = 2e-14
  Identities = 25/73 (34%), Positives = 35/73 (47%)
 
@@ -3342,7 +3342,7 @@ Sbjct: 611 VAVLQAHQAKEAA 623
 >PAB1_MOUSE P29341 mus musculus (mouse). polyadenylate-binding protein 1
            (poly(a) binding protein 1) (pabp 1). 7/1998
            Length = 636
-           
+
  Score = 79.2 bits (192), Expect = 3e-14
  Identities = 25/73 (34%), Positives = 36/73 (49%)
 
@@ -3358,12 +3358,12 @@ Sbjct: 611 VAVLQAHQAKEAA 623
 >PABP_XENLA P20965 xenopus laevis (african clawed frog). polyadenylate-binding
            protein (poly(a) binding protein) (pabp). 7/1998
            Length = 633
-           
+
  Score = 78.5 bits (190), Expect = 5e-14
  Identities = 25/71 (35%), Positives = 34/71 (47%)
 
 Query: 479 DPLPAHRQALGERLYPRVQAMQPAFASKITGMXXXXXXXXXXXXXXXXXXXRARVEEAME 538
-            P    +Q LGERL+P +QAM P  A KITGM                   R +V+EA+ 
+            P    +Q LGERL+P +QAM P  A KITGM                   R +V+EA+
 Sbjct: 551 APPQEQKQMLGERLFPLIQAMHPTLAGKITGMLLEIDNSELLHMLESPESLRLKVDEAVA 610
 
 Query: 539 LIVAHGRENGA 549
@@ -3375,16 +3375,16 @@ Sbjct: 611 VLQAHQAKEAA 621
            polyadenylate-binding protein (poly(a) binding protein)
            (pabp). 7/1998
            Length = 653
-           
+
  Score = 69.9 bits (168), Expect = 2e-11
  Identities = 22/80 (27%), Positives = 30/80 (37%), Gaps = 6/80 (7%)
 
 Query: 468 PASEGNPSDDPD------PLPAHRQALGERLYPRVQAMQPAFASKITGMXXXXXXXXXXX 521
-           PA  G P           P  + +Q LGE LYP+V   +   + KITGM           
+           PA  G P           P  + +Q LGE LYP+V   +   + KITGM
 Sbjct: 563 PAVPGMPERFTAADLAAVPEESRKQVLGELLYPKVFVREEKLSGKITGMLLEMPNSELLE 622
 
 Query: 522 XXXXXXXXRARVEEAMELIV 541
-                     RV EA+ ++ 
+                     RV EA+ ++
 Sbjct: 623 LLEDDSALNERVNEAIGVLQ 642
 
 
@@ -3392,7 +3392,7 @@ Sbjct: 623 LLEDDSALNERVNEAIGVLQ 642
            polyadenylate-binding protein 2 (poly(a) binding protein
            2) (pabp 2). 12/1998
            Length = 629
-           
+
  Score = 64.8 bits (155), Expect = 7e-10
  Identities = 18/63 (28%), Positives = 28/63 (43%)
 
@@ -3409,7 +3409,7 @@ Sbjct: 609 DVL 611
            polyadenylate-binding protein 5 (poly(a) binding protein
            5) (pabp 5). 11/1995
            Length = 668
-           
+
  Score = 64.4 bits (154), Expect = 9e-10
  Identities = 17/62 (27%), Positives = 29/62 (46%)
 
@@ -3427,7 +3427,7 @@ Sbjct: 645 VL 646
            protein acbp-67) (polyadenylate tail-binding protein).
            2/1996
            Length = 576
-           
+
  Score = 57.8 bits (137), Expect = 9e-08
  Identities = 20/49 (40%), Positives = 23/49 (46%), Gaps = 6/49 (12%)
 
@@ -3439,28 +3439,28 @@ Sbjct: 484 PPQGGFPRNANDNNQFYQQKQRQALGEQLYKKVSAKTSNEEAAGKITGM 532
 >RNR_AQUAE O67834 aquifex aeolicus. ribonuclease r (ec 3.1.-.-) (rnase r)
            (vacb protein homolog). 5/2000
            Length = 705
-           
+
  Score = 33.3 bits (74), Expect = 2.2
  Identities = 17/92 (18%), Positives = 25/92 (26%), Gaps = 13/92 (14%)
 
 Query: 686 SAMDLAFAVDLCKEEGGGQ---VELIPNGVNIPVTPQNVYEYVRKY-AEHRMLVVAEQPL 741
-               L F +D  K         +EL P G            YV      + +    E   
+               L F +D  K         +EL P G            YV      + +    E
 Sbjct: 243 LREQLCFTIDPEKAGDFDDAVAIELTPEGY--------YKLYVHIADVSYYVREGTETDK 294
 
 Query: 742 HAMRKGLLDVLPKNSLEDLTAEDFRLLVNGCG 773
-            A ++G     P  +L  L  E     +    
+            A ++G     P  +L  L  E     +
 Sbjct: 295 EAYKRGFTYYFPDRALHML-PEKLSAKLCSLR 325
 
 
 >NIRA_EMENI P28348 emericella nidulans (aspergillus nidulans). nitrogen
            assimilation transcription factor nira. 4/1993
            Length = 892
-           
+
  Score = 32.9 bits (73), Expect = 2.9
  Identities = 22/95 (23%), Positives = 35/95 (36%)
 
 Query: 219 LAEEADSSKPGPSAHDVAAQLKSSLLAEIGLTESEGPPLTSFRPQCSFMGMVISHDMLLG 278
-           +A +  S+  GP +      ++ S  A++   E+  P  T  RP  +  G V S      
+           +A +  S+  GP +      ++ S  A++   E+  P  T  RP  +  G V S
 Sbjct: 702 VASQYSSTPSGPVSVSAMRAVQRSFSAQLAHNEARQPEPTYLRPVSTSYGPVPSTQSAQE 761
 
 Query: 279 RWRLSLELFGRVFMEDVGAEPGSILTELGGFEVKE 313
@@ -3472,17 +3472,17 @@ Sbjct: 762 QWYSPTEAQFRAFTAAHSMPTTSAQSPLTTFDTPE 796
     Posted date:  Jun 21, 2000 12:39 PM
   Number of letters in database: 31,411,157
   Number of sequences in database:  86,593
-  
+
   Database: /dbase/swissprot/main/update/spu
     Posted date:  Nov 3, 1999  8:09 PM
   Number of letters in database: 546,183
   Number of sequences in database:  1608
-  
-Lambda     K      H
-   0.318    0.131    0.369 
 
 Lambda     K      H
-   0.270   0.0458    0.230 
+   0.318    0.131    0.369
+
+Lambda     K      H
+   0.270   0.0458    0.230
 
 
 Matrix: BLOSUM62

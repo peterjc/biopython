@@ -3,7 +3,7 @@
 #include "KDTree.h"
 
 typedef struct {
-    PyObject_HEAD 
+    PyObject_HEAD
     struct Neighbor neighbor;
 } PyNeighbor;
 
@@ -14,7 +14,7 @@ PyNeighbor_init(PyNeighbor *self, PyObject *args, PyObject *kwds)
     float radius = 0.0;
     static char *kwlist[] = {"index1", "index2", "radius", NULL};
 
-    if (! PyArg_ParseTupleAndKeywords(args, kwds, "ii|d", kwlist, 
+    if (! PyArg_ParseTupleAndKeywords(args, kwds, "ii|d", kwlist,
                                       &index1, &index2, &radius))
         return -1;
     self->neighbor.index1 = index1;
@@ -155,7 +155,7 @@ PyTree_init(PyTree* self, PyObject* args, PyObject* kwds)
     int dim;
     int bucket_size;
     struct KDTree* tree;
-   
+
     if(!PyArg_ParseTuple(args, "ii:KDTree_init" ,&dim, &bucket_size)) return -1;
 
     if (dim <= 0 || bucket_size <= 0)
@@ -274,7 +274,7 @@ PyTree_set_data(PyTree* self, PyObject* args)
         {
             coords[i*m+j]=*(double *) (p+i*rowstride+j*colstride);
         }
-    }	
+    }
     Py_DECREF(obj);
 
     ok = KDTree_set_data(tree, coords, n);
@@ -503,9 +503,9 @@ static PyObject *PyTree_get_indices(PyTree *self)
 	npy_intp length;
 	PyArrayObject *array;
 	struct KDTree* tree = self->tree;
- 
+
 	length=KDTree_get_count(tree);
-	
+
 	if (length==0)
 	{
 		Py_INCREF(Py_None);
@@ -533,7 +533,7 @@ static PyObject *PyTree_get_radii(PyTree *self)
 	npy_intp length;
 	PyArrayObject *array;
 	struct KDTree* tree = self->tree;
-	 
+
 	length=KDTree_get_count(tree);
 
 	if (length==0)
@@ -541,7 +541,7 @@ static PyObject *PyTree_get_radii(PyTree *self)
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
-		
+
 	array=(PyArrayObject *) PyArray_SimpleNew(1, &length, PyArray_FLOAT);
 	if (!array)
 	{
@@ -553,7 +553,7 @@ static PyObject *PyTree_get_radii(PyTree *self)
 	/* copy the data into the Numpy data pointer */
 	KDTree_copy_radii(tree, (float *) PyArray_BYTES(array));
 	return PyArray_Return(array);
-}                                   
+}
 
 static PyMethodDef PyTree_methods[] = {
     {"get_count", (PyCFunction)PyTree_get_count, METH_NOARGS, NULL},

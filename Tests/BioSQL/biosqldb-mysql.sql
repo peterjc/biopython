@@ -1,8 +1,8 @@
 -- $Id: biosqldb-mysql.sql,v 1.5 2008-09-26 12:31:42 peterc Exp $
 --
 -- Copyright 2002-2003 Ewan Birney, Elia Stupka, Chris Mungall
--- Copyright 2003-2008 Hilmar Lapp 
--- 
+-- Copyright 2003-2008 Hilmar Lapp
+--
 --  This file is part of BioSQL.
 --
 --  BioSQL is free software: you can redistribute it and/or modify it
@@ -44,7 +44,7 @@
 -- we do not store different versions of a database as different dbids
 -- (there is no concept of versions of database). There is a concept of
 -- versions of entries. Versions of databases deserve their own table and
--- join to bioentry table for tracking with versions of entries 
+-- join to bioentry table for tracking with versions of entries
 
 CREATE TABLE biodatabase (
   	biodatabase_id 	INT(10) UNSIGNED NOT NULL auto_increment,
@@ -62,7 +62,7 @@ CREATE INDEX db_auth on biodatabase(authority);
 --
 -- no organelle/sub species
 --
--- this corresponds to the node table of the NCBI taxonomy database 
+-- this corresponds to the node table of the NCBI taxonomy database
 -- left_value, right_value implement a nested sets model;
 -- see http://www.oreillynet.com/pub/a/network/2002/11/27/bioconf.html
 -- or Joe Celko's 'SQL for smarties' for more information.
@@ -180,9 +180,9 @@ CREATE INDEX trmrel_ontid ON term_relationship(ontology_id);
 -- with respect to using the composite index for the initial keys
 -- CREATE INDEX ontrel_subjectid ON term_relationship(subject_term_id);
 
--- This lets one associate a single term with a term_relationship 
+-- This lets one associate a single term with a term_relationship
 -- effecively allowing us to treat triples as 1st class terms.
--- 
+--
 -- At this point this table is only supported in Biojava. If you want
 -- to know more about the rationale and idea behind it, read the
 -- following article that Mat Pocock posted to the mailing list:
@@ -191,7 +191,7 @@ CREATE TABLE term_relationship_term (
         term_relationship_id INT(10) UNSIGNED NOT NULL,
         term_id              INT(10) UNSIGNED NOT NULL,
         PRIMARY KEY ( term_relationship_id ),
-        UNIQUE ( term_id ) 
+        UNIQUE ( term_id )
 ) TYPE=INNODB;
 
 -- the infamous transitive closure table on ontology term relationships
@@ -251,7 +251,7 @@ CREATE TABLE bioentry (
   	identifier   	VARCHAR(40) BINARY,
 	division	VARCHAR(6),
   	description  	TEXT,
-  	version 	SMALLINT UNSIGNED NOT NULL, 
+  	version 	SMALLINT UNSIGNED NOT NULL,
 	PRIMARY KEY (bioentry_id),
   	UNIQUE (accession,biodatabase_id,version),
 -- CONFIG: uncomment one (and only one) of the two lines below. The
@@ -306,7 +306,7 @@ CREATE INDEX bioentrypath_child ON bioentry_path(subject_bioentry_id);
 
 CREATE TABLE biosequence (
   	bioentry_id     INT(10) UNSIGNED NOT NULL,
-  	version     	SMALLINT, 
+  	version     	SMALLINT,
   	length      	INT(10),
   	alphabet        VARCHAR(10),
   	seq 		LONGTEXT,
@@ -363,7 +363,7 @@ CREATE INDEX dbxrefqual_trm ON dbxref_qualifier_value(term_id);
 -- this table each time. Better to do the join through accession
 -- and db each time. Should be almost as cheap
 
-CREATE TABLE bioentry_dbxref ( 
+CREATE TABLE bioentry_dbxref (
        	bioentry_id        INT(10) UNSIGNED NOT NULL,
        	dbxref_id          INT(10) UNSIGNED NOT NULL,
   	rank  		   SMALLINT,
@@ -495,13 +495,13 @@ CREATE TABLE seqfeature_qualifier_value (
 ) TYPE=INNODB;
 
 CREATE INDEX seqfeaturequal_trm ON seqfeature_qualifier_value(term_id);
-   
+
 -- DBXrefs for features. This is necessary for genome oriented viewpoints,
 -- where you have a few have long sequences (contigs, or chromosomes) with many
 -- features on them. In that case the features are the semantic scope for
 -- their annotation bundles, not the bioentry they are attached to.
 
-CREATE TABLE seqfeature_dbxref ( 
+CREATE TABLE seqfeature_dbxref (
        	seqfeature_id      INT(10) UNSIGNED NOT NULL,
        	dbxref_id          INT(10) UNSIGNED NOT NULL,
   	rank  		   SMALLINT,
@@ -546,7 +546,7 @@ CREATE INDEX seqfeatureloc_trm   ON location(term_id);
 -- can go in here
 -- some controlled vocab terms have slots;
 -- fuzzies could be modeled as min_start(5), max_start(5)
--- 
+--
 -- there is no restriction on extending the fuzzy ontology
 -- for your own nefarious aims, although the bio* apis will
 -- most likely ignore these
@@ -709,7 +709,7 @@ ALTER TABLE bioentry_qualifier_value ADD CONSTRAINT FKbioentry_entqual
 ALTER TABLE bioentry_qualifier_value ADD CONSTRAINT FKterm_entqual
 	FOREIGN KEY (term_id) REFERENCES term(term_id);
 
--- reference 
+-- reference
 ALTER TABLE reference ADD CONSTRAINT FKdbxref_reference
       FOREIGN KEY ( dbxref_id ) REFERENCES dbxref ( dbxref_id ) ;
 

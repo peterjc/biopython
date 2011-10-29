@@ -40,7 +40,7 @@ FEATURES             Location/Qualifiers
                      /translation="MSETNKNAFQAGQAAGKAEEKSNVLLDKAKDAAAAAGASAQQAG
                      KSISDAAVGGVNFVKDKTGLNK"
 BASE COUNT      194 a     82 c    104 g    133 t
-ORIGIN      
+ORIGIN
         1 aacaaaacac acatcaaaaa cgattttaca agaaaaaaat atctgaaaaa tgtcagagac
        61 caacaagaat gccttccaag ccggtcaggc cgctggcaaa gctgaggaga agagcaatgt
       121 tctgctggac aaggccaagg atgctgctgc tgcagctgga gcttccgcgc aacaggcggg
@@ -112,7 +112,7 @@ FEATURES             Location/Qualifiers
      polyA_site      785
      polyA_site      800
 BASE COUNT      263 a    155 c    160 g    302 t
-ORIGIN      
+ORIGIN
         1 atttggccta taaatataaa cccttaagcc cacatatctt ctcaatccat cacaaacaaa
        61 acacacatca aaaacgattt tacaagaaaa aaatatctga aaaatgtcag agaccaacaa
       121 gaatgccttc caagccggtc aggccgctgg caaagctgag gtactctttc tctcttagaa
@@ -127,7 +127,7 @@ ORIGIN
       661 attgattctc gtactcatcg tacttgttgt tgtttttagt gttgtaatgt tttaatgttt
       721 cttctccctt tagatgtact acgtttggaa ctttaagttt aatcaacaaa atctagttta
       781 agttctaaga actttgtttt accatcctct tttttattgc acttaatgct tatagacttt
-      841 tatctccatc catttctcaa ttcggctacg ttgaattata 
+      841 tatctccatc catttctcaa ttcggctacg ttgaattata
 //
 LOCUS       BNAKINI       441 bp    mRNA            PLN       27-APR-1993
 DEFINITION  Rapeseed Kin1 protein (kin1) mRNA, complete cds.
@@ -169,7 +169,7 @@ FEATURES             Location/Qualifiers
      polyA_site      441
                      /gene="kin1"
 BASE COUNT      129 a     76 c    110 g    126 t
-ORIGIN      
+ORIGIN
         1 aaaaaaacac aacaaaactc aataaataaa caaatggcag acaacaagca gagcttccaa
        61 gccggtcaag cctctggtcg tgctgaggag aagggtaatg tgctgatgga caaggtcaag
       121 gatgctgcta ccgcagctgg agcgtctgcg caaaccgcgg gacagaagat aacggaggcg
@@ -224,7 +224,7 @@ FEATURES             Location/Qualifiers
                      /gene="csp14"
                      /number=3
 BASE COUNT       65 a     38 c     53 g     48 t      2 others
-ORIGIN      
+ORIGIN
         1 ggacaaggcc aaggatgctg ctgctgcagc tggagcttcc gcgcaacaag taaacagata
        61 cacacacatg acacatatat aantacatat cacaagtagg tcgtagattt ctgatatntt
       121 tgtattgtgt attacgtata taggcgggaa agaacatatc ggatgcagca gctggaggtg
@@ -260,7 +260,7 @@ FEATURES             Location/Qualifiers
                      /translation="MADNKQSFQAGQAAGRAEEKGNVLLMDKVKDAATAAGALQTAGQ
                      KITEAAGGAVNLVKEKTGMNK"
 BASE COUNT       88 a     56 c     80 g     58 t
-ORIGIN      
+ORIGIN
         1 aacaaaactc aataaataaa caaatggcag acaacaagca gagcttccaa gccggtcaag
        61 ccgctggtcg tgctgaggag aagggtaatg tgctgctgat ggacaaggtc aaggatgctg
       121 ctaccgcagc tggagctctc caaaccgcgg gacagaagat aacggaggcg gcagggggag
@@ -307,7 +307,7 @@ FEATURES             Location/Qualifiers
                      /translation="MADNKQSFQAGQAAGRAEEKGNVLMDKVKDAATAAGASAQTAGQ
                      KITEAAGGAVNLVKEKTGMNK"
 BASE COUNT      155 a     89 c    116 g    137 t
-ORIGIN      
+ORIGIN
         1 atggcagaca acaagcagag cttccaagcc ggtcaagccg ctggtcgtgc tgaggtctct
        61 ttctctcttt aactctctga tcaaatgcag ttgctgcggt taaacaatca cactttataa
       121 aataaagaga agttatttat attttcttga accaagtaaa tgaatgtatt ttgaccaaaa

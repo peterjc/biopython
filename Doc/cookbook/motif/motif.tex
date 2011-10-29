@@ -50,7 +50,7 @@ work) and has some restrictions on commercial use.
 \section{Motif objects}
 \label{sec:object}
 Since we are interested in motif analysis, we need to take a look at
-\verb|Motif| objects in the first place. For that we need to import 
+\verb|Motif| objects in the first place. For that we need to import
 the Motif library:
 \begin{verbatim}
 from  Bio import Motif
@@ -83,10 +83,10 @@ In case of DNA motifs, we can also get a reverse complement of a motif:
 <Bio.Motif.Motif.Motif object at 0xb39890>
 >>> m.reverse_complement().consensus()
 Seq('TTATA', IUPACUnambiguousDNA())
->>> m.reverse_complement().instances  
-[Seq('TTATA', IUPACUnambiguousDNA()), 
- Seq('TAATA', IUPACUnambiguousDNA()), 
- Seq('TTATA', IUPACUnambiguousDNA()), 
+>>> m.reverse_complement().instances
+[Seq('TTATA', IUPACUnambiguousDNA()),
+ Seq('TAATA', IUPACUnambiguousDNA()),
+ Seq('TTATA', IUPACUnambiguousDNA()),
  Seq('TTATA', IUPACUnambiguousDNA())]
 \end{verbatim}
 
@@ -103,10 +103,10 @@ Matrix). It summarizes the probabilities of finding any symbol (in
 this case nucleotide) in any position of a motif. It can be computed by calling the \verb|.pwm()| method:
 \begin{verbatim}
 >>> m.pwm()
-[{'A': 0.05, 'C': 0.05, 'T': 0.85, 'G': 0.05}, 
- {'A': 0.85, 'C': 0.05, 'T': 0.05, 'G': 0.05}, 
- {'A': 0.05, 'C': 0.05, 'T': 0.85, 'G': 0.05}, 
- {'A': 0.65, 'C': 0.05, 'T': 0.25, 'G': 0.05}, 
+[{'A': 0.05, 'C': 0.05, 'T': 0.85, 'G': 0.05},
+ {'A': 0.85, 'C': 0.05, 'T': 0.05, 'G': 0.05},
+ {'A': 0.05, 'C': 0.05, 'T': 0.85, 'G': 0.05},
+ {'A': 0.65, 'C': 0.05, 'T': 0.25, 'G': 0.05},
  {'A': 0.85, 'C': 0.05, 'T': 0.05, 'G': 0.05}]
 \end{verbatim}
 The probabilities in the motif's PWM are based on the counts in the
@@ -122,7 +122,7 @@ distribution over all symbols in the alphabet that we assume is found
 in background (usually based on the GC content of the respective
 genome). It is by default set to a uniform distribution upon creation of a motif:
 \begin{verbatim}
->>> m.background  
+>>> m.background
 {'A': 0.25, 'C': 0.25, 'T': 0.25, 'G': 0.25}
 \end{verbatim}
 The other parameter is \verb|.beta|, which states the amount of
@@ -131,7 +131,7 @@ pseudo-counts we should add to the PWM. By default it is set to $1.0$,
 >>> m.beta
 1.0
 \end{verbatim}
-so that the total input of pseudo-counts is equal to that of one instance. 
+so that the total input of pseudo-counts is equal to that of one instance.
 
 Using the background distribution and pwm with pseudo-counts added,
 it's easy to compute the log-odds ratios, telling us what are the log
@@ -139,26 +139,26 @@ odds of a particular symbol to be coming from a motif against the
 background. We can use the \verb|.log_odds()| method:
 
 \begin{verbatim}
- >>> m.log_odds() 
-[{'A': -2.3219280948873622, 
-  'C': -2.3219280948873622, 
-  'T': 1.7655347463629771, 
-  'G': -2.3219280948873622}, 
- {'A': 1.7655347463629771, 
-  'C': -2.3219280948873622, 
-  'T': -2.3219280948873622, 
-  'G': -2.3219280948873622}, 
- {'A': -2.3219280948873622, 
-  'C': -2.3219280948873622, 
-  'T': 1.7655347463629771, 
-  'G': -2.3219280948873622}, 
- {'A': 1.3785116232537298, 
-  'C': -2.3219280948873622, 
-  'T': 0.0, 
-  'G': -2.3219280948873622}, 
- {'A': 1.7655347463629771, 
-  'C': -2.3219280948873622, 
-  'T': -2.3219280948873622, 
+ >>> m.log_odds()
+[{'A': -2.3219280948873622,
+  'C': -2.3219280948873622,
+  'T': 1.7655347463629771,
+  'G': -2.3219280948873622},
+ {'A': 1.7655347463629771,
+  'C': -2.3219280948873622,
+  'T': -2.3219280948873622,
+  'G': -2.3219280948873622},
+ {'A': -2.3219280948873622,
+  'C': -2.3219280948873622,
+  'T': 1.7655347463629771,
+  'G': -2.3219280948873622},
+ {'A': 1.3785116232537298,
+  'C': -2.3219280948873622,
+  'T': 0.0,
+  'G': -2.3219280948873622},
+ {'A': 1.7655347463629771,
+  'C': -2.3219280948873622,
+  'T': -2.3219280948873622,
   'G': -2.3219280948873622}
 ]
 \end{verbatim}
@@ -245,7 +245,7 @@ or to TRANSFAC-like matrix format (used by some motif processing software)
 >>> print m.format("transfac")
 XX
 TY Motif
-ID 
+ID
 BF undef
 P0 G A T C
 01 0 0 4 0
@@ -277,7 +277,7 @@ the true instances of the motif:
 \begin{verbatim}
 >>> for pos,seq in m.search_instances(test_seq):
 ...     print pos,seq.tostring()
-... 
+...
 10 TATAA
 15 TATAA
 21 TATAA
@@ -286,7 +286,7 @@ We can do the same with the reverse complement (to find instances on the complem
 \begin{verbatim}
 >>> for pos,seq in m.reverse_complement().search_instances(test_seq):
 ...     print pos,seq.tostring()
-... 
+...
 12 TAATA
 20 TTATA
 \end{verbatim}
@@ -295,7 +295,7 @@ It's just as easy to look for positions, giving rise to high log-odds scores aga
 \begin{verbatim}
 >>> for pos,score in m.search_pwm(test_seq,threshold=5.0):
 ...     print pos,score
-... 
+...
 10 8.44065060871
 -12 7.06213898545
 15 8.44065060871
@@ -347,7 +347,7 @@ instances with balanced threshold with rate of $1000$.
 \begin{verbatim}
 >>> for pos,score in m.search_pwm(test_seq,threshold=sd.threshold_balanced(1000)):
 ...     print pos,score
-... 
+...
 10 8.44065060871
 15 8.44065060871
 -20 8.44065060871
@@ -435,8 +435,8 @@ independently generating the same instance by both motifs.
 
 Currently, biopython has only limited support for \emph{de novo} motif
 finding. Namely, we support running and parsing of AlignAce \cite{Hughes2000} and
-MEME\cite{Bailey1994}. Since the number of motif finding tools is growing rapidly, 
-contributions of new parsers are welcome. 
+MEME\cite{Bailey1994}. Since the number of motif finding tools is growing rapidly,
+contributions of new parsers are welcome.
 
 \subsection{MEME}
 \label{sec:meme}
@@ -463,7 +463,7 @@ Besides the most wanted list of motifs, the result object contains more useful i
 
 The motifs returned by MEMEParser can be treated exactly like regular
 Motif objects (with instances), they also provide some extra
-functionality, by adding additional information about the instances. 
+functionality, by adding additional information about the instances.
 
 \begin{verbatim}
 >>> motifsM[0].consensus()

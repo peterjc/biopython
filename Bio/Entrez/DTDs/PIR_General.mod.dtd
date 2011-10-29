@@ -27,18 +27,18 @@
 
 <!-- PIR specific descriptions -->
 <!ELEMENT PIR-block (
-        PIR-block_had-punct?, 
-        PIR-block_host?, 
-        PIR-block_source?, 
-        PIR-block_summary?, 
-        PIR-block_genetic?, 
-        PIR-block_includes?, 
-        PIR-block_placement?, 
-        PIR-block_superfamily?, 
-        PIR-block_keywords?, 
-        PIR-block_cross-reference?, 
-        PIR-block_date?, 
-        PIR-block_seq-raw?, 
+        PIR-block_had-punct?,
+        PIR-block_host?,
+        PIR-block_source?,
+        PIR-block_summary?,
+        PIR-block_genetic?,
+        PIR-block_includes?,
+        PIR-block_placement?,
+        PIR-block_superfamily?,
+        PIR-block_keywords?,
+        PIR-block_cross-reference?,
+        PIR-block_date?,
+        PIR-block_seq-raw?,
         PIR-block_seqref?)>
 
 <!-- had punctuation in sequence ? -->

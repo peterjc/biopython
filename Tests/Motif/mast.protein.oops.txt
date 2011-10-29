@@ -39,9 +39,9 @@ DATABASE AND MOTIFS
 	No overly similar pairs (correlation > 0.60) found.
 
 	Random model letter frequencies (from non-redundant database):
-	A 0.073 C 0.018 D 0.052 E 0.062 F 0.040 G 0.069 H 0.022 I 0.056 K 0.058 
-	L 0.092 M 0.023 N 0.046 P 0.051 Q 0.041 R 0.052 S 0.074 T 0.059 V 0.064 
-	W 0.013 Y 0.033 
+	A 0.073 C 0.018 D 0.052 E 0.062 F 0.040 G 0.069 H 0.022 I 0.056 K 0.058
+	L 0.092 M 0.023 N 0.046 P 0.051 Q 0.041 R 0.052 S 0.074 T 0.059 V 0.064
+	W 0.013 Y 0.033
 ********************************************************************************
 
 
@@ -126,7 +126,7 @@ SECTION II: MOTIF DIAGRAMS
 	  (lower-numbered) motif occurrences that it overlaps.
 	- The table also shows the E-value of each sequence.
 	- Spacers and motif occurences are indicated by
-	   o -d-    `d' residues separate the end of the preceding motif 
+	   o -d-    `d' residues separate the end of the preceding motif
 		    occurrence and the start of the following motif occurrence
 	   o [n]  occurrence of motif `n' with p-value less than 0.0001.
 ********************************************************************************
@@ -178,12 +178,12 @@ SECTION III: ANNOTATED SEQUENCES
 	  are shown above the actual sequence for each of the high-scoring
 	  sequences from Section I.
 	- A motif occurrence is defined as a position in the sequence whose
-	  match to the motif has POSITION p-value less than 0.0001 as 
+	  match to the motif has POSITION p-value less than 0.0001 as
 	  defined in Section II.
 	- For each sequence, the first line specifies the name of the sequence.
-	- The second (and possibly more) lines give a description of the 
+	- The second (and possibly more) lines give a description of the
 	  sequence.
-	- Following the description line(s) is a line giving the length, 
+	- Following the description line(s) is a line giving the length,
 	  combined p-value, and E-value of the sequence as defined in Section I.
 	- The next line reproduces the motif diagram from Section II.
 	- The entire sequence is printed on the following lines.
@@ -192,7 +192,7 @@ SECTION III: ANNOTATED SEQUENCES
 	   o the motif number of the occurrence,
 	   o the position p-value of the occurrence,
 	   o the best possible match to the motif, and
-	   o columns whose match to the motif has a positive score (indicated 
+	   o columns whose match to the motif has a positive score (indicated
 	     by a plus sign).
 ********************************************************************************
 
@@ -312,7 +312,7 @@ HDHA_ECOLI
 
 
 DHII_HUMAN
-  CORTICOSTEROID 11-BETA-DEHYDROGENASE (EC 1.1.1.146) (11-DH) (11-BETA- 
+  CORTICOSTEROID 11-BETA-DEHYDROGENASE (EC 1.1.1.146) (11-DH) (11-BETA-
   HYDROXYSTEROID DEHYDROGENASE) (11-BETA-HSD)
   LENGTH = 292  COMBINED P-VALUE = 2.49e-32  E-VALUE =  8.2e-31
   DIAGRAM: 34_[2]_119_[1]_81
@@ -427,7 +427,7 @@ YINL_LISMO
 
 
 DHMA_FLAS1
-  N-ACYLMANNOSAMINE 1-DEHYDROGENASE (EC 1.1.1.233) (NAM-DH) 
+  N-ACYLMANNOSAMINE 1-DEHYDROGENASE (EC 1.1.1.233) (NAM-DH)
   LENGTH = 270  COMBINED P-VALUE = 3.65e-30  E-VALUE =  1.2e-28
   DIAGRAM: 14_[2]_121_[1]_77
 
@@ -497,8 +497,8 @@ ENTA_ECOLI
                                                                          +++++++
 76   LVNAAGILRMGATDQLSKEDWQQTFAVNVGGAFNLFQQTMNQFRRQRGGAIVTVASDAAHTPRIGMSAYGASKAA
 
-     
-     
+
+
      VRMLTRSMAHEYAPHGIRVNCI
      ++++  +  ++++ ++++++++
 151  LKSLALSVGLELAGSGVRCNVVSPGSTDTDMQRTLWVSDDAEEQRIRGFGEQFKLGIPLGKIARPQEIANTILFL
@@ -524,7 +524,7 @@ DHB2_HUMAN
 
 
 BDH_HUMAN
-  D-BETA-HYDROXYBUTYRATE DEHYDROGENASE PRECURSOR (EC 1.1.1.30) (BDH) 
+  D-BETA-HYDROXYBUTYRATE DEHYDROGENASE PRECURSOR (EC 1.1.1.30) (BDH)
   (3-HYDROXYBUTYRATE DEHYDROGENASE) (FRAGMENT)
   LENGTH = 343  COMBINED P-VALUE = 8.57e-28  E-VALUE =  2.8e-26
   DIAGRAM: 55_[2]_123_[1]_107
@@ -535,8 +535,8 @@ BDH_HUMAN
                                                             + +++++++++ ++++++++
 1    GLRPPPPGRFSRLPGKTLSACDRENGARRPLLLGSTSFIPIGRRTYASAAEPVGSKAVLVTGCDSGFGFSLAKHL
 
-     
-     
+
+
      HKEGAKVVL
      +++++ +++
 76   HSKGFLVFAGCLMKDKGHDGVKELDSLNSDRLRTVQLNVFRSEEVEKVVGDCPFEPEGPEKGMWGLVNNAGISTF
@@ -547,15 +547,15 @@ BDH_HUMAN
                                                               ++ +++++++++++++++
 151  GEVEFTSLETYKQVAEVNLWGTVRMTKSFLPLIRRAKGRVVNISSMLGRMANPARSPYCITKFGVEAFSDCLRYE
 
-     
-     
+
+
      YAPHGIRVNCI
      +++ +++++++
 226  MYPLGVKVSVVEPGNFIAATSLYNPESIQAIAKKMWEELPEVVRKDYGKKYFDEKIAKMETYCSSGSTDTSPVID
 
 
 BA72_EUBSP
-  7-ALPHA-HYDROXYSTEROID DEHYDROGENASE (EC 1.1.1.159) (BILE ACID 
+  7-ALPHA-HYDROXYSTEROID DEHYDROGENASE (EC 1.1.1.159) (BILE ACID
   7-DEHYDROXYLASE) (BILE ACID-INDUCIBLE PROTEIN)
   LENGTH = 249  COMBINED P-VALUE = 1.28e-27  E-VALUE =  4.2e-26
   DIAGRAM: 6_[2]_121_[1]_64
@@ -592,7 +592,7 @@ FVT1_HUMAN
 
 
 GUTD_ECOLI
-  SORBITOL-6-PHOSPHATE 2-DEHYDROGENASE (EC 1.1.1.140) (GLUCITOL-6- PHOSPHATE 
+  SORBITOL-6-PHOSPHATE 2-DEHYDROGENASE (EC 1.1.1.140) (GLUCITOL-6- PHOSPHATE
   DEHYDROGENASE) (KETOSEPHOSPHATE REDUCTASE)
   LENGTH = 259  COMBINED P-VALUE = 1.54e-26  E-VALUE =  5.1e-25
   DIAGRAM: 2_[2]_122_[1]_77
@@ -621,8 +621,8 @@ DHB3_HUMAN
                                                      +++++++++ ++++++  ++++++ ++
 1    MGDVLEQFFILTGLLVCLACLAKCVRFSRCVLLNYYKVLPKSFLRSMGQWAVITGAGDGIGKAYSFELAKRGLNV
 
-     
-     
+
+
      VL
      ++
 76   VLISRTLEKLEAIATEIERTTGRSVKIIQADFTKDDIYEHIKEKLAGLEIGILVNNVGMLPNLLPSHFLNAPDEI
@@ -633,8 +633,8 @@ DHB3_HUMAN
                                                     ++++++++++++++++ +++ + + +++
 151  QSLIHCNITSVVKMTQLILKHMESRQKGLILNISSGIALFPWPLYSMYSASKAFVCAFSKALQEEYKAKEVIIQV
 
-     
-     
+
+
      I
      +
 226  LTPYAVSTAMTKYLNTNVITKTADEFVKESLNYVTIGGETCGCLAHEILAGFLSLIPAWAFYSGAFQRLLLTHYV
@@ -677,8 +677,8 @@ LIGD_PSEPA
 
 
 DHES_HUMAN
-  ESTRADIOL 17 BETA-DEHYDROGENASE (EC 1.1.1.62) (20 ALPHA-HYDROXYSTEROID 
-  DEHYDROGENASE) (E2DH) (17-BETA-HSD) (PLACENTAL 17-BETA-HYDROXYSTEROID 
+  ESTRADIOL 17 BETA-DEHYDROGENASE (EC 1.1.1.62) (20 ALPHA-HYDROXYSTEROID
+  DEHYDROGENASE) (E2DH) (17-BETA-HSD) (PLACENTAL 17-BETA-HYDROXYSTEROID
   DEHYDROGENASE)
   LENGTH = 327  COMBINED P-VALUE = 7.31e-24  E-VALUE =  2.4e-22
   DIAGRAM: 2_[2]_50_[2]_44_[1]_144

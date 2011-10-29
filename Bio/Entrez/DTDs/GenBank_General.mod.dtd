@@ -27,13 +27,13 @@
 
 <!-- GenBank specific descriptions -->
 <!ELEMENT GB-block (
-        GB-block_extra-accessions?, 
-        GB-block_source?, 
-        GB-block_keywords?, 
-        GB-block_origin?, 
-        GB-block_date?, 
-        GB-block_entry-date?, 
-        GB-block_div?, 
+        GB-block_extra-accessions?,
+        GB-block_source?,
+        GB-block_keywords?,
+        GB-block_origin?,
+        GB-block_date?,
+        GB-block_entry-date?,
+        GB-block_div?,
         GB-block_taxonomy?)>
 
 <!ELEMENT GB-block_extra-accessions (GB-block_extra-accessions_E*)>

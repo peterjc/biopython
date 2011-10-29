@@ -16,7 +16,7 @@
 
 /************************************** Exported Functions ***********/
 
-static char cmathfns_intd__doc__[] = 
+static char cmathfns_intd__doc__[] =
 "intd(x[, digits_after_decimal]) -> int x, rounded\n\
 \n\
 Represent a floating point number with some digits after the\n\
@@ -34,7 +34,7 @@ static PyObject *cmathfns_intd(
     double precision;
 
     static char *kwlist[] = {"x", "digits_after_decimal", NULL};
-    if(!PyArg_ParseTupleAndKeywords(args, keywds, "d|O", kwlist, 
+    if(!PyArg_ParseTupleAndKeywords(args, keywds, "d|O", kwlist,
 				    &x, &digits_after_decimal))
 	return NULL;
 
@@ -57,7 +57,7 @@ static PyObject *cmathfns_intd(
 
 
 
-static char cmathfns_fcmp__doc__[] = 
+static char cmathfns_fcmp__doc__[] =
 "fcmp(x, y, precision) -> -1, 0, or 1";
 
 static PyObject *cmathfns_fcmp(
@@ -67,7 +67,7 @@ static PyObject *cmathfns_fcmp(
     int result;
 
     static char *kwlist[] = {"x", "y", "precision", NULL};
-    if(!PyArg_ParseTupleAndKeywords(args, keywds, "ddd", kwlist, 
+    if(!PyArg_ParseTupleAndKeywords(args, keywds, "ddd", kwlist,
 				    &x, &y, &precision))
 	return NULL;
 
@@ -81,7 +81,7 @@ static PyObject *cmathfns_fcmp(
 
 
 
-static char cmathfns_safe_log__doc__[] = 
+static char cmathfns_safe_log__doc__[] =
 "safe_log(n, zero=None, neg=None) -> log(n)\n\
 \n\
 Calculate the log of n.  If n is 0, returns the value of zero.  If n is\n\
@@ -98,10 +98,10 @@ static PyObject *cmathfns_safe_log(
 
     static char *kwlist[] = {"n", "zero", "neg", NULL};
 
-    if(!PyArg_ParseTupleAndKeywords(args, keywds, "d|OO", kwlist, 
+    if(!PyArg_ParseTupleAndKeywords(args, keywds, "d|OO", kwlist,
 				    &n, &zero, &neg))
 	return NULL;
-    
+
     if(n < 0) {
 	Py_INCREF(neg);
 	return neg;
@@ -119,11 +119,11 @@ static PyObject *cmathfns_safe_log(
 /************************************** Module definition stuff ******/
 
 static PyMethodDef cmathfnsMethods[] = {
-    {"fcmp", (PyCFunction)cmathfns_fcmp, METH_VARARGS|METH_KEYWORDS, 
+    {"fcmp", (PyCFunction)cmathfns_fcmp, METH_VARARGS|METH_KEYWORDS,
      cmathfns_fcmp__doc__},
-    {"intd", (PyCFunction)cmathfns_intd, METH_VARARGS|METH_KEYWORDS, 
+    {"intd", (PyCFunction)cmathfns_intd, METH_VARARGS|METH_KEYWORDS,
      cmathfns_intd__doc__},
-    {"safe_log", (PyCFunction)cmathfns_safe_log, METH_VARARGS|METH_KEYWORDS, 
+    {"safe_log", (PyCFunction)cmathfns_safe_log, METH_VARARGS|METH_KEYWORDS,
      cmathfns_safe_log__doc__},
     {NULL, NULL}
 };

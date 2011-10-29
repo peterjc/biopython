@@ -39,14 +39,14 @@ $Revision: 1.1 $
  just a collection
 -->
 <!ELEMENT Bioseq-set (
-        Bioseq-set_id?, 
-        Bioseq-set_coll?, 
-        Bioseq-set_level?, 
-        Bioseq-set_class?, 
-        Bioseq-set_release?, 
-        Bioseq-set_date?, 
-        Bioseq-set_descr?, 
-        Bioseq-set_seq-set, 
+        Bioseq-set_id?,
+        Bioseq-set_coll?,
+        Bioseq-set_level?,
+        Bioseq-set_class?,
+        Bioseq-set_release?,
+        Bioseq-set_date?,
+        Bioseq-set_descr?,
+        Bioseq-set_seq-set,
         Bioseq-set_annot?)>
 
 <!ELEMENT Bioseq-set_id (Object-id)>
@@ -115,7 +115,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Seq-entry (
-        Seq-entry_seq | 
+        Seq-entry_seq |
         Seq-entry_set)>
 
 <!ELEMENT Seq-entry_seq (Bioseq)>

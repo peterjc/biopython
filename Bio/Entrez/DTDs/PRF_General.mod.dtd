@@ -26,7 +26,7 @@
 
 
 <!ELEMENT PRF-block (
-        PRF-block_extra-src?, 
+        PRF-block_extra-src?,
         PRF-block_keywords?)>
 
 <!ELEMENT PRF-block_extra-src (PRF-ExtraSrc)>
@@ -38,10 +38,10 @@
 
 
 <!ELEMENT PRF-ExtraSrc (
-        PRF-ExtraSrc_host?, 
-        PRF-ExtraSrc_part?, 
-        PRF-ExtraSrc_state?, 
-        PRF-ExtraSrc_strain?, 
+        PRF-ExtraSrc_host?,
+        PRF-ExtraSrc_part?,
+        PRF-ExtraSrc_state?,
+        PRF-ExtraSrc_strain?,
         PRF-ExtraSrc_taxon?)>
 
 <!ELEMENT PRF-ExtraSrc_host (#PCDATA)>

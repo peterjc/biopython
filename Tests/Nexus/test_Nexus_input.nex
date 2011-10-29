@@ -6,11 +6,11 @@ begin data;
 dimensions ntax=9 nchar=48;
 format datatype=dna gap=- missing=? interleave=yes;
 options gapmode=newstate;
-taxlabels t1 
-'t2 the name' 
-'isn''that [a] strange name?' 'one should be punished, for (that)!' 
+taxlabels t1
+'t2 the name'
+'isn''that [a] strange name?' 'one should be punished, for (that)!'
 t5 t6 t7 t8 t9;
-charlabels 1 'a', 2 'b', 3 'c', 5 'f', 10 'A', 11 'B', 23 'x', 24 'y', 30 '1,2,3 can''t decide for a name?!', 48 final; 
+charlabels 1 'a', 2 'b', 3 'c', 5 'f', 10 'A', 11 'B', 23 'x', 24 'y', 30 '1,2,3 can''t decide for a name?!', 48 final;
 
 matrix
 [interleaved matrix: secont taxon name is spelled either with quotes or with underscores,
@@ -46,7 +46,7 @@ end;
 begin sets;
 
 [simple blocks dividing the data into three parts]
-charset 
+charset
 c1=1-8;
 charset c2= 9-16;
 charset c3
@@ -83,10 +83,10 @@ taxset reference=1 2 tbyname1;
 
 
 [another character partition]
-charpartition 
+charpartition
 
-part=one:c1, 
-two:c2, 
+part=one:c1,
+two:c2,
 three:c3;
 
 [and a taxpartition]
@@ -104,14 +104,14 @@ end;
 begin trees;
 translate
 
-3 t1,                                   
-4 't2 the name'                  
-,1 'isn''that [a] strange name?',        
+3 t1,
+4 't2 the name'
+,1 'isn''that [a] strange name?',
 2 'one should be punished, for (that)!'
 ,
-9 t5,                                
+9 t5,
 7 t6  ,
-8 t7,                              
+8 t7,
 5
 t8, 6 t9;
 

@@ -16,8 +16,8 @@ QBlastInfoEnd
 <pre>
 <b><a href="http://www.ncbi.nlm.nih.gov/htbin-
 post/Entrez/query?uid=9254694&form=6&db=m&Dopt=r">Reference</a>:</b>
-Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 <p>
@@ -30,7 +30,7 @@ mRNA
 
 <p>
 <b>Database:</b> All GenBank+EMBL+DDBJ+PDB sequences (but no EST, STS,
-GSS, or phase 0, 1 or 2 HTGS sequences) 
+GSS, or phase 0, 1 or 2 HTGS sequences)
            1,473,826 sequences; 7,284,980,748 total letters
 
 <p> <p>If you have any problems or questions with the results of this search <br>please refer to the <b><a href=http://www.ncbi.nlm.nih.gov/blast/blast_FAQs.html>BLAST FAQs</a></b><br><p>
@@ -154,27 +154,27 @@ Sequences producing significant alignments:                      (bits) Value
  Identities = 285/285 (100%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 1   atgggcattttgaaggcaagagcagacatgttggaaaaggaatctggaggcacctgggtc 60
            ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 Sbjct: 1   atgggcattttgaaggcaagagcagacatgttggaaaaggaatctggaggcacctgggtc 60
 
-                                                                       
+
 Query: 61  aaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagccc 120
            ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 Sbjct: 61  aaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagccc 120
 
-                                                                       
+
 Query: 121 agtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccccccgacc 180
            ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 Sbjct: 121 agtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccccccgacc 180
 
-                                                                       
+
 Query: 181 agcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattaca 240
            ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 Sbjct: 181 agcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattaca 240
 
-                                                        
+
 Query: 241 acatccagaaagagtcgaccctgcacctggtcctctggctattaa 285
            |||||||||||||||||||||||||||||||||||||||||||||
 Sbjct: 241 acatccagaaagagtcgaccctgcacctggtcctctggctattaa 285
@@ -189,22 +189,22 @@ Sbjct: 241 acatccagaaagagtcgaccctgcacctggtcctctggctattaa 285
  Identities = 208/220 (94%), Gaps = 1/220 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||||||||||| |||||||||||| ||||||||||||||||||||| ||||
 Sbjct: 57  ggtcaaaatgcaaatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtgga 116
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
            ||||||||| ||||||||||| ||||||||||||||||||||||||||||||||||||||
 Sbjct: 117 gcccagtgacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccc 176
 
-                                                                       
+
 Query: 177 -gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             ||||||||||||||||||||||| |||||||| |||||||||||| ||||| |||||||
 Sbjct: 177 tgaccagcagaggctcatctttgccggcaagcagctggaagatggccgcaccctctctga 236
 
-                                                   
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcctc 275
             |||||||||||||||||||| ||||||||||||||||||
 Sbjct: 237 ctacaacatccagaaagagtcaaccctgcacctggtcctc 276
@@ -217,22 +217,22 @@ Sbjct: 237 ctacaacatccagaaagagtcaaccctgcacctggtcctc 276
  Identities = 200/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 748 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 807
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 808 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 867
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 868 cagaggctcatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 927
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||||||||||
 Sbjct: 928 atccagaaagagtcaaccctgcacctggtcctc 960
@@ -245,22 +245,22 @@ Sbjct: 928 atccagaaagagtcaaccctgcacctggtcctc 960
  Identities = 200/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||||||| |||||||||||
 Sbjct: 520 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtggagcccagt 579
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 580 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 639
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 640 cagaggctcatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 699
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||| ||||| ||||||||||||||||||
 Sbjct: 700 atccagaaggagtcaaccctgcacctggtcctc 732
@@ -273,22 +273,22 @@ Sbjct: 700 atccagaaggagtcaaccctgcacctggtcctc 732
  Identities = 199/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 292 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 351
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 352 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 411
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 412 cagaggctcatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 471
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||| ||||||
 Sbjct: 472 atccagaaagagtcaaccctgcaccttgtcctc 504
@@ -304,22 +304,22 @@ Sbjct: 472 atccagaaagagtcaaccctgcaccttgtcctc 504
  Identities = 208/220 (94%), Gaps = 1/220 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||||||||||| |||||||||||| ||||||||||||||||||||| ||||
 Sbjct: 57  ggtcaaaatgcaaatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtgga 116
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
            ||||||||| ||||||||||| ||||||||||||||||||||||||||||||||||||||
 Sbjct: 117 gcccagtgacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccc 176
 
-                                                                       
+
 Query: 177 -gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             ||||||||||||||||||||||| |||||||| |||||||||||| ||||| |||||||
 Sbjct: 177 tgaccagcagaggctcatctttgccggcaagcagctggaagatggccgcaccctctctga 236
 
-                                                   
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcctc 275
             |||||||||||||||||||| ||||||||||||||||||
 Sbjct: 237 ctacaacatccagaaagagtcaaccctgcacctggtcctc 276
@@ -332,22 +332,22 @@ Sbjct: 237 ctacaacatccagaaagagtcaaccctgcacctggtcctc 276
  Identities = 200/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 748 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 807
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 808 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 867
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 868 cagaggctcatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 927
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||||||||||
 Sbjct: 928 atccagaaagagtcaaccctgcacctggtcctc 960
@@ -360,22 +360,22 @@ Sbjct: 928 atccagaaagagtcaaccctgcacctggtcctc 960
  Identities = 200/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||||||| |||||||||||
 Sbjct: 520 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtggagcccagt 579
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 580 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 639
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 640 cagaggctcatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 699
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||| ||||| ||||||||||||||||||
 Sbjct: 700 atccagaaggagtcaaccctgcacctggtcctc 732
@@ -388,22 +388,22 @@ Sbjct: 700 atccagaaggagtcaaccctgcacctggtcctc 732
  Identities = 199/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 292 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 351
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 352 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 411
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 412 cagaggctcatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 471
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||| ||||||
 Sbjct: 472 atccagaaagagtcaaccctgcaccttgtcctc 504
@@ -419,22 +419,22 @@ Sbjct: 472 atccagaaagagtcaaccctgcaccttgtcctc 504
  Identities = 207/220 (94%), Gaps = 1/220 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| |||||||||||| ||||||||||||||||||||| ||||
 Sbjct: 61  ggtcaaaatgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtgga 120
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
            ||||||||| ||||||||||| ||||||||||||||||||||||||||||||||||||||
 Sbjct: 121 gcccagtgacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccc 180
 
-                                                                       
+
 Query: 177 -gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             |||||||||||||| |||||||| |||||||| |||||||||||| ||||| |||||||
 Sbjct: 181 tgaccagcagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctga 240
 
-                                                   
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcctc 275
            ||||||||||||||||||||| ||||||||||||||||||
 Sbjct: 241 ttacaacatccagaaagagtcaaccctgcacctggtcctc 280
@@ -447,22 +447,22 @@ Sbjct: 241 ttacaacatccagaaagagtcaaccctgcacctggtcctc 280
  Identities = 200/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 752 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 811
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || |||||||||||||||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 812 gacaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccctgaccag 871
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||  ||||||||||||||
 Sbjct: 872 cagaggctgatctttgccggcaagcagctggaagatggccgcactctctctgattacaac 931
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||||||||||||
 Sbjct: 932 atccagaaagagtcgaccctgcacctggtcctc 964
@@ -475,22 +475,22 @@ Sbjct: 932 atccagaaagagtcgaccctgcacctggtcctc 964
  Identities = 198/212 (93%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||||||||||||||||||||| ||| |||||||||||
 Sbjct: 524 atgcagatcttcgtgaagaccctgactggcaagaccatcaccctggaggtggagcccagt 583
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 584 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 643
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 644 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 703
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| ||||| |||||||||||||||||
 Sbjct: 704 atccagaaggagtcaaccctgcacctggtcct 735
@@ -503,22 +503,22 @@ Sbjct: 704 atccagaaggagtcaaccctgcacctggtcct 735
  Identities = 198/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 296 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 355
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || |||||||||||||||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 356 gacaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccctgaccag 415
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            || ||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 416 cataggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 475
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||| ||||| ||||||||||||||||||
 Sbjct: 476 atccagaaggagtcaaccctgcacctggtcctc 508
@@ -533,22 +533,22 @@ Sbjct: 476 atccagaaggagtcaaccctgcacctggtcctc 508
  Identities = 205/219 (93%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| |||||||||||| ||||||||||||||||||||| ||||
 Sbjct: 98  ggtcaaaatgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtgga 157
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
            ||||||||| ||||||||||| ||||||||||||||||||||||||||||||||||||||
 Sbjct: 158 gcccagtgacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccc 217
 
-                                                                       
+
 Query: 177 -gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             |||||||||||||| |||||||| |||||||| |||||||||||| ||||| |||||||
 Sbjct: 218 tgaccagcagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctga 277
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||| ||||| |||||||||||||||||
 Sbjct: 278 ttacaacatccagaaggagtcaaccctgcacctggtcct 316
@@ -561,22 +561,22 @@ Sbjct: 278 ttacaacatccagaaggagtcaaccctgcacctggtcct 316
  Identities = 199/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 333 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 392
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 393 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 452
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 453 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 512
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||||||||||
 Sbjct: 513 atccagaaagagtcaaccctgcacctggtcctc 545
@@ -589,22 +589,22 @@ Sbjct: 513 atccagaaagagtcaaccctgcacctggtcctc 545
  Identities = 198/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||||| |||||||||||| ||||||||||||||| | ||| |||||||||||
 Sbjct: 789  atgcagatcttcgtgaagaccctgaccggcaagaccatcaccttggaggtggagcccagt 848
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
             || |||||||||||||||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 849  gacaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccctgaccag 908
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||| |||||||| |||||||| || ||||||||| ||||  ||||||||||||||
 Sbjct: 909  cagaggctgatctttgccggcaagcagctagaagatggccgcactctctctgattacaac 968
 
-                                             
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcctc 275
             |||||||||||||||||||||||||||||||||
 Sbjct: 969  atccagaaagagtcgaccctgcacctggtcctc 1001
@@ -617,22 +617,22 @@ Sbjct: 969  atccagaaagagtcgaccctgcacctggtcctc 1001
  Identities = 197/212 (92%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||||||||||||||||||||| ||| |||||||||||
 Sbjct: 561 atgcagatcttcgtgaagaccctgactggcaagaccatcaccctggaggtggagcccagt 620
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 621 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 680
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| ||||| || |||||||||||| ||||| ||||||||||||||
 Sbjct: 681 cagaggctgatctttgccggcaaacagctggaagatggccgcaccctctctgattacaac 740
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| ||||| |||||||||||||||||
 Sbjct: 741 atccagaaggagtcaaccctgcacctggtcct 772
@@ -648,22 +648,22 @@ Sbjct: 741 atccagaaggagtcaaccctgcacctggtcct 772
  Identities = 205/219 (93%), Gaps = 1/219 (0%)
  Strand = Plus / Minus
 
-                                                                          
+
 Query: 57     ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
               |||||||||||| ||||||| |||||||||||| ||||||||||||||||||||| ||||
 Sbjct: 122012 ggtcaaaatgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtgga 121953
 
-                                                                          
+
 Query: 117    gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
               ||||||||| ||||||||||| ||||||||||||||||||||||||||||||||||||||
 Sbjct: 121952 gcccagtgacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccc 121893
 
-                                                                          
+
 Query: 177    -gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
                |||||||||||||| |||||||| |||||||| |||||||||||| ||||| |||||||
 Sbjct: 121892 tgaccagcagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctga 121833
 
-                                                     
+
 Query: 236    ttacaacatccagaaagagtcgaccctgcacctggtcct 274
               ||||||||||||||| ||||| |||||||||||||||||
 Sbjct: 121832 ttacaacatccagaaggagtcaaccctgcacctggtcct 121794
@@ -676,22 +676,22 @@ Sbjct: 121832 ttacaacatccagaaggagtcaaccctgcacctggtcct 121794
  Identities = 199/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Minus
 
-                                                                          
+
 Query: 64     atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
               ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 121777 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 121718
 
-                                                                          
+
 Query: 124    gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
               || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 121717 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 121658
 
-                                                                          
+
 Query: 183    cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
               |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 121657 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 121598
 
-                                               
+
 Query: 243    atccagaaagagtcgaccctgcacctggtcctc 275
               |||||||||||||| ||||||||||||||||||
 Sbjct: 121597 atccagaaagagtcaaccctgcacctggtcctc 121565
@@ -704,22 +704,22 @@ Sbjct: 121597 atccagaaagagtcaaccctgcacctggtcctc 121565
  Identities = 198/212 (93%), Gaps = 1/212 (0%)
  Strand = Plus / Minus
 
-                                                                          
+
 Query: 64     atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
               ||||| ||||||| |||||||||||||||||||||||||||||| ||| |||||||||||
 Sbjct: 121549 atgcagatcttcgtgaagaccctgactggcaagaccatcaccctggaggtggagcccagt 121490
 
-                                                                          
+
 Query: 124    gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
               || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 121489 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 121430
 
-                                                                          
+
 Query: 183    cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
               |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 121429 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 121370
 
-                                              
+
 Query: 243    atccagaaagagtcgaccctgcacctggtcct 274
               |||||||| ||||| |||||||||||||||||
 Sbjct: 121369 atccagaaggagtcaaccctgcacctggtcct 121338
@@ -732,22 +732,22 @@ Sbjct: 121369 atccagaaggagtcaaccctgcacctggtcct 121338
  Identities = 198/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Minus
 
-                                                                          
+
 Query: 64     atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
               ||||| ||||||| |||||||||||| ||||||||||||||| | ||| |||||||||||
 Sbjct: 121321 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccttggaggtggagcccagt 121262
 
-                                                                          
+
 Query: 124    gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
               || |||||||||||||||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 121261 gacaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccctgaccag 121202
 
-                                                                          
+
 Query: 183    cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
               |||||||| |||||||| |||||||| || ||||||||| ||||  ||||||||||||||
 Sbjct: 121201 cagaggctgatctttgccggcaagcagctagaagatggccgcactctctctgattacaac 121142
 
-                                               
+
 Query: 243    atccagaaagagtcgaccctgcacctggtcctc 275
               |||||||||||||||||||||||||||||||||
 Sbjct: 121141 atccagaaagagtcgaccctgcacctggtcctc 121109
@@ -762,22 +762,22 @@ Sbjct: 121141 atccagaaagagtcgaccctgcacctggtcctc 121109
  Identities = 205/219 (93%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| |||||||||||| ||||||||||||||||||||| ||||
 Sbjct: 98  ggtcaaaatgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtgga 157
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
            ||||||||| ||||||||||| ||||||||||||||||||||||||||||||||||||||
 Sbjct: 158 gcccagtgacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccc 217
 
-                                                                       
+
 Query: 177 -gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             |||||||||||||| |||||||| |||||||| |||||||||||| ||||| |||||||
 Sbjct: 218 tgaccagcagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctga 277
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||| ||||| |||||||||||||||||
 Sbjct: 278 ttacaacatccagaaggagtcaaccctgcacctggtcct 316
@@ -790,22 +790,22 @@ Sbjct: 278 ttacaacatccagaaggagtcaaccctgcacctggtcct 316
  Identities = 199/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 333 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 392
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 393 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 452
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 453 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 512
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||||||||||
 Sbjct: 513 atccagaaagagtcaaccctgcacctggtcctc 545
@@ -818,22 +818,22 @@ Sbjct: 513 atccagaaagagtcaaccctgcacctggtcctc 545
  Identities = 198/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||||| |||||||||||| ||||||||||||||| | ||| |||||||||||
 Sbjct: 789  atgcagatcttcgtgaagaccctgaccggcaagaccatcaccttggaggtggagcccagt 848
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
             || |||||||||||||||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 849  gacaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccctgaccag 908
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||| |||||||| |||||||| || ||||||||| ||||  ||||||||||||||
 Sbjct: 909  cagaggctgatctttgccggcaagcagctagaagatggccgcactctctctgattacaac 968
 
-                                             
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcctc 275
             |||||||||||||||||||||||||||||||||
 Sbjct: 969  atccagaaagagtcgaccctgcacctggtcctc 1001
@@ -846,22 +846,22 @@ Sbjct: 969  atccagaaagagtcgaccctgcacctggtcctc 1001
  Identities = 197/212 (92%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||||||||||||||||||||| ||| |||||||||||
 Sbjct: 561 atgcagatcttcgtgaagaccctgactggcaagaccatcaccctggaggtggagcccagt 620
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 621 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 680
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| ||||| || |||||||||||| ||||| ||||||||||||||
 Sbjct: 681 cagaggctgatctttgccggcaaacagctggaagatggccgcaccctctctgattacaac 740
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| ||||| |||||||||||||||||
 Sbjct: 741 atccagaaggagtcaaccctgcacctggtcct 772
@@ -878,22 +878,22 @@ Sbjct: 741 atccagaaggagtcaaccctgcacctggtcct 772
  Identities = 205/219 (93%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| |||||||||||| ||||||||||||||||||||| ||||
 Sbjct: 94  ggtcaaaatgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtgga 153
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
            ||||||||| ||||||||||| ||||||||||||||||||||||||||||||||||||||
 Sbjct: 154 gcccagtgacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccc 213
 
-                                                                       
+
 Query: 177 -gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             |||||||||||||| |||||||| |||||||| |||||||||||| ||||| |||||||
 Sbjct: 214 tgaccagcagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctga 273
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||| ||||| |||||||||||||||||
 Sbjct: 274 ttacaacatccagaaggagtcaaccctgcacctggtcct 312
@@ -906,22 +906,22 @@ Sbjct: 274 ttacaacatccagaaggagtcaaccctgcacctggtcct 312
  Identities = 198/212 (93%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||||||||||||||||||||| ||| |||||||||||
 Sbjct: 557 atgcagatcttcgtgaagaccctgactggcaagaccatcaccctggaggtggagcccagt 616
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 617 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 676
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 677 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 736
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| ||||| |||||||||||||||||
 Sbjct: 737 atccagaaggagtcaaccctgcacctggtcct 768
@@ -934,22 +934,22 @@ Sbjct: 737 atccagaaggagtcaaccctgcacctggtcct 768
  Identities = 196/210 (93%), Gaps = 1/210 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 329 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 388
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 389 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 448
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 449 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 508
 
-                                         
+
 Query: 243 atccagaaagagtcgaccctgcacctggtc 272
            |||||||||||||| |||||||||||||||
 Sbjct: 509 atccagaaagagtcaaccctgcacctggtc 538
@@ -962,22 +962,22 @@ Sbjct: 509 atccagaaagagtcaaccctgcacctggtc 538
  Identities = 198/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||| | ||| |||||||||||
 Sbjct: 785 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccttggaggtggagcccagt 844
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || |||||||||||||||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 845 gacaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccctgaccag 904
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| || ||||||||| ||||  ||||||||||||||
 Sbjct: 905 cagaggctgatctttgccggcaagcagctagaagatggccgcactctctctgattacaac 964
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||||||||||||
 Sbjct: 965 atccagaaagagtcgaccctgcacctggtcctc 997
@@ -994,22 +994,22 @@ Sbjct: 965 atccagaaagagtcgaccctgcacctggtcctc 997
  Identities = 205/219 (93%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| |||||||||||| ||||||||||||||||||||| ||||
 Sbjct: 93  ggtcaaaatgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtgga 152
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
            ||||||||| ||||||||||| ||||||||||||||||||||||||||||||||||||||
 Sbjct: 153 gcccagtgacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccc 212
 
-                                                                       
+
 Query: 177 -gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             |||||||||||||| |||||||| |||||||| |||||||||||| ||||| |||||||
 Sbjct: 213 tgaccagcagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctga 272
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||| ||||| |||||||||||||||||
 Sbjct: 273 ttacaacatccagaaggagtcaaccctgcacctggtcct 311
@@ -1022,22 +1022,22 @@ Sbjct: 273 ttacaacatccagaaggagtcaaccctgcacctggtcct 311
  Identities = 199/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 328 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 387
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 388 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 447
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 448 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 507
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||||||||||
 Sbjct: 508 atccagaaagagtcaaccctgcacctggtcctc 540
@@ -1050,22 +1050,22 @@ Sbjct: 508 atccagaaagagtcaaccctgcacctggtcctc 540
  Identities = 198/212 (93%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||||||||||||||||||||| ||| |||||||||||
 Sbjct: 556 atgcagatcttcgtgaagaccctgactggcaagaccatcaccctggaggtggagcccagt 615
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 616 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 675
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 676 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 735
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| ||||| |||||||||||||||||
 Sbjct: 736 atccagaaggagtcaaccctgcacctggtcct 767
@@ -1078,22 +1078,22 @@ Sbjct: 736 atccagaaggagtcaaccctgcacctggtcct 767
  Identities = 198/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||| | ||| |||||||||||
 Sbjct: 784 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccttggaggtggagcccagt 843
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || |||||||||||||||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 844 gacaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccctgaccag 903
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| || ||||||||| ||||  ||||||||||||||
 Sbjct: 904 cagaggctgatctttgccggcaagcagctagaagatggccgcactctctctgattacaac 963
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||||||||||||
 Sbjct: 964 atccagaaagagtcgaccctgcacctggtcctc 996
@@ -1109,22 +1109,22 @@ Sbjct: 964 atccagaaagagtcgaccctgcacctggtcctc 996
  Identities = 205/219 (93%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| |||||||||||| ||||||||||||||||||||| ||||
 Sbjct: 93  ggtcaaaatgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtgga 152
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
            ||||||||| ||||||||||| ||||||||||||||||||||||||||||||||||||||
 Sbjct: 153 gcccagtgacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccc 212
 
-                                                                       
+
 Query: 177 -gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             |||||||||||||| |||||||| |||||||| |||||||||||| ||||| |||||||
 Sbjct: 213 tgaccagcagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctga 272
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||| ||||| |||||||||||||||||
 Sbjct: 273 ttacaacatccagaaggagtcaaccctgcacctggtcct 311
@@ -1137,22 +1137,22 @@ Sbjct: 273 ttacaacatccagaaggagtcaaccctgcacctggtcct 311
  Identities = 199/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 328 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 387
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 388 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 447
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 448 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 507
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||||||||||
 Sbjct: 508 atccagaaagagtcaaccctgcacctggtcctc 540
@@ -1165,22 +1165,22 @@ Sbjct: 508 atccagaaagagtcaaccctgcacctggtcctc 540
  Identities = 198/212 (93%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||||||||||||||||||||| ||| |||||||||||
 Sbjct: 556 atgcagatcttcgtgaagaccctgactggcaagaccatcaccctggaggtggagcccagt 615
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 616 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 675
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 676 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 735
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| ||||| |||||||||||||||||
 Sbjct: 736 atccagaaggagtcaaccctgcacctggtcct 767
@@ -1193,22 +1193,22 @@ Sbjct: 736 atccagaaggagtcaaccctgcacctggtcct 767
  Identities = 198/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||| | ||| |||||||||||
 Sbjct: 784 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccttggaggtggagcccagt 843
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || |||||||||||||||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 844 gacaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccctgaccag 903
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| || ||||||||| ||||  ||||||||||||||
 Sbjct: 904 cagaggctgatctttgccggcaagcagctagaagatggccgcactctctctgattacaac 963
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||||||||||||
 Sbjct: 964 atccagaaagagtcgaccctgcacctggtcctc 996
@@ -1225,22 +1225,22 @@ Sbjct: 964 atccagaaagagtcgaccctgcacctggtcctc 996
  Identities = 205/219 (93%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| |||||||||||| ||||||||||||||||||||| ||||
 Sbjct: 93  ggtcaaaatgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtgga 152
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
            ||||||||| ||||||||||| ||||||||||||||||||||||||||||||||||||||
 Sbjct: 153 gcccagtgacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccc 212
 
-                                                                       
+
 Query: 177 -gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             |||||||||||||| |||||||| |||||||| |||||||||||| ||||| |||||||
 Sbjct: 213 tgaccagcagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctga 272
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||| ||||| |||||||||||||||||
 Sbjct: 273 ttacaacatccagaaggagtcaaccctgcacctggtcct 311
@@ -1253,22 +1253,22 @@ Sbjct: 273 ttacaacatccagaaggagtcaaccctgcacctggtcct 311
  Identities = 198/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||| | ||| |||||||||||
 Sbjct: 556 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccttggaggtggagcccagt 615
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || |||||||||||||||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 616 gacaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccctgaccag 675
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| || ||||||||| ||||  ||||||||||||||
 Sbjct: 676 cagaggctgatctttgccggcaagcagctagaagatggccgcactctctctgattacaac 735
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||||||||||||
 Sbjct: 736 atccagaaagagtcgaccctgcacctggtcctc 768
@@ -1281,22 +1281,22 @@ Sbjct: 736 atccagaaagagtcgaccctgcacctggtcctc 768
  Identities = 197/212 (92%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 328 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 387
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 388 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 447
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 448 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 507
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| ||||| |||||||||||||||||
 Sbjct: 508 atccagaaggagtcaaccctgcacctggtcct 539
@@ -1312,22 +1312,22 @@ Sbjct: 508 atccagaaggagtcaaccctgcacctggtcct 539
  Identities = 205/219 (93%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| |||||||||||| ||||||||||||||||||||| ||||
 Sbjct: 94  ggtcaaaatgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtgga 153
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
            ||||||||| ||||||||||| ||||||||||||||||||||||||||||||||||||||
 Sbjct: 154 gcccagtgacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccc 213
 
-                                                                       
+
 Query: 177 -gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             |||||||||||||| |||||||| |||||||| |||||||||||| ||||| |||||||
 Sbjct: 214 tgaccagcagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctga 273
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||| ||||| |||||||||||||||||
 Sbjct: 274 ttacaacatccagaaggagtcaaccctgcacctggtcct 312
@@ -1340,22 +1340,22 @@ Sbjct: 274 ttacaacatccagaaggagtcaaccctgcacctggtcct 312
  Identities = 199/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 329 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 388
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 389 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 448
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 449 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 508
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||||||||||
 Sbjct: 509 atccagaaagagtcaaccctgcacctggtcctc 541
@@ -1368,22 +1368,22 @@ Sbjct: 509 atccagaaagagtcaaccctgcacctggtcctc 541
  Identities = 198/212 (93%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||||||||||||||||||||| ||| |||||||||||
 Sbjct: 557 atgcagatcttcgtgaagaccctgactggcaagaccatcaccctggaggtggagcccagt 616
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 617 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 676
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 677 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 736
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| ||||| |||||||||||||||||
 Sbjct: 737 atccagaaggagtcaaccctgcacctggtcct 768
@@ -1396,22 +1396,22 @@ Sbjct: 737 atccagaaggagtcaaccctgcacctggtcct 768
  Identities = 198/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||| | ||| |||||||||||
 Sbjct: 785 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccttggaggtggagcccagt 844
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || |||||||||||||||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 845 gacaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccctgaccag 904
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| || ||||||||| ||||  ||||||||||||||
 Sbjct: 905 cagaggctgatctttgccggcaagcagctagaagatggccgcactctctctgattacaac 964
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||||||||||||
 Sbjct: 965 atccagaaagagtcgaccctgcacctggtcctc 997
@@ -1428,22 +1428,22 @@ Sbjct: 965 atccagaaagagtcgaccctgcacctggtcctc 997
  Identities = 205/219 (93%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| |||||||||||| ||||||||||||||||||||| ||||
 Sbjct: 124 ggtcaaaatgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtgga 183
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
            ||||||||| ||||||||||| ||||||||||||||||||||||||||||||||||||||
 Sbjct: 184 gcccagtgacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccc 243
 
-                                                                       
+
 Query: 177 -gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             |||||||||||||| |||||||| |||||||| |||||||||||| ||||| |||||||
 Sbjct: 244 tgaccagcagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctga 303
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||| ||||| |||||||||||||||||
 Sbjct: 304 ttacaacatccagaaggagtcaaccctgcacctggtcct 342
@@ -1456,22 +1456,22 @@ Sbjct: 304 ttacaacatccagaaggagtcaaccctgcacctggtcct 342
  Identities = 199/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 359 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 418
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 419 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 478
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 479 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 538
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||||||||||
 Sbjct: 539 atccagaaagagtcaaccctgcacctggtcctc 571
@@ -1484,22 +1484,22 @@ Sbjct: 539 atccagaaagagtcaaccctgcacctggtcctc 571
  Identities = 198/212 (93%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||||||||||||||||||||| ||| |||||||||||
 Sbjct: 587 atgcagatcttcgtgaagaccctgactggcaagaccatcaccctggaggtggagcccagt 646
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 647 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 706
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 707 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 766
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| ||||| |||||||||||||||||
 Sbjct: 767 atccagaaggagtcaaccctgcacctggtcct 798
@@ -1512,22 +1512,22 @@ Sbjct: 767 atccagaaggagtcaaccctgcacctggtcct 798
  Identities = 198/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||||| |||||||||||| ||||||||||||||| | ||| |||||||||||
 Sbjct: 815  atgcagatcttcgtgaagaccctgaccggcaagaccatcaccttggaggtggagcccagt 874
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
             || |||||||||||||||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 875  gacaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccctgaccag 934
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||| |||||||| |||||||| || ||||||||| ||||  ||||||||||||||
 Sbjct: 935  cagaggctgatctttgccggcaagcagctagaagatggccgcactctctctgattacaac 994
 
-                                             
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcctc 275
             |||||||||||||||||||||||||||||||||
 Sbjct: 995  atccagaaagagtcgaccctgcacctggtcctc 1027
@@ -1542,22 +1542,22 @@ Sbjct: 995  atccagaaagagtcgaccctgcacctggtcctc 1027
  Identities = 199/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||||||| |||||||||||
 Sbjct: 1   atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtggagcccagt 60
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 61  gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 120
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 121 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 180
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||| ||||| ||||||||||||||||||
 Sbjct: 181 atccagaaggagtcaaccctgcacctggtcctc 213
@@ -1570,22 +1570,22 @@ Sbjct: 181 atccagaaggagtcaaccctgcacctggtcctc 213
  Identities = 199/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 229 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 288
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 289 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 348
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 349 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 408
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||||||||||
 Sbjct: 409 atccagaaagagtcaaccctgcacctggtcctc 441
@@ -1598,22 +1598,22 @@ Sbjct: 409 atccagaaagagtcaaccctgcacctggtcctc 441
  Identities = 199/214 (92%), Gaps = 2/214 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||||||||||||||||||||| ||| |||||||||||
 Sbjct: 457 atgcagatcttcgtgaagaccctgactggcaagaccatcaccctggaggtggagcccagt 516
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc--gacca 181
            || ||||||||||| ||||||||||||||||||||||||||||||||||||||  |||||
 Sbjct: 517 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatccccccctgacca 576
 
-                                                                       
+
 Query: 182 gcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaa 241
            ||||||||| |||||||| |||||||| || ||||||||| ||||  |||||||||||||
 Sbjct: 577 gcagaggctgatctttgccggcaagcagctagaagatggccgcactctctctgattacaa 636
 
-                                             
+
 Query: 242 catccagaaagagtcgaccctgcacctggtcctc 275
            ||||||||||||||||||||||||||||||||||
 Sbjct: 637 catccagaaagagtcgaccctgcacctggtcctc 670
@@ -1629,22 +1629,22 @@ Sbjct: 637 catccagaaagagtcgaccctgcacctggtcctc 670
  Identities = 199/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||||||| |||||||||||
 Sbjct: 1   atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtggagcccagt 60
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 61  gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 120
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 121 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 180
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||| ||||| ||||||||||||||||||
 Sbjct: 181 atccagaaggagtcaaccctgcacctggtcctc 213
@@ -1657,22 +1657,22 @@ Sbjct: 181 atccagaaggagtcaaccctgcacctggtcctc 213
  Identities = 199/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 229 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 288
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 289 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 348
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 349 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 408
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||||||||||
 Sbjct: 409 atccagaaagagtcaaccctgcacctggtcctc 441
@@ -1685,22 +1685,22 @@ Sbjct: 409 atccagaaagagtcaaccctgcacctggtcctc 441
  Identities = 194/207 (93%), Gaps = 1/207 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 70  atcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagtgaaacc 129
            ||||||| |||||||||||||||||||||||||||||| ||| ||||||||||||| |||
 Sbjct: 463 atcttcgtgaagaccctgactggcaagaccatcaccctggaggtggagcccagtgacacc 522
 
-                                                                       
+
 Query: 130 atcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccagcagagg 188
            |||||||| |||||||||||||||||||||||||||||||||||||| ||||||||||||
 Sbjct: 523 atcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccagcagagg 582
 
-                                                                       
+
 Query: 189 ctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaacatccag 248
            || |||||||| |||||||| || ||||||||| ||||  ||||||||||||||||||||
 Sbjct: 583 ctgatctttgccggcaagcagctagaagatggccgcactctctctgattacaacatccag 642
 
-                                      
+
 Query: 249 aaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||||||
 Sbjct: 643 aaagagtcgaccctgcacctggtcctc 669
@@ -1715,22 +1715,22 @@ Sbjct: 643 aaagagtcgaccctgcacctggtcctc 669
  Identities = 199/213 (93%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||||| |||||||||||||||||||||||||||||||||| |||||||||||
 Sbjct: 1089 atgcagatcttcgtgaagaccctgactggcaagaccatcaccctagaggtggagcccagt 1148
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccag 182
             || |||||||||||||||||||||||||||||||||||||||||||| ||||||||||||
 Sbjct: 1149 gacaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccccgaccag 1208
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             ||| | ||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 1209 cagcgactcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 1268
 
-                                             
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcctc 275
             |||||||||||||| ||||||||||||||||||
 Sbjct: 1269 atccagaaagagtccaccctgcacctggtcctc 1301
@@ -1743,22 +1743,22 @@ Sbjct: 1269 atccagaaagagtccaccctgcacctggtcctc 1301
  Identities = 204/220 (92%), Gaps = 1/220 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||||||||||| |||||||||||| ||||||||||||||||||||| ||||
 Sbjct: 170 ggtcaaaatgcaaatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtgga 229
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccc 175
            ||||||||| |||||||| ||||| ||||||||||||||||||||||||||||| |||||
 Sbjct: 230 gcccagtgacaccatcgaaaatgtcaaggccaagatccaggataaagagggcatcccccc 289
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
            |||||||||| | ||||||||||| |||||||| |||||||||||| ||||  | |||||
 Sbjct: 290 cgaccagcagcgactcatctttgccggcaagcagctggaagatggccgcactctttctga 349
 
-                                                   
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcctc 275
            ||||||||||||||||||||| ||||||||||||||||||
 Sbjct: 350 ttacaacatccagaaagagtccaccctgcacctggtcctc 389
@@ -1771,22 +1771,22 @@ Sbjct: 350 ttacaacatccagaaagagtccaccctgcacctggtcctc 389
  Identities = 196/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||||||| |||||||||||
 Sbjct: 633 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtggagcccagt 692
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccag 182
            || |||||||||||||| |||||||||||||||||||| |||||||| ||||||||||||
 Sbjct: 693 gacaccatcgagaatgtcaaggccaagatccaggataaggagggcatcccccccgaccag 752
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||| | ||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 753 cagcgactcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 812
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||||||||||
 Sbjct: 813 atccagaaagagtccaccctgcacctggtcctc 845
@@ -1799,22 +1799,22 @@ Sbjct: 813 atccagaaagagtccaccctgcacctggtcctc 845
  Identities = 194/213 (91%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| || |||| |||||||||||| ||||||||||||||||||||| |||| ||||||
 Sbjct: 861  atgcagattttcgtgaagaccctgaccggcaagaccatcaccctagaggtggaacccagt 920
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccag 182
             || |||||||||||||| |||||||||||||||||||| |||||||| ||||||||||||
 Sbjct: 921  gacaccatcgagaatgtcaaggccaagatccaggataaggagggcatcccccccgaccag 980
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             ||| | ||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 981  cagcgactcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 1040
 
-                                             
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcctc 275
             |||||||||||||| ||||||||||||||||||
 Sbjct: 1041 atccagaaagagtccaccctgcacctggtcctc 1073
@@ -1827,22 +1827,22 @@ Sbjct: 1041 atccagaaagagtccaccctgcacctggtcctc 1073
  Identities = 194/213 (91%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| || |||| |||||||||||| ||||||||||||||||||||| |||| ||||||
 Sbjct: 405 atgcagattttcgtgaagaccctgaccggcaagaccatcaccctagaggtggaacccagt 464
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccag 182
            || |||||||||||||| |||||||||||||||||||| |||||||| ||||||||||||
 Sbjct: 465 gacaccatcgagaatgtcaaggccaagatccaggataaggagggcatcccccccgaccag 524
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||| | ||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 525 cagcgactcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 584
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||||||||||
 Sbjct: 585 atccagaaagagtccaccctgcacctggtcctc 617
@@ -1859,22 +1859,22 @@ Sbjct: 585 atccagaaagagtccaccctgcacctggtcctc 617
  Identities = 195/208 (93%), Gaps = 1/208 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||||||| |||||||||||
 Sbjct: 1   atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtggagcccagt 60
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||| ||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 61  gacaccattgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 120
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 121 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 180
 
-                                       
+
 Query: 243 atccagaaagagtcgaccctgcacctgg 270
            ||||||||||||||||||||||||||||
 Sbjct: 181 atccagaaagagtcgaccctgcacctgg 208
@@ -1889,22 +1889,22 @@ Sbjct: 181 atccagaaagagtcgaccctgcacctgg 208
  Identities = 204/220 (92%), Gaps = 1/220 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||||||||||| |||||||||||| ||||||||||||||||||||| ||||
 Sbjct: 78  ggtcaaaatgcaaatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtgga 137
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccc 175
            ||||||||| |||||||| ||||| ||||||||||||||||||||||||||||| |||||
 Sbjct: 138 gcccagtgacaccatcgaaaatgtcaaggccaagatccaggataaagagggcatcccccc 197
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
            |||||||||| | ||||||||||| |||||||| |||||||||||| ||||  | |||||
 Sbjct: 198 cgaccagcagcgactcatctttgccggcaagcagctggaagatggccgcactctttctga 257
 
-                                                   
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcctc 275
            ||||||||||||||||||||| ||||||||||||||||||
 Sbjct: 258 ttacaacatccagaaagagtccaccctgcacctggtcctc 297
@@ -1917,22 +1917,22 @@ Sbjct: 258 ttacaacatccagaaagagtccaccctgcacctggtcctc 297
  Identities = 198/212 (93%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||||||||||||||||||||||||| |||||||||||
 Sbjct: 541 atgcagatcttcgtgaagaccctgactggcaagaccatcaccctagaggtggagcccagt 600
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccag 182
            || |||||||||||||||||||||||||||||||||||||||||||| ||||||||||||
 Sbjct: 601 gacaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccccgaccag 660
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||| | ||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 661 cagcgactcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 720
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||||||||| |||||||||||||||||
 Sbjct: 721 atccagaaagagtccaccctgcacctggtcct 752
@@ -1945,22 +1945,22 @@ Sbjct: 721 atccagaaagagtccaccctgcacctggtcct 752
  Identities = 194/213 (91%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| || |||| |||||||||||| ||||||||||||||||||||| |||| ||||||
 Sbjct: 313 atgcagattttcgtgaagaccctgaccggcaagaccatcaccctagaggtggaacccagt 372
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccag 182
            || |||||||||||||| |||||||||||||||||||| |||||||| ||||||||||||
 Sbjct: 373 gacaccatcgagaatgtcaaggccaagatccaggataaggagggcatcccccccgaccag 432
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||| | ||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 433 cagcgactcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 492
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||||||||||
 Sbjct: 493 atccagaaagagtccaccctgcacctggtcctc 525
@@ -1977,22 +1977,22 @@ Sbjct: 493 atccagaaagagtccaccctgcacctggtcctc 525
  Identities = 198/212 (93%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||||||||||||||||||||| ||| |||||||||||
 Sbjct: 554 atgcagatcttcgtgaagaccctgactggcaagaccatcaccctggaggtggagcccagt 613
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 614 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 673
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 674 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 733
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| ||||| |||||||||||||||||
 Sbjct: 734 atccagaaggagtcaaccctgcacctggtcct 765
@@ -2005,22 +2005,22 @@ Sbjct: 734 atccagaaggagtcaaccctgcacctggtcct 765
  Identities = 202/219 (92%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| |||||||||||| ||||||||||||||||||||| ||||
 Sbjct: 91  ggtcaaaatgcagatcttcgtgaagaccctgaccggcaagaccatcaccctagaggtgga 150
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
            ||||||||| ||||||||||| |||||||||||||||| |||||||||||||||||||||
 Sbjct: 151 gcccagtgacaccatcgagaacgtgaaggccaagatccgggataaagagggcatcccccc 210
 
-                                                                       
+
 Query: 177 -gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             |||||||||||||| |||||||| |||||||| |||||||||||  ||||| |||||||
 Sbjct: 211 tgaccagcagaggctgatctttgccggcaagcagctggaagatggaagcaccctctctga 270
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
            |||||||| |||||| ||||| |||||||||||||||||
 Sbjct: 271 ttacaacaaccagaaggagtcaaccctgcacctggtcct 309
@@ -2033,22 +2033,22 @@ Sbjct: 271 ttacaacaaccagaaggagtcaaccctgcacctggtcct 309
  Identities = 197/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||| | ||| |||||||||||
 Sbjct: 782 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccttggaggtggagcccagt 841
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||||||||||||||||||||||||||| |||||||||||||| ||||||
 Sbjct: 842 gacaccatcgagaatgtgaaggccaagatccaggataaggagggcatcccccctgaccag 901
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| || ||||||||| ||||  ||||||||||||||
 Sbjct: 902 cagaggctgatctttgccggcaagcagctagaagatggccgcactctctctgattacaac 961
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||||||||||||
 Sbjct: 962 atccagaaagagtcgaccctgcacctggtcctc 994
@@ -2061,22 +2061,22 @@ Sbjct: 962 atccagaaagagtcgaccctgcacctggtcctc 994
  Identities = 197/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| ||||||||| || ||||||||||||||||| | | |||||||||||
 Sbjct: 326 atgcagatcttcgtgaagacccttaccggcaagaccatcaccctgggggtggagcccagt 385
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||
 Sbjct: 386 gacaccatcgagaacgtgaaggccaagatccaggataaagagggcatcccccctgaccag 445
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| |||||||| |||||||| |||||||||||| ||||| ||||||||||||||
 Sbjct: 446 cagaggctgatctttgccggcaagcagctggaagatggccgcaccctctctgattacaac 505
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||| ||||||||||||||||||
 Sbjct: 506 atccagaaagagtcaaccctgcacctggtcctc 538
@@ -2091,22 +2091,22 @@ Sbjct: 506 atccagaaagagtcaaccctgcacctggtcctc 538
  Identities = 193/207 (93%), Gaps = 1/207 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 70  atcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagtgaaacc 129
            ||||||| |||||||||||| ||||||||||||||| | ||| ||||||||||||| |||
 Sbjct: 1   atcttcgtgaagaccctgaccggcaagaccatcaccttggaggtggagcccagtgacacc 60
 
-                                                                       
+
 Query: 130 atcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccagcagagg 188
            ||||||||||||||||||||||||||||||||||||||||||||||| ||||||||||||
 Sbjct: 61  atcgagaatgtgaaggccaagatccaggataaagagggcatcccccctgaccagcagagg 120
 
-                                                                       
+
 Query: 189 ctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaacatccag 248
            || |||||||| |||||||| || ||||||||| ||||  ||||||||||||||||||||
 Sbjct: 121 ctgatctttgccggcaagcagctagaagatggccgcactctctctgattacaacatccag 180
 
-                                      
+
 Query: 249 aaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||||||
 Sbjct: 181 aaagagtcgaccctgcacctggtcctc 207
@@ -2121,22 +2121,22 @@ Sbjct: 181 aaagagtcgaccctgcacctggtcctc 207
  Identities = 194/209 (92%), Gaps = 1/209 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
-            ||||| || |||| |||||||||||| ||||||||||||||||| ||| |||||||||| 
+            ||||| || |||| |||||||||||| ||||||||||||||||| ||| ||||||||||
 Sbjct: 803  atgcagattttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagc 862
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
             || ||||||||||||||||||||||||||||||||||| |||||||||||||| ||||||
 Sbjct: 863  gacaccatcgagaatgtgaaggccaagatccaggataaggagggcatcccccccgaccag 922
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||||||||||||||||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 923  cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgattacaac 982
 
-                                         
+
 Query: 243  atccagaaagagtcgaccctgcacctggt 271
             |||||||||||||||||||||||||||||
 Sbjct: 983  atccagaaagagtcgaccctgcacctggt 1011
@@ -2149,22 +2149,22 @@ Sbjct: 983  atccagaaagagtcgaccctgcacctggt 1011
  Identities = 198/216 (91%), Gaps = 1/216 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||| | |||||||||||| ||||||||||||||||| ||| ||||
 Sbjct: 112 ggtcaaaatgcagatctttgtgaagaccctgaccggcaagaccatcaccctggaggtgga 171
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
            |||||| || ||||||||||| || |||||||||||||||||||| ||||||||||||||
 Sbjct: 172 gcccagcgacaccatcgagaacgtcaaggccaagatccaggataaggagggcatcccccc 231
 
-                                                                       
+
 Query: 177 -gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             |||||||||||||||||||||||||||||||| |||||||||||| ||||  | || ||
 Sbjct: 232 cgaccagcagaggctcatctttgcaggcaagcagctggaagatggccgcactctttccga 291
 
-                                               
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggt 271
            ||||||||||||||||||||||||||||||||||||
 Sbjct: 292 ttacaacatccagaaagagtcgaccctgcacctggt 327
@@ -2177,22 +2177,22 @@ Sbjct: 292 ttacaacatccagaaagagtcgaccctgcacctggt 327
  Identities = 188/209 (89%), Gaps = 1/209 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
-           ||||| || |||| |||||||||||| ||||||||||| ||||| ||| |||||||||| 
+           ||||| || |||| |||||||||||| ||||||||||| ||||| ||| ||||||||||
 Sbjct: 575 atgcagattttcgtgaagaccctgaccggcaagaccattaccctggaggtggagcccagc 634
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccag 182
            || ||||||||||||||||||||||||||||||||||| |||||||| ||||||||||||
 Sbjct: 635 gacaccatcgagaatgtgaaggccaagatccaggataaggagggcatcccccccgaccag 694
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||| ||||||||||||||||||| ||||| |||||  ||||| | ||||||||||||
 Sbjct: 695 cagaggttcatctttgcaggcaagcagctggaggatgggcgcaccctgtctgattacaac 754
 
-                                        
+
 Query: 243 atccagaaagagtcgaccctgcacctggt 271
            |||||||| ||||| || |||||||||||
 Sbjct: 755 atccagaaggagtccactctgcacctggt 783
@@ -2205,22 +2205,22 @@ Sbjct: 755 atccagaaggagtccactctgcacctggt 783
  Identities = 187/209 (89%), Gaps = 1/209 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
-           ||||| || |||| |||||||||||| ||||||||||||||||| ||| |||||||||| 
+           ||||| || |||| |||||||||||| ||||||||||||||||| ||| ||||||||||
 Sbjct: 347 atgcagattttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagc 406
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccag 182
            || ||||||||||| || |||||||||||||||||||| |||||||| ||||||||||||
 Sbjct: 407 gacaccatcgagaacgtcaaggccaagatccaggataaggagggcatcccccccgaccag 466
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| ||||| |||||  ||||| | ||||| ||||||
 Sbjct: 467 cagaggctcatctttgcaggcaagcagctggaggatgggcgcaccctgtctgactacaac 526
 
-                                        
+
 Query: 243 atccagaaagagtcgaccctgcacctggt 271
            |||||||| ||||| || |||||||||||
 Sbjct: 527 atccagaaggagtccactctgcacctggt 555
@@ -2235,22 +2235,22 @@ Sbjct: 527 atccagaaggagtccactctgcacctggt 555
  Identities = 199/216 (92%), Gaps = 1/216 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||||||||||| ||| |||||||| ||||||||||||||||| ||| ||||
 Sbjct: 89  ggtcaaaatgcaaatcttcgtgaaaaccctgaccggcaagaccatcaccctggaggtgga 148
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggca-tccccc 175
            ||||||||| ||||||||||||||||||||||||||||||||||| || |||| ||||||
 Sbjct: 149 gcccagtgacaccatcgagaatgtgaaggccaagatccaggataaggaaggcattccccc 208
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             ||||||||||||||||||||||| |||||||| |||||||||||| ||||  | |||||
 Sbjct: 209 tgaccagcagaggctcatctttgccggcaagcagctggaagatggccgcactctttctga 268
 
-                                               
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggt 271
            ||||||||||||||| ||||||||||||||||||||
 Sbjct: 269 ttacaacatccagaaggagtcgaccctgcacctggt 304
@@ -2263,22 +2263,22 @@ Sbjct: 269 ttacaacatccagaaggagtcgaccctgcacctggt 304
  Identities = 191/209 (91%), Gaps = 1/209 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 324 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 383
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggca-tccccccgaccag 182
            || ||||||||||| ||||||||||||||||||||||| || |||| |||||| ||||||
 Sbjct: 384 gacaccatcgagaacgtgaaggccaagatccaggataaggaaggcattccccctgaccag 443
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 444 cagaggctcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 503
 
-                                        
+
 Query: 243 atccagaaagagtcgaccctgcacctggt 271
            |||||||| ||||||||||||||||||||
 Sbjct: 504 atccagaaggagtcgaccctgcacctggt 532
@@ -2291,22 +2291,22 @@ Sbjct: 504 atccagaaggagtcgaccctgcacctggt 532
  Identities = 191/209 (91%), Gaps = 1/209 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 552 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 611
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggca-tccccccgaccag 182
            || ||||||||||| ||||||||||||||||||||||| || |||| |||||| ||||||
 Sbjct: 612 gacaccatcgagaacgtgaaggccaagatccaggataaggaaggcattccccctgaccag 671
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 672 cagaggctcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 731
 
-                                        
+
 Query: 243 atccagaaagagtcgaccctgcacctggt 271
            |||||||| ||||||||||||||||||||
 Sbjct: 732 atccagaaggagtcgaccctgcacctggt 760
@@ -2319,22 +2319,22 @@ Sbjct: 732 atccagaaggagtcgaccctgcacctggt 760
  Identities = 193/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||| | |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 780 atgcagatctttgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 839
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| ||||||||||||||||||||||| || ||||| ||||| ||||||
 Sbjct: 840 gacaccatcgagaacgtgaaggccaagatccaggataaggaaggcattccccctgaccag 899
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 900 cagaggctcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 959
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            || |||||||||||||||||||||||||||||
 Sbjct: 960 attcagaaagagtcgaccctgcacctggtcct 991
@@ -2349,22 +2349,22 @@ Sbjct: 960 attcagaaagagtcgaccctgcacctggtcct 991
  Identities = 202/220 (91%), Gaps = 1/220 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| ||| |||||||| ||||||||||||||||| ||| ||||
 Sbjct: 80  ggtcaaaatgcagatcttcgtgaaaaccctgaccggcaagaccatcaccctggaggtgga 139
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
            ||||||||| ||||||||||| ||||||||||||||||||||||| || ||||| |||||
 Sbjct: 140 gcccagtgacaccatcgagaacgtgaaggccaagatccaggataaggaaggcattccccc 199
 
-                                                                       
+
 Query: 177 -gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             ||||||||||||||||||||||| |||||||| |||||||||||| ||||  | |||||
 Sbjct: 200 tgaccagcagaggctcatctttgccggcaagcagctggaagatggccgcactctttctga 259
 
-                                                   
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcctc 275
            ||||||||||||||||||||||||||||||||||||||||
 Sbjct: 260 ttacaacatccagaaagagtcgaccctgcacctggtcctc 299
@@ -2377,22 +2377,22 @@ Sbjct: 260 ttacaacatccagaaagagtcgaccctgcacctggtcctc 299
  Identities = 196/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 543 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 602
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| ||||||||||||||||||||||| || ||||| ||||| ||||||
 Sbjct: 603 gacaccatcgagaacgtgaaggccaagatccaggataaggaaggcattccccctgaccag 662
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 663 cagaggctcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 722
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||||||||||||
 Sbjct: 723 atccagaaagagtcgaccctgcacctggtcctc 755
@@ -2405,22 +2405,22 @@ Sbjct: 723 atccagaaagagtcgaccctgcacctggtcctc 755
  Identities = 195/213 (91%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| || |||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 315 atgcagattttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 374
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccag 182
            || ||||||||||| ||||||||||||||||||||||| |||||||| ||||||||||||
 Sbjct: 375 gacaccatcgagaacgtgaaggccaagatccaggataaggagggcattccccccgaccag 434
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||  | | ||||||||||
 Sbjct: 435 cagaggctcatctttgccggcaagcagctggaagatggccgcactctttttgattacaac 494
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||||||||||||
 Sbjct: 495 atccagaaagagtcgaccctgcacctggtcctc 527
@@ -2433,22 +2433,22 @@ Sbjct: 495 atccagaaagagtcgaccctgcacctggtcctc 527
  Identities = 194/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 771 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 830
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| ||||||||||||||||||||||| || ||||| ||||| ||||||
 Sbjct: 831 gacaccatcgagaacgtgaaggccaagatccaggataaggaaggcattccccctgaccag 890
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 891 cagaggctcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 950
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||||||||||||
 Sbjct: 951 atccagaaagagtcgaccctgcacctggtcct 982
@@ -2464,22 +2464,22 @@ Sbjct: 951 atccagaaagagtcgaccctgcacctggtcct 982
  Identities = 201/219 (91%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| |||||||||||| ||||||||||||||||| ||| ||||
 Sbjct: 30  ggtcaaaatgcagatcttcgtgaagaccctgaccggcaagaccatcacccttgaggtgga 89
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccc 175
            ||||||||| |||||||| |||||||||||||| ||||||||||| || ||||| |||||
 Sbjct: 90  gcccagtgacaccatcgaaaatgtgaaggccaaaatccaggataaggaaggcattccccc 149
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
            ||||||||||||||||||||||||||||||||| |||||||||||| ||||  | |||||
 Sbjct: 150 cgaccagcagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctga 209
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||||||||||||||||||||| |||||
 Sbjct: 210 ctacaacatccagaaagagtcgaccctgcaccttgtcct 248
@@ -2492,22 +2492,22 @@ Sbjct: 210 ctacaacatccagaaagagtcgaccctgcaccttgtcct 248
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 265 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 324
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccc-cccgaccag 182
            || |||||||| ||||||||||||||||||||||||||||| |||||||| |||||||||
 Sbjct: 325 gacaccatcgaaaatgtgaaggccaagatccaggataaagaaggcatccctcccgaccag 384
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 385 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 444
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| |||||||||||||||||||||||
 Sbjct: 445 atccagaaggagtcgaccctgcacctggtcct 476
@@ -2520,22 +2520,22 @@ Sbjct: 445 atccagaaggagtcgaccctgcacctggtcct 476
  Identities = 193/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| ||| |||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 493 atgcagatcttcgtgaaaaccctgaccggcaagaccatcaccctggaggtggagcccagt 552
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccag 182
            || |||||||| |||||||||||||||||||| |||||||| ||||| ||||||||||||
 Sbjct: 553 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatcccccccgaccag 612
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 613 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 672
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| ||||| |||||||||||||||||
 Sbjct: 673 atccagaaggagtcaaccctgcacctggtcct 704
@@ -2550,22 +2550,22 @@ Sbjct: 673 atccagaaggagtcaaccctgcacctggtcct 704
  Identities = 196/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 574 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 633
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| ||||||||||||||||||||||| || ||||| ||||| ||||||
 Sbjct: 634 gacaccatcgagaacgtgaaggccaagatccaggataaggaaggcattccccctgaccag 693
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 694 cagaggctcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 753
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||||||||||||
 Sbjct: 754 atccagaaagagtcgaccctgcacctggtcctc 786
@@ -2578,7 +2578,7 @@ Sbjct: 754 atccagaaagagtcgaccctgcacctggtcctc 786
  Identities = 31/32 (96%)
  Strand = Plus / Plus
 
-                                           
+
 Query: 244 tccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||| |||||||
 Sbjct: 527 tccagaaagagtcgaccctgcacccggtcctc 558
@@ -2593,22 +2593,22 @@ Sbjct: 527 tccagaaagagtcgaccctgcacccggtcctc 558
  Identities = 196/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 574 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 633
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| ||||||||||||||||||||||| || ||||| ||||| ||||||
 Sbjct: 634 gacaccatcgagaacgtgaaggccaagatccaggataaggaaggcattccccctgaccag 693
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 694 cagaggctcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 753
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||||||||||||
 Sbjct: 754 atccagaaagagtcgaccctgcacctggtcctc 786
@@ -2621,7 +2621,7 @@ Sbjct: 754 atccagaaagagtcgaccctgcacctggtcctc 786
  Identities = 31/32 (96%)
  Strand = Plus / Plus
 
-                                           
+
 Query: 244 tccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||| |||||||
 Sbjct: 527 tccagaaagagtcgaccctgcacccggtcctc 558
@@ -2636,22 +2636,22 @@ Sbjct: 527 tccagaaagagtcgaccctgcacccggtcctc 558
  Identities = 196/213 (92%), Gaps = 1/213 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 35  atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaggtggagcccagt 94
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| ||||||||||||||||||||||| || ||||| ||||| ||||||
 Sbjct: 95  gacaccatcgagaacgtgaaggccaagatccaggataaggaaggcattccccctgaccag 154
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 155 cagaggctcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 214
 
-                                            
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcctc 275
            |||||||||||||||||||||||||||||||||
 Sbjct: 215 atccagaaagagtcgaccctgcacctggtcctc 247
@@ -2664,22 +2664,22 @@ Sbjct: 215 atccagaaagagtcgaccctgcacctggtcctc 247
  Identities = 194/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 263 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 322
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| ||||||||||||||||||||||| || ||||| ||||| ||||||
 Sbjct: 323 gacaccatcgagaacgtgaaggccaagatccaggataaggaaggcattccccctgaccag 382
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 383 cagaggctcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 442
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||||||||||||
 Sbjct: 443 atccagaaagagtcgaccctgcacctggtcct 474
@@ -2694,22 +2694,22 @@ Sbjct: 443 atccagaaagagtcgaccctgcacctggtcct 474
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 336 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 395
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccc-cccgaccag 182
            || |||||||| ||||||||||||||||||||||||||||| |||||||| |||||||||
 Sbjct: 396 gacaccatcgaaaatgtgaaggccaagatccaggataaagaaggcatccctcccgaccag 455
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 456 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 515
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| |||||||||||||||||||||||
 Sbjct: 516 atccagaaggagtcgaccctgcacctggtcct 547
@@ -2722,22 +2722,22 @@ Sbjct: 516 atccagaaggagtcgaccctgcacctggtcct 547
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| |||||||||||||| || ||| |||||||||||
 Sbjct: 564 atgcagatcttcgtgaagaccctgaccggcaagaccatcactctggaggtggagcccagt 623
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || |||||||| |||||||||||||||||||| |||||||| ||||||||||| ||||||
 Sbjct: 624 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatcccccccgaccag 683
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 684 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 743
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||||||||||||
 Sbjct: 744 atccagaaagagtcgaccctgcacctggtcct 775
@@ -2750,22 +2750,22 @@ Sbjct: 744 atccagaaagagtcgaccctgcacctggtcct 775
  Identities = 199/219 (90%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| ||| ||||| || ||||||||||||||||| ||| ||||
 Sbjct: 101 ggtcaaaatgcagatcttcgtgaaaacccttaccggcaagaccatcacccttgaggtgga 160
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccc 175
            ||||||||| |||||||| |||||||||||||||||||||||||| || ||||| |||||
 Sbjct: 161 gcccagtgacaccatcgaaaatgtgaaggccaagatccaggataaggaaggcattccccc 220
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
            ||||||||||||||||||||||||||||||||| |||||||||||| | ||  | |||||
 Sbjct: 221 cgaccagcagaggctcatctttgcaggcaagcagctggaagatggccgtactctttctga 280
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||||||||
 Sbjct: 281 ctacaacatccagaaggagtcgaccctgcacctggtcct 319
@@ -2780,22 +2780,22 @@ Sbjct: 281 ctacaacatccagaaggagtcgaccctgcacctggtcct 319
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 367 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 426
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccc-cccgaccag 182
            || |||||||| ||||||||||||||||||||||||||||| |||||||| |||||||||
 Sbjct: 427 gacaccatcgaaaatgtgaaggccaagatccaggataaagaaggcatccctcccgaccag 486
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 487 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 546
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| |||||||||||||||||||||||
 Sbjct: 547 atccagaaggagtcgaccctgcacctggtcct 578
@@ -2808,22 +2808,22 @@ Sbjct: 547 atccagaaggagtcgaccctgcacctggtcct 578
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| |||||||||||||| || ||| |||||||||||
 Sbjct: 595 atgcagatcttcgtgaagaccctgaccggcaagaccatcactctggaggtggagcccagt 654
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || |||||||| |||||||||||||||||||| |||||||| ||||||||||| ||||||
 Sbjct: 655 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatcccccccgaccag 714
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 715 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 774
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||||||||||||
 Sbjct: 775 atccagaaagagtcgaccctgcacctggtcct 806
@@ -2836,22 +2836,22 @@ Sbjct: 775 atccagaaagagtcgaccctgcacctggtcct 806
  Identities = 199/219 (90%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| ||| ||||| || ||||||||||||||||| ||| ||||
 Sbjct: 132 ggtcaaaatgcagatcttcgtgaaaacccttaccggcaagaccatcacccttgaggtgga 191
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccc 175
            ||||||||| |||||||| |||||||||||||||||||||||||| || ||||| |||||
 Sbjct: 192 gcccagtgacaccatcgaaaatgtgaaggccaagatccaggataaggaaggcattccccc 251
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
            ||||||||||||||||||||||||||||||||| |||||||||||| | ||  | |||||
 Sbjct: 252 cgaccagcagaggctcatctttgcaggcaagcagctggaagatggccgtactctttctga 311
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||||||||
 Sbjct: 312 ctacaacatccagaaggagtcgaccctgcacctggtcct 350
@@ -2866,22 +2866,22 @@ Sbjct: 312 ctacaacatccagaaggagtcgaccctgcacctggtcct 350
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 327 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 386
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccc-cccgaccag 182
            || |||||||| ||||||||||||||||||||||||||||| |||||||| |||||||||
 Sbjct: 387 gacaccatcgaaaatgtgaaggccaagatccaggataaagaaggcatccctcccgaccag 446
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 447 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 506
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| |||||||||||||||||||||||
 Sbjct: 507 atccagaaggagtcgaccctgcacctggtcct 538
@@ -2894,22 +2894,22 @@ Sbjct: 507 atccagaaggagtcgaccctgcacctggtcct 538
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| |||||||||||||| || ||| |||||||||||
 Sbjct: 555 atgcagatcttcgtgaagaccctgaccggcaagaccatcactctggaggtggagcccagt 614
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || |||||||| |||||||||||||||||||| |||||||| ||||||||||| ||||||
 Sbjct: 615 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatcccccccgaccag 674
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 675 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 734
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||||||||||||
 Sbjct: 735 atccagaaagagtcgaccctgcacctggtcct 766
@@ -2922,22 +2922,22 @@ Sbjct: 735 atccagaaagagtcgaccctgcacctggtcct 766
  Identities = 199/219 (90%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| ||| ||||| || ||||||||||||||||| ||| ||||
 Sbjct: 92  ggtcaaaatgcagatcttcgtgaaaacccttaccggcaagaccatcacccttgaggtgga 151
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccc 175
            ||||||||| |||||||| |||||||||||||||||||||||||| || ||||| |||||
 Sbjct: 152 gcccagtgacaccatcgaaaatgtgaaggccaagatccaggataaggaaggcattccccc 211
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
            ||||||||||||||||||||||||||||||||| |||||||||||| | ||  | |||||
 Sbjct: 212 cgaccagcagaggctcatctttgcaggcaagcagctggaagatggccgtactctttctga 271
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||||||||
 Sbjct: 272 ctacaacatccagaaggagtcgaccctgcacctggtcct 310
@@ -2952,22 +2952,22 @@ Sbjct: 272 ctacaacatccagaaggagtcgaccctgcacctggtcct 310
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 325 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 384
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccc-cccgaccag 182
            || |||||||| ||||||||||||||||||||||||||||| |||||||| |||||||||
 Sbjct: 385 gacaccatcgaaaatgtgaaggccaagatccaggataaagaaggcatccctcccgaccag 444
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 445 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 504
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| |||||||||||||||||||||||
 Sbjct: 505 atccagaaggagtcgaccctgcacctggtcct 536
@@ -2980,22 +2980,22 @@ Sbjct: 505 atccagaaggagtcgaccctgcacctggtcct 536
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| |||||||||||||| || ||| |||||||||||
 Sbjct: 553 atgcagatcttcgtgaagaccctgaccggcaagaccatcactctggaggtggagcccagt 612
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || |||||||| |||||||||||||||||||| |||||||| ||||||||||| ||||||
 Sbjct: 613 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatcccccccgaccag 672
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 673 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 732
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||||||||||||
 Sbjct: 733 atccagaaagagtcgaccctgcacctggtcct 764
@@ -3008,22 +3008,22 @@ Sbjct: 733 atccagaaagagtcgaccctgcacctggtcct 764
  Identities = 199/219 (90%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| ||| ||||| || ||||||||||||||||| ||| ||||
 Sbjct: 90  ggtcaaaatgcagatcttcgtgaaaacccttaccggcaagaccatcacccttgaggtgga 149
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccc 175
            ||||||||| |||||||| |||||||||||||||||||||||||| || ||||| |||||
 Sbjct: 150 gcccagtgacaccatcgaaaatgtgaaggccaagatccaggataaggaaggcattccccc 209
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
            ||||||||||||||||||||||||||||||||| |||||||||||| | ||  | |||||
 Sbjct: 210 cgaccagcagaggctcatctttgcaggcaagcagctggaagatggccgtactctttctga 269
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||||||||
 Sbjct: 270 ctacaacatccagaaggagtcgaccctgcacctggtcct 308
@@ -3038,22 +3038,22 @@ Sbjct: 270 ctacaacatccagaaggagtcgaccctgcacctggtcct 308
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                          
+
 Query: 64     atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
               ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 102925 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 102984
 
-                                                                          
+
 Query: 124    gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccc-cccgaccag 182
               || |||||||| ||||||||||||||||||||||||||||| |||||||| |||||||||
 Sbjct: 102985 gacaccatcgaaaatgtgaaggccaagatccaggataaagaaggcatccctcccgaccag 103044
 
-                                                                          
+
 Query: 183    cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
               |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 103045 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 103104
 
-                                              
+
 Query: 243    atccagaaagagtcgaccctgcacctggtcct 274
               |||||||| |||||||||||||||||||||||
 Sbjct: 103105 atccagaaggagtcgaccctgcacctggtcct 103136
@@ -3066,22 +3066,22 @@ Sbjct: 103105 atccagaaggagtcgaccctgcacctggtcct 103136
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                          
+
 Query: 64     atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
               ||||| ||||||| |||||||||||| |||||||||||||| || ||| |||||||||||
 Sbjct: 103153 atgcagatcttcgtgaagaccctgaccggcaagaccatcactctggaggtggagcccagt 103212
 
-                                                                          
+
 Query: 124    gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
               || |||||||| |||||||||||||||||||| |||||||| ||||||||||| ||||||
 Sbjct: 103213 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatcccccccgaccag 103272
 
-                                                                          
+
 Query: 183    cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
               |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 103273 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 103332
 
-                                              
+
 Query: 243    atccagaaagagtcgaccctgcacctggtcct 274
               ||||||||||||||||||||||||||||||||
 Sbjct: 103333 atccagaaagagtcgaccctgcacctggtcct 103364
@@ -3094,22 +3094,22 @@ Sbjct: 103333 atccagaaagagtcgaccctgcacctggtcct 103364
  Identities = 199/219 (90%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                          
+
 Query: 57     ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
               |||||||||||| ||||||| ||| ||||| || ||||||||||||||||| ||| ||||
 Sbjct: 102690 ggtcaaaatgcagatcttcgtgaaaacccttaccggcaagaccatcacccttgaggtgga 102749
 
-                                                                          
+
 Query: 117    gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccc 175
               ||||||||| |||||||| |||||||||||||||||||||||||| || ||||| |||||
 Sbjct: 102750 gcccagtgacaccatcgaaaatgtgaaggccaagatccaggataaggaaggcattccccc 102809
 
-                                                                          
+
 Query: 176    cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
               ||||||||||||||||||||||||||||||||| |||||||||||| | ||  | |||||
 Sbjct: 102810 cgaccagcagaggctcatctttgcaggcaagcagctggaagatggccgtactctttctga 102869
 
-                                                     
+
 Query: 236    ttacaacatccagaaagagtcgaccctgcacctggtcct 274
                |||||||||||||| |||||||||||||||||||||||
 Sbjct: 102870 ctacaacatccagaaggagtcgaccctgcacctggtcct 102908
@@ -3124,22 +3124,22 @@ Sbjct: 102870 ctacaacatccagaaggagtcgaccctgcacctggtcct 102908
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 329 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 388
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccc-cccgaccag 182
            || |||||||| ||||||||||||||||||||||||||||| |||||||| |||||||||
 Sbjct: 389 gacaccatcgaaaatgtgaaggccaagatccaggataaagaaggcatccctcccgaccag 448
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 449 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 508
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| |||||||||||||||||||||||
 Sbjct: 509 atccagaaggagtcgaccctgcacctggtcct 540
@@ -3152,22 +3152,22 @@ Sbjct: 509 atccagaaggagtcgaccctgcacctggtcct 540
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| |||||||||||||| || ||| |||||||||||
 Sbjct: 557 atgcagatcttcgtgaagaccctgaccggcaagaccatcactctggaggtggagcccagt 616
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || |||||||| |||||||||||||||||||| |||||||| ||||||||||| ||||||
 Sbjct: 617 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatcccccccgaccag 676
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 677 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 736
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||||||||||||
 Sbjct: 737 atccagaaagagtcgaccctgcacctggtcct 768
@@ -3180,22 +3180,22 @@ Sbjct: 737 atccagaaagagtcgaccctgcacctggtcct 768
  Identities = 199/219 (90%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| ||| ||||| || ||||||||||||||||| ||| ||||
 Sbjct: 94  ggtcaaaatgcagatcttcgtgaaaacccttaccggcaagaccatcacccttgaggtgga 153
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccc 175
            ||||||||| |||||||| |||||||||||||||||||||||||| || ||||| |||||
 Sbjct: 154 gcccagtgacaccatcgaaaatgtgaaggccaagatccaggataaggaaggcattccccc 213
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
            ||||||||||||||||||||||||||||||||| |||||||||||| | ||  | |||||
 Sbjct: 214 cgaccagcagaggctcatctttgcaggcaagcagctggaagatggccgtactctttctga 273
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||||||||
 Sbjct: 274 ctacaacatccagaaggagtcgaccctgcacctggtcct 312
@@ -3210,22 +3210,22 @@ Sbjct: 274 ctacaacatccagaaggagtcgaccctgcacctggtcct 312
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 322 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 381
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccc-cccgaccag 182
            || |||||||| ||||||||||||||||||||||||||||| |||||||| |||||||||
 Sbjct: 382 gacaccatcgaaaatgtgaaggccaagatccaggataaagaaggcatccctcccgaccag 441
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 442 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 501
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| |||||||||||||||||||||||
 Sbjct: 502 atccagaaggagtcgaccctgcacctggtcct 533
@@ -3238,22 +3238,22 @@ Sbjct: 502 atccagaaggagtcgaccctgcacctggtcct 533
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| |||||||||||||| || ||| |||||||||||
 Sbjct: 550 atgcagatcttcgtgaagaccctgaccggcaagaccatcactctggaggtggagcccagt 609
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || |||||||| |||||||||||||||||||| |||||||| ||||||||||| ||||||
 Sbjct: 610 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatcccccccgaccag 669
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 670 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 729
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||||||||||||
 Sbjct: 730 atccagaaagagtcgaccctgcacctggtcct 761
@@ -3266,22 +3266,22 @@ Sbjct: 730 atccagaaagagtcgaccctgcacctggtcct 761
  Identities = 199/219 (90%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| ||| ||||| || ||||||||||||||||| ||| ||||
 Sbjct: 87  ggtcaaaatgcagatcttcgtgaaaacccttaccggcaagaccatcacccttgaggtgga 146
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccc 175
            ||||||||| |||||||| |||||||||||||||||||||||||| || ||||| |||||
 Sbjct: 147 gcccagtgacaccatcgaaaatgtgaaggccaagatccaggataaggaaggcattccccc 206
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
            ||||||||||||||||||||||||||||||||| |||||||||||| | ||  | |||||
 Sbjct: 207 cgaccagcagaggctcatctttgcaggcaagcagctggaagatggccgtactctttctga 266
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||||||||
 Sbjct: 267 ctacaacatccagaaggagtcgaccctgcacctggtcct 305
@@ -3297,22 +3297,22 @@ Sbjct: 267 ctacaacatccagaaggagtcgaccctgcacctggtcct 305
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 376 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 435
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccc-cccgaccag 182
            || |||||||| ||||||||||||||||||||||||||||| |||||||| |||||||||
 Sbjct: 436 gacaccatcgaaaatgtgaaggccaagatccaggataaagaaggcatccctcccgaccag 495
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 496 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 555
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            |||||||| |||||||||||||||||||||||
 Sbjct: 556 atccagaaggagtcgaccctgcacctggtcct 587
@@ -3325,22 +3325,22 @@ Sbjct: 556 atccagaaggagtcgaccctgcacctggtcct 587
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| |||||||||||||| || ||| |||||||||||
 Sbjct: 604 atgcagatcttcgtgaagaccctgaccggcaagaccatcactctggaggtggagcccagt 663
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || |||||||| |||||||||||||||||||| |||||||| ||||||||||| ||||||
 Sbjct: 664 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatcccccccgaccag 723
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 724 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 783
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||||||||||||
 Sbjct: 784 atccagaaagagtcgaccctgcacctggtcct 815
@@ -3353,22 +3353,22 @@ Sbjct: 784 atccagaaagagtcgaccctgcacctggtcct 815
  Identities = 198/219 (90%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| ||| ||||| || ||||||||||||||||| ||| ||||
 Sbjct: 141 ggtcaaaatgcagatcttcgtgaaaacccttaccggcaagaccatcacccttgaggtgga 200
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggca-tccccc 175
            ||||||||| |||||||| |||||||||||||||||||||||||| || |||| ||||||
 Sbjct: 201 gcccagtgacaccatcgaaaatgtgaaggccaagatccaggataaggaaggcattccccc 260
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
            ||||||||||||||||||||||||||||||||| |||||||| ||| | ||  | |||||
 Sbjct: 261 cgaccagcagaggctcatctttgcaggcaagcagctggaagacggccgtactctttctga 320
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||||||||
 Sbjct: 321 ctacaacatccagaaggagtcgaccctgcacctggtcct 359
@@ -3383,22 +3383,22 @@ Sbjct: 321 ctacaacatccagaaggagtcgaccctgcacctggtcct 359
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 2311 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 2370
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccc-cccgaccag 182
             || |||||||| ||||||||||||||||||||||||||||| |||||||| |||||||||
 Sbjct: 2371 gacaccatcgaaaatgtgaaggccaagatccaggataaagaaggcatccctcccgaccag 2430
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 2431 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 2490
 
-                                            
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcct 274
             |||||||| |||||||||||||||||||||||
 Sbjct: 2491 atccagaaggagtcgaccctgcacctggtcct 2522
@@ -3411,22 +3411,22 @@ Sbjct: 2491 atccagaaggagtcgaccctgcacctggtcct 2522
  Identities = 199/219 (90%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 57   ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
             |||||||||||| ||||||| ||| ||||| || ||||||||||||||||| ||| ||||
 Sbjct: 2076 ggtcaaaatgcagatcttcgtgaaaacccttaccggcaagaccatcacccttgaggtgga 2135
 
-                                                                        
+
 Query: 117  gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccc 175
             ||||||||| |||||||| |||||||||||||||||||||||||| || ||||| |||||
 Sbjct: 2136 gcccagtgacaccatcgaaaatgtgaaggccaagatccaggataaggaaggcattccccc 2195
 
-                                                                        
+
 Query: 176  cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             ||||||||||||||||||||||||||||||||| |||||||||||| | ||  | |||||
 Sbjct: 2196 cgaccagcagaggctcatctttgcaggcaagcagctggaagatggccgtactctttctga 2255
 
-                                                   
+
 Query: 236  ttacaacatccagaaagagtcgaccctgcacctggtcct 274
              |||||||||||||| |||||||||||||||||||||||
 Sbjct: 2256 ctacaacatccagaaggagtcgaccctgcacctggtcct 2294
@@ -3439,22 +3439,22 @@ Sbjct: 2256 ctacaacatccagaaggagtcgaccctgcacctggtcct 2294
  Identities = 193/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||||| |||||||||||| |||||||||||||| || ||  |||||||||||
 Sbjct: 2539 atgcagatcttcgtgaagaccctgaccggcaagaccatcactctggaagtggagcccagt 2598
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccc-cccgaccag 182
             || |||||||| |||||||||||||||||||| |||||||| |||||||| |||||||||
 Sbjct: 2599 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatccctcccgaccag 2658
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 2659 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 2718
 
-                                            
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcct 274
             |||||||| |||||||||||||||||||||||
 Sbjct: 2719 atccagaaggagtcgaccctgcacctggtcct 2750
@@ -3470,22 +3470,22 @@ Sbjct: 2719 atccagaaggagtcgaccctgcacctggtcct 2750
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Minus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 7361 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 7302
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccc-cccgaccag 182
             || |||||||| ||||||||||||||||||||||||||||| |||||||| |||||||||
 Sbjct: 7301 gacaccatcgaaaatgtgaaggccaagatccaggataaagaaggcatccctcccgaccag 7242
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 7241 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 7182
 
-                                            
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcct 274
             |||||||| |||||||||||||||||||||||
 Sbjct: 7181 atccagaaggagtcgaccctgcacctggtcct 7150
@@ -3498,22 +3498,22 @@ Sbjct: 7181 atccagaaggagtcgaccctgcacctggtcct 7150
  Identities = 195/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Minus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||||| |||||||||||| |||||||||||||| || ||| |||||||||||
 Sbjct: 7133 atgcagatcttcgtgaagaccctgaccggcaagaccatcactctggaggtggagcccagt 7074
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
             || |||||||| |||||||||||||||||||| |||||||| ||||||||||| ||||||
 Sbjct: 7073 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatcccccccgaccag 7014
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||||||||||||||||||||| |||||||||||| ||||  | ||||| ||||||
 Sbjct: 7013 cagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctgactacaac 6954
 
-                                            
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcct 274
             ||||||||||||||||||||||||||||||||
 Sbjct: 6953 atccagaaagagtcgaccctgcacctggtcct 6922
@@ -3526,22 +3526,22 @@ Sbjct: 6953 atccagaaagagtcgaccctgcacctggtcct 6922
  Identities = 199/219 (90%), Gaps = 1/219 (0%)
  Strand = Plus / Minus
 
-                                                                        
+
 Query: 57   ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
             |||||||||||| ||||||| ||| ||||| || ||||||||||||||||| ||| ||||
 Sbjct: 7596 ggtcaaaatgcagatcttcgtgaaaacccttaccggcaagaccatcacccttgaggtgga 7537
 
-                                                                        
+
 Query: 117  gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccc 175
             ||||||||| |||||||| |||||||||||||||||||||||||| || ||||| |||||
 Sbjct: 7536 gcccagtgacaccatcgaaaatgtgaaggccaagatccaggataaggaaggcattccccc 7477
 
-                                                                        
+
 Query: 176  cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             ||||||||||||||||||||||||||||||||| |||||||||||| | ||  | |||||
 Sbjct: 7476 cgaccagcagaggctcatctttgcaggcaagcagctggaagatggccgtactctttctga 7417
 
-                                                   
+
 Query: 236  ttacaacatccagaaagagtcgaccctgcacctggtcct 274
              |||||||||||||| |||||||||||||||||||||||
 Sbjct: 7416 ctacaacatccagaaggagtcgaccctgcacctggtcct 7378
@@ -3556,22 +3556,22 @@ Sbjct: 7416 ctacaacatccagaaggagtcgaccctgcacctggtcct 7378
  Identities = 199/219 (90%)
  Strand = Plus / Minus
 
-                                                                          
+
 Query: 57     ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
               |||||||||||| ||||||  || ||||||||||||||||||| ||||| ||||| ||||
 Sbjct: 191585 ggtcaaaatgcagatcttcacgacgaccctgactggcaagaccctcaccttagaggtgga 191526
 
-                                                                          
+
 Query: 117    gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
-              ||||||||| ||||||||||| ||||||||||||||||||||||||||||||||||||| 
+              ||||||||| ||||||||||| |||||||||||||||||||||||||||||||||||||
 Sbjct: 191525 gcccagtgacaccatcgagaacgtgaaggccaagatccaggataaagagggcatccccct 191466
 
-                                                                          
+
 Query: 177    gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgat 236
               |||||||||||||| |||||||| |||||||| || ||||||||| ||||  ||||||||
 Sbjct: 191465 gaccagcagaggctgatctttgctggcaagcagctagaagatggccgcactctctctgat 191406
 
-                                                     
+
 Query: 237    tacaacatccagaaagagtcgaccctgcacctggtcctc 275
               |||||||||||||||||||   |||||||||||||||||
 Sbjct: 191405 tacaacatccagaaagagtgagccctgcacctggtcctc 191367
@@ -3587,22 +3587,22 @@ Sbjct: 191405 tacaacatccagaaagagtgagccctgcacctggtcctc 191367
  Identities = 200/219 (91%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| ||| ||||| || ||||||||||||||||| ||| ||||
 Sbjct: 100 ggtcaaaatgcagatcttcgtgaaaacccttaccggcaagaccatcacccttgaggtgga 159
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccc 175
            ||||||||| |||||||| |||||||||||||||||||||||||| || ||||| |||||
 Sbjct: 160 gcccagtgacaccatcgaaaatgtgaaggccaagatccaggataaggaaggcattccccc 219
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
            ||||||||||||||||||||||||||||||||| |||||||||||| ||||  | |||||
 Sbjct: 220 cgaccagcagaggctcatctttgcaggcaagcagctggaagatggccgcactctttctga 279
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||||||||
 Sbjct: 280 ctacaacatccagaaggagtcgaccctgcacctggtcct 318
@@ -3618,22 +3618,22 @@ Sbjct: 280 ctacaacatccagaaggagtcgaccctgcacctggtcct 318
  Identities = 199/219 (90%)
  Strand = Plus / Plus
 
-                                                                         
+
 Query: 57    ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
              |||||||||||| ||||||  || ||||||||||||||||||| ||||| ||||| ||||
 Sbjct: 74964 ggtcaaaatgcagatcttcacgacgaccctgactggcaagaccctcaccttagaggtgga 75023
 
-                                                                         
+
 Query: 117   gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc 176
-             ||||||||| ||||||||||| ||||||||||||||||||||||||||||||||||||| 
+             ||||||||| ||||||||||| |||||||||||||||||||||||||||||||||||||
 Sbjct: 75024 gcccagtgacaccatcgagaacgtgaaggccaagatccaggataaagagggcatccccct 75083
 
-                                                                         
+
 Query: 177   gaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgat 236
              |||||||||||||| |||||||| |||||||| || ||||||||| ||||  ||||||||
 Sbjct: 75084 gaccagcagaggctgatctttgctggcaagcagctagaagatggccgcactctctctgat 75143
 
-                                                    
+
 Query: 237   tacaacatccagaaagagtcgaccctgcacctggtcctc 275
              |||||||||||||||||||   |||||||||||||||||
 Sbjct: 75144 tacaacatccagaaagagtgagccctgcacctggtcctc 75182
@@ -3649,22 +3649,22 @@ Sbjct: 75144 tacaacatccagaaagagtgagccctgcacctggtcctc 75182
  Identities = 194/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 2968 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 3027
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
             || ||||||||||| ||||||||||||||||||||||| || ||||| ||||| ||||||
 Sbjct: 3028 gacaccatcgagaacgtgaaggccaagatccaggataaggaaggcattccccctgaccag 3087
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             ||||||||||||||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 3088 cagaggctcatctttgccggcaagcagctggaagatggccgcactctttctgattacaac 3147
 
-                                            
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcct 274
             ||||||||||||||||||||||||||||||||
 Sbjct: 3148 atccagaaagagtcgaccctgcacctggtcct 3179
@@ -3677,17 +3677,17 @@ Sbjct: 3148 atccagaaagagtcgaccctgcacctggtcct 3179
  Identities = 114/124 (91%), Gaps = 1/124 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 153  ccaggataaagagggcatcccccc-gaccagcagaggctcatctttgcaggcaagcaact 211
             ||||||||| || ||||| ||||| ||||||||||||||||||||||| |||||||| ||
 Sbjct: 2829 ccaggataaggaaggcattccccctgaccagcagaggctcatctttgccggcaagcagct 2888
 
-                                                                        
+
 Query: 212  ggaagatggctgcaccttctctgattacaacatccagaaagagtcgaccctgcacctggt 271
             |||||||||| ||||  | |||||||||||||||||||||||||||||||||||||||||
 Sbjct: 2889 ggaagatggccgcactctttctgattacaacatccagaaagagtcgaccctgcacctggt 2948
 
-                
+
 Query: 272  cctc 275
             ||||
 Sbjct: 2949 cctc 2952
@@ -3702,22 +3702,22 @@ Sbjct: 2949 cctc 2952
  Identities = 192/211 (90%)
  Strand = Plus / Minus
 
-                                                                          
+
 Query: 64     atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
               ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 167602 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 167543
 
-                                                                          
+
 Query: 124    gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccccccgaccagc 183
               || |||||||| |||||||||||||||||||| |||||||| ||||||||||||| ||||
 Sbjct: 167542 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatccccccgatcagc 167483
 
-                                                                          
+
 Query: 184    agaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaaca 243
               ||||||||||||||||||||||||| |||||||||||| | ||  | ||||| |||||||
 Sbjct: 167482 agaggctcatctttgcaggcaagcagctggaagatggcggtactctttctgactacaaca 167423
 
-                                             
+
 Query: 244    tccagaaagagtcgaccctgcacctggtcct 274
               ||||||| |||||||||||||||||||||||
 Sbjct: 167422 tccagaaggagtcgaccctgcacctggtcct 167392
@@ -3730,22 +3730,22 @@ Sbjct: 167422 tccagaaggagtcgaccctgcacctggtcct 167392
  Identities = 193/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Minus
 
-                                                                          
+
 Query: 64     atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
               ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 167830 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 167771
 
-                                                                          
+
 Query: 124    gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccag 182
               || |||||||| |||||||||||||||||||| |||||||| ||||| ||||||||||||
 Sbjct: 167770 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatcccccccgaccag 167711
 
-                                                                          
+
 Query: 183    cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
               |||||||||||||||||||||||||| |||||||||||| |||   | ||||| ||||||
 Sbjct: 167710 cagaggctcatctttgcaggcaagcagctggaagatggccgcagtctttctgactacaac 167651
 
-                                              
+
 Query: 243    atccagaaagagtcgaccctgcacctggtcct 274
               ||||||||||||||||||||||| ||||||||
 Sbjct: 167650 atccagaaagagtcgaccctgcatctggtcct 167619
@@ -3758,22 +3758,22 @@ Sbjct: 167650 atccagaaagagtcgaccctgcatctggtcct 167619
  Identities = 186/206 (90%), Gaps = 1/206 (0%)
  Strand = Plus / Minus
 
-                                                                          
+
 Query: 70     atcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagtgaaacc 129
               ||||||| ||||||||||||||| |||||||||||||| ||| ||||||||||||| |||
 Sbjct: 167369 atcttcgtgaagaccctgactggaaagaccatcaccctggaggtggagcccagtgacacc 167310
 
-                                                                          
+
 Query: 130    atcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccagcagagg 188
               ||||| |||||||| ||||||||||||||| |||| ||||| |||||||| |||||||||
 Sbjct: 167309 atcgaaaatgtgaaagccaagatccaggatgaagaaggcatcccccccgatcagcagagg 167250
 
-                                                                          
+
 Query: 189    ctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaacatccag 248
               |||||||||||||||||| |  ||||||||||| ||||  | ||||| |||| |||||||
 Sbjct: 167249 ctcatctttgcaggcaagaagttggaagatggccgcactctttctgactacagcatccag 167190
 
-                                        
+
 Query: 249    aaagagtcgaccctgcacctggtcct 274
               ||||||||||||||||||||||||||
 Sbjct: 167189 aaagagtcgaccctgcacctggtcct 167164
@@ -3786,22 +3786,22 @@ Sbjct: 167189 aaagagtcgaccctgcacctggtcct 167164
  Identities = 187/219 (85%), Gaps = 1/219 (0%)
  Strand = Plus / Minus
 
-                                                                          
+
 Query: 57     ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
               |||||||||||  ||||||| ||| ||||| || ||||||| ||||||||| ||  ||||
 Sbjct: 168065 ggtcaaaatgcggatcttcgtgaaaacccttaccggcaagatcatcacccttgaagtgga 168006
 
-                                                                          
+
 Query: 117    gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggca-tccccc 175
-              ||||||||  || ||||| ||||| || ||||| ||||| |||||||| |||| ||||  
+              ||||||||  || ||||| ||||| || ||||| ||||| |||||||| |||| ||||
 Sbjct: 168005 gcccagtgccactatcgaaaatgtcaaagccaaaatccaagataaagaaggcaatccctg 167946
 
-                                                                          
+
 Query: 176    cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
                |||||||||||||||||||||||||||||||| | |||||||||| |||   | |||||
 Sbjct: 167945 tgaccagcagaggctcatctttgcaggcaagcagcgggaagatggccgcagtctttctga 167886
 
-                                                     
+
 Query: 236    ttacaacatccagaaagagtcgaccctgcacctggtcct 274
                ||||||||||||||||||||||||||||| ||||||||
 Sbjct: 167885 ctacaacatccagaaagagtcgaccctgcatctggtcct 167847
@@ -3816,22 +3816,22 @@ Sbjct: 167885 ctacaacatccagaaagagtcgaccctgcatctggtcct 167847
  Identities = 192/211 (90%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 552 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 611
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatccccccgaccagc 183
            || |||||||| |||||||||||||||||||| |||||||| ||||||||||||| ||||
 Sbjct: 612 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatccccccgatcagc 671
 
-                                                                       
+
 Query: 184 agaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaaca 243
            ||||||||||||||||||||||||| |||||||||||| | ||  | ||||| |||||||
 Sbjct: 672 agaggctcatctttgcaggcaagcagctggaagatggcggtactctttctgactacaaca 731
 
-                                          
+
 Query: 244 tccagaaagagtcgaccctgcacctggtcct 274
            ||||||| |||||||||||||||||||||||
 Sbjct: 732 tccagaaggagtcgaccctgcacctggtcct 762
@@ -3844,22 +3844,22 @@ Sbjct: 732 tccagaaggagtcgaccctgcacctggtcct 762
  Identities = 193/212 (91%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 324 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 383
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccag 182
            || |||||||| |||||||||||||||||||| |||||||| ||||| ||||||||||||
 Sbjct: 384 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatcccccccgaccag 443
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| |||   | ||||| ||||||
 Sbjct: 444 cagaggctcatctttgcaggcaagcagctggaagatggccgcagtctttctgactacaac 503
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||| ||||||||
 Sbjct: 504 atccagaaagagtcgaccctgcatctggtcct 535
@@ -3872,22 +3872,22 @@ Sbjct: 504 atccagaaagagtcgaccctgcatctggtcct 535
  Identities = 186/206 (90%), Gaps = 1/206 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 70  atcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagtgaaacc 129
            ||||||| ||||||||||||||| |||||||||||||| ||| ||||||||||||| |||
 Sbjct: 785 atcttcgtgaagaccctgactggaaagaccatcaccctggaggtggagcccagtgacacc 844
 
-                                                                       
+
 Query: 130 atcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccagcagagg 188
            ||||| |||||||| ||||||||||||||| |||| ||||| |||||||| |||||||||
 Sbjct: 845 atcgaaaatgtgaaagccaagatccaggatgaagaaggcatcccccccgatcagcagagg 904
 
-                                                                       
+
 Query: 189 ctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaacatccag 248
            |||||||||||||||||| |  ||||||||||| ||||  | ||||| |||| |||||||
 Sbjct: 905 ctcatctttgcaggcaagaagttggaagatggccgcactctttctgactacagcatccag 964
 
-                                     
+
 Query: 249 aaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||||||
 Sbjct: 965 aaagagtcgaccctgcacctggtcct 990
@@ -3900,22 +3900,22 @@ Sbjct: 965 aaagagtcgaccctgcacctggtcct 990
  Identities = 187/219 (85%), Gaps = 1/219 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||  ||||||| ||| ||||| || ||||||| ||||||||| ||  ||||
 Sbjct: 89  ggtcaaaatgcggatcttcgtgaaaacccttaccggcaagatcatcacccttgaagtgga 148
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggca-tccccc 175
-           ||||||||  || ||||| ||||| || ||||| ||||| |||||||| |||| ||||  
+           ||||||||  || ||||| ||||| || ||||| ||||| |||||||| |||| ||||
 Sbjct: 149 gcccagtgccactatcgaaaatgtcaaagccaaaatccaagataaagaaggcaatccctg 208
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             |||||||||||||||||||||||||||||||| | |||||||||| |||   | |||||
 Sbjct: 209 tgaccagcagaggctcatctttgcaggcaagcagcgggaagatggccgcagtctttctga 268
 
-                                                  
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcct 274
             ||||||||||||||||||||||||||||| ||||||||
 Sbjct: 269 ctacaacatccagaaagagtcgaccctgcatctggtcct 307
@@ -3930,22 +3930,22 @@ Sbjct: 269 ctacaacatccagaaagagtcgaccctgcatctggtcct 307
  Identities = 196/216 (90%), Gaps = 1/216 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 61   aaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagccc 120
             |||||||| ||||||| ||| |||||||| |||| |||||||||||| ||| ||||||||
 Sbjct: 5151 aaaatgcagatcttcgtgaaaaccctgaccggcaggaccatcaccctggaggtggagccc 5210
 
-                                                                        
+
 Query: 121  agtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gac 179
             ||||| ||||||||||| ||||||||||||||||||||||| || ||||| ||||| |||
 Sbjct: 5211 agtgacaccatcgagaacgtgaaggccaagatccaggataaggaaggcattccccctgac 5270
 
-                                                                        
+
 Query: 180  cagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattac 239
             |||||||||||||||||||| |||||||| |||||||||||| || |  | |||||||||
 Sbjct: 5271 cagcagaggctcatctttgccggcaagcagctggaagatggccgctctctttctgattac 5330
 
-                                                
+
 Query: 240  aacatccagaaagagtcgaccctgcacctggtcctc 275
             ||||||||||||||||||||||||||||||||||||
 Sbjct: 5331 aacatccagaaagagtcgaccctgcacctggtcctc 5366
@@ -3960,22 +3960,22 @@ Sbjct: 5331 aacatccagaaagagtcgaccctgcacctggtcctc 5366
  Identities = 197/218 (90%), Gaps = 1/218 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| |||||||||||||||||||||||||||||| ||  ||||
 Sbjct: 181 ggtcaaaatgcagatcttcgtgaagaccctgactggcaagaccatcacccttgaagtgga 240
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcc-ccc 175
            ||||||||| |||||||| |||||||||||||| ||||||||||| || ||||||| |||
 Sbjct: 241 gcccagtgacaccatcgaaaatgtgaaggccaatatccaggataaggaaggcatcctccc 300
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
            ||||||||||||||||||||||||||||| ||| || ||||||||||| ||  | |||||
 Sbjct: 301 cgaccagcagaggctcatctttgcaggcatgcagctagaagatggctgtactctttctga 360
 
-                                                 
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcc 273
             ||||||||||||||||||| ||||||| |||||||||
 Sbjct: 361 ctacaacatccagaaagagttgaccctgtacctggtcc 398
@@ -3990,22 +3990,22 @@ Sbjct: 361 ctacaacatccagaaagagttgaccctgtacctggtcc 398
  Identities = 197/218 (90%), Gaps = 1/218 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            |||||||||||| ||||||| |||||||||||||||||||||||||||||| ||  ||||
 Sbjct: 181 ggtcaaaatgcagatcttcgtgaagaccctgactggcaagaccatcacccttgaagtgga 240
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcc-ccc 175
            ||||||||| |||||||| |||||||||||||| ||||||||||| || ||||||| |||
 Sbjct: 241 gcccagtgacaccatcgaaaatgtgaaggccaatatccaggataaggaaggcatcctccc 300
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
            ||||||||||||||||||||||||||||| ||| || ||||||||||| ||  | |||||
 Sbjct: 301 cgaccagcagaggctcatctttgcaggcatgcagctagaagatggctgtactctttctga 360
 
-                                                 
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggtcc 273
             ||||||||||||||||||| ||||||| |||||||||
 Sbjct: 361 ctacaacatccagaaagagttgaccctgtacctggtcc 398
@@ -4020,22 +4020,22 @@ Sbjct: 361 ctacaacatccagaaagagttgaccctgtacctggtcc 398
  Identities = 192/212 (90%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 282 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 341
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
            || ||||||||||| ||||||||||||||||||||||| || ||||| ||||| ||||||
 Sbjct: 342 gacaccatcgagaacgtgaaggccaagatccaggataaggaaggcattccccctgaccag 401
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||| | |||||| |||||||| |||||||||||| ||||  | ||||||||||||
 Sbjct: 402 cagaggcttacctttgccggcaagcagctggaagatggccgcactctttctgattacaac 461
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||||||||||||
 Sbjct: 462 atccagaaagagtcgaccctgcacctggtcct 493
@@ -4048,7 +4048,7 @@ Sbjct: 462 atccagaaagagtcgaccctgcacctggtcct 493
  Identities = 28/28 (100%)
  Strand = Plus / Plus
 
-                                       
+
 Query: 248 gaaagagtcgaccctgcacctggtcctc 275
            ||||||||||||||||||||||||||||
 Sbjct: 239 gaaagagtcgaccctgcacctggtcctc 266
@@ -4064,22 +4064,22 @@ Sbjct: 239 gaaagagtcgaccctgcacctggtcctc 266
  Identities = 191/212 (90%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||| | |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 3067 atgcagatctttgtgaagaccctgacaggcaagaccatcaccctggaggtggagcccagt 3126
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
             || ||||| |||||||| ||||| ||||||||||| || |||||||||||||| ||||||
 Sbjct: 3127 gacaccattgagaatgtcaaggcaaagatccaggacaaggagggcatcccccctgaccag 3186
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||| ||||||||||||||||| |||||||||||| ||||| | || || ||||||
 Sbjct: 3187 cagaggctgatctttgcaggcaagcagctggaagatggccgcaccctgtcagactacaac 3246
 
-                                            
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||
 Sbjct: 3247 atccagaaagagtccaccctgcacctggtcct 3278
@@ -4092,22 +4092,22 @@ Sbjct: 3247 atccagaaagagtccaccctgcacctggtcct 3278
  Identities = 191/212 (90%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||| | |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 3295 atgcagatctttgtgaagaccctgacaggcaagaccatcaccctggaggtggagcccagt 3354
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
             || ||||| |||||||| ||||| ||||||||||| || |||||||||||||| ||||||
 Sbjct: 3355 gacaccattgagaatgtcaaggcaaagatccaggacaaggagggcatcccccctgaccag 3414
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||| ||||||||||||||||| |||||||||||| ||||| | || || ||||||
 Sbjct: 3415 cagaggctgatctttgcaggcaagcagctggaagatggccgcaccctgtcagactacaac 3474
 
-                                            
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||
 Sbjct: 3475 atccagaaagagtccaccctgcacctggtcct 3506
@@ -4120,22 +4120,22 @@ Sbjct: 3475 atccagaaagagtccaccctgcacctggtcct 3506
  Identities = 191/212 (90%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||| | |||||||||||| ||||||||||||||||| ||| |||||||||||
 Sbjct: 2611 atgcagatctttgtgaagaccctgacaggcaagaccatcaccctggaggtggagcccagt 2670
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
             || ||||| |||||||| ||||| ||||||||||| || |||||||||||||| ||||||
 Sbjct: 2671 gacaccattgagaatgtcaaggcaaagatccaggacaaggagggcatcccccctgaccag 2730
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||| ||||||||||||||||| |||||||||||| ||||| | || || ||||||
 Sbjct: 2731 cagaggctgatctttgcaggcaagcagctggaagatggccgcaccctgtcagactacaac 2790
 
-                                            
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||
 Sbjct: 2791 atccagaaagagtccaccctgcacctggtcct 2822
@@ -4148,22 +4148,22 @@ Sbjct: 2791 atccagaaagagtccaccctgcacctggtcct 2822
  Identities = 190/212 (89%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||| | |||||||||||| ||||||||||||||||| ||| | |||||||||
 Sbjct: 1699 atgcagatctttgtgaagaccctgacaggcaagaccatcaccctggaggtcgagcccagt 1758
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
             || ||||| |||||||| ||||| ||||||||||| || |||||||||||||| ||||||
 Sbjct: 1759 gacaccattgagaatgtcaaggcaaagatccaggacaaggagggcatcccccctgaccag 1818
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||| ||||||||||||||||| |||||||||||| ||||| | || || ||||||
 Sbjct: 1819 cagaggctgatctttgcaggcaagcagctggaagatggccgcaccctgtcagactacaac 1878
 
-                                            
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||
 Sbjct: 1879 atccagaaagagtccaccctgcacctggtcct 1910
@@ -4176,22 +4176,22 @@ Sbjct: 1879 atccagaaagagtccaccctgcacctggtcct 1910
  Identities = 190/212 (89%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||| | |||||||||||| ||||||||||||||||| ||| | |||||||||
 Sbjct: 2839 atgcagatctttgtgaagaccctgacaggcaagaccatcaccctggaggtcgagcccagt 2898
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
             || ||||| |||||||| ||||| ||||||||||| || |||||||||||||| ||||||
 Sbjct: 2899 gacaccattgagaatgtcaaggcaaagatccaggacaaggagggcatcccccctgaccag 2958
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||| ||||||||||||||||| |||||||||||| ||||| | || || ||||||
 Sbjct: 2959 cagaggctgatctttgcaggcaagcagctggaagatggccgcaccctgtcagactacaac 3018
 
-                                            
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||
 Sbjct: 3019 atccagaaagagtccaccctgcacctggtcct 3050
@@ -4204,22 +4204,22 @@ Sbjct: 3019 atccagaaagagtccaccctgcacctggtcct 3050
  Identities = 189/212 (89%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||| | ||| |||||||| ||||||||||||||||| ||| | |||||||||
 Sbjct: 2383 atgcagatctttgtgaaaaccctgacaggcaagaccatcaccctggaggtcgagcccagt 2442
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
             || ||||| |||||||| ||||| ||||||||||| || |||||||||||||| ||||||
 Sbjct: 2443 gacaccatagagaatgtcaaggcaaagatccaggacaaggagggcatcccccctgaccag 2502
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||| ||||||||||||||||| |||||||||||| ||||| | || || ||||||
 Sbjct: 2503 cagaggctgatctttgcaggcaagcagctggaagatggccgcaccctgtcagactacaac 2562
 
-                                            
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||
 Sbjct: 2563 atccagaaagagtccaccctgcacctggtcct 2594
@@ -4232,22 +4232,22 @@ Sbjct: 2563 atccagaaagagtccaccctgcacctggtcct 2594
  Identities = 189/212 (89%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||| | |||||||||||| ||||||||||||||||| ||| | |||||||||
 Sbjct: 2155 atgcagatctttgtgaagaccctgacaggcaagaccatcaccctggaggtcgagcccagt 2214
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
             || ||||| |||||||| ||||| ||||||||||| || ||||||||| |||| ||||||
 Sbjct: 2215 gacaccatagagaatgtcaaggcaaagatccaggacaaggagggcatctcccctgaccag 2274
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||| ||||||||||||||||| |||||||||||| ||||| | || || ||||||
 Sbjct: 2275 cagaggctgatctttgcaggcaagcagctggaagatggccgcaccctgtcagactacaac 2334
 
-                                            
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||
 Sbjct: 2335 atccagaaagagtccaccctgcacctggtcct 2366
@@ -4260,22 +4260,22 @@ Sbjct: 2335 atccagaaagagtccaccctgcacctggtcct 2366
  Identities = 189/212 (89%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
             ||||| ||||| | |||||||||||| ||||||||||||||||| ||| | |||||||||
 Sbjct: 1927 atgcagatctttgtgaagaccctgacaggcaagaccatcaccctggaggtcgagcccagt 1986
 
-                                                                        
+
 Query: 124  gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcatcccccc-gaccag 182
             || || || |||||||| ||||| ||||||||||| || |||||||||||||| ||||||
 Sbjct: 1987 gacactatagagaatgtcaaggcaaagatccaggacaaggagggcatcccccctgaccag 2046
 
-                                                                        
+
 Query: 183  cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
             |||||||| ||||||||||||||||| |||||||||||| ||||| | || || ||||||
 Sbjct: 2047 cagaggctgatctttgcaggcaagcagctggaagatggccgcaccctgtcagactacaac 2106
 
-                                            
+
 Query: 243  atccagaaagagtcgaccctgcacctggtcct 274
             |||||||||||||| |||||||||||||||||
 Sbjct: 2107 atccagaaagagtccaccctgcacctggtcct 2138
@@ -4288,22 +4288,22 @@ Sbjct: 2107 atccagaaagagtccaccctgcacctggtcct 2138
  Identities = 169/188 (89%), Gaps = 1/188 (0%)
  Strand = Plus / Plus
 
-                                                                        
+
 Query: 88   actggcaagaccatcaccctagagatggagcccagtgaaaccatcgagaatgtgaaggcc 147
-            ||||| |||||||||||||| ||| | ||||||||||| ||||| |||||||| ||||| 
+            ||||| |||||||||||||| ||| | ||||||||||| ||||| |||||||| |||||
 Sbjct: 1495 actggtaagaccatcaccctggaggtcgagcccagtgacaccattgagaatgtcaaggca 1554
 
-                                                                        
+
 Query: 148  aagatccaggataaagagggcatcccccc-gaccagcagaggctcatctttgcaggcaag 206
             ||||||||||| || |||||||||||||| |||||||||||||| |||||||||||||||
 Sbjct: 1555 aagatccaggacaaggagggcatcccccctgaccagcagaggctgatctttgcaggcaag 1614
 
-                                                                        
+
 Query: 207  caactggaagatggctgcaccttctctgattacaacatccagaaagagtcgaccctgcac 266
             || |||||||||||| ||||| | || || |||||||||||||||||||| |||||||||
 Sbjct: 1615 cagctggaagatggccgcaccctgtcagactacaacatccagaaagagtccaccctgcac 1674
 
-                    
+
 Query: 267  ctggtcct 274
             ||||||||
 Sbjct: 1675 ctggtcct 1682
@@ -4316,7 +4316,7 @@ Sbjct: 1675 ctggtcct 1682
  Identities = 38/42 (90%)
  Strand = Plus / Plus
 
-                                                      
+
 Query: 64   atgcaaatcttcgagaagaccctgactggcaagaccatcacc 105
             ||||| ||||| | |||||||||||| |||||||||||||||
 Sbjct: 3523 atgcagatctttgtgaagaccctgacaggcaagaccatcacc 3564
@@ -4331,22 +4331,22 @@ Sbjct: 3523 atgcagatctttgtgaagaccctgacaggcaagaccatcacc 3564
  Identities = 186/206 (90%), Gaps = 1/206 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 70  atcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagtgaaacc 129
            ||||||| ||||||||||||||| |||||||||||||| ||| ||||||||||||| |||
 Sbjct: 782 atcttcgtgaagaccctgactggaaagaccatcaccctggaggtggagcccagtgacacc 841
 
-                                                                       
+
 Query: 130 atcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccagcagagg 188
            ||||| |||||||| ||||||||||||||| |||| ||||| |||||||| |||||||||
 Sbjct: 842 atcgaaaatgtgaaagccaagatccaggatgaagaaggcatcccccccgatcagcagagg 901
 
-                                                                       
+
 Query: 189 ctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaacatccag 248
            |||||||||||||||||| |  ||||||||||| ||||  | ||||| |||| |||||||
 Sbjct: 902 ctcatctttgcaggcaagaagttggaagatggccgcactctttctgactacagcatccag 961
 
-                                     
+
 Query: 249 aaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||||||
 Sbjct: 962 aaagagtcgaccctgcacctggtcct 987
@@ -4359,22 +4359,22 @@ Sbjct: 962 aaagagtcgaccctgcacctggtcct 987
  Identities = 188/209 (89%), Gaps = 1/209 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 548 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 607
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggca-tccccccgaccag 182
            || |||||||| |||||||||||||||||||| |||||||| |||| ||||||||| |||
 Sbjct: 608 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcantccccccgatcag 667
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| | ||  | ||||| ||||||
 Sbjct: 668 cagaggctcatctttgcaggcaagcagctggaagatggccgtactctttctgactacaac 727
 
-                                        
+
 Query: 243 atccagaaagagtcgaccctgcacctggt 271
            || ||||| ||||||||||||||||||||
 Sbjct: 728 attcagaaggagtcgaccctgcacctggt 756
@@ -4387,22 +4387,22 @@ Sbjct: 728 attcagaaggagtcgaccctgcacctggt 756
  Identities = 190/212 (89%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 320 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 379
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccag 182
            || |||||||| |||||||||||||||||||| |||||||| ||||| ||||||| || |
 Sbjct: 380 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatcccccccggccgg 439
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||| |||||||||||| |||||||||||| |||   | ||||| ||||||
 Sbjct: 440 cagaggctcatctctgcaggcaagcagctggaagatggccgcagtctttctgactacaac 499
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||| ||||||||
 Sbjct: 500 atccagaaagagtcgaccctgcatctggtcct 531
@@ -4415,22 +4415,22 @@ Sbjct: 500 atccagaaagagtcgaccctgcatctggtcct 531
  Identities = 184/216 (85%), Gaps = 1/216 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            ||||||||||| |||||||| ||| ||||| || ||||||| ||||||||| ||  ||||
 Sbjct: 85  ggtcaaaatgcgaatcttcgtgaaaacccttaccggcaagatcatcacccttgaagtgga 144
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggca-tccccc 175
-           ||||||||  || ||||| ||||| || ||||| ||||| |||||||| |||| ||||  
+           ||||||||  || ||||| ||||| || ||||| ||||| |||||||| |||| ||||
 Sbjct: 145 gcccagtgccactatcgaaaatgtcaaagccaaaatccaagataaagaaggcaatccctg 204
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             |||||||||||||||||||||||||||||||| | |||||||||| |||   | |||||
 Sbjct: 205 tgaccagcagaggctcatctttgcaggcaagcagcgggaagatggccgcagtctttctga 264
 
-                                               
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggt 271
             || |||||||||||||||||||||||||| |||||
 Sbjct: 265 ctagaacatccagaaagagtcgaccctgcatctggt 300
@@ -4445,22 +4445,22 @@ Sbjct: 265 ctagaacatccagaaagagtcgaccctgcatctggt 300
  Identities = 186/206 (90%), Gaps = 1/206 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 70  atcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagtgaaacc 129
            ||||||| ||||||||||||||| |||||||||||||| ||| ||||||||||||| |||
 Sbjct: 782 atcttcgtgaagaccctgactggaaagaccatcaccctggaggtggagcccagtgacacc 841
 
-                                                                       
+
 Query: 130 atcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccagcagagg 188
            ||||| |||||||| ||||||||||||||| |||| ||||| |||||||| |||||||||
 Sbjct: 842 atcgaaaatgtgaaagccaagatccaggatgaagaaggcatcccccccgatcagcagagg 901
 
-                                                                       
+
 Query: 189 ctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaacatccag 248
            |||||||||||||||||| |  ||||||||||| ||||  | ||||| |||| |||||||
 Sbjct: 902 ctcatctttgcaggcaagaagttggaagatggccgcactctttctgactacagcatccag 961
 
-                                     
+
 Query: 249 aaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||||||
 Sbjct: 962 aaagagtcgaccctgcacctggtcct 987
@@ -4473,22 +4473,22 @@ Sbjct: 962 aaagagtcgaccctgcacctggtcct 987
  Identities = 188/209 (89%), Gaps = 1/209 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 548 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 607
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggca-tccccccgaccag 182
            || |||||||| |||||||||||||||||||| |||||||| |||| ||||||||| |||
 Sbjct: 608 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcantccccccgatcag 667
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            |||||||||||||||||||||||||| |||||||||||| | ||  | ||||| ||||||
 Sbjct: 668 cagaggctcatctttgcaggcaagcagctggaagatggccgtactctttctgactacaac 727
 
-                                        
+
 Query: 243 atccagaaagagtcgaccctgcacctggt 271
            || ||||| ||||||||||||||||||||
 Sbjct: 728 attcagaaggagtcgaccctgcacctggt 756
@@ -4501,22 +4501,22 @@ Sbjct: 728 attcagaaggagtcgaccctgcacctggt 756
  Identities = 190/212 (89%), Gaps = 1/212 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 64  atgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatggagcccagt 123
            ||||| ||||||| |||||||||||| ||||||||||||||||| ||  |||||||||||
 Sbjct: 320 atgcagatcttcgtgaagaccctgaccggcaagaccatcaccctggaagtggagcccagt 379
 
-                                                                       
+
 Query: 124 gaaaccatcgagaatgtgaaggccaagatccaggataaagagggcat-ccccccgaccag 182
            || |||||||| |||||||||||||||||||| |||||||| ||||| ||||||| || |
 Sbjct: 380 gacaccatcgaaaatgtgaaggccaagatccaagataaagaaggcatcccccccggccgg 439
 
-                                                                       
+
 Query: 183 cagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctgattacaac 242
            ||||||||||||| |||||||||||| |||||||||||| |||   | ||||| ||||||
 Sbjct: 440 cagaggctcatctctgcaggcaagcagctggaagatggccgcagtctttctgactacaac 499
 
-                                           
+
 Query: 243 atccagaaagagtcgaccctgcacctggtcct 274
            ||||||||||||||||||||||| ||||||||
 Sbjct: 500 atccagaaagagtcgaccctgcatctggtcct 531
@@ -4529,22 +4529,22 @@ Sbjct: 500 atccagaaagagtcgaccctgcatctggtcct 531
  Identities = 184/216 (85%), Gaps = 1/216 (0%)
  Strand = Plus / Plus
 
-                                                                       
+
 Query: 57  ggtcaaaatgcaaatcttcgagaagaccctgactggcaagaccatcaccctagagatgga 116
            ||||||||||| |||||||| ||| ||||| || ||||||| ||||||||| ||  ||||
 Sbjct: 85  ggtcaaaatgcgaatcttcgtgaaaacccttaccggcaagatcatcacccttgaagtgga 144
 
-                                                                       
+
 Query: 117 gcccagtgaaaccatcgagaatgtgaaggccaagatccaggataaagagggca-tccccc 175
-           ||||||||  || ||||| ||||| || ||||| ||||| |||||||| |||| ||||  
+           ||||||||  || ||||| ||||| || ||||| ||||| |||||||| |||| ||||
 Sbjct: 145 gcccagtgccactatcgaaaatgtcaaagccaaaatccaagataaagaaggcaatccctg 204
 
-                                                                       
+
 Query: 176 cgaccagcagaggctcatctttgcaggcaagcaactggaagatggctgcaccttctctga 235
             |||||||||||||||||||||||||||||||| | |||||||||| |||   | |||||
 Sbjct: 205 tgaccagcagaggctcatctttgcaggcaagcagcgggaagatggccgcagtctttctga 264
 
-                                               
+
 Query: 236 ttacaacatccagaaagagtcgaccctgcacctggt 271
             || |||||||||||||||||||||||||| |||||
 Sbjct: 265 ctagaacatccagaaagagtcgaccctgcatctggt 300
@@ -4559,13 +4559,13 @@ Sbjct: 265 ctagaacatccagaaagagtcgaccctgcatctggt 300
     Posted date:  Nov 24, 2002  6:29 AM
   Number of letters in database: -1,304,953,840
   Number of sequences in database:  1,473,826
-  
+
 Lambda     K      H
-    1.37    0.711     1.31 
+    1.37    0.711     1.31
 
 Gapped
 Lambda     K      H
-    1.37    0.711     1.31 
+    1.37    0.711     1.31
 
 
 Matrix: blastn matrix:1 -3

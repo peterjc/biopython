@@ -27,14 +27,14 @@ ACC=DR038233.1; NID=g66840128; CLONE=U61; LID=17438; SEQTYPE=EST
 Mdm.14
 Title: 'Transcribed locus, strongly similar to XP_001364858.1  similar to albumin [Monodelphis domestica]'
 Expressed: ['liver']
-Chromosome: 
+Chromosome:
 Sequences:
 ACC=DR038236.1; NID=g66840131; CLONE=P1; LID=17438; SEQTYPE=EST
 
 Mdm.15
 Title: 'Transcribed locus, weakly similar to XP_522938.2  serine (or cysteine) proteinase inhibitor, clade A (alpha-1 antiproteinase, antitrypsin), member 1 [Pan troglodytes]'
 Expressed: ['liver']
-Chromosome: 
+Chromosome:
 Sequences:
 ACC=DR038237.1; NID=g66840132; CLONE=U72; LID=17438; SEQTYPE=EST
 

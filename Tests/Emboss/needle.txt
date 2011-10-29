@@ -23,7 +23,7 @@
 # Similarity:    64/124 (51.6%)
 # Gaps:          17/124 (13.7%)
 # Score: 112.0
-# 
+#
 #
 #=======================================
 
@@ -36,7 +36,7 @@ ref_rec           47 VLLDMKIPGMDGIEILKRMKVIDENIRVIIMTAYGELDMIQESKELGALT     96
 gi|94968718|r     48 VVMDCAMPGMSGMDATKQIRTQWPDIAVLMLTMHSEDTWVRLALEAGANG     97
 
 ref_rec           97 HFAK-PFDIDEIRDAV--------    111
-                     :..| ..|:|.|: ||        
+                     :..| ..|:|.|: ||
 gi|94968718|r     98 YILKSAIDLDLIQ-AVRRVANGET    120
 
 
@@ -54,7 +54,7 @@ gi|94968718|r     98 YILKSAIDLDLIQ-AVRRVANGET    120
 # Similarity:    58/119 (48.7%)
 # Gaps:           9/119 ( 7.6%)
 # Score: 154.0
-# 
+#
 #
 #=======================================
 
@@ -67,7 +67,7 @@ ref_rec           51 MKIPGMDGIEILKRMKVIDENIRVIIMTAYGELDMIQESKELGALTHFAK    100
 gi|94968761|r     50 VVMPGRDGLTLLEDLKTAGVQAPVVMMSGQAHIEMAVKATRLGALDFLEK     99
 
 ref_rec          101 PFDIDEIRDAV--------    111
-                     |...|::...|        
+                     |...|::...|
 gi|94968761|r    100 PLSTDKLLLTVENALKLKR    118
 
 
@@ -85,7 +85,7 @@ gi|94968761|r    100 PLSTDKLLLTVENALKLKR    118
 # Similarity:    53/120 (44.2%)
 # Gaps:           9/120 ( 7.5%)
 # Score: 121.0
-# 
+#
 #
 #=======================================
 
@@ -98,7 +98,7 @@ ref_rec           50 DMKIPGMDGIEILKRMKVIDENIRVIIMTAYGELDMIQESKELGALTHFA     99
 gi|94967506|r     51 DVYLGSTTGVEVLRRCRVHRPKLYAVIITGQISLEMAARSIAEGAVDYIQ    100
 
 ref_rec          100 KPFDIDEIRDAV--------    111
-                     ||.|||.:.:..        
+                     ||.|||.:.:..
 gi|94967506|r    101 KPIDIDALLNIAERALEHKE    120
 
 
@@ -116,7 +116,7 @@ gi|94967506|r    101 KPIDIDALLNIAERALEHKE    120
 # Similarity:    64/118 (54.2%)
 # Gaps:           9/118 ( 7.6%)
 # Score: 126.0
-# 
+#
 #
 #=======================================
 
@@ -147,7 +147,7 @@ gi|94970045|r     99 LRKPFRMDALSAKIREVL    116
 # Similarity:    70/125 (56.0%)
 # Gaps:          18/125 (14.4%)
 # Score: 156.5
-# 
+#
 #
 #=======================================
 
@@ -160,7 +160,7 @@ ref_rec           49 LDMKIPGMDGIEILKRMKVIDENIRVIIMTAYGELDMIQESKELGALTHF     98
 gi|94970041|r     51 SDVVLVGMSGRELSERLRIQMPSLKVIYMSGYTDDAIVRH----GVLTES     96
 
 ref_rec           99 A----KPFDIDEIRDAV--------    111
-                     |    |||..|.:...|        
+                     |    |||..|.:...|
 gi|94970041|r     97 AEFLQKPFTSDSLLRKVRAVLQKRQ    121
 
 

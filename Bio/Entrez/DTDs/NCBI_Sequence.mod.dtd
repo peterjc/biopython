@@ -67,9 +67,9 @@ $Revision: 1.1 $
 *
 -->
 <!ELEMENT Bioseq (
-        Bioseq_id, 
-        Bioseq_descr?, 
-        Bioseq_inst, 
+        Bioseq_id,
+        Bioseq_descr?,
+        Bioseq_inst,
         Bioseq_annot?)>
 
 <!-- equivalent identifiers -->
@@ -91,29 +91,29 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Seqdesc (
-        Seqdesc_mol-type | 
-        Seqdesc_modif | 
-        Seqdesc_method | 
-        Seqdesc_name | 
-        Seqdesc_title | 
-        Seqdesc_org | 
-        Seqdesc_comment | 
-        Seqdesc_num | 
-        Seqdesc_maploc | 
-        Seqdesc_pir | 
-        Seqdesc_genbank | 
-        Seqdesc_pub | 
-        Seqdesc_region | 
-        Seqdesc_user | 
-        Seqdesc_sp | 
-        Seqdesc_dbxref | 
-        Seqdesc_embl | 
-        Seqdesc_create-date | 
-        Seqdesc_update-date | 
-        Seqdesc_prf | 
-        Seqdesc_pdb | 
-        Seqdesc_het | 
-        Seqdesc_source | 
+        Seqdesc_mol-type |
+        Seqdesc_modif |
+        Seqdesc_method |
+        Seqdesc_name |
+        Seqdesc_title |
+        Seqdesc_org |
+        Seqdesc_comment |
+        Seqdesc_num |
+        Seqdesc_maploc |
+        Seqdesc_pir |
+        Seqdesc_genbank |
+        Seqdesc_pub |
+        Seqdesc_region |
+        Seqdesc_user |
+        Seqdesc_sp |
+        Seqdesc_dbxref |
+        Seqdesc_embl |
+        Seqdesc_create-date |
+        Seqdesc_update-date |
+        Seqdesc_prf |
+        Seqdesc_pdb |
+        Seqdesc_het |
+        Seqdesc_source |
         Seqdesc_molinfo)>
 
 <!-- type of molecule -->
@@ -206,16 +206,16 @@ $Revision: 1.1 $
 ********************************************************************
 -->
 <!ELEMENT MolInfo (
-        MolInfo_biomol?, 
-        MolInfo_tech?, 
-        MolInfo_techexp?, 
-        MolInfo_completeness?, 
+        MolInfo_biomol?,
+        MolInfo_tech?,
+        MolInfo_techexp?,
+        MolInfo_completeness?,
         MolInfo_gbmoltype?)>
 
 <!ELEMENT MolInfo_biomol (%INTEGER;)>
 
 <!--
-    pre-RNA	-  precursor RNA of any sort really 
+    pre-RNA	-  precursor RNA of any sort really
     other-genetic	-  other genetic material
     genomic-mRNA	-  reported a mix of genomic and cdna sequence
     cRNA	-  viral RNA genome copy intermediate
@@ -342,7 +342,7 @@ $Revision: 1.1 $
 <!ELEMENT GIBB-mol %ENUM;>
 
 <!--
-    pre-mRNA	-  precursor RNA of any sort really 
+    pre-mRNA	-  precursor RNA of any sort really
     other-genetic	-  other genetic material
     genomic-mRNA	-  reported a mix of genomic and cdna sequence
 -->
@@ -433,9 +433,9 @@ $Revision: 1.1 $
 
 <!-- any display numbering system -->
 <!ELEMENT Numbering (
-        Numbering_cont | 
-        Numbering_enum | 
-        Numbering_ref | 
+        Numbering_cont |
+        Numbering_enum |
+        Numbering_ref |
         Numbering_real)>
 
 <!-- continuous numbering -->
@@ -452,8 +452,8 @@ $Revision: 1.1 $
 
 <!-- continuous display numbering system -->
 <!ELEMENT Num-cont (
-        Num-cont_refnum?, 
-        Num-cont_has-zero?, 
+        Num-cont_refnum?,
+        Num-cont_has-zero?,
         Num-cont_ascending?)>
 
 <!-- number assigned to first residue -->
@@ -471,7 +471,7 @@ $Revision: 1.1 $
 
 <!-- any tags to residues -->
 <!ELEMENT Num-enum (
-        Num-enum_num, 
+        Num-enum_num,
         Num-enum_names)>
 
 <!-- number of tags to follow -->
@@ -485,7 +485,7 @@ $Revision: 1.1 $
 
 <!-- by reference to other sequences -->
 <!ELEMENT Num-ref (
-        Num-ref_type, 
+        Num-ref_type,
         Num-ref_aligns?)>
 <!-- type of reference -->
 <!ELEMENT Num-ref_type %ENUM;>
@@ -505,8 +505,8 @@ $Revision: 1.1 $
 
 <!-- mapping to floating point system -->
 <!ELEMENT Num-real (
-        Num-real_a, 
-        Num-real_b, 
+        Num-real_a,
+        Num-real_b,
         Num-real_units?)>
 
 <!-- from an integer system used by Bioseq -->
@@ -519,16 +519,16 @@ $Revision: 1.1 $
 
 <!-- how sequence presented in pub -->
 <!ELEMENT Pubdesc (
-        Pubdesc_pub, 
-        Pubdesc_name?, 
-        Pubdesc_fig?, 
-        Pubdesc_num?, 
-        Pubdesc_numexc?, 
-        Pubdesc_poly-a?, 
-        Pubdesc_maploc?, 
-        Pubdesc_seq-raw?, 
-        Pubdesc_align-group?, 
-        Pubdesc_comment?, 
+        Pubdesc_pub,
+        Pubdesc_name?,
+        Pubdesc_fig?,
+        Pubdesc_num?,
+        Pubdesc_numexc?,
+        Pubdesc_poly-a?,
+        Pubdesc_maploc?,
+        Pubdesc_seq-raw?,
+        Pubdesc_align-group?,
+        Pubdesc_comment?,
         Pubdesc_reftype?)>
 
 <!-- the citation(s) -->
@@ -590,14 +590,14 @@ $Revision: 1.1 $
  the sequence data itself
 -->
 <!ELEMENT Seq-inst (
-        Seq-inst_repr, 
-        Seq-inst_mol, 
-        Seq-inst_length?, 
-        Seq-inst_fuzz?, 
-        Seq-inst_topology?, 
-        Seq-inst_strand?, 
-        Seq-inst_seq-data?, 
-        Seq-inst_ext?, 
+        Seq-inst_repr,
+        Seq-inst_mol,
+        Seq-inst_length?,
+        Seq-inst_fuzz?,
+        Seq-inst_topology?,
+        Seq-inst_strand?,
+        Seq-inst_seq-data?,
+        Seq-inst_ext?,
         Seq-inst_hist?)>
 <!-- representation class -->
 <!ELEMENT Seq-inst_repr %ENUM;>
@@ -694,9 +694,9 @@ $Revision: 1.1 $
 *  const type uses Seq-hist.assembly
 -->
 <!ELEMENT Seq-ext (
-        Seq-ext_seg | 
-        Seq-ext_ref | 
-        Seq-ext_map | 
+        Seq-ext_seg |
+        Seq-ext_ref |
+        Seq-ext_map |
         Seq-ext_delta)>
 
 <!-- segmented sequences -->
@@ -724,7 +724,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Delta-seq (
-        Delta-seq_loc | 
+        Delta-seq_loc |
         Delta-seq_literal)>
 
 <!-- point to a sequence -->
@@ -735,8 +735,8 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Seq-literal (
-        Seq-literal_length, 
-        Seq-literal_fuzz?, 
+        Seq-literal_length,
+        Seq-literal_fuzz?,
         Seq-literal_seq-data?)>
 
 <!-- must give a length in residues -->
@@ -755,9 +755,9 @@ $Revision: 1.1 $
 ** replaced-by = this seq is made obsolete by another(s)
 -->
 <!ELEMENT Seq-hist (
-        Seq-hist_assembly?, 
-        Seq-hist_replaces?, 
-        Seq-hist_replaced-by?, 
+        Seq-hist_assembly?,
+        Seq-hist_replaces?,
+        Seq-hist_replaced-by?,
         Seq-hist_deleted?)>
 
 <!-- how was this assembled? -->
@@ -770,7 +770,7 @@ $Revision: 1.1 $
 <!ELEMENT Seq-hist_replaced-by (Seq-hist-rec)>
 
 <!ELEMENT Seq-hist_deleted (
-        Seq-hist_deleted_bool | 
+        Seq-hist_deleted_bool |
         Seq-hist_deleted_date)>
 
 <!ELEMENT Seq-hist_deleted_bool EMPTY>
@@ -781,7 +781,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Seq-hist-rec (
-        Seq-hist-rec_date?, 
+        Seq-hist-rec_date?,
         Seq-hist-rec_ids)>
 
 <!ELEMENT Seq-hist-rec_date (Date)>
@@ -794,16 +794,16 @@ $Revision: 1.1 $
  sequence representations
 -->
 <!ELEMENT Seq-data (
-        Seq-data_iupacna | 
-        Seq-data_iupacaa | 
-        Seq-data_ncbi2na | 
-        Seq-data_ncbi4na | 
-        Seq-data_ncbi8na | 
-        Seq-data_ncbipna | 
-        Seq-data_ncbi8aa | 
-        Seq-data_ncbieaa | 
-        Seq-data_ncbipaa | 
-        Seq-data_ncbistdaa | 
+        Seq-data_iupacna |
+        Seq-data_iupacaa |
+        Seq-data_ncbi2na |
+        Seq-data_ncbi4na |
+        Seq-data_ncbi8na |
+        Seq-data_ncbipna |
+        Seq-data_ncbi8aa |
+        Seq-data_ncbieaa |
+        Seq-data_ncbipaa |
+        Seq-data_ncbistdaa |
         Seq-data_gap)>
 
 <!-- IUPAC 1 letter nuc acid code -->
@@ -841,7 +841,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Seq-gap (
-        Seq-gap_type, 
+        Seq-gap_type,
         Seq-gap_linkage?)>
 
 <!ELEMENT Seq-gap_type (%INTEGER;)>
@@ -916,8 +916,8 @@ $Revision: 1.1 $
 *
 -->
 <!ELEMENT Annot-id (
-        Annot-id_local | 
-        Annot-id_ncbi | 
+        Annot-id_local |
+        Annot-id_ncbi |
         Annot-id_general)>
 
 <!ELEMENT Annot-id_local (Object-id)>
@@ -931,15 +931,15 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Annotdesc (
-        Annotdesc_name | 
-        Annotdesc_title | 
-        Annotdesc_comment | 
-        Annotdesc_pub | 
-        Annotdesc_user | 
-        Annotdesc_create-date | 
-        Annotdesc_update-date | 
-        Annotdesc_src | 
-        Annotdesc_align | 
+        Annotdesc_name |
+        Annotdesc_title |
+        Annotdesc_comment |
+        Annotdesc_pub |
+        Annotdesc_user |
+        Annotdesc_create-date |
+        Annotdesc_update-date |
+        Annotdesc_src |
+        Annotdesc_align |
         Annotdesc_region)>
 
 <!-- a short name for this collection -->
@@ -974,7 +974,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Align-def (
-        Align-def_align-type, 
+        Align-def_align-type,
         Align-def_ids?)>
 <!-- class of align Seq-annot -->
 <!ELEMENT Align-def_align-type (%INTEGER;)>
@@ -997,10 +997,10 @@ $Revision: 1.1 $
 
 <!-- features in table form -->
 <!ELEMENT Seq-annot (
-        Seq-annot_id?, 
-        Seq-annot_db?, 
-        Seq-annot_name?, 
-        Seq-annot_desc?, 
+        Seq-annot_id?,
+        Seq-annot_db?,
+        Seq-annot_name?,
+        Seq-annot_desc?,
         Seq-annot_data)>
 
 <!ELEMENT Seq-annot_id (Annot-id*)>
@@ -1025,11 +1025,11 @@ $Revision: 1.1 $
 <!ELEMENT Seq-annot_desc (Annot-descr)>
 
 <!ELEMENT Seq-annot_data (
-        Seq-annot_data_ftable | 
-        Seq-annot_data_align | 
-        Seq-annot_data_graph | 
-        Seq-annot_data_ids | 
-        Seq-annot_data_locs | 
+        Seq-annot_data_ftable |
+        Seq-annot_data_align |
+        Seq-annot_data_graph |
+        Seq-annot_data_ids |
+        Seq-annot_data_locs |
         Seq-annot_data_seq-table)>
 
 <!ELEMENT Seq-annot_data_ftable (Seq-feat*)>

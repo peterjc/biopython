@@ -23,7 +23,7 @@ QBlastInfoEnd
 
 
 <table border="0" width="600" cellspacing="0" cellpadding="0">
-  <tr valign="bottom"> 
+  <tr valign="bottom">
     <td width="144" valign="top" align="left"><img src="http://www.ncbi.nlm.nih.gov/genome/seq/IMG/pix_tr.gif" width="144" height="1"><br>
       <a href="http://www.ncbi.nlm.nih.gov/"><img src="http://www.ncbi.nlm.nih.gov/genome/seq/IMG/ncbilogo.gif" width="130" height="45" border="0"></a></td>
     <td width="456"><a href="http://www.ncbi.nlm.nih.gov/genome/guide/"><img src="http://www.ncbi.nlm.nih.gov/entrez/query/static/gifs/entrez_gen.gif" width="456" height="45" border="0"></a></td>
@@ -47,8 +47,8 @@ QBlastInfoEnd
 <pre>
 <b><a href="http://www.ncbi.nlm.nih.gov/htbin-
 post/Entrez/query?uid=9254694&form=6&db=m&Dopt=r">Reference</a>:</b>
-Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 <p>
@@ -58,7 +58,7 @@ RID: 1038588547-028642-15893
          (87 letters)
 
 <p>
-<b>Database:</b> Homo sapiens protein sequences 
+<b>Database:</b> Homo sapiens protein sequences
            39,341 sequences; 15,598,025 total letters
 
 <p> <p>If you have any problems or questions with the results of this search <br>please refer to the <b><a href=http://www.ncbi.nlm.nih.gov/blast/blast_FAQs.html>BLAST FAQs</a></b><br><p>
@@ -118,13 +118,13 @@ Sbjct: 17 AKNAFFDEKCNKLKGTCKNNCGKNEELIALCQKSLKCCRTIQPCGSIID 65
     Posted date:  Nov 27, 2002 12:59 AM
   Number of letters in database: 15,598,025
   Number of sequences in database:  39,341
-  
+
 Lambda     K      H
-   0.327    0.142    0.483 
+   0.327    0.142    0.483
 
 Gapped
 Lambda     K      H
-   0.267   0.0410    0.140 
+   0.267   0.0410    0.140
 
 
 Matrix: BLOSUM62

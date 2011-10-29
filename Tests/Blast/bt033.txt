@@ -10,8 +10,8 @@
 
 <b><a href="http://www.ncbi.nlm.nih.gov/htbin-
 post/Entrez/query?uid=9254694&form=6&db=m&Dopt=r">Reference</a>:</b>
-Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 <p>
@@ -65,7 +65,7 @@ Sequences producing significant alignments:                        (bits)  Value
 <PRE>
 <a name = 461675> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=00461675&dopt=GenPept">sp|P29400|CA54_HUMAN</a> COLLAGEN ALPHA 5(IV) CHAIN PRECURSOR
             Length = 1685
-            
+
  Score = 31.3 bits (69), Expect = 1.6
  Identities = 16/42 (38%), Positives = 19/42 (45%)
  Frame = +1
@@ -79,7 +79,7 @@ Sbjct: 1364 PSGQSIIIKGDAGPPGIPGQPGLKGLPGPQGPQGLPG-PTGP 1404
 <PRE>
 <a name = 2493777> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=02493777&dopt=GenPept">sp|Q09455|YQ34_CAEEL</a> PUTATIVE CUTICLE COLLAGEN C09G5.4
            Length = 323
-           
+
  Score = 30.5 bits (67), Expect = 2.8
  Identities = 12/27 (44%), Positives = 15/27 (55%)
  Frame = +1
@@ -93,7 +93,7 @@ Sbjct: 156 GQPGHPGQGGSQGPAGPRGPAGDAGAP 182
 <PRE>
 <a name = 728997> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=00728997&dopt=GenPept">sp|Q07092|CA1F_HUMAN</a> COLLAGEN ALPHA 1(XVI) CHAIN PRECURSOR
            Length = 1603
-           
+
  Score = 30.5 bits (67), Expect = 2.8
  Identities = 16/42 (38%), Positives = 17/42 (40%)
  Frame = +1
@@ -107,7 +107,7 @@ Sbjct: 743 PGPKGEQGPEGVGRPGKPGQPGLPGVQGPPGLKGVQGEPGPP 784
 <PRE>
 <a name = 115406> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=00115406&dopt=GenPept">sp|P20631|CC13_CAEEL</a> CUTICLE COLLAGEN 13 PRECURSOR
            Length = 316
-           
+
  Score = 30.5 bits (67), Expect = 2.8
  Identities = 16/41 (39%), Positives = 18/41 (43%), Gaps = 2/41 (4%)
  Frame = +1
@@ -121,7 +121,7 @@ Sbjct: 250 SPGPAGAPGQPGQAGSSQPGGPGPQGDAGAPGAPGAPGQAGAP 292
 <PRE>
 <a name = 115405> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=00115405&dopt=GenPept">sp|P20630|CC12_CAEEL</a> CUTICLE COLLAGEN 12 PRECURSOR
            Length = 316
-           
+
  Score = 30.5 bits (67), Expect = 2.8
  Identities = 16/41 (39%), Positives = 18/41 (43%), Gaps = 2/41 (4%)
  Frame = +1
@@ -135,7 +135,7 @@ Sbjct: 250 SPGPAGAPGQPGQAGSSQPGGPGPQGDAGAPGAPGAPGQAGAP 292
 <PRE>
 <a name = 465855> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=00465855&dopt=GenPept">sp|P34391|YLS6_CAEEL</a> PUTATIVE CUTICLE COLLAGEN F09G8.6
            Length = 278
-           
+
  Score = 30.1 bits (66), Expect = 3.7
  Identities = 12/30 (40%), Positives = 15/30 (50%)
  Frame = +1
@@ -149,7 +149,7 @@ Sbjct: 155 GQPGADGQGGAPGPAGPEGPAGDAGAPGAP 184
 <PRE>
 <a name = 584868> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=00584868&dopt=GenPept">sp|P17140|CA24_CAEEL</a> COLLAGEN ALPHA 2(IV) CHAIN PRECURSOR
             Length = 1758
-            
+
  Score = 29.7 bits (65), Expect = 4.8
  Identities = 19/48 (39%), Positives = 21/48 (43%)
  Frame = +1
@@ -174,7 +174,7 @@ Sbjct: 675 PGNKGEAGYGQPGQPGFPGAKGDGGLPGLP-GTPGLQGMPGEP 716
 <PRE>
 <a name = 728999> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=00728999&dopt=GenPept">sp|P39061|CA1H_MOUSE</a> COLLAGEN ALPHA 1(XVIII) CHAIN PRECURSOR [CONTAINS: ENDOSTATIN]
            Length = 1315
-           
+
  Score = 29.3 bits (64), Expect = 6.3
  Identities = 12/30 (40%), Positives = 15/30 (50%)
  Frame = +1
@@ -189,7 +189,7 @@ Sbjct: 842 GRPGLPGQQGVQGPSGPKGDKGEVGPPGPP 871
 <a name = 1345650> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=01345650&dopt=GenPept">sp|Q02388|CA17_HUMAN</a> COLLAGEN ALPHA 1(VII) CHAIN PRECURSOR (LONG-CHAIN COLLAGEN) (LC
             COLLAGEN)
             Length = 2944
-            
+
  Score = 29.0 bits (63), Expect = 8.3
  Identities = 13/37 (35%), Positives = 16/37 (43%)
  Frame = +1
@@ -203,7 +203,7 @@ Sbjct: 1441 PGKKGEKGDSEDGAPGLPGQPGSPGEQGPRGPPGAIG 1477
 <PRE>
 <a name = 543912> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=00543912&dopt=GenPept">sp|P13941|CA13_RAT</a> COLLAGEN ALPHA 1(III) CHAIN
            Length = 636
-           
+
  Score = 29.0 bits (63), Expect = 8.3
  Identities = 17/48 (35%), Positives = 18/48 (37%)
  Frame = +1
@@ -217,7 +217,7 @@ Sbjct: 2   PGEKGEGGPPGAAGP--PGGSGPAGPPGPQGVKGERGSPGGPGAAGFP 47
 <PRE>
 <a name = 115306> </a><a href="http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=00115306&dopt=GenPept">sp|P02461|CA13_HUMAN</a> COLLAGEN ALPHA 1(III) CHAIN PRECURSOR
            Length = 1466
-           
+
  Score = 29.0 bits (63), Expect = 8.3
  Identities = 13/32 (40%), Positives = 13/32 (40%)
  Frame = +1
@@ -234,13 +234,13 @@ Sbjct: 886 SNGNPGPPGPSGSPGKDGPPGPAGNTGAPGSP 917
     Posted date:  Dec 28, 1999  4:33 PM
   Number of letters in database: 29,652,561
   Number of sequences in database:  82,258
-  
+
 Lambda     K      H
-   0.318    0.135    0.401 
+   0.318    0.135    0.401
 
 Gapped
 Lambda     K      H
-   0.270   0.0470    0.230 
+   0.270   0.0470    0.230
 
 
 Matrix: BLOSUM62

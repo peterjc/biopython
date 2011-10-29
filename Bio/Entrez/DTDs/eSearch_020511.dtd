@@ -1,4 +1,4 @@
-<!--    
+<!--
                 This is the Current DTD for Entrez eSearch
 $Id: eSearch_020511.dtd,v 1.1 2008-05-13 11:17:44 mdehoon Exp $
 -->
@@ -17,7 +17,7 @@ $Id: eSearch_020511.dtd,v 1.1 2008-05-13 11:17:44 mdehoon Exp $
 
 <!ELEMENT        QueryKey       (#PCDATA)>	<!-- \d+ -->
 <!ELEMENT        WebEnv         (#PCDATA)>	<!-- \S+ -->
- 
+
 <!ELEMENT       Explode         (#PCDATA)>	<!-- (Y|N) -->
 <!ELEMENT       OP              (#PCDATA)>	<!-- (AND|OR|NOT|RANGE|GROUP) -->
 <!ELEMENT       IdList          (Id*)>

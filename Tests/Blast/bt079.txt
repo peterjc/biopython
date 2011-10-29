@@ -1,12 +1,12 @@
 BLASTP 2.2.21 [Jun-14-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
-Reference for compositional score matrix adjustment: Altschul, Stephen F., 
+Reference for compositional score matrix adjustment: Altschul, Stephen F.,
 John C. Wootton, E. Michael Gertz, Richa Agarwala, Aleksandr Morgulis,
 Alejandro A. Schaffer, and Yi-Kuo Yu (2005) "Protein database searches
 using compositionally adjusted substitution matrices", FEBS J. 272:5101-5109.
@@ -16,7 +16,7 @@ Query= gi|3298468|dbj|BAA31520.1| SAMIPF
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -26,7 +26,7 @@ Searching..................................................done
                                                                  Score    E
 Sequences producing significant alignments:                      (bits) Value
 
-pdb|1JLX|A Chain A, Agglutinin In Complex With T-Disaccharide >g...   640   0.0  
+pdb|1JLX|A Chain A, Agglutinin In Complex With T-Disaccharide >g...   640   0.0
 gb|AAQ03084.1|AF401479_1 agglutinin [Amaranthus caudatus]             630   e-179
 gb|AAL05954.1| agglutinin [Amaranthus caudatus]                       627   e-178
 gb|AAD33922.1|AF143954_1 agglutinin [Amaranthus hypochondriacus]...   625   e-177
@@ -74,12 +74,12 @@ Sbjct: 301 QNN 303
 BLASTP 2.2.21 [Jun-14-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
-Reference for compositional score matrix adjustment: Altschul, Stephen F., 
+Reference for compositional score matrix adjustment: Altschul, Stephen F.,
 John C. Wootton, E. Michael Gertz, Richa Agarwala, Aleksandr Morgulis,
 Alejandro A. Schaffer, and Yi-Kuo Yu (2005) "Protein database searches
 using compositionally adjusted substitution matrices", FEBS J. 272:5101-5109.
@@ -90,7 +90,7 @@ finger protein
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -100,10 +100,10 @@ Searching..................................................done
                                                                  Score    E
 Sequences producing significant alignments:                      (bits) Value
 
-sp|Q9WTV7.1|RNF12_MOUSE RecName: Full=E3 ubiquitin-protein ligas...   684   0.0  
-ref|NP_035406.3| ring finger protein, LIM domain interacting [Mu...   676   0.0  
-dbj|BAB28712.1| unnamed protein product [Mus musculus]                674   0.0  
-dbj|BAC26379.1| unnamed protein product [Mus musculus]                672   0.0  
+sp|Q9WTV7.1|RNF12_MOUSE RecName: Full=E3 ubiquitin-protein ligas...   684   0.0
+ref|NP_035406.3| ring finger protein, LIM domain interacting [Mu...   676   0.0
+dbj|BAB28712.1| unnamed protein product [Mus musculus]                674   0.0
+dbj|BAC26379.1| unnamed protein product [Mus musculus]                672   0.0
 ref|NP_001020063.1| ring finger protein, LIM domain interacting ...   620   e-175
 ref|NP_057204.2| ring finger protein, LIM domain interacting [Ho...   606   e-171
 ref|XP_001141975.1| PREDICTED: ring finger protein 12 isoform 1 ...   605   e-171
@@ -130,7 +130,7 @@ Query: 61  EELLRRLQQIKEGPPPQSPDENRAGESSDDVTNSDSIIDWLNSVRQTGNTTRSRQRGNQS 120
 Sbjct: 61  EELLRRLQQIKEGPPPQSPDENRAGESSDDVTNSDSIIDWLNSVRQTGNTTRSRQRGNQS 120
 
 Query: 121 WRAVSRTNPNSGDFRFSLEINVNRNNGSQTSENESEPSTRRLSVENMESSSQRQMXXXXX 180
-           WRAVSRTNPNSGDFRFSLEINVNRNNGSQTSENESEPSTRRLSVENMESSSQRQM     
+           WRAVSRTNPNSGDFRFSLEINVNRNNGSQTSENESEPSTRRLSVENMESSSQRQM
 Sbjct: 121 WRAVSRTNPNSGDFRFSLEINVNRNNGSQTSENESEPSTRRLSVENMESSSQRQMENSAS 180
 
 Query: 181 XXXXXXXXXXXXXXTEAVTEVXXXXXXXXXXXXXXXXXXXXXXXERSMSPLQPTSEIPRR 240
@@ -138,7 +138,7 @@ Query: 181 XXXXXXXXXXXXXXTEAVTEVXXXXXXXXXXXXXXXXXXXXXXXERSMSPLQPTSEIPRR 240
 Sbjct: 181 ESASARPSRAERNSTEAVTEVPTTRAQRRARSRSPEHRRTRARAERSMSPLQPTSEIPRR 240
 
 Query: 241 APTLEQSSENEPEGSSRTRHHVTLRQQISGPELLGRGLFAASGSRNPXXXXXXXXXXXXX 300
-           APTLEQSSENEPEGSSRTRHHVTLRQQISGPELLGRGLFAASGSRNP             
+           APTLEQSSENEPEGSSRTRHHVTLRQQISGPELLGRGLFAASGSRNP
 Sbjct: 241 APTLEQSSENEPEGSSRTRHHVTLRQQISGPELLGRGLFAASGSRNPSQGTSSSDTGSNS 300
 
 Query: 301 XXXXXXQRPPTIVLDLQVRRVRPGEYRQRDSIASRTRSRSQAPNNTVTYESERGGFRRTF 360
@@ -166,12 +166,12 @@ Sbjct: 546 CSVCITEYTEGDKLRKLPCSHEFHVHCIDRWLSENSTCPICRRAVLSSGNRESVV 600
 BLASTP 2.2.21 [Jun-14-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
-Reference for compositional score matrix adjustment: Altschul, Stephen F., 
+Reference for compositional score matrix adjustment: Altschul, Stephen F.,
 John C. Wootton, E. Michael Gertz, Richa Agarwala, Aleksandr Morgulis,
 Alejandro A. Schaffer, and Yi-Kuo Yu (2005) "Protein database searches
 using compositionally adjusted substitution matrices", FEBS J. 272:5101-5109.
@@ -181,7 +181,7 @@ Query= gi|671626|emb|CAA85685.1| rubisco large subunit
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -191,16 +191,16 @@ Searching..................................................done
                                                                  Score    E
 Sequences producing significant alignments:                      (bits) Value
 
-emb|CAA85685.1| rubisco large subunit [Rosmarinus officinalis]        947   0.0  
-emb|CAA85698.1| rubisco large subunit [Salvia sclarea] >gi|14192...   942   0.0  
-emb|CAA85688.1| rubisco large subunit [Salvia bucharica] >gi|141...   942   0.0  
-emb|CAA85670.1| rubisco large subunit [Monarda menthaefolia]          941   0.0  
-emb|CAA85667.1| rubisco large subunit [Mentha suaveolens]             941   0.0  
-emb|CAA85676.1| rubisco large subunit [Origanum laevigatum] >gi|...   941   0.0  
-emb|CAA85684.1| rubisco large subunit [Rosmarinus officinalis]        940   0.0  
-emb|CAA85687.1| rubisco large subunit [Salvia argentea]               939   0.0  
-emb|CAA85686.1| rubisco large subunit [Salvia aethiopis]              939   0.0  
-emb|CAA85718.1| rubisco large subunit [Thymus alsinoides]             939   0.0  
+emb|CAA85685.1| rubisco large subunit [Rosmarinus officinalis]        947   0.0
+emb|CAA85698.1| rubisco large subunit [Salvia sclarea] >gi|14192...   942   0.0
+emb|CAA85688.1| rubisco large subunit [Salvia bucharica] >gi|141...   942   0.0
+emb|CAA85670.1| rubisco large subunit [Monarda menthaefolia]          941   0.0
+emb|CAA85667.1| rubisco large subunit [Mentha suaveolens]             941   0.0
+emb|CAA85676.1| rubisco large subunit [Origanum laevigatum] >gi|...   941   0.0
+emb|CAA85684.1| rubisco large subunit [Rosmarinus officinalis]        940   0.0
+emb|CAA85687.1| rubisco large subunit [Salvia argentea]               939   0.0
+emb|CAA85686.1| rubisco large subunit [Salvia aethiopis]              939   0.0
+emb|CAA85718.1| rubisco large subunit [Thymus alsinoides]             939   0.0
 
 >emb|CAA85685.1| rubisco large subunit [Rosmarinus officinalis]
           Length = 473
@@ -209,7 +209,7 @@ emb|CAA85718.1| rubisco large subunit [Thymus alsinoides]             939   0.0
  Identities = 458/473 (96%), Positives = 458/473 (96%)
 
 Query: 1   MSPQTETKASVGFKAGVKEYKLTYYTPEYETKDTDILAAFRVTPQXXXXXXXXXXXXXXX 60
-           MSPQTETKASVGFKAGVKEYKLTYYTPEYETKDTDILAAFRVTPQ               
+           MSPQTETKASVGFKAGVKEYKLTYYTPEYETKDTDILAAFRVTPQ
 Sbjct: 1   MSPQTETKASVGFKAGVKEYKLTYYTPEYETKDTDILAAFRVTPQPGVPPEEAGAAVAAE 60
 
 Query: 61  SSTGTWTTVWTDGLTSLDRYKGRCYHIEPVPGEKDQCICYVAYPLDLFEEGSVTNMFTSI 120
@@ -247,13 +247,13 @@ Sbjct: 421 RVAVEACVKARNEGRDLAAEGNAIIREACKWSPELAAACEVWKEIKFEFPAMD 473
     Posted date:  Jun 4, 2009  5:40 PM
   Number of letters in database: 3,078,807,967
   Number of sequences in database:  8,994,603
-  
+
 Lambda     K      H
-   0.325    0.138    0.426 
+   0.325    0.138    0.426
 
 Gapped
 Lambda     K      H
-   0.267   0.0410    0.140 
+   0.267   0.0410    0.140
 
 
 Matrix: BLOSUM62

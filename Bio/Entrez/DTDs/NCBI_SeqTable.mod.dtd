@@ -10,7 +10,7 @@
 
 <!--
 $Revision: 1.1 $
-  
+
 
 
 
@@ -50,7 +50,7 @@ $Revision: 1.1 $
 
   Please cite the authors in any work or product based on this material.
 
-  
+
 
 
 
@@ -75,7 +75,7 @@ $Revision: 1.1 $
 
   ASN.1 interface to table readers
 
-  
+
 
 
 
@@ -110,8 +110,8 @@ $Revision: 1.1 $
 
 
 <!ELEMENT SeqTable-column-info (
-        SeqTable-column-info_title?, 
-        SeqTable-column-info_field-id?, 
+        SeqTable-column-info_title?,
+        SeqTable-column-info_field-id?,
         SeqTable-column-info_field-name?)>
 
 <!-- user friendly column name, can be skipped -->
@@ -206,7 +206,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT CommonString-table (
-        CommonString-table_strings, 
+        CommonString-table_strings,
         CommonString-table_indexes)>
 
 <!-- set of possible values -->
@@ -223,7 +223,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT CommonBytes-table (
-        CommonBytes-table_bytes, 
+        CommonBytes-table_bytes,
         CommonBytes-table_indexes)>
 
 <!-- set of possible values -->
@@ -240,15 +240,15 @@ $Revision: 1.1 $
 
 
 <!ELEMENT SeqTable-multi-data (
-        SeqTable-multi-data_int | 
-        SeqTable-multi-data_real | 
-        SeqTable-multi-data_string | 
-        SeqTable-multi-data_bytes | 
-        SeqTable-multi-data_common-string | 
-        SeqTable-multi-data_common-bytes | 
-        SeqTable-multi-data_bit | 
-        SeqTable-multi-data_loc | 
-        SeqTable-multi-data_id | 
+        SeqTable-multi-data_int |
+        SeqTable-multi-data_real |
+        SeqTable-multi-data_string |
+        SeqTable-multi-data_bytes |
+        SeqTable-multi-data_common-string |
+        SeqTable-multi-data_common-bytes |
+        SeqTable-multi-data_bit |
+        SeqTable-multi-data_loc |
+        SeqTable-multi-data_id |
         SeqTable-multi-data_interval)>
 
 <!-- a set of integers, one per row -->
@@ -296,13 +296,13 @@ $Revision: 1.1 $
 
 
 <!ELEMENT SeqTable-single-data (
-        SeqTable-single-data_int | 
-        SeqTable-single-data_real | 
-        SeqTable-single-data_string | 
-        SeqTable-single-data_bytes | 
-        SeqTable-single-data_bit | 
-        SeqTable-single-data_loc | 
-        SeqTable-single-data_id | 
+        SeqTable-single-data_int |
+        SeqTable-single-data_real |
+        SeqTable-single-data_string |
+        SeqTable-single-data_bytes |
+        SeqTable-single-data_bit |
+        SeqTable-single-data_loc |
+        SeqTable-single-data_id |
         SeqTable-single-data_interval)>
 
 <!-- integer -->
@@ -331,7 +331,7 @@ $Revision: 1.1 $
 
 
 <!ELEMENT SeqTable-sparse-index (
-        SeqTable-sparse-index_indexes | 
+        SeqTable-sparse-index_indexes |
         SeqTable-sparse-index_bit-set)>
 
 <!-- indexed of rows with values -->
@@ -345,10 +345,10 @@ $Revision: 1.1 $
 
 
 <!ELEMENT SeqTable-column (
-        SeqTable-column_header, 
-        SeqTable-column_data?, 
-        SeqTable-column_sparse?, 
-        SeqTable-column_default?, 
+        SeqTable-column_header,
+        SeqTable-column_data?,
+        SeqTable-column_sparse?,
+        SeqTable-column_default?,
         SeqTable-column_sparse-other?)>
 
 <!--
@@ -371,9 +371,9 @@ $Revision: 1.1 $
 
 
 <!ELEMENT Seq-table (
-        Seq-table_feat-type, 
-        Seq-table_feat-subtype?, 
-        Seq-table_num-rows, 
+        Seq-table_feat-type,
+        Seq-table_feat-subtype?,
+        Seq-table_num-rows,
         Seq-table_columns)>
 
 <!-- type of features in this table, equal to Seq-feat.data variant index -->

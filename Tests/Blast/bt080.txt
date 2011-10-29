@@ -1,8 +1,8 @@
 BLASTX 2.2.22 [Sep-27-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -12,7 +12,7 @@ ribosomal RNA gene, partial sequence
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -39,8 +39,8 @@ Sbjct: 1   HMLVSKIKPCMCKYELIRTVKLRMAH 26
 BLASTX 2.2.22 [Sep-27-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -50,7 +50,7 @@ protein HLPf gene, partial cds
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -87,7 +87,7 @@ Query: 181 DGCQSQCRDTSRLTDLPRALLRPTNNRNAISKMISKSLFNEMFKHMKDCPSRGFYSYEAF 360
 Sbjct: 61  DGCQSQCRDTSRLTDLPRALLRPTNNRNAISKMISKSLFNEMFKHMKDCPSRGFYSYEAF 120
 
 Query: 361 ITAARSFPGFCTSGDVATRKREPAAFLXXXXXXXXXXXXNLNIYLC*EIISTIYICFEIN 540
-           ITAARSFPGFCTSGDVATRKREPAAFL                                 
+           ITAARSFPGFCTSGDVATRKREPAAFL
 Sbjct: 121 ITAARSFPGFCTSGDVATRKREPAAFLS-------------------------------- 148
 
 Query: 541 LRTWMLGVGGRLDSAVVDPHAWGYCYVNGTTDEQYCTSSNWPCASGKQYNRRGPIQLT 714
@@ -116,8 +116,8 @@ Sbjct: 327  HIKMSVV 333
 BLASTX 2.2.22 [Sep-27-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -127,7 +127,7 @@ phosphate isomerase (GPI) gene, partial intron sequence
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -138,8 +138,8 @@ Searching..................................................done
 BLASTX 2.2.22 [Sep-27-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -151,7 +151,7 @@ gi|486734|pir|S35142 tubulin beta chain - white lupine gi|402636
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -199,8 +199,8 @@ Sbjct: 181 EPYNATLSVHQLVENADECMV 201
 BLASTX 2.2.22 [Sep-27-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -211,7 +211,7 @@ transcribed spacer 2, complete sequence
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -257,8 +257,8 @@ Sbjct: 54  RKLVSRVLPHAVGLNPS 70
 BLASTX 2.2.22 [Sep-27-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -268,7 +268,7 @@ Query= gi|3176602|gb|U78617.1|LOU78617 Lathyrus odoratus phytochrome A
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -308,8 +308,8 @@ Sbjct: 61  SLVMAVVVNDSDEDGDSRDAVLPQKKKRLWGLVVCHNTTPRFV 103
 BLASTX 2.2.22 [Sep-27-2009]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -320,7 +320,7 @@ chloroplast product
 
 Database: All non-redundant GenBank CDS
 translations+PDB+SwissProt+PIR+PRF excluding environmental samples
-from WGS projects 
+from WGS projects
            8,994,603 sequences; 3,078,807,967 total letters
 
 Searching..................................................done
@@ -330,16 +330,16 @@ Searching..................................................done
                                                                  Score    E
 Sequences producing significant alignments:                      (bits) Value
 
-sp|Q9TKP6.1|MATK_WISFR RecName: Full=Maturase K; AltName: Full=I...   948   0.0  
-gb|ACB58148.1| maturase K [Wisteria frutescens]                       946   0.0  
-gb|ACB58149.1| maturase K [Wisteria frutescens] >gi|171909148|gb...   945   0.0  
-gb|ACB58142.1| maturase K [Callerya megasperma]                       944   0.0  
-gb|AAD52903.1|AF142732_1 maturase-like protein [Wisteria sinensi...   936   0.0  
-gb|ACB58143.1| maturase K [Wisteria brachybotrys]                     928   0.0  
-gb|AAD52904.1|AF142733_1 maturase-like protein [Callerya reticul...   925   0.0  
-gb|AAD52905.1|AF142734_1 maturase-like protein [Callerya atropur...   890   0.0  
-gb|ABS20107.1| maturase-like protein [Astragalus uliginosus]          887   0.0  
-dbj|BAF57483.1| maturase [Glycyrrhiza uralensis] >gi|146197444|d...   887   0.0  
+sp|Q9TKP6.1|MATK_WISFR RecName: Full=Maturase K; AltName: Full=I...   948   0.0
+gb|ACB58148.1| maturase K [Wisteria frutescens]                       946   0.0
+gb|ACB58149.1| maturase K [Wisteria frutescens] >gi|171909148|gb...   945   0.0
+gb|ACB58142.1| maturase K [Callerya megasperma]                       944   0.0
+gb|AAD52903.1|AF142732_1 maturase-like protein [Wisteria sinensi...   936   0.0
+gb|ACB58143.1| maturase K [Wisteria brachybotrys]                     928   0.0
+gb|AAD52904.1|AF142733_1 maturase-like protein [Callerya reticul...   925   0.0
+gb|AAD52905.1|AF142734_1 maturase-like protein [Callerya atropur...   890   0.0
+gb|ABS20107.1| maturase-like protein [Astragalus uliginosus]          887   0.0
+dbj|BAF57483.1| maturase [Glycyrrhiza uralensis] >gi|146197444|d...   887   0.0
 
 >sp|Q9TKP6.1|MATK_WISFR RecName: Full=Maturase K; AltName: Full=Intron maturase
  gb|AAD52902.1|AF142731_1 maturase-like protein [Wisteria frutescens]
@@ -358,7 +358,7 @@ Query: 907  ITRMYQQNHLIISANDSNKNPFLGYNKNFYSQIISDGFAVVVEIPFFLQLSSSLEEAEIV 1086
 Sbjct: 61   ITRMYQQNHLIISANDSNKNPFLGYNKNFYSQIISDGFAVVVEIPFFLQLSSSLEEAEIV 120
 
 Query: 1087 KSYHNLRSIHSIFPFLEDKFTYLNYVSDIRIPYPIHLEILVQILRYWVKDASXXXXXXXX 1266
-            KSYHNLRSIHSIFPFLEDKFTYLNYVSDIRIPYPIHLEILVQILRYWVKDAS        
+            KSYHNLRSIHSIFPFLEDKFTYLNYVSDIRIPYPIHLEILVQILRYWVKDAS
 Sbjct: 121  KSYHNLRSIHSIFPFLEDKFTYLNYVSDIRIPYPIHLEILVQILRYWVKDASFFHLLRFF 180
 
 Query: 1267 XXXXSNRNSLITPKKSISTFSKSNPRLFLFLYNFYVCEYESIFRFLRNQSSHLRLKSFSV 1446
@@ -392,13 +392,13 @@ Sbjct: 481  STLQRLHRNRIWYLDILFSNDLVNHE 506
     Posted date:  Jun 4, 2009  5:40 PM
   Number of letters in database: 3,078,807,967
   Number of sequences in database:  8,994,603
-  
+
 Lambda     K      H
-   0.318    0.134    0.401 
+   0.318    0.134    0.401
 
 Gapped
 Lambda     K      H
-   0.267   0.0410    0.140 
+   0.267   0.0410    0.140
 
 
 Matrix: BLOSUM62

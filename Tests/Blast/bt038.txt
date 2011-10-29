@@ -10,8 +10,8 @@
 
 <b><a href="http://www.ncbi.nlm.nih.gov/htbin-
 post/Entrez/query?uid=9254694&form=6&db=m&Dopt=r">Reference</a>:</b>
-Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 <p>
@@ -54,22 +54,22 @@ blast_tmp 24  CDQSSSDAKHIKVGVINGAEQDXXXXXXXXXXXXYGLDVELVGFSGSLLPNDATNHGELD 83
 <a name = 1171732></a><a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=01171732&dopt=GenPept>P31728</a>    36            IKVGVMSGPEHQVAEIAAKVAKEKYGLDVQFVEFNDYALPNEAVSKGDLD 85
 <a name = 1170787></a><a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=01170787&dopt=GenPept>Q08869</a>    40            LKVGVMTGPEAQMTEVAVKIAKEKYGLDVELVQFTEYTQPNAALHSKDLD 89
 <a name = 1724004></a><a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=01724004&dopt=GenPept>P54594</a>    23      SAEHESIKIGI---AESDGAINYIAQKAEEAGLDIQLIPFSDYAESDIALANKEID 76
-                                       \                                  
+                                       \
                                        |
-                                       W                                  
+                                       W
 
 blast_tmp 84  ANVFQHRPFLEQDNQAHGYKLVAVGNTFVFPMAGYSKKIKTVAQIKEGATVAIPNDPTNX 143
 <a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=00128372&dopt=GenPept>P04846</a>    84  ANVFQHRPFLEQDNQAHGYKLVAVGNTFVFPMAGYSKKIKTVAQIKEGATVAIPNDPTNL 143
 <a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=00401469&dopt=GenPept>P28635</a>    83  ANAFQHKPYLDQQLKDRGYKLVAVGNTFVYPIAGYSKKIKSLDELQDGSQVAVPNDPTNL 142
 <a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=01170788&dopt=GenPept>Q08870</a>    77  LNAFQHKPYLDNQIQEKGYKLVPVGNTFVYPIAAYSKKIKSLAELKDGDTIAVPNDPTNL 136
 <a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=01170786&dopt=GenPept>Q08868</a>    90  ANAFQHKPYLDKDSQSKGLNLVIVGNTFVYPLAGYSKKVKNVSELAEGAVIAVPNDPSNL 150
-                                  \                                       
+                                  \
                                   |
-                                  N                                       
+                                  N
 <a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=01171732&dopt=GenPept>P31728</a>    86  ANAMQHKPYLDEDAKAKNLNLVIVGNTFVYPLAGYSKKIKNVNELQDGAKVVVPNDPTNR 146
-                                  \                                       
+                                  \
                                   |
-                                  N                                       
+                                  N
 <a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=01170787&dopt=GenPept>Q08869</a>    90  ANAFQTVPYLEQEVKDRGYKLAIIGNTLVWPIAAYSKKIKNISELKDGATVAIPNNASNT 149
 <a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=01724004&dopt=GenPept>P54594</a>    77  ANAFQTISYFQSFTEKYKLNLAPLGTTYITPMGIYSKRYERIRDISRGAVVSVPDKAFDF 136
 
@@ -90,17 +90,17 @@ blast_tmp 204 TTYIQQTGLSPVHDSVFIEDKNSPYVNILVAREDNKNAENVKEFLQSYQSPEVAKAAETI 263
 <a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=01171732&dopt=GenPept>P31728</a>    205 NTYAGQVGLNAQDDGVFVEDKDSPYVNIIVSRTDNKDSKAVQDFIKSYQTEEVYQEAQKH 264
 <a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=01170787&dopt=GenPept>Q08869</a>    208 NTYAGQAGLSPDKDGIIVESKDSPYVNLVVSREDNKDDPRLQTFVKSFQTEEVFQEALKL 267
 <a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=01724004&dopt=GenPept>P54594</a>    192 PSEAKKAGLNPKKHTLKSGGMSEEEMNLIVVRAEDQDREALQTILELYQADDTAAFIEKE 252
-                                  \                                       
+                                  \
                                   |
-                                  L                                       
+                                  L
 <a name = 1706875></a><a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=01706875&dopt=GenPept>P51887</a>    32    YMRQSRMSSYNYMPYYEDENSPYVYSYVPAPDTE-AEPVPEAQQSWQCPQ         82
-                                                            \             
+                                                            \
                                                             |
-                                                           AS             
+                                                           AS
 <a name = 1172496></a><a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=01172496&dopt=GenPept>P42499</a>    690        GKSLVHDLVFKESEET--VNKLLSREEDKNVEKMRTFGKEHQN----KAAFLV 737
-                                                     \                    
+                                                     \
                                                      |
-                                                     T                    
+                                                     T
 
 blast_tmp 264 FNGGAVPGW 272
 <a href=http://www.ncbi.nlm.nih.gov:80/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=00128372&dopt=GenPept>P04846</a>    264 FNGGAVPGW 272
@@ -118,13 +118,13 @@ blast_tmp 264 FNGGAVPGW 272
     Posted date:  Dec 28, 1999  4:33 PM
   Number of letters in database: 29,652,561
   Number of sequences in database:  82,258
-  
+
 Lambda     K      H
-   0.313    0.134    0.381 
+   0.313    0.134    0.381
 
 Gapped
 Lambda     K      H
-   0.270   0.0470    0.230 
+   0.270   0.0470    0.230
 
 
 Matrix: BLOSUM62

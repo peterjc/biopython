@@ -23,84 +23,84 @@
 # Similarity:  2301/3653 (63.0%)
 # Gaps:        1202/3653 (32.9%)
 # Score: 10155.0
-# 
+#
 #
 #=======================================
 
 asis               1 TATTTTTTGGATTTTTTTCTAGATTTTCTAGGTTATTTAAACCGTTTTTT     50
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis              51 TTTAATTTAGTGTTTGAGTTTTGACAGGTCTCCACTTTGGGGGCTCCATC    100
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             101 GCAAGGAAATTAGAATTCTTATACTTGGTTCTCTTTCCCAGGGACTCCAA    150
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             151 GGATCTTTTCATTAGTTTGGATTTTGGTGTTTTCTTTAATTTTGTTAAGA    200
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             201 AACAAATCCTTTCTAGAGTTTTTTCTAGCATTATGTTTTTTTTTCTCCTT    250
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             251 ATCTAAGGGGGTTTGTCGAGGTTTCTTAAATCTTTTTTTCTCTGGGTTTT    300
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             301 AAAATTGTTTAAATTTTTTTGACCGAGGGGTTGGGGTGGTTTTCTCATGA    350
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             351 TAACAGGGGCTGGTGCTTTAGATCCTACCTCTACTGACCCGGGGTCTGCT    400
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             401 ACTGTGGCTTCTGATGAAGATCCACAGTATGCGCCTACGGAARCTCGGCA    450
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             451 GTTTGGTGTTCGAAATCCAGCCCCTCGAATTAATACTCTTGTGCAGGTGG    500
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             501 TTGACGAGCGCGGTATCGAATTGCAAAATTTGGGGCGGGACCCCGCTGTT    550
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             551 CCGCCTGTTGCTCCGGGGGGGGCAGGTTAATCCTCCAGTCGTCTCCTTTT    600
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             601 GGGGGCGTCTTTGACGGGGGTTTAAATCTTTCTTTGGTTGTGGATAGGAT    650
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             651 TTTTTTTCTAATATCGATCCTACCTGTTTTGGCGGGGCTATTACTTTGTT    700
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             701 ACTTTTGACCGAAATTTTAATGGAAATTTCTTTGATTCAAATGAATCCCT    750
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             751 TAGTTTTCCAACACTTTTTTTTGGTTTTTTTAGGGATAGTCTACGCTGTG    800
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             801 GTTAGGTTTGGTTTTATTGGGGGCTTGGTTTGGGCCCACCCCAAATAGGG    850
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             851 AGTGGGGGTATGACCTCAGATAGACGAGCTTATTTTAGGGCGGCGACTAT    900
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             901 AATTATTTCGTTTCCTACAAGGATTAAAGTTTTTTCTTTTACTGTGGGAG    950
-                                                                       
+
 asis               0 --------------------------------------------------      0
 
 asis             951 GGGGTTTGGTATTAAGAAACGCTAGTCCGGATGTGGCTCTCCATGATACT   1000
@@ -108,7 +108,7 @@ asis             951 GGGGTTTGGTATTAAGAAACGCTAGTCCGGATGTGGCTCTCCATGATACT   1000
 asis               1 --------TTATTAA--------------------------------TCT     10
 
 asis            1001 TATTGT------GTAGTAGCTCATTTTCATTATGTTCTTCGAATGGGAGC   1044
-                     |||.||      |||..|..||  ||||.||||.||.|    ||.|    
+                     |||.||      |||..|..||  ||||.||||.||.|    ||.|
 asis              11 TATGGTTTTGCCGTAAAATTTC--TTTCTTTATTTTTT----ATTG----     50
 
 asis            1045 AGTCATTGGTATTTTTTTGGTTTTTTTTT------GAAATTTTTAGGTTA   1088
@@ -116,7 +116,7 @@ asis            1045 AGTCATTGGTATTTTTTTGGTTTTTTTTT------GAAATTTTTAGGTTA   1088
 asis              51 -----TTAGGATTTTGTTGATTTTATTTTTCTCAAG-AATTTTTAGGTCA     94
 
 asis            1089 TTTAGACC-----ATTTTTTTTT--GTTTCGCTAATTAGAATTTTATTAG   1131
-                     .|||||||     ||||||||.|  ||.|      |||.|.|||||||| 
+                     .|||||||     ||||||||.|  ||.|      |||.|.||||||||
 asis              95 ATTAGACCGGCTTATTTTTTTGTCAGTGT------TTAAAGTTTTATTA-    137
 
 asis            1132 CCTTTGGTTTTTTTTTATTTTT----TGGGGTTAAGACAAGGTGTCGT-T   1176
@@ -124,7 +124,7 @@ asis            1132 CCTTTGGTTTTTTTTTATTTTT----TGGGGTTAAGACAAGGTGTCGT-T   1176
 asis             138 ----------------ATTTTTGGGGGGGGGGGGAGACGGGGTGTTATCT    171
 
 asis            1177 GAATTAGTTTAGCAAAATACTGCTTAAGGTAGGCTATA------------   1214
-                     ||||||||||             ||  ||.||.||.||            
+                     ||||||||||             ||  ||.||.||.||
 asis             172 GAATTAGTTT-------------TT--GGGAGTCTCTAGACATCTCATGG    206
 
 asis            1215 ---------GGATCTACCTTTTATCTTTCTAAT--CTTTT----GTTTTA   1249
@@ -168,11 +168,11 @@ asis            1628 GTTTCTGAATTCCTCTTTTCTTTTATTCTGTTTTGAGCTTATTTTTCTTG   1677
 asis             632 GTTTGTGAATGCCTCTTTT-TTTTATTCTGTTTTGAGCTTATTTTTCTTG    680
 
 asis            1678 TTAGCTATTACGTAGGCATAGGGCAAATAATTTTTTTTTCTG---CTCT-   1723
-                     ||..||||||||||||.||||||||||||||||||||||| |   |||| 
+                     ||..||||||||||||.||||||||||||||||||||||| |   ||||
 asis             681 TTTACTATTACGTAGGTATAGGGCAAATAATTTTTTTTTC-GCGTCTCTT    729
 
 asis            1724 --------CATTA-------TTCCTTCTCC---CTGCTTGTTTCACCCT-   1754
-                             |||||       ||..||| ||   ||.|||.|.||||||| 
+                             |||||       ||..||| ||   ||.|||.|.|||||||
 asis             730 GGCATGCCCATTACTCTAGTTTTATTC-CCGGGCTTCTTCTCTCACCCTA    778
 
 asis            1755 GTGGGCTCTTTGAGCCC-CACT-AAGTGAGCGGGGCTCCTGCTTCCGCTC   1802
@@ -216,7 +216,7 @@ asis            2202 TTATAGTTTATCAGTTGAGAGGAATTTAGTATAAGAAGGCCCATTGGGGC   2251
 asis            1215 TTATAGTCTATCAGTTGAGAGGAATTTAGTATAAGAAAGCCTGTCAGGGC   1264
 
 asis            2252 TCTTGTCTTATCCAAGAACTGGTAA-GATTTAATTCT----ACCGGGA--   2294
-                     |||||.||||||||||||||||||| |||    ||||    |..||||  
+                     |||||.||||||||||||||||||| |||    ||||    |..||||
 asis            1265 TCTTGCCTTATCCAAGAACTGGTAAGGAT----TTCTTGACAGAGGGACT   1310
 
 asis            2295 CGGTAGAAATCGGGCAGAGCATGATCTATTTCTTCGGGTATGGCTATAGG   2344

@@ -3,25 +3,25 @@
      Comments and suggestions are welcome.
      January 1, 2009 v.2
 
-     **THIS IS THE FORTHCOMING DTD FOR 2009 NOT CURRENTLY IN USE.  
-     SEE http://www.nlm.nih.gov/databases/dtd/nlmcommon_080101.dtd FOR THE 
-     NLMCOMMON DTD DATED JANUARY 1, 2008 CURRENTLY IN USE.**  
-             
-     This is the DTD for data elements that are shared 
-     among various applications at the U.S. National Library of Medicine. 
- 
-    NOTE:  The use of "Medline" in a DTD or element name does not mean the record 
-    represents a citation from a Medline-selected journal.  When the NLM DTDs and 
-    XML elements were first created, MEDLINE records were the only data exported. 
-    Now NLM exports citations other than MEDLINE records using these tools. To 
+     **THIS IS THE FORTHCOMING DTD FOR 2009 NOT CURRENTLY IN USE.
+     SEE http://www.nlm.nih.gov/databases/dtd/nlmcommon_080101.dtd FOR THE
+     NLMCOMMON DTD DATED JANUARY 1, 2008 CURRENTLY IN USE.**
+
+     This is the DTD for data elements that are shared
+     among various applications at the U.S. National Library of Medicine.
+
+    NOTE:  The use of "Medline" in a DTD or element name does not mean the record
+    represents a citation from a Medline-selected journal.  When the NLM DTDs and
+    XML elements were first created, MEDLINE records were the only data exported.
+    Now NLM exports citations other than MEDLINE records using these tools. To
     minimize unnecessary disruption to users of the data and tools, NLM has
     retained the original DTD and element names (e.g., NLMMedline DTD, MedlineTA,
-    MedlineJournalInfo)).       
+    MedlineJournalInfo)).
 
   * = 0 or more occurrences (optional element, repeatable)
   ? = 0 or 1 occurrences (optional element, at most 1)
   + = 1 or more occurrences (required element, repeatable)
-   | = choice, one or the other but not both 
+   | = choice, one or the other but not both
   no symbol = required element
 -->
 <!--    NLMCommon.dtd
@@ -31,43 +31,43 @@
 -->
 <!-- ====================================================================== -->
 <!--   Revision Notes Section
-    
+
     The following changes were made in the nlmcommon_090101.dtd:
-    
+
      a. Added ValidYN attribute to Investigator element
-            
+
      b. Moved OtherAbstract element from nlmsharedcatcit to nlmcommon dtd
 
      c. Added OtherAbstract element to NCBIArticle element
 
      d. Moved entity Type from nlmmedlinecitation to nlmcommon dtd
- 
-     e. Added Publisher value to entity Type 
-     
-     f. Deleted Consumer value from entity Type 
+
+     e. Added Publisher value to entity Type
+
+     f. Deleted Consumer value from entity Type
 
      g. Added Country element to Grant element
-  
+
      h. FOR V.2: Changed Country value to GrantCountry.Ref in Grant element
- 
-                
+
+
      Historic Revision notes for previous versions of NLMCommon DTD
      See:
      http://www.nlm.nih.gov/databases/dtd/history_dtd_nlmcommon.html
 -->
 <!-- ================================================================= -->
-<!--     internal DTD entities             -->   
+<!--     internal DTD entities             -->
 <!ENTITY % Abstract "(AbstractText,CopyrightInformation?)">
 <!ENTITY % personal.name "(LastName,(ForeName|(FirstName,MiddleName?))?,
                            Initials?,Suffix?)">
 <!ENTITY % author.name "(%personal.name; | CollectiveName)">
 <!ENTITY % data.template "#PCDATA">
 <!ENTITY % ImprintType "(Current | Original)">
-<!ENTITY % IndexingStatus "(Ceased-publication |  Continued-by-another-indexed-title | 
+<!ENTITY % IndexingStatus "(Ceased-publication |  Continued-by-another-indexed-title |
                             Currently-indexed |  Currently-indexed-Title-changed |
-                            Date-range-of-indexed-citations-unspecified | 
+                            Date-range-of-indexed-citations-unspecified |
                             Deselected) #IMPLIED">
-<!ENTITY % IndexingTreatment "(Unknown | Full | Selective | ReferencedIn | 
+<!ENTITY % IndexingTreatment "(Unknown | Full | Selective | ReferencedIn |
                                ReferencedInNoDetails) #IMPLIED">
 <!ENTITY % normal.date "(Year,Month,Day,(Hour,(Minute,Second?)?)?)">
 <!ENTITY % pub.date "((Year, ((Month, Day?) | Season)?) | MedlineDate)">
@@ -80,7 +80,7 @@
 <!-- This is the top level element for Article -->
 <!ELEMENT Article ((Journal | Book), %ArticleTitle.Ref;,
                   ((Pagination, ELocationID*) | ELocationID+),
-                   Abstract?, Affiliation?, AuthorList?, Language+, DataBankList?, 
+                   Abstract?, Affiliation?, AuthorList?, Language+, DataBankList?,
                     GrantList?, %PublicationType.Ref;, VernacularTitle?,
                     ArticleDate*)>
 <!-- ================================================================= -->
@@ -140,7 +140,7 @@
 <!ELEMENT FirstName (#PCDATA)>
 <!ELEMENT ForeName (#PCDATA)>
 <!ELEMENT Frequency (#PCDATA)>
-<!ATTLIST Frequency 
+<!ATTLIST Frequency
           FrequencyType (Current | Former) "Current"
 >
 <!ELEMENT Grant (%GrantID.Ref;, %Acronym.Ref;, %Agency.Ref;, %GrantCountry.Ref;)>
@@ -189,7 +189,7 @@
 <!ELEMENT OtherInformation (#PCDATA)>
 <!ELEMENT Pagination ((StartPage, EndPage?, MedlinePgn?) | MedlinePgn)>
 <!ELEMENT Place (#PCDATA)>
-<!ATTLIST Place  
+<!ATTLIST Place
        ImprintType %ImprintType; "Current"
 >
 <!ELEMENT PlaceCode (#PCDATA)>
@@ -198,7 +198,7 @@
 <!ELEMENT PubDate (%pub.date;)>
 <!ELEMENT PublicationEndYear (#PCDATA)>
 <!ELEMENT PublicationFirstYear (#PCDATA)>
-<!ELEMENT PublicationInfo (Country?, PlaceCode?, Imprint*, Place*, 
+<!ELEMENT PublicationInfo (Country?, PlaceCode?, Imprint*, Place*,
                            Publisher*, DateIssued*,  ProjectedPublicationDate?,
                            PublicationFirstYear?, PublicationEndYear?, Edition?,
                            DatesOfSerialPublication*, Frequency*)>

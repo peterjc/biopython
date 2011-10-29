@@ -1,8 +1,8 @@
 BLASTP 2.0.11 [Jan-20-2000]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -22,7 +22,7 @@ gi|3024946|sp|Q58368|Y958_METJA HYPOTHETICAL PROTEIN MJ0958 PRE...    29  3.4
 
 >gi|120291|sp|P21297|FLBT_CAUCR FLBT PROTEIN
            Length = 141
-           
+
  Score =  256 bits (646), Expect = 2e-68
  Identities = 127/127 (100%), Positives = 127/127 (100%)
 
@@ -42,7 +42,7 @@ Sbjct: 121 EYEDERL 127
 >gi|3024946|sp|Q58368|Y958_METJA HYPOTHETICAL PROTEIN MJ0958
            PRECURSOR
            Length = 426
-           
+
  Score = 29.3 bits (64), Expect = 3.4
  Identities = 15/47 (31%), Positives = 23/47 (48%)
 
@@ -55,13 +55,13 @@ Sbjct: 169 ILVLINNTNITELKKFEDDDYYTTFQHYIYQPIFIFTTYDSKAKKFY 215
     Posted date:  Feb 2, 2000  9:39 AM
   Number of letters in database: 29,652,561
   Number of sequences in database:  82,258
-  
+
 Lambda     K      H
-   0.323    0.139    0.392 
+   0.323    0.139    0.392
 
 Gapped
 Lambda     K      H
-   0.270   0.0470    0.230 
+   0.270   0.0470    0.230
 
 
 Matrix: BLOSUM62

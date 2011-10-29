@@ -315,7 +315,7 @@ Use Bio.SeqUtils instead.
 Bio.SVM
 =======
 Deprecated as of Release 1.30, removed in Release 1.42.
-The Support Vector Machine code in Biopython has been superceeded by a 
+The Support Vector Machine code in Biopython has been superceeded by a
 more robust (and maintained) SVM library, which includes a python
 interface. We recommend using LIBSVM:
 
@@ -351,4 +351,4 @@ and 'back_transcribe' were deprecated in Release 1.49, and removed in Release
 Bio.Motif
 =========
 CompareAceParser and CompareAceConsumer from Bio.Motif.Parsers.AlignAce were
-deprecated in Release 1.53. 
+deprecated in Release 1.53.

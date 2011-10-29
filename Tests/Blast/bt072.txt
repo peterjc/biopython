@@ -16,19 +16,19 @@ QBlastInfoEnd
 <pre>
 <b><a href="http://www.ncbi.nlm.nih.gov/htbin-
 post/Entrez/query?uid=9254694&form=6&db=m&Dopt=r">Reference</a>:</b>
-Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Altschul, Stephen F., Thomas L. Madden, Alejandro A. Sch&auml;ffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 <p>
 RID: 1032425806-013487-3242
 <p>
-<b>Query=</b> 
+<b>Query=</b>
          (577 letters)
 
 <p>
 <b>Database:</b> All non-redundant GenBank CDS
-translations+PDB+SwissProt+PIR+PRF 
+translations+PDB+SwissProt+PIR+PRF
            1,171,253 sequences; 370,891,306 total letters
 
 <p> <p>If you have any problems or questions with the results of this search <br>please refer to the <b><a href=http://www.ncbi.nlm.nih.gov/blast/blast_FAQs.html>BLAST FAQs</a></b><br><p>
@@ -46,61 +46,61 @@ Sequences producing significant alignments:                      (bits) Value
 <a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=18397483&dopt=GenPept" >ref|NP_566274.1|</a>  (NM_111489) putative RING zinc finger prot...   <a href = #18397483> 38</a>   0.067
 <a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21928149&dopt=GenPept" >gb|AAM78102.1|</a>  (AY125510) AT5g19080/T16G12_120 [Arabidopsis...   <a href = #21928149> 38</a>   0.067
 <a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=18398633&dopt=GenPept" >ref|NP_566356.1|</a>  (NM_111812) expressed protein; protein id:...   <a href = #18398633> 38</a>   0.087
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15239642&dopt=GenPept" >ref|NP_197409.1|</a>  (NM_121913) unknown protein; protein id: A...   <a href = #15239642> 37</a>   0.11 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=17551576&dopt=GenPept" >ref|NP_510817.1|</a>  (NM_078416) F10D7.5b.p [Caenorhabditis ele...   <a href = #17551576> 37</a>   0.19 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=19225030&dopt=GenPept" >gb|AAL86506.1|AC099040_10</a>  (AC099040) putative hydroxyprolin...   <a href = #19225030> 37</a>   0.19 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21913050&dopt=GenPept" >gb|AAM81093.1|U40945_8</a>  (U40945) Hypothetical protein F10D7....   <a href = #21913050> 37</a>   0.19 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=17551578&dopt=GenPept" >ref|NP_510818.1|</a>  (NM_078417) D. melanogaster finger protein...   <a href = #17551578> 37</a>   0.19 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21913047&dopt=GenPept" >gb|AAM81090.1|U40945_5</a>  (U40945) Hypothetical protein F10D7....   <a href = #21913047> 37</a>   0.19 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=07498826&dopt=GenPept" >pir||T16028</a>  hypothetical protein F10D7.5 - Caenorhabditis e...   <a href = #7498826> 37</a>   0.19 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15240979&dopt=GenPept" >ref|NP_195765.1|</a>  (NM_120223) putative protein; protein id: ...   <a href = #15240979> 36</a>   0.25 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=07292914&dopt=GenPept" >gb|AAF48305.1|</a>  (AE003493) CG9941-PA [Drosophila melanogaster]    <a href = #7292914> 35</a>   0.43 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21618140&dopt=GenPept" >gb|AAM67190.1|</a>  (AY088884) putative RING zinc finger protein...   <a href = #21618140> 35</a>   0.43 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15242675&dopt=GenPept" >ref|NP_195940.1|</a>  (NM_120398) expressed protein; protein id:...   <a href = #15242675> 35</a>   0.43 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=17545794&dopt=GenPept" >ref|NP_519196.1|</a>  (NC_003295) PROBABLE TWO-COMPONENT SYSTEM ...   <a href = #17545794> 35</a>   0.74 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21292673&dopt=GenPept" >gb|EAA04818.1|</a>  (AAAB01008810) agCP6745 [Anopheles gambiae s...   <a href = #21292673> 35</a>   0.74 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=22999586&dopt=GenPept" >gb|ZP_00043559.1|</a>  (NZ_AAAN01000154) hypothetical protein [M...   <a href = #22999586> 35</a>   0.74 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15241556&dopt=GenPept" >ref|NP_199282.1|</a>  (NM_123836) putative protein; protein id: ...   <a href = #15241556> 35</a>   0.74 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15231808&dopt=GenPept" >ref|NP_190909.1|</a>  (NM_115201) putative protein; protein id: ...   <a href = #15231808> 34</a>   0.96 
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=03043612&dopt=GenPept" >dbj|BAA25470.1|</a>  (AB011116) KIAA0544 protein [Homo sapiens]       <a href = #3043612> 34</a>   1.3  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=17550346&dopt=GenPept" >ref|NP_510385.1|</a>  (NM_077984) Zinc finger, C3HC4 type (RING ...   <a href = #17550346> 34</a>   1.3  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21356667&dopt=GenPept" >ref|NP_649187.1|</a>  (NM_140930) CG7298 gene product [Drosophil...   <a href = #21356667> 33</a>   1.6  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=23093055&dopt=GenPept" >gb|AAF49059.2|</a>  (AE003514) CG7298-PA [Drosophila melanogaster]    <a href = #23093055> 33</a>   1.6  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=20891615&dopt=GenPept" >ref|XP_148077.1|</a>  (XM_148077) RIKEN cDNA 2610042J20 [Mus mus...   <a href = #20891615> 33</a>   1.6  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=23002453&dopt=GenPept" >gb|ZP_00046129.1|</a>  (NZ_AAAB01000003) hypothetical protein [L...   <a href = #23002453> 33</a>   1.6  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=12848068&dopt=GenPept" >dbj|BAB27816.1|</a>  (AK011747) Zinc finger, C3HC4 type (RING fi...   <a href = #12848068> 33</a>   1.6  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=18403707&dopt=GenPept" >ref|NP_566724.1|</a>  (NM_113229) auxin-regulated protein; prote...   <a href = #18403707> 33</a>   2.1  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21593715&dopt=GenPept" >gb|AAM65682.1|</a>  (AY088137) unknown [Arabidopsis thaliana]         <a href = #21593715> 33</a>   2.1  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=07939538&dopt=GenPept" >dbj|BAA95741.1|</a>  (AB025608) contains similarity to ankyrin l...   <a href = #7939538> 33</a>   2.1  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15242304&dopt=GenPept" >ref|NP_199323.1|</a>  (NM_123878) putative protein; protein id: ...   <a href = #15242304> 33</a>   2.1  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=22331278&dopt=GenPept" >ref|NP_683586.1|</a>  (NM_148744) auxin-regulated protein; prote...   <a href = #22331278> 33</a>   2.1  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=18414200&dopt=GenPept" >ref|NP_567428.1|</a>  (NM_117514) Expressed protein; protein id:...   <a href = #18414200> 33</a>   2.8  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15387746&dopt=GenPept" >emb|CAC59873.1|</a>  (AL160371) probable heat shock protein hslu...   <a href = #15387746> 33</a>   2.8  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=14587218&dopt=GenPept" >dbj|BAB61152.1|</a>  (AP003199) contains ESTs AU068079(C11823),A...   <a href = #14587218> 33</a>   2.8  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15224462&dopt=GenPept" >ref|NP_181354.1|</a>  (NM_129376) unknown protein; protein id: A...   <a href = #15224462> 32</a>   3.7  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=22296435&dopt=GenPept" >dbj|BAC10202.1|</a>  (AP004395) contains ESTs AU055804(S20063),A...   <a href = #22296435> 32</a>   4.8  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=19922258&dopt=GenPept" >ref|NP_610973.1|</a>  (NM_137129) CG12863 gene product [Drosophi...   <a href = #19922258> 32</a>   4.8  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21627199&dopt=GenPept" >gb|AAF58228.2|</a>  (AE003814) CG12863-PA [Drosophila melanogaster]   <a href = #21627199> 32</a>   4.8  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15128197&dopt=GenPept" >gb|AAK84420.1|AF400063_1</a>  (AF400063) neuralized 1 [Mus muscu...   <a href = #15128197> 32</a>   6.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=10946688&dopt=GenPept" >ref|NP_067335.1|</a>  (NM_021360) neuralized homolog (Drosophila...   <a href = #10946688> 32</a>   6.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15226959&dopt=GenPept" >ref|NP_181076.1|</a>  (NM_129085) unknown protein; protein id: A...   <a href = #15226959> 32</a>   6.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=17231254&dopt=GenPept" >ref|NP_487802.1|</a>  (NC_003272) oligopeptide binding protein o...   <a href = #17231254> 32</a>   6.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15320749&dopt=GenPept" >ref|NP_203261.1|</a>  (NC_003083) IAP-4 [Epiphyas postvittana nu...   <a href = #15320749> 32</a>   6.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=22531056&dopt=GenPept" >gb|AAM97032.1|</a>  (AY136366) unknown protein [Arabidopsis thal...   <a href = #22531056> 32</a>   6.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=20890044&dopt=GenPept" >ref|XP_123433.1|</a>  (XM_123433) similar to neuralized homolog ...   <a href = #20890044> 32</a>   6.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15420883&dopt=GenPept" >gb|AAK97495.1|AF401228_1</a>  (AF401228) neuralized [Mus musculus]    <a href = #15420883> 32</a>   6.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=18590406&dopt=GenPept" >ref|XP_085974.1|</a>  (XM_085974) similar to zinc finger protein...   <a href = #18590406> 32</a>   6.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=07489906&dopt=GenPept" >pir||S68824</a>  rngB protein, cytosolic - slime mold (Dictyoste...   <a href = #7489906> 32</a>   6.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=06635096&dopt=GenPept" >emb|CAB64571.1|</a>  (AL135898) hypothetical protein L673.04 [Le...   <a href = #6635096> 32</a>   6.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=14583262&dopt=GenPept" >ref|NP_127506.1|</a>  (NC_002532) replicase ORF1ab polyprotein [...   <a href = #14583262> 31</a>   8.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15221532&dopt=GenPept" >ref|NP_174371.1|</a>  (NM_102823) hypothetical protein; protein ...   <a href = #15221532> 31</a>   8.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=00133455&dopt=GenPept" >sp|P19811|RPOA_EAV</a>  POL polyprotein (ORF1A/1B) [Contains: RN...   <a href = #133455> 31</a>   8.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=22047436&dopt=GenPept" >ref|XP_094260.3|</a>  (XM_094260) similar to neuralized [Homo sa...   <a href = #22047436> 31</a>   8.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21617976&dopt=GenPept" >gb|AAM67026.1|</a>  (AY088707) unknown [Arabidopsis thaliana]         <a href = #21617976> 31</a>   8.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=18448645&dopt=GenPept" >gb|AAL69890.1|AF419159_1</a>  (AF419159) neuralized [Xenopus lae...   <a href = #18448645> 31</a>   8.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=18399792&dopt=GenPept" >ref|NP_566438.1|</a>  (NM_112128) expressed protein; protein id:...   <a href = #18399792> 31</a>   8.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=20468614&dopt=GenPept" >ref|XP_116162.1|</a>  (XM_116162) similar to evidence:NAS~hypoth...   <a href = #20468614> 31</a>   8.2  
-<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=05732038&dopt=GenPept" >gb|AAC32390.3|</a>  (AF082873) histidine kinase [Herbaspirillum ...   <a href = #5732038> 31</a>   8.2  
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15239642&dopt=GenPept" >ref|NP_197409.1|</a>  (NM_121913) unknown protein; protein id: A...   <a href = #15239642> 37</a>   0.11
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=17551576&dopt=GenPept" >ref|NP_510817.1|</a>  (NM_078416) F10D7.5b.p [Caenorhabditis ele...   <a href = #17551576> 37</a>   0.19
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=19225030&dopt=GenPept" >gb|AAL86506.1|AC099040_10</a>  (AC099040) putative hydroxyprolin...   <a href = #19225030> 37</a>   0.19
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21913050&dopt=GenPept" >gb|AAM81093.1|U40945_8</a>  (U40945) Hypothetical protein F10D7....   <a href = #21913050> 37</a>   0.19
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=17551578&dopt=GenPept" >ref|NP_510818.1|</a>  (NM_078417) D. melanogaster finger protein...   <a href = #17551578> 37</a>   0.19
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21913047&dopt=GenPept" >gb|AAM81090.1|U40945_5</a>  (U40945) Hypothetical protein F10D7....   <a href = #21913047> 37</a>   0.19
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=07498826&dopt=GenPept" >pir||T16028</a>  hypothetical protein F10D7.5 - Caenorhabditis e...   <a href = #7498826> 37</a>   0.19
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15240979&dopt=GenPept" >ref|NP_195765.1|</a>  (NM_120223) putative protein; protein id: ...   <a href = #15240979> 36</a>   0.25
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=07292914&dopt=GenPept" >gb|AAF48305.1|</a>  (AE003493) CG9941-PA [Drosophila melanogaster]    <a href = #7292914> 35</a>   0.43
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21618140&dopt=GenPept" >gb|AAM67190.1|</a>  (AY088884) putative RING zinc finger protein...   <a href = #21618140> 35</a>   0.43
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15242675&dopt=GenPept" >ref|NP_195940.1|</a>  (NM_120398) expressed protein; protein id:...   <a href = #15242675> 35</a>   0.43
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=17545794&dopt=GenPept" >ref|NP_519196.1|</a>  (NC_003295) PROBABLE TWO-COMPONENT SYSTEM ...   <a href = #17545794> 35</a>   0.74
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21292673&dopt=GenPept" >gb|EAA04818.1|</a>  (AAAB01008810) agCP6745 [Anopheles gambiae s...   <a href = #21292673> 35</a>   0.74
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=22999586&dopt=GenPept" >gb|ZP_00043559.1|</a>  (NZ_AAAN01000154) hypothetical protein [M...   <a href = #22999586> 35</a>   0.74
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15241556&dopt=GenPept" >ref|NP_199282.1|</a>  (NM_123836) putative protein; protein id: ...   <a href = #15241556> 35</a>   0.74
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15231808&dopt=GenPept" >ref|NP_190909.1|</a>  (NM_115201) putative protein; protein id: ...   <a href = #15231808> 34</a>   0.96
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=03043612&dopt=GenPept" >dbj|BAA25470.1|</a>  (AB011116) KIAA0544 protein [Homo sapiens]       <a href = #3043612> 34</a>   1.3
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=17550346&dopt=GenPept" >ref|NP_510385.1|</a>  (NM_077984) Zinc finger, C3HC4 type (RING ...   <a href = #17550346> 34</a>   1.3
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21356667&dopt=GenPept" >ref|NP_649187.1|</a>  (NM_140930) CG7298 gene product [Drosophil...   <a href = #21356667> 33</a>   1.6
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=23093055&dopt=GenPept" >gb|AAF49059.2|</a>  (AE003514) CG7298-PA [Drosophila melanogaster]    <a href = #23093055> 33</a>   1.6
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=20891615&dopt=GenPept" >ref|XP_148077.1|</a>  (XM_148077) RIKEN cDNA 2610042J20 [Mus mus...   <a href = #20891615> 33</a>   1.6
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=23002453&dopt=GenPept" >gb|ZP_00046129.1|</a>  (NZ_AAAB01000003) hypothetical protein [L...   <a href = #23002453> 33</a>   1.6
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=12848068&dopt=GenPept" >dbj|BAB27816.1|</a>  (AK011747) Zinc finger, C3HC4 type (RING fi...   <a href = #12848068> 33</a>   1.6
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=18403707&dopt=GenPept" >ref|NP_566724.1|</a>  (NM_113229) auxin-regulated protein; prote...   <a href = #18403707> 33</a>   2.1
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21593715&dopt=GenPept" >gb|AAM65682.1|</a>  (AY088137) unknown [Arabidopsis thaliana]         <a href = #21593715> 33</a>   2.1
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=07939538&dopt=GenPept" >dbj|BAA95741.1|</a>  (AB025608) contains similarity to ankyrin l...   <a href = #7939538> 33</a>   2.1
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15242304&dopt=GenPept" >ref|NP_199323.1|</a>  (NM_123878) putative protein; protein id: ...   <a href = #15242304> 33</a>   2.1
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=22331278&dopt=GenPept" >ref|NP_683586.1|</a>  (NM_148744) auxin-regulated protein; prote...   <a href = #22331278> 33</a>   2.1
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=18414200&dopt=GenPept" >ref|NP_567428.1|</a>  (NM_117514) Expressed protein; protein id:...   <a href = #18414200> 33</a>   2.8
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15387746&dopt=GenPept" >emb|CAC59873.1|</a>  (AL160371) probable heat shock protein hslu...   <a href = #15387746> 33</a>   2.8
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=14587218&dopt=GenPept" >dbj|BAB61152.1|</a>  (AP003199) contains ESTs AU068079(C11823),A...   <a href = #14587218> 33</a>   2.8
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15224462&dopt=GenPept" >ref|NP_181354.1|</a>  (NM_129376) unknown protein; protein id: A...   <a href = #15224462> 32</a>   3.7
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=22296435&dopt=GenPept" >dbj|BAC10202.1|</a>  (AP004395) contains ESTs AU055804(S20063),A...   <a href = #22296435> 32</a>   4.8
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=19922258&dopt=GenPept" >ref|NP_610973.1|</a>  (NM_137129) CG12863 gene product [Drosophi...   <a href = #19922258> 32</a>   4.8
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21627199&dopt=GenPept" >gb|AAF58228.2|</a>  (AE003814) CG12863-PA [Drosophila melanogaster]   <a href = #21627199> 32</a>   4.8
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15128197&dopt=GenPept" >gb|AAK84420.1|AF400063_1</a>  (AF400063) neuralized 1 [Mus muscu...   <a href = #15128197> 32</a>   6.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=10946688&dopt=GenPept" >ref|NP_067335.1|</a>  (NM_021360) neuralized homolog (Drosophila...   <a href = #10946688> 32</a>   6.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15226959&dopt=GenPept" >ref|NP_181076.1|</a>  (NM_129085) unknown protein; protein id: A...   <a href = #15226959> 32</a>   6.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=17231254&dopt=GenPept" >ref|NP_487802.1|</a>  (NC_003272) oligopeptide binding protein o...   <a href = #17231254> 32</a>   6.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15320749&dopt=GenPept" >ref|NP_203261.1|</a>  (NC_003083) IAP-4 [Epiphyas postvittana nu...   <a href = #15320749> 32</a>   6.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=22531056&dopt=GenPept" >gb|AAM97032.1|</a>  (AY136366) unknown protein [Arabidopsis thal...   <a href = #22531056> 32</a>   6.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=20890044&dopt=GenPept" >ref|XP_123433.1|</a>  (XM_123433) similar to neuralized homolog ...   <a href = #20890044> 32</a>   6.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15420883&dopt=GenPept" >gb|AAK97495.1|AF401228_1</a>  (AF401228) neuralized [Mus musculus]    <a href = #15420883> 32</a>   6.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=18590406&dopt=GenPept" >ref|XP_085974.1|</a>  (XM_085974) similar to zinc finger protein...   <a href = #18590406> 32</a>   6.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=07489906&dopt=GenPept" >pir||S68824</a>  rngB protein, cytosolic - slime mold (Dictyoste...   <a href = #7489906> 32</a>   6.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=06635096&dopt=GenPept" >emb|CAB64571.1|</a>  (AL135898) hypothetical protein L673.04 [Le...   <a href = #6635096> 32</a>   6.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=14583262&dopt=GenPept" >ref|NP_127506.1|</a>  (NC_002532) replicase ORF1ab polyprotein [...   <a href = #14583262> 31</a>   8.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=15221532&dopt=GenPept" >ref|NP_174371.1|</a>  (NM_102823) hypothetical protein; protein ...   <a href = #15221532> 31</a>   8.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=00133455&dopt=GenPept" >sp|P19811|RPOA_EAV</a>  POL polyprotein (ORF1A/1B) [Contains: RN...   <a href = #133455> 31</a>   8.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=22047436&dopt=GenPept" >ref|XP_094260.3|</a>  (XM_094260) similar to neuralized [Homo sa...   <a href = #22047436> 31</a>   8.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=21617976&dopt=GenPept" >gb|AAM67026.1|</a>  (AY088707) unknown [Arabidopsis thaliana]         <a href = #21617976> 31</a>   8.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=18448645&dopt=GenPept" >gb|AAL69890.1|AF419159_1</a>  (AF419159) neuralized [Xenopus lae...   <a href = #18448645> 31</a>   8.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=18399792&dopt=GenPept" >ref|NP_566438.1|</a>  (NM_112128) expressed protein; protein id:...   <a href = #18399792> 31</a>   8.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=20468614&dopt=GenPept" >ref|XP_116162.1|</a>  (XM_116162) similar to evidence:NAS~hypoth...   <a href = #20468614> 31</a>   8.2
+<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=Protein&list_uids=05732038&dopt=GenPept" >gb|AAC32390.3|</a>  (AF082873) histidine kinase [Herbaspirillum ...   <a href = #5732038> 31</a>   8.2
 </PRE>
 <CENTER><b><FONT color="green">Alignments</FONT></b></CENTER>
 </form>
@@ -140,7 +140,7 @@ Sbjct: 121 LEDETGQYQYQGQMEGSQSST 141
  Frame = +3
 
 Query: 168 LVLKAACEGCGSPSDLYGTSCKHTTLCSSCGKSMALSSARCLVCSAPITNLIREYNVRAN 347
-           L L  +C GCGS SDLYG+SC+H TLC  CG++MA + ++C  C   +T LIREYNVRA 
+           L L  +C GCGS SDLYG+SC+H TLC  CG++MA + ++C  C   +T LIREYNVRA
 Sbjct: 5   LQLNTSCVGCGSQSDLYGSSCRHMTLCLKCGRTMAQNKSKCHECGTVVTRLIREYNVRAA 64
 
 Query: 348 ATTDKSFSIGRFVTGLPPFSKKKSAENKWSLHKEGLQGRQIPENMREKYNRKPWILEDET 527
@@ -427,7 +427,7 @@ Sbjct: 246 CRHLCLCNSCADSLRYQANNCPICRAPFRALLQ 278
  Frame = +3
 
 Query: 150 AMGSADLVLKAACEGCGSPSDLYGTSCKHTTLCSSCGKSMALSSARCLVC-SAPITNLIR 326
-           AM   D  ++  C  CG+  D YG SC+   +CS+  +   L  A+C VC S P+     
+           AM   D  ++  C  CG+  D YG SC+   +CS+  +   L  A+C VC S P+
 Sbjct: 130 AMFLPDRFIRGTCPHCGAV-DQYGDSCE---VCSATYRPTELKEAKCAVCGSQPVEKSSE 185
 
 Query: 327 EY 332
@@ -700,7 +700,7 @@ Sbjct: 331 APSEAVCVPCGHVAGCISCLKEIENKKMGCPVCRANIDQVIKLYHV 376
  Frame = +3
 
 Query: 177 KAACEGCGSPSDLYGTSCKHTTLCSSCGKSMALSSARCLVCSAPITNLIREYNVRANATT 356
-           +A    C S     G +  HT L      S A ++A     +AP+TN   +  +R     
+           +A    C S     G +  HT L      S A ++A     +AP+TN   +  +R
 Sbjct: 3   RALSLSCRSSVAATGAASSHTLLTGVRCCSTAAAAAAAPAPAAPLTNPGSKTLIRDMRPR 62
 
 Query: 357 DKSFSIGRFVTGLPPFSKKKSA--ENKWSLHKEGLQGRQIPENMREKYNRKPWILEDETG 530
@@ -754,7 +754,7 @@ Sbjct: 80  PRDCFFLPCGHSVSCYECGTTMQEADGSCPICRRKMKKVKRIYTV 124
  Frame = +3
 
 Query: 156 GSADLVLKAACEGCGSPSDLYGTSCKHTTLCSSCGKSMALSSARCLVCSAPITNLIREYN 335
-           G+  + L A  EG   P       C H   C SC K +      C +C A I  +IR Y 
+           G+  + L A  EG   P       C H   C SC K +      C +C A I  +IR Y
 Sbjct: 436 GTCVICLDAPVEGACIP-------CGHMAGCMSCLKDIESKKWGCPICRAKINQIIRLYA 488
 
 Query: 336 V 338
@@ -773,7 +773,7 @@ Sbjct: 489 V 489
  Frame = +3
 
 Query: 186 CEGCGSPSDLYGTSCKHTTLCSSCGKSMALSSARCLVCSAPITNLIREYNVRANATTDKS 365
-           C  CG    + G + KH   C +C K   +  + C  C+    +    Y  + +      
+           C  CG    + G + KH   C +C K   +  + C  C+    +    Y  + +
 Sbjct: 69  CNRCGKCPSVNGQTYKHCESCDACVKPNYVHCSDCRRCTQKEGHNCSFYQTKQHCW--MC 126
 
 Query: 366 FSIGRFVTGLPPFSKKKSAENKWSLHKEGLQGRQIPENMREKYNRKPWILEDETGQ 533
@@ -791,7 +791,7 @@ Sbjct: 127 GQKGHIETKCPNFRKRKTNYTKGCLLCGKRNHREKRCSYRSKYFREQCFMNETTIQ 182
  Frame = +3
 
 Query: 186 CEGCGSPSDLYGTSCKHTTLCSSCGKSMALSSARCLVCSAPITNLIREYNVRANATTDKS 365
-           C  CG    + G + KH   C +C K   +  + C  C+    +    Y  + +      
+           C  CG    + G + KH   C +C K   +  + C  C+    +    Y  + +
 Sbjct: 310 CNRCGKCPSVNGQTYKHCESCDACVKPNYVHCSDCRRCTQKEGHNCSFYQTKQHCW--MC 367
 
 Query: 366 FSIGRFVTGLPPFSKKKSAENKWSLHKEGLQGRQIPENMREKYNRKPWILEDETGQ 533
@@ -945,13 +945,13 @@ Sbjct: 187 CHACGKAFNTSSTLCQHNRIHTGEKPFQCSQCGKSFSCSSHLTRHCRMCN 236
     Posted date:  Sep 19, 2002  1:01 AM
   Number of letters in database: 370,891,306
   Number of sequences in database:  1,171,253
-  
+
 Lambda     K      H
-   0.318    0.135    0.401 
+   0.318    0.135    0.401
 
 Gapped
 Lambda     K      H
-   0.267   0.0410    0.140 
+   0.267   0.0410    0.140
 
 
 Matrix: BLOSUM62

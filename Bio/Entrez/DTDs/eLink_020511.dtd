@@ -1,4 +1,4 @@
-<!--    
+<!--
                 This is the Current DTD for Entrez eLink
 $Id: eLink_020511.dtd,v 1.2 2008-05-23 16:45:57 mdehoon Exp $
 -->
@@ -8,11 +8,11 @@ $Id: eLink_020511.dtd,v 1.2 2008-05-23 16:45:57 mdehoon Exp $
 <!ELEMENT       Info            (#PCDATA)>	<!-- .+ -->
 
 <!ELEMENT	Id		(#PCDATA)>	<!-- \d+ -->
-<!ATTLIST	Id		
-			HasLinkOut  (Y|N)	#IMPLIED	
+<!ATTLIST	Id
+			HasLinkOut  (Y|N)	#IMPLIED
 			HasNeighbor (Y|N)	#IMPLIED
 			>
-			
+
 <!ELEMENT	Score		(#PCDATA)>	<!-- \d+ -->
 <!ELEMENT	DbFrom		(#PCDATA)>	<!-- \S+ -->
 <!ELEMENT	DbTo		(#PCDATA)>	<!-- \S+ -->
@@ -49,7 +49,7 @@ $Id: eLink_020511.dtd,v 1.2 2008-05-23 16:45:57 mdehoon Exp $
 				LinkName?,
                                 SubjectType*,
                                 Attribute*,
-                               Provider			
+                               Provider
 			)>
 
 <!ELEMENT	IdUrlSet	(Id,(ObjUrl+|Info))>
@@ -61,7 +61,7 @@ $Id: eLink_020511.dtd,v 1.2 2008-05-23 16:45:57 mdehoon Exp $
 <!ELEMENT	IdCheckList	(Id*,IdLinkSet*,ERROR?)>
 <!-- This line was modified by the Biopython team -->
 <!ELEMENT	IdLinkSet	(Id,LinkInfo*)>
-<!ELEMENT	LinkInfo	(DbTo,LinkName,MenuTag,HtmlTag,Priority)> 
+<!ELEMENT	LinkInfo	(DbTo,LinkName,MenuTag,HtmlTag,Priority)>
 <!ELEMENT	MenuTag		(#PCDATA)>
 <!ELEMENT	HtmlTag		(#PCDATA)>
 <!ELEMENT	Priority	(#PCDATA)>
@@ -69,8 +69,8 @@ $Id: eLink_020511.dtd,v 1.2 2008-05-23 16:45:57 mdehoon Exp $
 
 
 <!-- Common -->
-<!ELEMENT	LinkSet		(DbFrom, 
-				((IdList?, LinkSetDb*) | IdUrlList | IdCheckList | ERROR)  
+<!ELEMENT	LinkSet		(DbFrom,
+				((IdList?, LinkSetDb*) | IdUrlList | IdCheckList | ERROR)
 				)>
 
 <!ELEMENT	eLinkResult	(LinkSet*, ERROR?)>

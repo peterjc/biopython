@@ -1,8 +1,8 @@
 BLASTP 2.0.10 [Aug-26-1999]
 
 
-Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
-Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
 "Gapped BLAST and PSI-BLAST: a new generation of protein database search
 programs",  Nucleic Acids Res. 25:3389-3402.
 
@@ -28,7 +28,7 @@ gi|3334489|sp|P15398|RPA1_SCHPO DNA-DIRECTED RNA POLYMERASE I 1...    29  7.4
 CONVERGED!
 >gi|1174726|sp|P12921|TMRB_BACSU TUNICAMYCIN RESISTANCE PROTEIN
            Length = 197
-           
+
  Score =  402 bits (1021), Expect = e-112
  Identities = 197/197 (100%), Positives = 197/197 (100%)
 
@@ -52,12 +52,12 @@ Sbjct: 181 RRFADRLMVKLNHIRIK 197
 >gi|1352934|sp|P47169|YJ9F_YEAST HYPOTHETICAL 161.2 KD PROTEIN IN
            NMD5-HOM6 INTERGENIC REGION
            Length = 1442
-           
+
  Score = 30.1 bits (66), Expect = 3.3
  Identities = 23/70 (32%), Positives = 35/70 (49%), Gaps = 10/70 (14%)
 
 Query: 107 TLMASKETLLKR--------LRTRAEGKNSWAAKQIDRCVEGLSSPIFEDHIQTDNLSIQ 158
-           TL+  K+  L R          TR + K S AA   D+ +EGLS P    +  +D  +  
+           TL+  K+  L R          TR + K S AA   D+ +EGLS P    +  +D  +
 Sbjct: 637 TLLTRKDPSLSRNLKQSAGDALTRKQEKRSKAA--FDQLLEGLSGPPLHVYYASDGGNAA 694
 
 Query: 159 DVAENIAARA 168
@@ -67,7 +67,7 @@ Sbjct: 695 NLAKRLAARA 704
 
 >gi|3915741|sp|P04407|KITH_HSV23 THYMIDINE KINASE
           Length = 376
-          
+
  Score = 29.0 bits (63), Expect = 7.4
  Identities = 15/37 (40%), Positives = 22/37 (58%), Gaps = 2/37 (5%)
 
@@ -79,7 +79,7 @@ Sbjct: 52 VYIDGPHGVGKTTTSAQLMEALGPRDNIVYVPEPMTY 88
 >gi|3334489|sp|P15398|RPA1_SCHPO DNA-DIRECTED RNA POLYMERASE I 190
            KD POLYPEPTIDE
            Length = 1689
-           
+
  Score = 29.0 bits (63), Expect = 7.4
  Identities = 12/38 (31%), Positives = 20/38 (52%)
 
@@ -92,12 +92,12 @@ Sbjct: 78  GHIVLPIPAYHPLFFSQMYNLLRSTCLYCHHFKLSKVK 115
     Posted date:  Nov 15, 1999  2:55 PM
   Number of letters in database: 29,652,561
   Number of sequences in database:  82,258
-  
-Lambda     K      H
-   0.323    0.138    0.411 
 
 Lambda     K      H
-   0.270   0.0470    0.230 
+   0.323    0.138    0.411
+
+Lambda     K      H
+   0.270   0.0470    0.230
 
 
 Matrix: BLOSUM62

@@ -58,9 +58,9 @@
 <!ELEMENT Taxon (
                  TaxId,
                  ScientificName,
-                 OtherNames?, 
+                 OtherNames?,
                  ParentTaxId?,
-                 Rank?, 
+                 Rank?,
                  Division?,
                  GeneticCode?,
                  MitoGeneticCode?,
