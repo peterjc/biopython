@@ -244,7 +244,7 @@ def BgzfBlocks(handle):
 
 class BgzfWriter(object):
 
-    def __init__(self, filename, mode, compresslevel=6, answer=None):
+    def __init__(self, filename, mode, compresslevel=6):
         if "w" not in mode.lower() \
         and "a" not in mode.lower():
             raise ValueError("Must use write or append mode, not %r" % mode)
@@ -252,7 +252,6 @@ class BgzfWriter(object):
         self._handle = handle
         self._buffer = "" #Bytes string
         self.compresslevel = compresslevel
-        self.answer = answer
 
     def _write_block(self, block):
         #print "Saving %i bytes" % len(block)
@@ -288,36 +287,6 @@ class BgzfWriter(object):
              + "\x00\xff\x06\x00\x42\x43\x02\x00" \
              + bsize + compressed + crc + uncompressed_length
         self._handle.write(data)
-
-        print start_offset, self._handle.tell(), len(block), "OK?"
-        if self.answer:
-            print "Checking block, offset %i" % self.answer.tell()
-            expected = self.answer.read(len(data))
-            if data!=expected:
-                #Save it anyway for debugging
-                self._handle.flush()
-                self._handle.close()
-                assert data[:16] == expected[:16], \
-                      "Start %r vs expected %r" % (data[:16], expected[:16])
-                assert struct.unpack("<H", data[16:18]) == struct.unpack("<H", expected[16:18]), \
-                      "Block size %i %r vs expected %i %r" \
-                      % (struct.unpack("<H", data[16:18])[0],
-                         data[16:18],
-                         struct.unpack("<H", expected[16:18])[0],
-                         expected[16:18])
-                for i in range(0, len(compressed)):
-                    assert compressed[i] == data[18+i]
-                    assert ord(data[18+i]) == ord(expected[18+i]), \
-                        "Compressed differ at byte %i of %i,\n%r\nvs\n%r\nOur crc = %r and len %r\nOur CRC etc %r\n\nExpected CRC etc %r (if in sync)" \
-                        % (i, len(compressed),
-                           data[18+i:18+len(compressed)],
-                           expected[18+i:18+len(compressed)],
-                           crc, uncompressed_length,
-                           data[18+len(compressed):],
-                           expected[18+len(compressed):])
-                assert data[:18+len(compressed)] == expected[:18+len(compressed)], \
-                      "Compressed differs?"
-                assert False, "Didn't match expected output"
 
     def write(self, data):
         #block_size = 2**16 = 65536
@@ -364,11 +333,7 @@ def _test_misc():
     data = h.read()
     h.close()
 
-    #data = "1234567890\nThe End\n"
-    #h = open(temp_file, "w") #bgzf.open!
-
-    h = BgzfWriter(temp_file, "wb", answer = __builtin__.open("SamBam/ex1.bam", "rb"))
-    #Force the header to get its own block?
+    h = BgzfWriter(temp_file, "wb")
     h.write(data)
     h.close()
 
@@ -381,17 +346,13 @@ def _test_misc():
            "%i vs %i" % (len(data), len(new_data))
     assert data == new_data
     
-    print "Expected blocks:"
     h = open("SamBam/ex1.bam", "rb")
-    for row in BgzfBlocks(h):
-        print row
+    old = list(BgzfBlocks(h))
     h.close()
-
-    print "Produced:"
     h = open(temp_file, "rb")
-    for row in BgzfBlocks(h):
-        print row
-    h.close()    
+    new = list(BgzfBlocks(h))
+    h.close()
+    assert old==new, "BGZF blocks don't match expected"
 
 def _test():
     """Run the module's doctests (PRIVATE).
