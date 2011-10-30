@@ -81,7 +81,9 @@ import zlib
 import struct
 import __builtin__ #to access the usual open function
 
-def open(filename, mode):
+def bgzf_open(filename, mode):
+    #Was thinking to call this open to match gzip.open but will
+    #complicate writing doctest examples...
     if "r" in mode.lower():
         raise NotImplementedError("TODO - Use gzip.open() for now")
     elif "w" in mode.lower() or "a" in mode.lower():
@@ -150,6 +152,88 @@ def split_virtual_offset(virtual_offset):
     """
     start = virtual_offset>>16
     return start, virtual_offset ^ (start<<16)
+
+def BgzfBlocks(handle):
+    """Low level debugging function to inspect BGZF blocks.
+
+    Returns the block start offset (see virtual offsets), the block
+    length (add these for the start of the next block), and the
+    decompressed length of the blocks contents (limited to 65536 in
+    BGZF).
+
+    >>> handle = open("SamBam/ex1.bam", "rb")
+    >>> for x in BgzfBlocks(handle):
+    ...     print x
+    (0, 18239, 65536)
+    (18239, 18223, 65536)
+    (36462, 18017, 65536)
+    (54479, 17342, 65536)
+    (71821, 17715, 65536)
+    (89536, 17728, 65536)
+    (107264, 17292, 63398)
+    (124556, 28, 0)
+    >>> handle.close()
+
+    The above example has no embedded SAM header, while the next
+    example does. Notice this explains why the first BGZF block is
+    smaller than the limit of 65536 - samtools gives the  header its
+    own block(s), which makes replacing the header easier:
+
+    >>> handle = open("SamBam/ex1_header.bam", "rb")
+    >>> for x in BgzfBlocks(handle):
+    ...     print x
+    (0, 104, 103)
+    (104, 18195, 65434)
+    (18299, 18190, 65409)
+    (36489, 18004, 65483)
+    (54493, 17353, 65519)
+    (71846, 17708, 65411)
+    (89554, 17709, 65466)
+    (107263, 17390, 63854)
+    (124653, 28, 0)
+    >>> handle.close()
+
+    """
+    try:
+        from io import BytesIO
+    except ImportError:
+        from StringIO import StringIO as BytesIO
+    while True:
+        start_offset = handle.tell()
+        magic = handle.read(4)
+        if not magic:
+            #End of file
+            #raise ValueError("End of file")
+            raise StopIteration
+        if magic != "\x1f\x8b\x08\x04":
+            raise ValueError(r"A BGZF (e.g. a BAM file) block should start with "
+                             r"'\x1f\x8b\x08\x04' (decimal 31 139 8 4), not %s"
+                             % repr(magic))
+        gzip_mod_time = handle.read(4) #uint32_t
+        gzip_extra_flags = handle.read(1) #uint8_t
+        gzip_os = handle.read(1) #uint8_t
+        extra_len = struct.unpack("<H", handle.read(2))[0] #uint16_t
+        
+        block_size = None
+        x_len = 0
+        while x_len < extra_len:
+            subfield_id = handle.read(2)
+            subfield_len = struct.unpack("<H", handle.read(2))[0] #uint16_t
+            subfield_data = handle.read(subfield_len)
+            x_len += subfield_len + 4
+            if subfield_id == "BC":
+                assert subfield_len == 2, "Wrong BC payload length"
+                assert block_size is None, "Two BC subfields?"
+                block_size = struct.unpack("<H", subfield_data)[0]+1 #uint16_t
+        assert x_len == extra_len, (x_len, extra_len)
+        #Now comes the compressed data, CRC, and length of uncompressed data.
+        deflate_offset = handle.tell()
+        deflate_size = block_size - extra_len - 19
+        #TODO - Should be able to use zlib instead of gzip...
+        handle.seek(start_offset)
+        data = gzip.GzipFile(fileobj=BytesIO(handle.read(block_size))).read()
+        yield start_offset, block_size, len(data)
+
 
 class BgzfWriter(object):
 
