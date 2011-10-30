@@ -200,28 +200,31 @@ class BgzfWriter(object):
         if self.answer:
             print "Checking block, offset %i" % self.answer.tell()
             expected = self.answer.read(len(data))
-            assert data[:16] == expected[:16], \
-                  "Start %r vs expected %r" % (data[:16], expected[:16])
-            assert struct.unpack("<H", data[16:18]) == struct.unpack("<H", expected[16:18]), \
-                  "Block size %i %r vs expected %i %r" \
-                  % (struct.unpack("<H", data[16:18])[0],
-                     data[16:18],
-                     struct.unpack("<H", expected[16:18])[0],
-                     expected[16:18])
-            for i in range(0, len(compressed)):
-                assert compressed[i] == data[18+i]
-                assert ord(data[18+i]) == ord(expected[18+i]), \
-                    "Compressed differ at byte %i of %i,\n%r\nvs\n%r\nOur crc = %r and len %r\nOur CRC etc %r\n\nExpected CRC etc %r (if in sync)" \
-                    % (i, len(compressed),
-                       data[18+i:18+len(compressed)],
-                       expected[18+i:18+len(compressed)],
-                       crc, uncompressed_length,
-                       data[18+len(compressed):],
-                       expected[18+len(compressed):])
-            assert data[:18+len(compressed)] == expected[:18+len(compressed)], \
-                  "Compressed differs?"
-            if data != expected:
-                assert False
+            if data!=expected:
+                #Save it anyway for debugging
+                self._handle.flush()
+                self._handle.close()
+                assert data[:16] == expected[:16], \
+                      "Start %r vs expected %r" % (data[:16], expected[:16])
+                assert struct.unpack("<H", data[16:18]) == struct.unpack("<H", expected[16:18]), \
+                      "Block size %i %r vs expected %i %r" \
+                      % (struct.unpack("<H", data[16:18])[0],
+                         data[16:18],
+                         struct.unpack("<H", expected[16:18])[0],
+                         expected[16:18])
+                for i in range(0, len(compressed)):
+                    assert compressed[i] == data[18+i]
+                    assert ord(data[18+i]) == ord(expected[18+i]), \
+                        "Compressed differ at byte %i of %i,\n%r\nvs\n%r\nOur crc = %r and len %r\nOur CRC etc %r\n\nExpected CRC etc %r (if in sync)" \
+                        % (i, len(compressed),
+                           data[18+i:18+len(compressed)],
+                           expected[18+i:18+len(compressed)],
+                           crc, uncompressed_length,
+                           data[18+len(compressed):],
+                           expected[18+len(compressed):])
+                assert data[:18+len(compressed)] == expected[:18+len(compressed)], \
+                      "Compressed differs?"
+                assert False, "Didn't match expected output"
 
     def write(self, data):
         #block_size = 2**16 = 65536
