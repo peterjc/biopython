@@ -256,7 +256,8 @@ class BgzfWriter(object):
 
     def _write_block(self, block):
         #print "Saving %i bytes" % len(block)
-        assert len(block) < 65536
+        start_offset = self._handle.tell()
+        assert len(block) <= 65536
         #Giving a negative window bits means no gzip/zlib headers, -15 used in samtools
         c = zlib.compressobj(self.compresslevel,
                              zlib.DEFLATED,
@@ -272,7 +273,7 @@ class BgzfWriter(object):
             crc = struct.pack("<i", crc)
         else:
             crc = struct.pack("<I", crc)
-        bsize = struct.pack("<H", len(compressed)+26) #includes -1
+        bsize = struct.pack("<H", len(compressed)+25) #includes -1
         crc = struct.pack("<I", zlib.crc32(block) & 0xffffffffL)
         uncompressed_length = struct.pack("<I", len(block))
         #Fixed 16 bytes,
@@ -288,6 +289,7 @@ class BgzfWriter(object):
              + bsize + compressed + crc + uncompressed_length
         self._handle.write(data)
 
+        print start_offset, self._handle.tell(), len(block), "OK?"
         if self.answer:
             print "Checking block, offset %i" % self.answer.tell()
             expected = self.answer.read(len(data))
@@ -328,8 +330,8 @@ class BgzfWriter(object):
             #print "Got %r, writing out some data..." % data
             self._buffer += data
             while len(self._buffer) >= 65536:
-                self._write_block(self._buffer[:65535])
-                self._buffer = self._buffer[65535:]
+                self._write_block(self._buffer[:65536])
+                self._buffer = self._buffer[65536:]
 
     def flush(self):
         while len(self._buffer) >= 65536:
@@ -365,7 +367,7 @@ def _test_misc():
     #data = "1234567890\nThe End\n"
     #h = open(temp_file, "w") #bgzf.open!
 
-    h = BgzfWriter(temp_file, "wb") #, answer = __builtin__.open("SamBam/ex1.bam", "rb"))
+    h = BgzfWriter(temp_file, "wb", answer = __builtin__.open("SamBam/ex1.bam", "rb"))
     #Force the header to get its own block?
     h.write(data)
     h.close()
@@ -379,6 +381,17 @@ def _test_misc():
            "%i vs %i" % (len(data), len(new_data))
     assert data == new_data
     
+    print "Expected blocks:"
+    h = open("SamBam/ex1.bam", "rb")
+    for row in BgzfBlocks(h):
+        print row
+    h.close()
+
+    print "Produced:"
+    h = open(temp_file, "rb")
+    for row in BgzfBlocks(h):
+        print row
+    h.close()    
 
 def _test():
     """Run the module's doctests (PRIVATE).
