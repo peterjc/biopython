@@ -194,10 +194,6 @@ def BgzfBlocks(handle):
     >>> handle.close()
 
     """
-    try:
-        from io import BytesIO
-    except ImportError:
-        from StringIO import StringIO as BytesIO
     while True:
         start_offset = handle.tell()
         magic = handle.read(4)
@@ -226,13 +222,24 @@ def BgzfBlocks(handle):
                 assert block_size is None, "Two BC subfields?"
                 block_size = struct.unpack("<H", subfield_data)[0]+1 #uint16_t
         assert x_len == extra_len, (x_len, extra_len)
+        assert block_size is not None, "Missing BC, this isn't a BGZF file!"
         #Now comes the compressed data, CRC, and length of uncompressed data.
-        deflate_offset = handle.tell()
-        deflate_size = block_size - extra_len - 19
-        #TODO - Should be able to use zlib instead of gzip...
-        handle.seek(start_offset)
-        data = gzip.GzipFile(fileobj=BytesIO(handle.read(block_size))).read()
-        yield start_offset, block_size, len(data)
+        deflate_size = block_size - 1 - extra_len - 19
+        d = zlib.decompressobj(-15) #Negative window size means no headers
+        data = d.decompress(handle.read(deflate_size)) + d.flush()
+        expected_crc = handle.read(4)
+        expected_size = struct.unpack("<I", handle.read(4))[0]
+        assert expected_size == len(data), \
+               "Decompressed to %i, not %i" % (len(data), expected_size)
+        #Should cope with a mix of Python platforms...
+        crc = zlib.crc32(data)
+        if crc < 0:
+            crc = struct.pack("<i", crc)
+        else:
+            crc = struct.pack("<I", crc)
+        assert expected_crc == crc, \
+               "CRC is %s, not %s" % (crc, expected_crc)
+        yield start_offset, block_size, expected_size
 
 
 class BgzfWriter(object):
