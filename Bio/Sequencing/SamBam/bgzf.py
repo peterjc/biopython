@@ -162,16 +162,16 @@ def BgzfBlocks(handle):
     BGZF).
 
     >>> handle = open("SamBam/ex1.bam", "rb")
-    >>> for x in BgzfBlocks(handle):
-    ...     print x
-    (0, 18239, 65536)
-    (18239, 18223, 65536)
-    (36462, 18017, 65536)
-    (54479, 17342, 65536)
-    (71821, 17715, 65536)
-    (89536, 17728, 65536)
-    (107264, 17292, 63398)
-    (124556, 28, 0)
+    >>> for values in BgzfBlocks(handle):
+    ...     print "Start %i, length %i, data %i" % values
+    Start 0, length 18239, data 65536
+    Start 18239, length 18223, data 65536
+    Start 36462, length 18017, data 65536
+    Start 54479, length 17342, data 65536
+    Start 71821, length 17715, data 65536
+    Start 89536, length 17728, data 65536
+    Start 107264, length 17292, data 63398
+    Start 124556, length 28, data 0
     >>> handle.close()
 
     The above example has no embedded SAM header, while the next
@@ -180,17 +180,17 @@ def BgzfBlocks(handle):
     own block(s), which makes replacing the header easier:
 
     >>> handle = open("SamBam/ex1_header.bam", "rb")
-    >>> for x in BgzfBlocks(handle):
-    ...     print x
-    (0, 104, 103)
-    (104, 18195, 65434)
-    (18299, 18190, 65409)
-    (36489, 18004, 65483)
-    (54493, 17353, 65519)
-    (71846, 17708, 65411)
-    (89554, 17709, 65466)
-    (107263, 17390, 63854)
-    (124653, 28, 0)
+    >>> for values in BgzfBlocks(handle):
+    ...     print "Start %i, length %i, data %i" % values
+    Start 0, length 104, data 103
+    Start 104, length 18195, data 65434
+    Start 18299, length 18190, data 65409
+    Start 36489, length 18004, data 65483
+    Start 54493, length 17353, data 65519
+    Start 71846, length 17708, data 65411
+    Start 89554, length 17709, data 65466
+    Start 107263, length 17390, data 63854
+    Start 124653, length 28, data 0
     >>> handle.close()
 
     """
