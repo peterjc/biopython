@@ -1724,7 +1724,7 @@ def _test_misc():
             continue
         print "%s -> %s check..." % (bam_filename, bam_filename)
         handle = BytesIO()
-        count = BamWriter(handle, BamIterator(open(bam_filename, "rb")))
+        count = BamWriter(handle, BamIterator(open(bam_filename, "rb")), gzipped=False)
         if handle.getvalue() != gzip.open(bam_filename).read():
             sys.stderr.write("ERROR: Couldn't reproduce %s -> %s\n" \
                              % (bam_filename, bam_filename))
@@ -1733,7 +1733,7 @@ def _test_misc():
             continue
         print "%s -> %s check..." % (sam_filename, bam_filename)
         handle = BytesIO()
-        count = BamWriter(handle, SamIterator(open(sam_filename)))
+        count = BamWriter(handle, SamIterator(open(sam_filename)), gzipped=False)
         if handle.getvalue() != gzip.open(bam_filename).read():
             sys.stderr.write("ERROR: Couldn't reproduce %s -> %s\n" \
                              % (sam_filename, bam_filename))
