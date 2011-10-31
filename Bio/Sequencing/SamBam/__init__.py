@@ -1524,12 +1524,17 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
             handle.write(struct.pack("<I", l))
         except Exception:
             raise ValueError("Problem with reference %r, %r" % (r,l))
+    if header:
+        #Want to give it its own BGZF block,
+        handle.flush()
     #Write reads:
     count = 0
     refs = [r for (r,l) in references]
     for read in reads:
         handle.write(read._as_bam(refs))
         count += 1
+    handle.flush() #Important with BGZF as it buffers data
+    handle.flush() #Again to trigger empty BGZF block as EOF marker
     return count
 
 def _check_header_text(text):
