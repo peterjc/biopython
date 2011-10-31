@@ -311,6 +311,7 @@ class BgzfWriter(object):
             self._write_block(self._buffer[:65535])
             self._buffer = self._buffer[65535:]
         self._write_block(self._buffer)
+        self._buffer = ""
         self._handle.flush()
 
     def close(self):
