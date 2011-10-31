@@ -244,11 +244,15 @@ def BgzfBlocks(handle):
 
 class BgzfWriter(object):
 
-    def __init__(self, filename, mode, compresslevel=6):
-        if "w" not in mode.lower() \
-        and "a" not in mode.lower():
-            raise ValueError("Must use write or append mode, not %r" % mode)
-        handle = __builtin__.open(filename, mode)
+    def __init__(self, filename=None, mode=None, fileobj=None, compresslevel=6):
+        if fileobj:
+            assert filename is None and mode is None            
+            handle = fileobj
+        else:
+            if "w" not in mode.lower() \
+            and "a" not in mode.lower():
+                raise ValueError("Must use write or append mode, not %r" % mode)
+            handle = __builtin__.open(filename, mode)
         self._handle = handle
         self._buffer = "" #Bytes string
         self.compresslevel = compresslevel
