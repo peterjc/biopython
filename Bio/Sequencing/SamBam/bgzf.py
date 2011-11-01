@@ -337,11 +337,13 @@ class BgzfWriter(object):
         self._handle.flush()
 
     def close(self):
-        self.flush()
-        #samtools seems to look for a magic EOF marker, just a 28 byte empty BGZF block:
-        self._handle.write("\x1f\x8b\x08\x04\x00\x00\x00\x00\x00\xff\x06\x00BC")
-        self._handle.write("\x02\x00\x1b\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00")
-        self._handle.flush()
+        if self._buffer:
+            self.flush()
+        #samtools seems to look for a magic EOF marker, just a 28 byte empty BGZF block,
+        #but we'll leave it up to the calling code to do that (e.g. flush twice).
+        #self._handle.write("\x1f\x8b\x08\x04\x00\x00\x00\x00\x00\xff\x06\x00BC")
+        #self._handle.write("\x02\x00\x1b\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00")
+        #self._handle.flush()
         self._handle.close()
 
     def tell(self):
@@ -362,6 +364,8 @@ def _test_misc():
 
     h = BgzfWriter(temp_file, "wb")
     h.write(data)
+    h.flush()
+    h.flush() #2nd flush gives an empty BGZF block as EOF marker
     h.close()
 
     h = gzip.open(temp_file)
