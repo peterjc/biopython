@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Copyright 2010-2011 by Peter Cock.
 # All rights reserved.
 # This code is part of the Biopython distribution and governed by its
@@ -349,3 +350,29 @@ class BgzfWriter(object):
     def tell(self):
         """Returns a BGZF 64-bit virtual offset."""
         return make_virtual_offset(self.handle.tell(), len(self._buffer)) 
+
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) > 1:
+        print "Call this with no arguments and pipe uncompressed data in on stdin"
+        print "and it will produce BGZF compressed data on stdout. e.g."
+        print
+        print "./bgzf.py < example.fastq > example.fastq.bgz"
+        print
+        print "The extension convention of *.bgz is to distinugish these from *.gz"
+        print "used for standard gzipped files without the block structure of BGZF."
+        print "You can use the standard gunzip command to decompress BGZF files,"
+        print "if it complains about the extension try something like this:"
+        print
+        print "cat example.fastq.bgz | gunzip > example.fastq"
+        print
+        sys.exit(0)
+
+    sys.stderr.write("Producing BGZF output from stdin...\n")
+    w = BgzfWriter(fileobj=sys.stdout)
+    for data in sys.stdin:
+        w.write(data)
+    w.flush()
+    w.flush() #Double flush triggers an empty BGZF block as EOF marker
+    w.close()
+    sys.stderr.write("BGZF data produced\n")
