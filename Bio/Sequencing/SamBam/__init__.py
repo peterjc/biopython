@@ -1524,9 +1524,8 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
             handle.write(struct.pack("<I", l))
         except Exception:
             raise ValueError("Problem with reference %r, %r" % (r,l))
-    if header:
-        #Want to give it its own BGZF block,
-        handle.flush()
+    #Want to give it its own BGZF block, even if there is no SAM header:
+    handle.flush()
     #Write reads:
     count = 0
     refs = [r for (r,l) in references]
