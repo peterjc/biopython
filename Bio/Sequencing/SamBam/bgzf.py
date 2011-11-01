@@ -174,10 +174,32 @@ def BgzfBlocks(handle):
     Start 124556, length 28, data 0
     >>> handle.close()
 
-    The above example has no embedded SAM header, while the next
-    example does. Notice this explains why the first BGZF block is
-    smaller than the limit of 65536 - samtools gives the  header its
-    own block(s), which makes replacing the header easier:
+    Indirectly we can tell this file came from an old version of
+    samtools because all the blocks (except the final one and the
+    dummy empty EOF marker block) are 65536 bytes.  Later versions
+    avoid splitting a read between two blocks, and give the header
+    its own block (useful to speed up replacing the header). You
+    can see this in ex1_refresh.bam created using samtools 0.1.18:
+
+    samtools view -b ex1.bam > ex1_refresh.bam
+
+    >>> handle = open("SamBam/ex1_refresh.bam", "rb")
+    >>> for values in BgzfBlocks(handle):
+    ...     print "Start %i, length %i, data %i" % values
+    Start 0, length 53, data 38
+    Start 53, length 18195, data 65434
+    Start 18248, length 18190, data 65409
+    Start 36438, length 18004, data 65483
+    Start 54442, length 17353, data 65519
+    Start 71795, length 17708, data 65411
+    Start 89503, length 17709, data 65466
+    Start 107212, length 17390, data 63854
+    Start 124602, length 28, data 0
+    >>> handle.close()
+
+    The above example has no embedded SAM header (thus the first block
+    is very small), while the next example does. Notice that the rest
+    of the blocks show the same sizes (the contain the same read data):
 
     >>> handle = open("SamBam/ex1_header.bam", "rb")
     >>> for values in BgzfBlocks(handle):
