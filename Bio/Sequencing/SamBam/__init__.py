@@ -211,9 +211,10 @@ class SamIterator(object):
 
     >>> import gzip
     >>> count = 0
-    >>> with gzip.open("SamBam/ex1.sam.gz") as handle:
-    ...     for read in SamIterator(handle):
-    ...         count += 1
+    >>> handle = gzip.open("SamBam/ex1.sam.gz")
+    >>> for read in SamIterator(handle):
+    ...     count += 1
+    >>> handle.close()
     >>> print count
     3270
 
@@ -347,9 +348,10 @@ class BamIterator(object):
 
     >>> import gzip
     >>> count = 0
-    >>> with gzip.open("SamBam/ex1.bam", "rb") as handle:
-    ...     for read in BamIterator(handle, gzipped=False):
-    ...         count += 1
+    >>> handle = gzip.open("SamBam/ex1.bam", "rb")
+    >>> for read in BamIterator(handle, gzipped=False):
+    ...     count += 1
+    >>> handle.close()
     >>> count
     3270
 
