@@ -74,6 +74,81 @@ is at most 2^16 bytes, or 64kb. Note that this matches the BGZF
 compression (useful for intermediate files in memory to reduced
 CPU load).
 
+
+Example
+-------
+
+This is an ordinary GenBank file compressed using BGZF, so it can
+be decompressed using gzip,
+
+>>> import gzip
+>>> handle = gzip.open("GenBank/NC_000932.gb.bgz", "rb")
+>>> handle.tell()
+0
+>>> handle.readline()
+'LOCUS       NC_000932             154478 bp    DNA     circular PLN 15-APR-2009\n'
+>>> handle.tell()
+80
+>>> handle.readline()
+'DEFINITION  Arabidopsis thaliana chloroplast, complete genome.\n'
+>>> handle.tell()
+143
+>>> data = handle.read(70000)
+>>> handle.tell()
+70143
+>>> handle.readline()
+'f="GeneID:844718"\n'
+>>> handle.readline()
+'     CDS             complement(join(84337..84771,85454..85843))\n'
+>>> handle.close()
+
+You could of course parse the handle using Bio.SeqIO to get
+SeqRecord objects. We can also access the file using the
+BGZF reader - but pay attention to the file offsets:
+
+>>> handle = BgzfReader("GenBank/NC_000932.gb.bgz", "rb")
+>>> handle.tell()
+0
+>>> handle.readline()
+'LOCUS       NC_000932             154478 bp    DNA     circular PLN 15-APR-2009\n'
+>>> handle.tell()
+80
+>>> handle.readline()
+'DEFINITION  Arabidopsis thaliana chloroplast, complete genome.\n'
+>>> handle.tell()
+143
+>>> data = handle.read(70000)
+>>> handle.tell()
+987828735
+>>> handle.readline()
+'f="GeneID:844718"\n'
+>>> handle.readline()
+'     CDS             complement(join(84337..84771,85454..85843))\n'
+>>> handle.close()
+
+Notice the handle's offset looks different as a BGZF file. This
+brings us to the key point about BGZF, which is the block structure:
+
+>>> handle = open("GenBank/NC_000932.gb.bgz", "rb")
+>>> for values in BgzfBlocks(handle):
+...     print "Start %i, length %i, data %i" % values
+Start 0, length 15073, data 65536
+Start 15073, length 17857, data 65536
+Start 32930, length 22144, data 65536
+Start 55074, length 22230, data 65536
+Start 77304, length 14939, data 43478
+Start 92243, length 28, data 0
+>>> handle.close()                             
+
+By reading ahead 70,000 bytes we moved into the second BGZF block,
+and at that point the BGZF virtual offsets start to look different
+a simple offset into the decompressed data as exposed by the gzip
+library.
+
+The catch with BGZF virtual offsets is while they can be compared
+(which offset comes first in the file), you cannot safely subtract
+them to get the size of the data between them, nor add/subtract
+a relative offset.
 """
 #TODO - Move somewhere else in Bio.* namespace?
 
@@ -387,7 +462,7 @@ class BgzfReader(object):
         i = self._buffer.find("\n")
         if i != -1:
             data = self._buffer[:i+1]
-            self._within_block_offset += i + i
+            self._within_block_offset += i + 1
             self._buffer = self._buffer[i+1:]
             return data
         else:
