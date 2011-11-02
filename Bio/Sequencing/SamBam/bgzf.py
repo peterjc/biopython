@@ -182,8 +182,6 @@ import struct
 import __builtin__ #to access the usual open function
 
 def bgzf_open(filename, mode):
-    #Was thinking to call this open to match gzip.open but will
-    #complicate writing doctest examples...
     if "r" in mode.lower():
         return BgzfReader(filename, mode)
     elif "w" in mode.lower() or "a" in mode.lower():

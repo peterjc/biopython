@@ -29,6 +29,7 @@ try:
 except ImportError:
     from UserDict import DictMixin as _dict_base
 import re
+import gzip
 import itertools
 from StringIO import StringIO
 
@@ -46,6 +47,7 @@ from Bio._py3k import _bytes_to_string, _as_bytes, _as_string
 
 from Bio import SeqIO
 from Bio import Alphabet
+from Bio.Sequencing.SamBam import bgzf
 
 class _IndexedSeqFileDict(_dict_base):
     """Read only dictionary interface to a sequential sequence file.
@@ -69,13 +71,13 @@ class _IndexedSeqFileDict(_dict_base):
     Note that this dictionary is essentially read only. You cannot
     add or change values, pop values, nor clear the dictionary.
     """
-    def __init__(self, filename, format, alphabet, key_function):
+    def __init__(self, filename, format, alphabet, key_function, compression):
         #Use key_function=None for default value
         try:
             proxy_class = _FormatToRandomAccess[format]
         except KeyError:
             raise ValueError("Unsupported format '%s'" % format)
-        random_access_proxy = proxy_class(filename, format, alphabet)
+        random_access_proxy = proxy_class(filename, format, alphabet, compression)
         self._proxy = random_access_proxy
         self._key_function = key_function
         if key_function:
@@ -253,8 +255,9 @@ class _SQLiteManySeqFilesDict(_IndexedSeqFileDict):
     one of the open handles is closed first.
     """
     def __init__(self, index_filename, filenames, format, alphabet,
-                 key_function, max_open=10):
+                 key_function, compression, max_open=10):
         random_access_proxies = {}
+        self._compression = compression
         #TODO? - Don't keep filename list in memory (just in DB)?
         #Should save a chunk of memory if dealing with 1000s of files.
         #Furthermore could compare a generator to the DB on reloading
@@ -333,7 +336,7 @@ class _SQLiteManySeqFilesDict(_IndexedSeqFileDict):
             for i, filename in enumerate(filenames):
                 con.execute("INSERT INTO file_data (file_number, name) VALUES (?,?);",
                             (i, filename))
-                random_access_proxy = proxy_class(filename, format, alphabet)
+                random_access_proxy = proxy_class(filename, format, alphabet, compression)
                 if key_function:
                     offset_iter = ((key_function(k),i,o,l) for (k,o,l) in random_access_proxy)
                 else:
@@ -413,7 +416,7 @@ class _SQLiteManySeqFilesDict(_IndexedSeqFileDict):
             #Open a new handle...
             proxy = _FormatToRandomAccess[self._format]( \
                         self._filenames[file_number],
-                        self._format, self._alphabet)
+                        self._format, self._alphabet, self._compression)
             record = proxy.get(offset)
             proxies[file_number] = proxy
         if self._key_function:
@@ -483,8 +486,15 @@ class _SQLiteManySeqFilesDict(_IndexedSeqFileDict):
 ##############################################################################
 
 class SeqFileRandomAccess(object):
-    def __init__(self, filename, format, alphabet):
-        self._handle = open(filename, "rb")
+    def __init__(self, filename, format, alphabet, compression):
+        if not compression:
+            self._handle = open(filename, "rb")
+        elif compression=="gzip":
+            self._handle = gzip.open(filename, "rb")
+        elif compression=="bgzf":
+            self._handle = bgzf.bgzf_open(filename, "rb")
+        else:
+            raise ValueError("Compression type %r not supported" % compression)
         self._alphabet = alphabet
         self._format = format
         #Load the parser class/function once an avoid the dict lookup in each
@@ -535,8 +545,8 @@ class SeqFileRandomAccess(object):
 
 class SffRandomAccess(SeqFileRandomAccess):
     """Random access to a Standard Flowgram Format (SFF) file."""
-    def __init__(self, filename, format, alphabet):
-        SeqFileRandomAccess.__init__(self, filename, format, alphabet)
+    def __init__(self, filename, format, alphabet, compression):
+        SeqFileRandomAccess.__init__(self, filename, format, alphabet, compression)
         header_length, index_offset, index_length, number_of_reads, \
         self._flows_per_read, self._flow_chars, self._key_sequence \
             = SeqIO.SffIO._sff_file_header(self._handle)
@@ -611,8 +621,8 @@ class SffTrimedRandomAccess(SffRandomAccess) :
 ###################
 
 class SequentialSeqFileRandomAccess(SeqFileRandomAccess):
-    def __init__(self, filename, format, alphabet):
-        SeqFileRandomAccess.__init__(self, filename, format, alphabet)
+    def __init__(self, filename, format, alphabet, compression):
+        SeqFileRandomAccess.__init__(self, filename, format, alphabet, compression)
         marker = {"ace" : "CO ",
                   "embl" : "ID ",
                   "fasta" : ">",
@@ -646,13 +656,17 @@ class SequentialSeqFileRandomAccess(SeqFileRandomAccess):
             #Here we can assume the record.id is the first word after the
             #marker. This is generally fine... but not for GenBank, EMBL, Swiss
             id = line[marker_offset:].strip().split(None, 1)[0]
+            length = len(line)
             while True:
+                end_offset = handle.tell()
                 line = handle.readline()
                 if marker_re.match(line) or not line:
-                    end_offset = handle.tell() - len(line)
-                    yield _bytes_to_string(id), start_offset, end_offset - start_offset
+                    yield _bytes_to_string(id), start_offset, length
                     start_offset = end_offset
                     break
+                else:
+                    #Track this explicitly as can't do file offset difference on BGZF
+                    length += len(line)
         assert not line, repr(line)
 
     def get_raw(self, offset):
@@ -695,13 +709,14 @@ class GenBankRandomAccess(SequentialSeqFileRandomAccess):
             #We cannot assume the record.id is the first word after LOCUS,
             #normally the first entry on the VERSION or ACCESSION line is used.
             key = None
+            length = len(line)
             while True:
+                end_offset = handle.tell()
                 line = handle.readline()
                 if marker_re.match(line) or not line:
                     if not key:
                         raise ValueError("Did not find ACCESSION/VERSION lines")
-                    end_offset = handle.tell() - len(line)
-                    yield _bytes_to_string(key), start_offset, end_offset - start_offset
+                    yield _bytes_to_string(key), start_offset, length
                     start_offset = end_offset
                     break
                 elif line.startswith(accession_marker):
@@ -711,6 +726,7 @@ class GenBankRandomAccess(SequentialSeqFileRandomAccess):
                     if version_id.count(dot_char)==1 and version_id.split(dot_char)[1].isdigit():
                         #This should mimic the GenBank parser...
                         key = version_id
+                length += len(line)
         assert not line, repr(line)
 
 
@@ -733,6 +749,7 @@ class EmblRandomAccess(SequentialSeqFileRandomAccess):
         while marker_re.match(line):
             #We cannot assume the record.id is the first word after ID,
             #normally the SV line is used.
+            length = len(line)
             if line[2:].count(semi_char) == 6:
                 #Looks like the semi colon separated style introduced in 2006
                 parts = line[3:].rstrip().split(semi_char)
@@ -747,14 +764,16 @@ class EmblRandomAccess(SequentialSeqFileRandomAccess):
             else:
                 raise ValueError('Did not recognise the ID line layout:\n' + line)
             while True:
+                end_offset = handle.tell()
                 line = handle.readline()
                 if marker_re.match(line) or not line:
                     end_offset = handle.tell() - len(line)
-                    yield _bytes_to_string(key), start_offset, end_offset - start_offset
+                    yield _bytes_to_string(key), start_offset, length
                     start_offset = end_offset
                     break
                 elif line.startswith(sv_marker):
                     key = line.rstrip().split()[1]
+                length += len(line)
         assert not line, repr(line)
 
 
@@ -773,18 +792,21 @@ class SwissRandomAccess(SequentialSeqFileRandomAccess):
                 break
         #Should now be at the start of a record, or end of the file
         while marker_re.match(line):
+            length = len(line)
             #We cannot assume the record.id is the first word after ID,
             #normally the following AC line is used.
             line = handle.readline()
             assert line.startswith(_as_bytes("AC "))
             key = line[3:].strip().split(semi_char)[0].strip()
             while True:
+                end_offset = handle.tell()
                 line = handle.readline()
                 if marker_re.match(line) or not line:
                     end_offset = handle.tell() - len(line)
-                    yield _bytes_to_string(key), start_offset, end_offset - start_offset
+                    yield _bytes_to_string(key), start_offset, length
                     start_offset = end_offset
                     break
+                length += len(line)
         assert not line, repr(line)
 
 
@@ -805,6 +827,7 @@ class UniprotRandomAccess(SequentialSeqFileRandomAccess):
                 break
         #Should now be at the start of a record, or end of the file
         while marker_re.match(line):
+            length = len(line)
             #We expect the next line to be <accession>xxx</accession>
             #(possibly with leading spaces)
             #but allow it to be later on within the <entry>
@@ -825,7 +848,7 @@ class UniprotRandomAccess(SequentialSeqFileRandomAccess):
             if not key:
                 raise ValueError("Did not find <accession> line in bytes %i to %i" \
                                  % (start_offset, end_offset))
-            yield _bytes_to_string(key), start_offset, end_offset - start_offset
+            yield _bytes_to_string(key), start_offset, None #end_offset - start_offset
             #Find start of next record
             while not marker_re.match(line) and line:
                 start_offset = handle.tell()
@@ -869,8 +892,8 @@ class UniprotRandomAccess(SequentialSeqFileRandomAccess):
 
 class IntelliGeneticsRandomAccess(SeqFileRandomAccess):
     """Random access to a IntelliGenetics file."""
-    def __init__(self, filename, format, alphabet):
-        SeqFileRandomAccess.__init__(self, filename, format, alphabet)
+    def __init__(self, filename, format, alphabet, compression):
+        SeqFileRandomAccess.__init__(self, filename, format, alphabet, compression)
         self._marker_re = re.compile(_as_bytes("^;"))
 
     def __iter__(self):
@@ -916,9 +939,9 @@ class TabRandomAccess(SeqFileRandomAccess):
     def __iter__(self):
         handle = self._handle
         handle.seek(0)
-        start_offset = handle.tell()
         tab_char = _as_bytes("\t")
         while True:
+            start_offset = handle.tell()
             line = handle.readline()
             if not line : break #End of file
             try:
@@ -926,14 +949,11 @@ class TabRandomAccess(SeqFileRandomAccess):
             except ValueError, err:
                 if not line.strip():
                     #Ignore blank lines
-                    start_offset = handle.tell()
                     continue
                 else:
                     raise err
             else:
-                end_offset = handle.tell()
-                yield _bytes_to_string(key), start_offset, end_offset - start_offset
-                start_offset = end_offset
+                yield _bytes_to_string(key), start_offset, len(line)
 
     def get_raw(self, offset):
         """Like the get method, but returns the record as a raw string."""
@@ -971,8 +991,10 @@ class FastqRandomAccess(SeqFileRandomAccess):
             id = line[1:].rstrip().split(None, 1)[0]
             #Find the seq line(s)
             seq_len = 0
+            length = len(line)
             while line:
                 line = handle.readline()
+                length += len(line)
                 if line.startswith(plus_char) : break
                 seq_len += len(line.strip())
             if not line:
@@ -983,6 +1005,7 @@ class FastqRandomAccess(SeqFileRandomAccess):
             while line:
                 if seq_len == qual_len:
                     #Should be end of record...
+                    end_offset = handle.tell()
                     line = handle.readline()
                     if line and line[0:1] != at_char:
                         ValueError("Problem with line %s" % repr(line))
@@ -990,10 +1013,10 @@ class FastqRandomAccess(SeqFileRandomAccess):
                 else:
                     line = handle.readline()
                     qual_len += len(line.strip())
+                    length += len(line)
             if seq_len != qual_len:
                 raise ValueError("Problem with quality section")
-            end_offset = handle.tell() - len(line)
-            yield _bytes_to_string(id), start_offset, end_offset - start_offset
+            yield _bytes_to_string(id), start_offset, length
             start_offset = end_offset
         #print "EOF"
 
