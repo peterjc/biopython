@@ -224,52 +224,50 @@ def BgzfBlocks(handle):
 
 def _load_bgzf_block(handle):
     #Change indentation later...
-    if True:
-        start_offset = handle.tell()
-        magic = handle.read(4)
-        if not magic:
-            #End of file
-            #raise ValueError("End of file")
-            raise StopIteration
-        if magic != "\x1f\x8b\x08\x04":
-            raise ValueError(r"A BGZF (e.g. a BAM file) block should start with "
-                             r"'\x1f\x8b\x08\x04' (decimal 31 139 8 4), not %s"
-                             % repr(magic))
-        gzip_mod_time = handle.read(4) #uint32_t
-        gzip_extra_flags = handle.read(1) #uint8_t
-        gzip_os = handle.read(1) #uint8_t
-        extra_len = struct.unpack("<H", handle.read(2))[0] #uint16_t
+    start_offset = handle.tell()
+    magic = handle.read(4)
+    if not magic:
+        #End of file
+        raise StopIteration
+    if magic != "\x1f\x8b\x08\x04":
+        raise ValueError(r"A BGZF (e.g. a BAM file) block should start with "
+                         r"'\x1f\x8b\x08\x04' (decimal 31 139 8 4), not %s"
+                         % repr(magic))
+    gzip_mod_time = handle.read(4) #uint32_t
+    gzip_extra_flags = handle.read(1) #uint8_t
+    gzip_os = handle.read(1) #uint8_t
+    extra_len = struct.unpack("<H", handle.read(2))[0] #uint16_t
         
-        block_size = None
-        x_len = 0
-        while x_len < extra_len:
-            subfield_id = handle.read(2)
-            subfield_len = struct.unpack("<H", handle.read(2))[0] #uint16_t
-            subfield_data = handle.read(subfield_len)
-            x_len += subfield_len + 4
-            if subfield_id == "BC":
-                assert subfield_len == 2, "Wrong BC payload length"
-                assert block_size is None, "Two BC subfields?"
-                block_size = struct.unpack("<H", subfield_data)[0]+1 #uint16_t
-        assert x_len == extra_len, (x_len, extra_len)
-        assert block_size is not None, "Missing BC, this isn't a BGZF file!"
-        #Now comes the compressed data, CRC, and length of uncompressed data.
-        deflate_size = block_size - 1 - extra_len - 19
-        d = zlib.decompressobj(-15) #Negative window size means no headers
-        data = d.decompress(handle.read(deflate_size)) + d.flush()
-        expected_crc = handle.read(4)
-        expected_size = struct.unpack("<I", handle.read(4))[0]
-        assert expected_size == len(data), \
-               "Decompressed to %i, not %i" % (len(data), expected_size)
-        #Should cope with a mix of Python platforms...
-        crc = zlib.crc32(data)
-        if crc < 0:
-            crc = struct.pack("<i", crc)
-        else:
-            crc = struct.pack("<I", crc)
-        assert expected_crc == crc, \
-               "CRC is %s, not %s" % (crc, expected_crc)
-        return start_offset, block_size, data
+    block_size = None
+    x_len = 0
+    while x_len < extra_len:
+        subfield_id = handle.read(2)
+        subfield_len = struct.unpack("<H", handle.read(2))[0] #uint16_t
+        subfield_data = handle.read(subfield_len)
+        x_len += subfield_len + 4
+        if subfield_id == "BC":
+            assert subfield_len == 2, "Wrong BC payload length"
+            assert block_size is None, "Two BC subfields?"
+            block_size = struct.unpack("<H", subfield_data)[0]+1 #uint16_t
+    assert x_len == extra_len, (x_len, extra_len)
+    assert block_size is not None, "Missing BC, this isn't a BGZF file!"
+    #Now comes the compressed data, CRC, and length of uncompressed data.
+    deflate_size = block_size - 1 - extra_len - 19
+    d = zlib.decompressobj(-15) #Negative window size means no headers
+    data = d.decompress(handle.read(deflate_size)) + d.flush()
+    expected_crc = handle.read(4)
+    expected_size = struct.unpack("<I", handle.read(4))[0]
+    assert expected_size == len(data), \
+           "Decompressed to %i, not %i" % (len(data), expected_size)
+    #Should cope with a mix of Python platforms...
+    crc = zlib.crc32(data)
+    if crc < 0:
+        crc = struct.pack("<i", crc)
+    else:
+        crc = struct.pack("<I", crc)
+    assert expected_crc == crc, \
+           "CRC is %s, not %s" % (crc, expected_crc)
+    return start_offset, block_size, data
 
 
 class BgzfReader(object):
