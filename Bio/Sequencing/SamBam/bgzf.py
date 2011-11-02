@@ -218,6 +218,13 @@ def BgzfBlocks(handle):
 
     """
     while True:
+        start_offset, block_length, data = _load_bgzf_block(handle)
+        yield start_offset, block_length, len(data)
+
+
+def _load_bgzf_block(handle):
+    #Change indentation later...
+    if True:
         start_offset = handle.tell()
         magic = handle.read(4)
         if not magic:
@@ -262,7 +269,47 @@ def BgzfBlocks(handle):
             crc = struct.pack("<I", crc)
         assert expected_crc == crc, \
                "CRC is %s, not %s" % (crc, expected_crc)
-        yield start_offset, block_size, expected_size
+        return start_offset, block_size, data
+
+
+class BgzfReader(object):
+
+    def __init__(self, filename=None, mode=None, fileobj=None):
+        if fileobj:
+            assert filename is None and mode is None
+            handle = fileobj
+        else:
+            if "w" in mode.lower() \
+            or "a" in mode.lower():
+                raise ValueError("Must use read mode (default), not write or append mode")
+            handle = __builtin__.open(filename, mode)
+        self._handle = handle
+        self._load_block()
+
+    def _load_block(self, start_offset=None):
+        handle = self._handle
+        if start_offset:
+            handle.seek(start_offset)
+        self._block_start_offset, self._block_size, \
+        self._buffer = _load_bgzf_block(handle)
+        self._within_block_offset = 0
+
+    def tell(self):
+        """Returns a 64-bit unsigned BGZF virtual offset."""
+        return make_virtual_offset(self._block_start_offset, self._within_block_offset)
+
+    def read(self, size=-1):
+        if size < 0:
+            raise NotImplementedError("Don't be greedy, that could be massive!")
+        elif size == 0:
+            return ""
+        elif self._with_block_offset + size < len(self._buffer):
+            self._with_block_offset += size
+            return self._buffer[self._with_block_offset-size:self._with_block_offset]
+        else:
+            data = self._buffer
+            self._load_block()
+            return data + self.read(size - len(data))
 
 
 class BgzfWriter(object):
