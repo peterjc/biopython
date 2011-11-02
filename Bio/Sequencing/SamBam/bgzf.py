@@ -383,10 +383,22 @@ class BgzfReader(object):
             self._load_block() #will reset offsets
             return data + self.read(size)
 
+    def readline(self):
+        i = self._buffer.find("\n")
+        if i != -1:
+            data = self._buffer[:i+1]
+            self._within_block_offset += i + i
+            self._buffer = self._buffer[i+1:]
+            return data
+        else:
+            data = self._buffer
+            self._load_block() #will reset offsets
+            return data + self.readline()
+
     def close(self):
-       self._handle.close()
-       self._buffer = None
-       self._block_start_offset = None
+        self._handle.close()
+        self._buffer = None
+        self._block_start_offset = None
 
 
 class BgzfWriter(object):
