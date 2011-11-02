@@ -218,13 +218,13 @@ def BgzfBlocks(handle):
 
     """
     while True:
-        start_offset, block_length, data = _load_bgzf_block(handle)
+        start_offset = handle.tell()
+        block_length, data = _load_bgzf_block(handle)
         yield start_offset, block_length, len(data)
 
 
 def _load_bgzf_block(handle):
     #Change indentation later...
-    start_offset = handle.tell()
     magic = handle.read(4)
     if not magic:
         #End of file
@@ -267,10 +267,72 @@ def _load_bgzf_block(handle):
         crc = struct.pack("<I", crc)
     assert expected_crc == crc, \
            "CRC is %s, not %s" % (crc, expected_crc)
-    return start_offset, block_size, data
+    return block_size, data
 
 
 class BgzfReader(object):
+    r"""BGZF reader, acts like a read only handle but seek/tell differ.
+
+    Let's use the BgzfBlocks function to have a peak at the BGZF blocks
+    in an example BAM file,
+
+    >>> handle = open("SamBam/ex1.bam", "rb")
+    >>> for values in BgzfBlocks(handle):
+    ...     print "Start %i, length %i, data %i" % values
+    Start 0, length 18239, data 65536
+    Start 18239, length 18223, data 65536
+    Start 36462, length 18017, data 65536
+    Start 54479, length 17342, data 65536
+    Start 71821, length 17715, data 65536
+    Start 89536, length 17728, data 65536
+    Start 107264, length 17292, data 63398
+    Start 124556, length 28, data 0
+    >>> handle.close()
+ 
+    Now let's see how to use this block information to jump to
+    specific parts of the decompressed BAM file:
+
+    >>> handle = BgzfReader("SamBam/ex1.bam", "rb")
+    >>> handle.tell()
+    0
+    >>> handle.read(4)
+    'BAM\x01'
+    >>> handle.tell()
+    4
+
+    So far nothing so strange, we got the magic marker used at the
+    start of a decompressed BAM file, and the handle position makes
+    sense. Now however, let's jump to the end of this block and 4
+    bytes into the next block by reading 65536 bytes,
+
+    >>> data = handle.read(65536)
+    >>> len(data)
+    65536
+    >>> handle.tell()
+    1195311108
+
+    Expecting 4 + 65536 = 65540 were you? Well this is a BGZF 64-bit
+    virtual offset, which means:
+
+    >>> split_virtual_offset(1195311108)
+    (18239, 4)
+
+    You should spot 18239 as the start of the second BGZF block, while
+    the 4 is the offset into this block. See also make_virtual_offset,
+
+    >>> make_virtual_offset(18239, 4)
+    1195311108
+
+    Let's jump back to almost the start of the file,
+
+    >>> make_virtual_offset(0, 2)
+    2
+    >>> handle.seek(2)
+    >>> handle.read(2)
+    'M\x01'
+    >>> handle.close()
+
+    """
 
     def __init__(self, filename=None, mode=None, fileobj=None):
         if fileobj:
@@ -286,28 +348,45 @@ class BgzfReader(object):
 
     def _load_block(self, start_offset=None):
         handle = self._handle
-        if start_offset:
+        if start_offset is not None:
             handle.seek(start_offset)
-        self._block_start_offset, self._block_size, \
-        self._buffer = _load_bgzf_block(handle)
+        self._block_start_offset = handle.tell()
+        self._block_size, self._buffer = _load_bgzf_block(handle)
         self._within_block_offset = 0
 
     def tell(self):
         """Returns a 64-bit unsigned BGZF virtual offset."""
         return make_virtual_offset(self._block_start_offset, self._within_block_offset)
 
+    def seek(self, virtual_offset):
+        """Seek to a 64-bit unsigned BGZF virtual offset."""
+        start_offset, within_block = split_virtual_offset(virtual_offset)
+        self._load_block(start_offset)
+        if within_block >= len(self._buffer):
+            raise ValueError("Invalid virtual offset, block size only %i" % len(self._buffer))
+        self._buffer = self._buffer[within_block:]
+        self._within_block_offset = within_block
+
     def read(self, size=-1):
         if size < 0:
             raise NotImplementedError("Don't be greedy, that could be massive!")
         elif size == 0:
             return ""
-        elif self._with_block_offset + size < len(self._buffer):
-            self._with_block_offset += size
-            return self._buffer[self._with_block_offset-size:self._with_block_offset]
+        elif size < len(self._buffer):
+            self._within_block_offset += size
+            data = self._buffer[:size]
+            self._buffer = self._buffer[size:]
+            return data
         else:
             data = self._buffer
-            self._load_block()
-            return data + self.read(size - len(data))
+            size -= len(data)
+            self._load_block() #will reset offsets
+            return data + self.read(size)
+
+    def close(self):
+       self._handle.close()
+       self._buffer = None
+       self._block_start_offset = None
 
 
 class BgzfWriter(object):
