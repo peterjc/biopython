@@ -86,7 +86,7 @@ def bgzf_open(filename, mode):
     #Was thinking to call this open to match gzip.open but will
     #complicate writing doctest examples...
     if "r" in mode.lower():
-        raise NotImplementedError("TODO - Use gzip.open() for now")
+        return BgzfReader(filename, mode)
     elif "w" in mode.lower() or "a" in mode.lower():
         return BgzfWriter(filename, mode)
     else:
