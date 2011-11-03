@@ -105,10 +105,8 @@ be decompressed using gzip,
 '    68521 tatgtcattc gaaattgtat aaagacaact cctatttaat agagctattt gtgcaagtat\n'
 >>> handle.close()
 
-You could of course parse the handle using Bio.SeqIO to get
-SeqRecord objects. We can also access the file using the
-BGZF reader - but pay attention to the file offsets which
-will be explained below:
+We can also access the file using the BGZF reader - but pay
+attention to the file offsets which will be explained below:
 
 >>> handle = BgzfReader("GenBank/NC_000932.gb.bgz", "rb")
 >>> handle.tell()
@@ -163,6 +161,18 @@ The catch with BGZF virtual offsets is while they can be compared
 (which offset comes first in the file), you cannot safely subtract
 them to get the size of the data between them, nor add/subtract
 a relative offset.
+
+Of course you can parse this file with Bio.SeqIO using BgzfReader,
+although there isn't any benefit over using gzip.open(...), unless
+you want to index BGZF compressed sequence files:
+
+>>> from Bio import SeqIO
+>>> handle = BgzfReader("GenBank/NC_000932.gb.bgz", "rb")
+>>> record = SeqIO.read(handle, "genbank")
+>>> handle.close()
+>>> print record.id
+NC_000932.1
+
 """
 #TODO - Move somewhere else in Bio.* namespace?
 
@@ -308,6 +318,7 @@ def BgzfBlocks(handle):
     """
     while True:
         start_offset = handle.tell()
+        #This may raise StopIteration which is perfect here
         block_length, data = _load_bgzf_block(handle)
         yield start_offset, block_length, len(data)
 
@@ -441,7 +452,12 @@ class BgzfReader(object):
         if start_offset is not None:
             handle.seek(start_offset)
         self._block_start_offset = handle.tell()
-        self._block_size, self._buffer = _load_bgzf_block(handle)
+        try:
+            self._block_size, self._buffer = _load_bgzf_block(handle)
+        except StopIteration:
+            #EOF
+            self._block_size = 0
+            self._buffer = ""
         self._within_block_offset = 0
 
     def tell(self):
@@ -472,7 +488,11 @@ class BgzfReader(object):
             data = self._buffer
             size -= len(data)
             self._load_block() #will reset offsets
-            return data + self.read(size)
+            if not self._buffer:
+                return data #EOF
+            else:
+                #TODO - Avoid recursion
+                return data + self.read(size)
 
     def readline(self):
         i = self._buffer.find("\n")
@@ -484,7 +504,11 @@ class BgzfReader(object):
         else:
             data = self._buffer
             self._load_block() #will reset offsets
-            return data + self.readline()
+            if not self._buffer:
+                return data #EOF
+            else:
+                #TODO - Avoid recursion
+                return data + self.readline()
 
     def close(self):
         self._handle.close()
