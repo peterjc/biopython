@@ -100,11 +100,15 @@ be decompressed using gzip,
 'f="GeneID:844718"\n'
 >>> handle.readline()
 '     CDS             complement(join(84337..84771,85454..85843))\n'
+>>> offset = handle.seek(65536*3 + 126)
+>>> handle.readline()
+'    68521 tatgtcattc gaaattgtat aaagacaact cctatttaat agagctattt gtgcaagtat\n'
 >>> handle.close()
 
 You could of course parse the handle using Bio.SeqIO to get
 SeqRecord objects. We can also access the file using the
-BGZF reader - but pay attention to the file offsets:
+BGZF reader - but pay attention to the file offsets which
+will be explained below:
 
 >>> handle = BgzfReader("GenBank/NC_000932.gb.bgz", "rb")
 >>> handle.tell()
@@ -124,6 +128,9 @@ BGZF reader - but pay attention to the file offsets:
 'f="GeneID:844718"\n'
 >>> handle.readline()
 '     CDS             complement(join(84337..84771,85454..85843))\n'
+>>> offset = handle.seek(make_virtual_offset(55074, 126))
+>>> handle.readline()
+'    68521 tatgtcattc gaaattgtat aaagacaact cctatttaat agagctattt gtgcaagtat\n'
 >>> handle.close()
 
 Notice the handle's offset looks different as a BGZF file. This
@@ -144,6 +151,13 @@ By reading ahead 70,000 bytes we moved into the second BGZF block,
 and at that point the BGZF virtual offsets start to look different
 a simple offset into the decompressed data as exposed by the gzip
 library.
+
+Using the seek for the decompressed co-ordinates, 65536*3 + 126
+is equivalent to jumping the first thre blocks (each size 65536
+after decompression) and starting at byte 126 of the third block
+(after decompression). For BGZF, we need to know the block's
+offset of 55074 and the offset within the block of 126 to get
+the BGZF virtual offset.
 
 The catch with BGZF virtual offsets is while they can be compared
 (which offset comes first in the file), you cannot safely subtract
@@ -403,6 +417,7 @@ class BgzfReader(object):
     >>> make_virtual_offset(0, 2)
     2
     >>> handle.seek(2)
+    2
     >>> handle.read(2)
     'M\x01'
     >>> handle.close()
@@ -441,6 +456,7 @@ class BgzfReader(object):
             raise ValueError("Invalid virtual offset, block size only %i" % len(self._buffer))
         self._buffer = self._buffer[within_block:]
         self._within_block_offset = within_block
+        return virtual_offset
 
     def read(self, size=-1):
         if size < 0:
