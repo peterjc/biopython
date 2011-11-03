@@ -617,12 +617,19 @@ if __name__ == "__main__":
         print
         print "cat example.fastq.bgz | gunzip > example.fastq"
         print
+        print "See also the tool bgzip that comes with samtools"
         sys.exit(0)
 
     sys.stderr.write("Producing BGZF output from stdin...\n")
     w = BgzfWriter(fileobj=sys.stdout)
-    for data in sys.stdin:
+    while True:
+        data = sys.stdin.read(65536)
         w.write(data)
+        if not data:
+            break
+    #Works but much slower
+    #for data in sys.stdin:
+    #    w.write(data)
     w.flush()
     w.flush() #Double flush triggers an empty BGZF block as EOF marker
     w.close()
