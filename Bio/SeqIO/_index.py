@@ -796,13 +796,13 @@ class SwissRandomAccess(SequentialSeqFileRandomAccess):
             #We cannot assume the record.id is the first word after ID,
             #normally the following AC line is used.
             line = handle.readline()
+            length += len(line)
             assert line.startswith(_as_bytes("AC "))
             key = line[3:].strip().split(semi_char)[0].strip()
             while True:
                 end_offset = handle.tell()
                 line = handle.readline()
                 if marker_re.match(line) or not line:
-                    end_offset = handle.tell() - len(line)
                     yield _bytes_to_string(key), start_offset, length
                     start_offset = end_offset
                     break
