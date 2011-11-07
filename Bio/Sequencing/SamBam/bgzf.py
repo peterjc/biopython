@@ -331,8 +331,9 @@ def _load_bgzf_block(handle):
         raise StopIteration
     if magic != "\x1f\x8b\x08\x04":
         raise ValueError(r"A BGZF (e.g. a BAM file) block should start with "
-                         r"'\x1f\x8b\x08\x04' (decimal 31 139 8 4), not %s"
-                         % repr(magic))
+                         r"'\x1f\x8b\x08\x04' (decimal 31 139 8 4), not %s."
+                         r"handle.tell() now says %r"
+                         % (repr(magic), handle.tell()))
     gzip_mod_time = handle.read(4) #uint32_t
     gzip_extra_flags = handle.read(1) #uint8_t
     gzip_os = handle.read(1) #uint8_t
@@ -462,6 +463,11 @@ class BgzfReader(object):
 
     def tell(self):
         """Returns a 64-bit unsigned BGZF virtual offset."""
+        if self._within_block_offset == 65536:
+            assert self._buffer == "", len(self._buffer)
+            #At the end of one block, start of next
+            #TODO - Handle this in the read method?
+            self._load_block()
         return make_virtual_offset(self._block_start_offset, self._within_block_offset)
 
     def seek(self, virtual_offset):
