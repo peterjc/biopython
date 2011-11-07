@@ -213,7 +213,7 @@ def make_virtual_offset(block_start_offset, within_block_offset):
     >>> make_virtual_offset(0, 2**16)
     Traceback (most recent call last):
     ...
-    ValueError: Require 0 <= within_block_offset < 2**16
+    ValueError: Require 0 <= within_block_offset < 2**16, got 65536
 
     >>> make_virtual_offset(1,0)
     65536
@@ -232,13 +232,13 @@ def make_virtual_offset(block_start_offset, within_block_offset):
     >>> make_virtual_offset(2**48,0)
     Traceback (most recent call last):
     ...
-    ValueError: Require 0 <= block_start_offset < 2**48
+    ValueError: Require 0 <= block_start_offset < 2**48, got 281474976710656
 
     """
     if within_block_offset < 0 or within_block_offset >= 2**16:
-        raise ValueError("Require 0 <= within_block_offset < 2**16, got %r", within_block_offset)
+        raise ValueError("Require 0 <= within_block_offset < 2**16, got %r" % within_block_offset)
     if block_start_offset < 0 or block_start_offset >= 2**28:
-        raise ValueError("Require 0 <= block_start_offset < 2**48, got %r", block_start_offset)
+        raise ValueError("Require 0 <= block_start_offset < 2**48, got %r" % block_start_offset)
     return (block_start_offset<<16) | within_block_offset
 
 def split_virtual_offset(virtual_offset):
