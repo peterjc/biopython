@@ -172,6 +172,9 @@ would be 454 paired end reads, since they are on the same strand.
 import gzip
 import struct
 
+#Biopython imports:
+from Bio import bgzf
+
 class SamIterator(object):
     """Loop over a SAM file returning SamRead objects.
 
@@ -358,7 +361,7 @@ class BamIterator(object):
         if gzipped:
             h = gzip.GzipFile(fileobj=handle)
         else:
-            #Uncompressed BAM (useful in piping between command line tools)
+            #Uncompressed BAM (useful in testing)
             h = handle
         self.text, ref_count = _bam_file_header(h)
         #Load any reference information
@@ -1475,7 +1478,7 @@ def SamWriter(handle, reads, header="", referencenames=None, referencelengths=No
         count += 1
     return count
 
-def BamWriter(handle, reads, header="", referencenames=None, referencelengths=None, gzipped=False):
+def BamWriter(handle, reads, header="", referencenames=None, referencelengths=None, gzipped=True):
     """Writes a complete BAM file including any header, returns read count.
 
     Note that if you do not supply any header information, it will be copied
@@ -1503,7 +1506,7 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
 
     """
     if gzipped:
-        raise NotImplementedError("TODO - For now you get uncompressed BAM")
+        handle = bgzf.BgzfWriter(fileobj=handle)
     #Consistency check:
     header, references = _cross_check_header_refs(reads, header,
                                                   referencenames,
@@ -1724,7 +1727,8 @@ def _test_misc():
             continue
         print "%s -> %s check..." % (bam_filename, bam_filename)
         handle = BytesIO()
-        count = BamWriter(handle, BamIterator(open(bam_filename, "rb")), gzipped=False)
+        count = BamWriter(handle, BamIterator(open(bam_filename, "rb")),
+                          gzipped=False)
         if handle.getvalue() != gzip.open(bam_filename).read():
             sys.stderr.write("ERROR: Couldn't reproduce %s -> %s\n" \
                              % (bam_filename, bam_filename))
@@ -1733,7 +1737,8 @@ def _test_misc():
             continue
         print "%s -> %s check..." % (sam_filename, bam_filename)
         handle = BytesIO()
-        count = BamWriter(handle, SamIterator(open(sam_filename)), gzipped=False)
+        count = BamWriter(handle, SamIterator(open(sam_filename)),
+                          gzipped=False)
         if handle.getvalue() != gzip.open(bam_filename).read():
             sys.stderr.write("ERROR: Couldn't reproduce %s -> %s\n" \
                              % (sam_filename, bam_filename))
