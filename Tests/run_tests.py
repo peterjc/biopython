@@ -64,6 +64,7 @@ def is_numpy():
 # those modules here.
 DOCTEST_MODULES = ["Bio.Alphabet",
                    "Bio.Application",
+                   "Bio.bgzf",
                    "Bio.Seq",
                    "Bio.SeqFeature",
                    "Bio.SeqRecord",
