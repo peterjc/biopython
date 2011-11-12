@@ -564,6 +564,17 @@ class _BaseGenBankConsumer(object):
 
         return new_start, new_end
 
+    def _feature(self, feature_key, location_string, qualifiers):
+        """Handle a feature table entry."""
+        self.feature_key(feature_key)
+        self.location(location_string)
+        for q_key, q_value in qualifiers:
+            if q_value is None:
+                self.feature_qualifier(q_key, q_value)
+            else:
+                self.feature_qualifier(q_key, q_value.replace("\n"," "))
+
+
 class _FeatureConsumer(_BaseGenBankConsumer):
     """Create a SeqRecord object with Features to return (PRIVATE).
 

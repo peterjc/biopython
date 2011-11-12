@@ -339,22 +339,6 @@ class InsdcScanner(object):
         pass
 
 
-    def _feed_feature_table(self, consumer, feature_tuples):
-        """Handle the feature table (list of tuples), passing data to the comsumer
-        
-        Used by the parse_records() and parse() methods.
-        """
-        consumer.start_feature_table()
-        for feature_key, location_string, qualifiers in feature_tuples:
-            consumer.feature_key(feature_key)
-            consumer.location(location_string)
-            for q_key, q_value in qualifiers:
-                if q_value is None:
-                    consumer.feature_qualifier(q_key, q_value)
-                else:
-                    consumer.feature_qualifier(q_key, q_value.replace("\n"," "))
-
-
     def _feed_misc_lines(self, consumer, lines):
         """Handle any lines between features and sequence (list of strings), passing data to the consumer
         
@@ -397,7 +381,9 @@ class InsdcScanner(object):
 
         #Features (common to both EMBL and GenBank):
         if do_features:
-            self._feed_feature_table(consumer, self.parse_features(skip=False))
+            consumer.start_feature_table()
+            for key, loc, qual in self.parse_features(skip=False):
+                consumer._feature(key, loc, qual)
         else:
             self.parse_features(skip=True) # ignore the data
         
