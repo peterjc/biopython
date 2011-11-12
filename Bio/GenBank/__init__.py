@@ -922,10 +922,30 @@ class _FeatureConsumer(_BaseGenBankConsumer):
             self._cur_reference = None
 
     def feature_key(self, content):
+        """Using _feature instead now (OBSOLETE)."""
+        raise NotImplementedError("Using _feature instead now")
+
+    def _feature(self, feature_key, location_string, qualifiers):
+        """Handle a feature table entry."""
         # start a new feature
         self._cur_feature = SeqFeature.SeqFeature()
-        self._cur_feature.type = content
+        self._cur_feature.type = feature_key
         self.data.features.append(self._cur_feature)
+        self.location(location_string) #TODO refactor this
+        for key, value in qualifiers:
+            if value is None:
+                if key not in self._cur_feature.qualifiers:
+                    self._cur_feature.qualifiers[key] = [""]
+                    continue
+            value = value.replace("\n", " ").replace('"', '')
+            if self._feature_cleaner is not None:
+                value = self._feature_cleaner.clean_value(key, value)
+            # if the qualifier name exists, append the value
+            if key in self._cur_feature.qualifiers:
+                self._cur_feature.qualifiers[key].append(value)
+            # otherwise start a new list of the key with its values
+            else:
+                self._cur_feature.qualifiers[key] = [value]
 
     def location(self, content):
         """Parse out location information from the location string.
@@ -1046,35 +1066,13 @@ class _FeatureConsumer(_BaseGenBankConsumer):
             raise LocationParserError(msg)
         raise LocationParserError(location_line)
 
-    def feature_qualifier(self, key, value):
-        """When we get a qualifier key and its value.
-        
-        Can receive None, since you can have valueless keys such as /pseudo
-        """
-        # Hack to try to preserve historical behaviour of /pseudo etc
-        if value is None:
-            if key not in self._cur_feature.qualifiers:
-                self._cur_feature.qualifiers[key] = [""]
-                return
-            
-        value = value.replace('"', '')
-        if self._feature_cleaner is not None:
-            value = self._feature_cleaner.clean_value(key, value)
-
-        # if the qualifier name exists, append the value
-        if key in self._cur_feature.qualifiers:
-            self._cur_feature.qualifiers[key].append(value)
-        # otherwise start a new list of the key with its values
-        else:
-            self._cur_feature.qualifiers[key] = [value]
-       
     def feature_qualifier_name(self, content_list):
-        """Use feature_qualifier instead (OBSOLETE)."""
-        raise NotImplementedError("Use the feature_qualifier method instead.")
+        """Using _feature instead (OBSOLETE)."""
+        raise NotImplementedError("Use the _feature method instead.")
 
     def feature_qualifier_description(self, content):
-        """Use feature_qualifier instead (OBSOLETE)."""
-        raise NotImplementedError("Use the feature_qualifier method instead.")
+        """Using _feature instead (OBSOLETE)."""
+        raise NotImplementedError("Use the _feature method instead.")
 
     def contig_location(self, content):
         """Deal with CONTIG information."""
