@@ -124,7 +124,7 @@ class InsdcScanner(object):
         return header_lines
 
     def parse_features(self, skip=False):
-        """Return list of tuples for the features (if present)
+        """Returns tuples for the features (if present)
 
         Each feature is returned as a tuple (key, location, qualifiers)
         where key and location are strings (e.g. "CDS" and
@@ -135,12 +135,11 @@ class InsdcScanner(object):
         """
         if self.line.rstrip() not in self.FEATURE_START_MARKERS:
             if self.debug : print "Didn't find any feature table"
-            return []
+            raise StopIteration
         
         while self.line.rstrip() in self.FEATURE_START_MARKERS:
             self.line = self.handle.readline()
 
-        features = []
         line = self.line
         while True:
             if not line:
@@ -185,9 +184,9 @@ class InsdcScanner(object):
                     #white space (e.g. out of spec files with too much intentation)
                     feature_lines.append(line[self.FEATURE_QUALIFIER_INDENT:].strip())
                     line = self.handle.readline()
-                features.append(self.parse_feature(feature_key, feature_lines))
+                yield self.parse_feature(feature_key, feature_lines)
         self.line = line
-        return features
+        raise StopIteration
 
     def parse_feature(self, feature_key, lines):
         """Expects a feature as a list of strings, returns a tuple (key, location, qualifiers)
@@ -452,7 +451,7 @@ class InsdcScanner(object):
         while self.find_start():
             #Got an EMBL or GenBank record...
             self.parse_header() # ignore header lines!
-            feature_tuples = self.parse_features()
+            feature_tuples = list(self.parse_features()) #TODO - iterate!
             #self.parse_footer() # ignore footer lines!
             while True:
                 line = self.handle.readline()
