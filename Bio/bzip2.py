@@ -86,11 +86,11 @@ _empty_bytes_string = _as_bytes("")
 _bytes_newline = _as_bytes("\n")
 
 def open(filename, mode="rb"):
-    """Open a BGZF file for reading, writing or appending."""
+    """Open a bzip2 file for reading, writing or appending."""
     if "r" in mode.lower():
         return BZip2Reader(filename, mode)
     elif "w" in mode.lower() or "a" in mode.lower():
-        return BgzfWriter(filename, mode)
+        return BZip2Writer(filename, mode)
     else:
         raise ValueError("Bad mode %r" % mode)
 
@@ -104,8 +104,8 @@ def BZip2Blocks(handle):
     >>> from __builtin__ import open
     >>> handle = open("Quality/example.fastq.bz2", "rb")
     >>> for values in BZip2Blocks(handle):
-    ...     print "Start %i, length %i, data %i" % values
-    Start 0, length 154, data 234
+    ...     print "Raw start %i, raw length %i; data start %i, data length %i" % values
+    Raw start 0, raw length 154; data start 0, data length 234
     >>> handle.close()
 
     The above small file uses one block, and manages to compress
@@ -115,23 +115,24 @@ def BZip2Blocks(handle):
 
     >>> handle = open("Quality/example.fastq.3b.bz2", "rb")
     >>> for values in BZip2Blocks(handle):
-    ...     print "Start %i, length %i, data %i" % values
-    Start 0, length 92, data 78
-    Start 92, length 92, data 78
-    Start 184, length 95, data 78
+    ...     print "Raw start %i, raw length %i; data start %i, data length %i" % values
+    Raw start 0, raw length 92; data start 0, data length 78
+    Raw start 92, raw length 92; data start 78, data length 78
+    Raw start 184, raw length 95; data start 156, data length 78
     >>> handle.close()
 
     """
     chunk = 10000
     raw_data = ""
+    data_start = 0
     while True:
-        start_offset = handle.tell() - len(raw_data)
-        d = bz2.BZ2Decompressor()
         raw_data += handle.read(chunk - len(raw_data))
         if not raw_data:
             raise StopIteration
+        start_offset = handle.tell() - len(raw_data)
+        d = bz2.BZ2Decompressor()
         block_length = len(raw_data)
-        data = d.decompress(raw_data)
+        data_len = len(d.decompress(raw_data))
         while True:
             raw_data = handle.read(chunk)
             if not raw_data:
@@ -143,7 +144,8 @@ def BZip2Blocks(handle):
                 break
         raw_data = d.unused_data
         block_length -= len(raw_data)
-        yield start_offset, block_length, len(data)
+        yield start_offset, block_length, data_start, data_len
+        data_start += data_len
 
 
 def _load_bzip2_block(handle, text_mode=False):
