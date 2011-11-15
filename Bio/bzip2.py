@@ -68,6 +68,13 @@ The next file actually uses multiple bzip2 blocks, which means that
 on Python 2 using bz2.BZ2File you'll only get the first block back.
 The reader in this module will work on both Python 2 and Python 3.
 
+>>> from Bio import bzip2
+>>> handle = bzip2.BZip2Reader("Quality/example.fastq.3b.bz2", "rb")
+>>> data = handle.read(10000) #Insists on a limit!
+>>> len(data)
+234
+>>> handle.close()
+
 So far nothing special. But rather than mimicking the traditional
 offsets we can ask for and use block-based offsets as tuples.
 """
@@ -139,7 +146,7 @@ def BZip2Blocks(handle):
                 break
             block_length += len(raw_data)
             try:
-                data += d.decompress(raw_data)
+                data_len += len(d.decompress(raw_data))
             except bz2.EOFError:
                 break
         raw_data = d.unused_data
@@ -158,7 +165,29 @@ def _load_bzip2_block(handle, text_mode=False):
         raise ValueError(r"A bzip2 block should start with "
                          r"%r, not %r; handle.tell() now says %r"
                          % (_bzip2_magic, magic, handle.tell()))
-    raise NotImplementedError
+
+    chunk = 10000
+    raw_data = magic
+    data_start = 0
+    while True:
+        raw_data += handle.read(chunk - len(raw_data))
+        if not raw_data:
+            raise StopIteration
+        start_offset = handle.tell() - len(raw_data)
+        d = bz2.BZ2Decompressor()
+        block_length = len(raw_data)
+        data = d.decompress(raw_data)
+        while True:
+            raw_data = handle.read(chunk)
+            if not raw_data:
+                break
+            block_length += len(raw_data)
+            try:
+                data += d.decompress(raw_data)
+            except bz2.EOFError:
+                break
+        handle.seek(-len(d.unused_data), 1) #rewind any overshoot
+        return start_offset, data
 
 
 class BZip2Reader(object):
@@ -179,11 +208,38 @@ class BZip2Reader(object):
             handle = __builtin__.open(filename, "rb")
         self._handle = handle
         self.max_cache = max_cache
+        self._buffers = {}
         self._block_start_offset = None
         self._load_block()
 
     def _load_block(self, start_offset=None):
-        raise NotImplementedError
+        if start_offset is None:
+            start_offset = self._handle.tell()
+        if start_offset == self._block_start_offset:
+            self._within_block_offset = 0
+            return
+        elif start_offset in self._buffers:
+            #Already in cache
+            self._buffer = self._buffers[start_offset]
+            self._within_block_offset = 0
+            return
+        #Must hit the disk... first check cache limits,
+        while len(self._buffers) >= self.max_cache:
+            #TODO - Implemente LRU cache removal?
+            self._buffers.popitem()
+        #Now load the block
+        handle = self._handle
+        if start_offset is not None:
+            handle.seek(start_offset)
+        self._block_start_offset = handle.tell()
+        try:
+            block_size, self._buffer = _load_bzip2_block(handle, self._text)
+        except StopIteration:
+            #EOF
+            self._buffer = _empty_bytes_string
+        self._within_block_offset = 0
+        #Finally save the block in our cache,
+        self._buffers[self._block_start_offset] = self._buffer
 
     def readline(self):
         if self._text:
@@ -204,6 +260,26 @@ class BZip2Reader(object):
             else:
                 #TODO - Avoid recursion
                 return data + self.readline()
+
+    def read(self, size=-1):
+        if size < 0:
+            raise NotImplementedError("Don't be greedy, that could be massive!")
+        elif size == 0:
+            return _empty_bytes_string
+        elif self._within_block_offset + size < len(self._buffer):
+            data = self._buffer[self._within_block_offset:self._within_block_offset + size]
+            self._within_block_offset += size
+            return data
+        else:
+            data = self._buffer[self._within_block_offset:]
+            size -= len(data)
+            self._load_block() #will reset offsets
+            if not self._buffer:
+                return data #EOF
+            else:
+                #TODO - Avoid recursion
+                return data + self.read(size)
+
 
     def close(self):
         self._handle.close()
