@@ -123,7 +123,7 @@ def BZip2Blocks(handle):
 
     """
     chunk = 10000
-    raw_data = ""
+    raw_data = _empty_bytes_string
     data_start = 0
     while True:
         raw_data += handle.read(chunk - len(raw_data))
