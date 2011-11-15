@@ -70,13 +70,20 @@ The reader in this module will work on both Python 2 and Python 3.
 
 >>> from Bio import bzip2
 >>> handle = bzip2.BZip2Reader("Quality/example.fastq.3b.bz2", "rb")
+>>> print handle.tell()
+(0, 0)
 >>> data = handle.read(10000) #Insists on a limit!
 >>> len(data)
 234
+>>> print handle.tell()
+(279, 0)
 >>> handle.close()
 
-So far nothing special. But rather than mimicking the traditional
-offsets we can ask for and use block-based offsets as tuples.
+Notice that rather than traditional single integer offsets, we get
+a tuple from the tell method - this gives the raw disk offset of
+the current bzip2 block, and the data offset within the compressed
+block. You can use these tuples with the seek method for efficient
+random access.
 """
 #TODO - Move somewhere else in Bio.* namespace?
 
@@ -240,6 +247,10 @@ class BZip2Reader(object):
         self._within_block_offset = 0
         #Finally save the block in our cache,
         self._buffers[self._block_start_offset] = self._buffer
+
+    def tell(self):
+        """Returns a tuple offset (block start, within block offset)."""
+        return self._block_start_offset , self._within_block_offset
 
     def readline(self):
         if self._text:
