@@ -131,6 +131,9 @@ def open(filename, mode="rb"):
 def BZip2Blocks(handle):
     """Low level debugging function to inspect bzip2 blocks.
 
+    TODO - Currently detects the "streams", each of which may contain
+    zero or more blocks.
+
     Returns the block start offset, the block length (add these for
     the start of the next block), and the decompressed length of the
     blocks contents.
@@ -183,7 +186,8 @@ def BZip2Blocks(handle):
 
 
 def _load_bzip2_block(handle, text_mode=False):
-    #Change indentation later...
+    #TODO - Currently detects the "streams", each of which may contain
+    #zero or more blocks. 
     magic = handle.read(3)
     if not magic:
         #End of file
