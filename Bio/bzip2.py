@@ -67,6 +67,18 @@ so it be decompressed using bz2,
 The next file actually uses multiple bzip2 blocks, which means that
 on Python 2 using bz2.BZ2File you'll only get the first block back.
 The reader in this module will work on both Python 2 and Python 3.
+You can use these tuples with the seek method for efficient random
+access. Let's first look at the bzip2 blocks here:
+
+>>> handle = open("Quality/example.fastq.3b.bz2", "rb")
+>>> for values in BZip2Blocks(handle):
+...     print "Raw start %i, raw length %i; data start %i, data length %i" % values
+Raw start 0, raw length 92; data start 0, data length 78
+Raw start 92, raw length 92; data start 78, data length 78
+Raw start 184, raw length 95; data start 156, data length 78
+>>> handle.close() 
+
+Now let's read the file and look at how it presents the offset:
 
 >>> from Bio import bzip2
 >>> handle = bzip2.BZip2Reader("Quality/example.fastq.3b.bz2", "rb")
@@ -77,13 +89,21 @@ The reader in this module will work on both Python 2 and Python 3.
 234
 >>> print handle.tell()
 (279, 0)
->>> handle.close()
 
 Notice that rather than traditional single integer offsets, we get
 a tuple from the tell method - this gives the raw disk offset of
 the current bzip2 block, and the data offset within the compressed
 block. You can use these tuples with the seek method for efficient
-random access.
+random access. Now let's jump to the start of the second record:
+
+>>> handle.seek((92, 0))
+(92, 0)
+>>> handle.readline()
+'@EAS54_6_R1_2_1_540_792\n'
+>>> handle.close()
+
+That isn't very impressive on a tiny file like this, but it makes
+a really big difference on large bzip2 files.
 """
 #TODO - Move somewhere else in Bio.* namespace?
 
@@ -251,6 +271,20 @@ class BZip2Reader(object):
     def tell(self):
         """Returns a tuple offset (block start, within block offset)."""
         return self._block_start_offset , self._within_block_offset
+
+    def seek(self, tuple_offset):
+        """Seek to a 64-bit unsigned BGZF virtual offset."""
+        start_offset, within_block = tuple_offset
+        if start_offset != self._block_start_offset:
+            #Don't need to load the block if already there
+            #(this avoids a function call since _load_block would do nothing)
+            self._load_block(start_offset)
+        if within_block >= len(self._buffer) \
+        and not (within_block == 0 and len(self._buffer)==0):
+            raise ValueError("Within offset %i but block size only %i" \
+                             % (within_block, len(self._buffer)))
+        self._within_block_offset = within_block
+        return tuple_offset
 
     def readline(self):
         if self._text:
