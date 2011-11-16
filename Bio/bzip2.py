@@ -274,7 +274,13 @@ class BZip2Reader(object):
 
     def seek(self, tuple_offset):
         """Seek to a 64-bit unsigned BGZF virtual offset."""
-        start_offset, within_block = tuple_offset
+        try:
+            start_offset, within_block = tuple_offset
+        except TypeError:
+            if tuple_offset == 0:
+                start_offset, within_block = 0, 0
+            else:
+                raise ValueError("BZip2Reader uses tuples for offsets")
         if start_offset != self._block_start_offset:
             #Don't need to load the block if already there
             #(this avoids a function call since _load_block would do nothing)

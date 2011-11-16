@@ -48,6 +48,7 @@ from Bio._py3k import _bytes_to_string, _as_bytes, _as_string
 from Bio import SeqIO
 from Bio import Alphabet
 from Bio import bgzf
+from Bio import bzip2
 
 class _IndexedSeqFileDict(_dict_base):
     """Read only dictionary interface to a sequential sequence file.
@@ -493,6 +494,8 @@ class SeqFileRandomAccess(object):
             self._handle = gzip.open(filename, "rb")
         elif compression=="bgzf":
             self._handle = bgzf.open(filename, "rb")
+        elif compression=="bzip2":
+            self._handle = bzip2.BZip2Reader(filename, "rb")
         else:
             raise ValueError("Compression type %r not supported" % compression)
         self._alphabet = alphabet

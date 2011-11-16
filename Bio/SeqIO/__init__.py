@@ -681,7 +681,8 @@ def index(filename, format, alphabet=None, key_function=None, compression=None):
                   SeqRecord identifier string should return a unique
                   key for the dictionary.
      - compression - Optional argument for when the file is compressed,
-                  currently only "gzip" (slow) and "bgzf" are supported.
+                  currently "bgzf" and "bzip2" are supported, while you
+                  can also use "gzip" but it is very slow for large files.
 
     This indexing function will return a dictionary like object, giving the
     SeqRecord objects as values:
@@ -714,6 +715,15 @@ def index(filename, format, alphabet=None, key_function=None, compression=None):
 
     >>> from Bio import SeqIO
     >>> records = SeqIO.index("Quality/example.fastq.bgz", "fastq", compression="bgzf")
+    >>> len(records)
+    3
+    >>> print records["EAS54_6_R1_2_1_540_792"].seq
+    TTGGCAGGCCAAGGCCGATGGATCA
+
+    Or, if bzip2 was used:
+
+    >>> from Bio import SeqIO
+    >>> records = SeqIO.index("Quality/example.fastq.bz2", "fastq", compression="bzip2")
     >>> len(records)
     3
     >>> print records["EAS54_6_R1_2_1_540_792"].seq
