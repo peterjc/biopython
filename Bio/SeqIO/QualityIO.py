@@ -1414,6 +1414,15 @@ class FastqPhredWriter(SequentialSequenceWriter):
         assert self._header_written
         assert not self._footer_written
         self._record_written = True
+        self.handle.write(FormatFastqSanger(record))
+
+
+def _clean(text):
+    """Use this to avoid getting newlines in the output."""
+    return text.replace("\n", " ").replace("\r", " ").replace("  ", " ")
+
+def FormatFastqSanger(record):
+        """Turn a SeqRecord into a Sanger FASTQ format string."""
         #TODO - Is an empty sequence allowed in FASTQ format?
         if record.seq is None:
             raise ValueError("No sequence for record %s" % record.id)
@@ -1425,8 +1434,8 @@ class FastqPhredWriter(SequentialSequenceWriter):
 
         #FASTQ files can include a description, just like FASTA files
         #(at least, this is what the NCBI Short Read Archive does)
-        id = self.clean(record.id)
-        description = self.clean(record.description)
+        id = _clean(record.id)
+        description = _clean(record.description)
         if description and description.split(None, 1)[0]==id:
             #The description includes the id at the start
             title = description
@@ -1434,8 +1443,8 @@ class FastqPhredWriter(SequentialSequenceWriter):
             title = "%s %s" % (id, description)
         else:
             title = id
-        
-        self.handle.write("@%s\n%s\n+\n%s\n" % (title, seq_str, qualities_str))
+
+        return "@%s\n%s\n+\n%s\n" % (title, seq_str, qualities_str)
 
 class QualPhredWriter(SequentialSequenceWriter):
     """Class to write QUAL format files (using PHRED quality scores).
@@ -1601,7 +1610,11 @@ class FastqSolexaWriter(SequentialSequenceWriter):
         assert self._header_written
         assert not self._footer_written
         self._record_written = True
+        self.handle.write(FormatFastqSolexa(record))
 
+
+def FormatFastqSolexa(record):
+        """Turn a SeqRecord into a Solexa FASTQ format string."""
         #TODO - Is an empty sequence allowed in FASTQ format?
         if record.seq is None:
             raise ValueError("No sequence for record %s" % record.id)
@@ -1613,8 +1626,8 @@ class FastqSolexaWriter(SequentialSequenceWriter):
 
         #FASTQ files can include a description, just like FASTA files
         #(at least, this is what the NCBI Short Read Archive does)
-        id = self.clean(record.id)
-        description = self.clean(record.description)
+        id = _clean(record.id)
+        description = _clean(record.description)
         if description and description.split(None, 1)[0]==id:
             #The description includes the id at the start
             title = description
@@ -1623,7 +1636,7 @@ class FastqSolexaWriter(SequentialSequenceWriter):
         else:
             title = id
         
-        self.handle.write("@%s\n%s\n+\n%s\n" % (title, seq_str, qualities_str))
+        return "@%s\n%s\n+\n%s\n" % (title, seq_str, qualities_str)
 
 class FastqIlluminaWriter(SequentialSequenceWriter):
     r"""Write Illumina 1.3+ FASTQ format files (with PHRED quality scores).
@@ -1656,7 +1669,11 @@ class FastqIlluminaWriter(SequentialSequenceWriter):
         assert self._header_written
         assert not self._footer_written
         self._record_written = True
+        self.handle.write(FormatFastqIllumina(record))
 
+
+def FormatFastqIllumina(record):
+        """Turn a SeqRecord into a Ilumina 1.3+ FASTQ format string."""
         #TODO - Is an empty sequence allowed in FASTQ format?
         if record.seq is None:
             raise ValueError("No sequence for record %s" % record.id)
@@ -1668,8 +1685,8 @@ class FastqIlluminaWriter(SequentialSequenceWriter):
 
         #FASTQ files can include a description, just like FASTA files
         #(at least, this is what the NCBI Short Read Archive does)
-        id = self.clean(record.id)
-        description = self.clean(record.description)
+        id = _clean(record.id)
+        description = _clean(record.description)
         if description and description.split(None, 1)[0]==id:
             #The description includes the id at the start
             title = description
@@ -1678,8 +1695,9 @@ class FastqIlluminaWriter(SequentialSequenceWriter):
         else:
             title = id
         
-        self.handle.write("@%s\n%s\n+\n%s\n" % (title, seq_str, qualities_str))
-        
+        return "@%s\n%s\n+\n%s\n" % (title, seq_str, qualities_str)
+
+
 def PairedFastaQualIterator(fasta_handle, qual_handle, alphabet = single_letter_alphabet, title2ids = None):
     """Iterate over matched FASTA and QUAL files as SeqRecord objects.
 

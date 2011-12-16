@@ -381,6 +381,12 @@ _FormatToWriter = {"fasta" : FastaIO.FastaWriter,
                    "seqxml" : SeqXmlIO.SeqXmlWriter,
                    }
 
+_FormatToString = {"fastq" : QualityIO.FormatFastqSanger,
+                   "fastq-sanger" : QualityIO.FormatFastqSanger,
+                   "fastq-solexa" : QualityIO.FormatFastqSolexa,
+                   "fastq-illumina" : QualityIO.FormatFastqIllumina,
+                   }
+
 _BinaryFormats = ["sff", "sff-trim", "abi", "abi-trim"]
 
 
@@ -417,8 +423,13 @@ def write(sequences, handle, format):
         mode = 'w'
 
     with as_handle(handle, mode) as fp:
-        #Map the file format to a writer class
-        if format in _FormatToWriter:
+        if format in _FormatToString:
+            count = 0
+            writer_function = _FormatToString[format]
+            for record in sequences:
+                fp.write(writer_function(record))
+                count += 1
+        elif format in _FormatToWriter:
             writer_class = _FormatToWriter[format]
             count = writer_class(fp).write_file(sequences)
         elif format in AlignIO._FormatToWriter:

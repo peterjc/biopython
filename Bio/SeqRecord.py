@@ -683,6 +683,8 @@ class SeqRecord(object):
             #Follow python convention and default to using __str__
             return str(self)    
         from Bio import SeqIO
+        if format_spec in SeqIO._FormatToString:
+            return SeqIO._FormatToString[format_spec](self)
         if format_spec in SeqIO._BinaryFormats:
             #Return bytes on Python 3
             try:
