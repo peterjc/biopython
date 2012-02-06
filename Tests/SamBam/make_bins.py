@@ -62,6 +62,18 @@ for ref, ref_len in references:
                         % (name, flag, ref, start, cigar, seq))
     print "%s len %i, %i reads in %i bins:" % (ref, ref_len, count, len(bins))
     print "(bins %i, ..., %i)" % (min(bins), max(bins))
+
+#Add some unmapped reads as well, for testing BAI files
+#Note use more than 64k would ensure count uses full uint64
+for i in xrange(12):
+    name = "UnmappedRead%i" %i
+    flag = 0x4
+    ref = "*"
+    start = 0
+    cigar = "*"
+    seq = "ACGTACGTACGTACGT"
+    h.write("%s\t%i\t%s\t%i\t255\t%s\t*\t0\t0\t%s\t*\n" \
+            % (name, flag, ref, start, cigar, seq))
 h.close()
 print "SAM done"
 
