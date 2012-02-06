@@ -35,9 +35,41 @@ def _test_bai(handle):
         raise ValueError("BAM index files should start 'BAI\1', not %r" \
                          % magic)
     assert 4 == struct.calcsize("<i")
+    assert 8 == struct.calcsize("<Q")
     data = handle.read(4)
     n_ref = struct.unpack("<i", data)[0]
     print "%i references" % n_ref
+    for n in xrange(n_ref):
+        data = handle.read(4)
+        n_bin = struct.unpack("<i", data)[0]
+        print " - ref %i has %i bins" % (n, n_bin)
+        for b in xrange(n_bin):
+            data = handle.read(8)
+            bin, chunks = struct.unpack("<ii", data)
+            #print "   - bin %i aka %i has %i chunks" % (b, bin, chunks)
+            for chunk in xrange(chunks):
+                data = handle.read(16)
+                chunk_beg, chunk_end = struct.unpack("<QQ", data)
+                #print "     - chunk %i from %i to %i" \
+                #      %  (chunk, chunk_beg, chunk_end)
+        data = handle.read(4)
+        n_intv = struct.unpack("<i", data)[0]
+        print "    - bin %i aka %i has %i 16kbp intervals" \
+              % (b, bin, n_intv)
+        data = handle.read(8*n_intv)
+        ioffsets = struct.unpack("<%iQ" % n_intv, data)
+        #print "      %r" % (ioffsets,)
+    #This is missing on very old samtools index files,
+    data = handle.read(8)
+    if data:
+        unmapped = struct.unpack("<Q", data)[0]
+        print "%i unmapped reads" % unmapped
+    else:
+        print "Index missing unmapped reads count"
+    data = handle.read()
+    if data:
+        print "%i extra bytes" % len(data)
+        print repr(data)
 
 
 def _test():
