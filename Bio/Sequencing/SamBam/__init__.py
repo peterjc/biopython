@@ -766,8 +766,10 @@ class SamBamReadTags(dict):
     Next, if you print the tags or use str(tags), you get a SAM formated
     string, tab separated:
 
-    >>> str(tags)
-    'CO:Z:My comment\txx:B:i,1,2,3'
+    >>> for tag in sorted(str(tags).split("\t")):
+    ...     print tag
+    CO:Z:My comment
+    xx:B:i,1,2,3
 
     Note the order of the tags is not important in SAM/BAM.
     """
