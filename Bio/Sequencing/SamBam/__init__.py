@@ -175,7 +175,9 @@ import sys
 #Biopython imports:
 from Bio import bgzf
 from Bio._py3k import _as_bytes, _as_string
+_empty_bytes_string = _as_bytes("")
 _null_byte = _as_bytes("\0")
+_ff_byte = _as_bytes("\xFF")
 
 class SamIterator(object):
     """Loop over a SAM file returning SamRead objects.
@@ -852,39 +854,39 @@ class SamBamReadTags(dict):
 
     def _as_bam(self):
         """Returns the tags binary encodes in BAM formatting (bytes string)."""
-        data = ""
+        data = _empty_bytes_string
         for key, (code, value) in self.iteritems():
             assert len(key) ==2, key
             if code in ["Z", "H"]:
                 #Store as null terminated string, easy
                 assert isinstance(value, basestring), "%s %s %r" % (key, code, value)
-                data += key + code + value + chr(0)
+                data += _as_bytes(key + code + value) + _null_byte
             elif code == "i":
                 #TODO - Time this with try/except letting struct do bounds checking
                 #Integer, but how much space will we need in BAM?
                 if value >= 0:
                     #Use an unsigned int
                     if value < 2**8:
-                        data += key + "C" + struct.pack("<B", value)
+                        data += _as_bytes(key + "C") + struct.pack("<B", value)
                     elif value < 2**16:
-                        data += key + "S" + struct.pack("<H", value)
+                        data += _as_bytes(key + "S") + struct.pack("<H", value)
                     elif value < 2**32:
-                        data += key + "I" + struct.pack("<I", value)
+                        data += _as_bytes(key + "I") + struct.pack("<I", value)
                     else:
                         raise ValueError("%s:%s:%i too big for BAM unsigned 32bit int" % (key, code, value))
                 else:
                     #Use a signed int
                     if -2**7 < value:
-                        data += key + "c" + struct.pack("<b", value)
+                        data += _as_bytes(key + "c") + struct.pack("<b", value)
                     elif -2**15 < value:
-                        data += key + "s" + struct.pack("<h", value)
+                        data += _as_bytes(key + "s") + struct.pack("<h", value)
                     elif -2**31 < value:
-                        data += key + "i" + struct.pack("<i", value)
+                        data += _as_bytes(key + "i") + struct.pack("<i", value)
                     else:
                         raise ValueError("%s:%s:%i too big for BAM signed 32bit int" % (key, code, value))
             elif code=="f":
                 #Float
-                data += key + code + struct.pack("<f", value)
+                data += _as_bytes(key + code) + struct.pack("<f", value)
             elif code[0]=="B":
                 #Array of ints/floats etc
                 assert len(code)==2
@@ -892,11 +894,11 @@ class SamBamReadTags(dict):
                               "s":"h", "S":"H",
                               "i":"i", "I":"I",
                               "f":"f"}
-                data += key + code + struct.pack("<I%i%s" % (len(value), bam2struct[code[1]]),
+                data += _as_bytes(key + code) + struct.pack("<I%i%s" % (len(value), bam2struct[code[1]]),
                                                  len(value), *value)
             elif code=="A":
                 assert len(value)==1 and isinstance(value, basestring)
-                data += key + code + value
+                data += _as_bytes(key + code + value)
             else:
                 #TODO - BAM encoding of other tag types
                 raise NotImplementedError("TODO - Storing %s tags in BAM (here for tag %s)" % (code, key))
@@ -1020,7 +1022,7 @@ class SamBamRead(object):
             #Have no CIGAR for unmapped reads (given their partner's position)
             #Do what samtools does:
             bin = reg2bin(self.pos, self.pos + 1)
-        bin_mq_nl = bin<<16 | self.mapq<<8 | (len(self.qname)+1)
+        bin_mq_nl = int(bin)<<16 | int(self.mapq)<<8 | (len(self.qname)+1)
         try:
             cigar = self._binary_cigar #See BamRead subclass
         except AttributeError:
@@ -1053,13 +1055,13 @@ class SamBamRead(object):
             if self.qual:
                 #TODO - Store this as ints? Currently FASTQ encoded...
                 #TODO - Reuse the dict in Bio.SeqIO.QualityIO for this
-                if sys.version_info[0] >= 3:
+                if self.qual and isinstance(self.qual[0], int):
                     #Iteration over a bytes string gives integers
-                    qual = "".join(chr(q-33) for q in self.qual)
+                    qual = _empty_bytes_string.join(chr(q-33) for q in self.qual)
                 else:
-                    qual = "".join(chr(ord(q)-33) for q in self.qual)
+                    qual = _as_bytes("".join(chr(ord(q)-33) for q in self.qual))
             else:
-                qual = chr(0xFF) * l_seq
+                qual = _ff_bytes * l_seq
         assert len(qual) == l_seq, "%r (len %i) for %r (len %i = %i)" \
                % (qual, len(qual), self.qual, len(self.qual), l_seq)
         try:
@@ -1070,7 +1072,7 @@ class SamBamRead(object):
                            ref_index, self.pos,
                            bin_mq_nl, flag_nc, l_seq,
                            next_index, self.pnext, self.tlen)
-        data += self.qname + chr(0) + cigar + seq + qual + tags
+        data += _as_bytes(self.qname) + _null_byte + cigar + seq + qual + tags
         #First byte is the length of the REST of the record,
         return struct.pack("<I", len(data)) + data
 
