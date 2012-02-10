@@ -1,4 +1,4 @@
-# Copyright 2010-2011 by Peter Cock.
+# Copyright 2010-2012 by Peter Cock.
 # All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
@@ -171,9 +171,12 @@ would be 454 paired end reads, since they are on the same strand.
 
 import gzip
 import struct
+import sys
 
 #Biopython imports:
 from Bio import bgzf
+from Bio._py3k import _as_bytes, _as_string
+_null_byte = _as_bytes("\0")
 
 class SamIterator(object):
     """Loop over a SAM file returning SamRead objects.
@@ -361,7 +364,7 @@ class BamIterator(object):
         self._required_flag = required_flag
         self._excluded_flag = excluded_flag
         if gzipped:
-            h = gzip.GzipFile(fileobj=handle)
+            h = gzip.GzipFile(fileobj=handle, mode="rb")
         else:
             #Uncompressed BAM (useful in testing)
             h = handle
@@ -414,7 +417,7 @@ class BamIterator(object):
                 mate_ref_pos, inferred_insert_size, tag_len \
                 = _bam_file_read_header(h)
             raw_cigar = h.read(cigar_len * 4)
-            raw_seq = h.read((read_len+1)/2) # round up to make it even
+            raw_seq = h.read((read_len+1)//2) # round up to make it even
             raw_qual = h.read(read_len)
             raw_tags = h.read(tag_len)
             assert h.tell() == end_offset, \
@@ -507,8 +510,8 @@ def reg2bin(beg, end):
     Note that this indexing scheme is limited to references of 512Mbps
     (that is 2^29 base pairs).
 
-    >>> reg2bin(9, 13)
-    4681
+    >>> 4681 == reg2bin(9, 13)
+    True
 
     """
     assert 0 <= beg <= end < 2**29, "Bad region %i:%i" % (beg, end)
@@ -550,14 +553,14 @@ def _bam_file_header(handle):
 
     """
     magic = handle.read(4)
-    if magic != "BAM\1":
+    if magic != _as_bytes("BAM\1"):
         raise ValueError("After decompression BAM files should start "
-                         "with 'BAM\1', not %s" % repr(magic))
+                         "with bytes 'BAM\1', not %r" % magic)
     assert 4 == struct.calcsize("<i")
     data = handle.read(4)
     #raise ValueError("Got %s" % repr(data))
     header_length = struct.unpack("<i", data)[0]
-    header = handle.read(header_length).rstrip("\0")
+    header = _as_string(handle.read(header_length).rstrip(_null_byte))
     data = handle.read(4)
     #raise ValueError("Got %s" % repr(data))
     num_refs = struct.unpack("<i", data)[0]
@@ -578,7 +581,7 @@ def _bam_file_reference(handle):
 
     """
     ref_name_len = struct.unpack("<i", handle.read(4))[0]
-    ref_name = handle.read(ref_name_len).rstrip("\0")
+    ref_name = _as_string(handle.read(ref_name_len).rstrip(_null_byte))
     ref_len = struct.unpack("<i", handle.read(4))[0]
     return ref_name, ref_len
 
@@ -638,10 +641,10 @@ def _bam_file_read_header(handle):
                          % (read_len, repr(data),
                             repr(handle.read(read_name_len)), flag))
 
-    read_name = handle.read(read_name_len).rstrip("\0")
+    read_name = _as_string(handle.read(read_name_len).rstrip(_null_byte))
     end_offset = start_offset + block_size + 4
     #Block size includes misc fields, read name, seq len, qual len and cigar len
-    tag_len = block_size - 32 - read_name_len - ((read_len+1)/2) - read_len - cigar_len * 4
+    tag_len = block_size - 32 - read_name_len - ((read_len+1)//2) - read_len - cigar_len * 4
     return read_name, start_offset, end_offset, ref_id, ref_pos, bin, \
            map_qual, cigar_len, flag, read_len, mate_ref_id, mate_ref_pos, \
            inferred_insert_size, tag_len
@@ -655,7 +658,8 @@ def _build_decoder():
         encode[first.lower()] = b
         for j,second in enumerate("=ACMGRSVTWYHKDBN"):
             b = chr(i*16 + j)
-            decode[b] = first+second
+            decode[b] = first+second #For Python 2
+            decode[i*16+j] = first+second #For Python 3
             encode[first+second] = b
             encode[first.lower()+second] = b
             encode[first.lower()+second.lower()] = b
@@ -690,9 +694,7 @@ _decode_dibase_byte, _encode_dibase_byte = _build_decoder()
 def _decode_seq(binary, seq_len):
     r"""Helper function to decode BAM style sequence (PRIVATE).
 
-    >>> binary = chr(16+2) + chr(64+8)
-    >>> binary
-    '\x12H'
+    >>> binary = _as_bytes(chr(16+2) + chr(64+8))
     >>> print _decode_seq(binary, 4)
     ACGT
     >>> print _decode_seq(binary, 3)
@@ -702,8 +704,8 @@ def _decode_seq(binary, seq_len):
     """
     seq = "".join(_decode_dibase_byte[b] for b in binary)
     return seq[:seq_len]
-assert _decode_seq('\x12H', 4) == 'ACGT'
-assert _decode_seq('\x12H', 3) == 'ACG'
+assert _decode_seq(_as_bytes('\x12H'), 4) == 'ACGT'
+assert _decode_seq(_as_bytes('\x12H'), 3) == 'ACG'
 
 def _encode_seq(seq):
     r"""Helper function to encode BAM style sequence (PRIVATE).
@@ -1052,7 +1054,11 @@ class SamBamRead(object):
             if self.qual:
                 #TODO - Store this as ints? Currently FASTQ encoded...
                 #TODO - Reuse the dict in Bio.SeqIO.QualityIO for this
-                qual = "".join(chr(ord(q)-33) for q in self.qual)
+                if sys.version_info[0] >= 3:
+                    #Iteration over a bytes string gives integers
+                    qual = "".join(chr(q-33) for q in self.qual)
+                else:
+                    qual = "".join(chr(ord(q)-33) for q in self.qual)
             else:
                 qual = chr(0xFF) * l_seq
         assert len(qual) == l_seq, "%r (len %i) for %r (len %i = %i)" \
@@ -1332,7 +1338,11 @@ class BamRead(SamBamRead):
             return self._qual
         except AttributeError:
             #TODO - Reuse dict mapping from FASTQ parser, will be faster
-            qual = "".join(chr(33+ord(byte)) for byte in self._binary_qual)
+            if sys.version_info[0] >= 3:
+                #Iteration over a bytes string gives integers
+                qual = "".join(chr(33+byte) for byte in self._binary_qual)
+            else:
+                qual = "".join(chr(33+ord(byte)) for byte in self._binary_qual)
             self._qual = qual
             return qual
     def _set_qual(self, value):
@@ -1381,10 +1391,10 @@ del bit, prop, help, p, _make_prop
 
 
 def _next_tag_raw(raw):
-    tag = raw[0:2]
-    code = raw[2]
+    tag = _as_string(raw[0:2])
+    code = _as_string(raw[2:3])
     if code == "B":
-        sub_code = raw[3]
+        sub_code = _as_string(raw[3:4])
         length = struct.unpack("<I", raw[4:8])[0]
         if sub_code == "f": #float
             values = struct.unpack(("<%if" % length), raw[8:8+length*4])
@@ -1410,7 +1420,7 @@ def _next_tag_raw(raw):
         else:
             raise ValueError("Unknown BAM tag B sub-element type %r (for %r tag)" % (sub_code, tag))
     elif code == "C": #u_int8
-        return tag, "i", ord(raw[3]), raw[4:]
+        return tag, "i", ord(raw[3:4]), raw[4:]
     elif code == "S": #u_int16
         return tag, "i", struct.unpack("<H", raw[3:5])[0], raw[5:]
     elif code == "I": #u_int32
@@ -1426,18 +1436,18 @@ def _next_tag_raw(raw):
             value -= 256
         return tag, "i", value, raw[4:]
     elif code == "A": #Single char
-        return tag, "A", raw[3], raw[4:]
+        return tag, "A", _as_string(raw[3:4]), raw[4:]
     elif code == "Z": #Null terminated string
         i = 3
-        while ord(raw[i]) != 0: i+= 1
-        return tag, "Z", raw[3:i], raw[i+1:]
+        while ord(raw[i:i+1]) != 0: i+= 1
+        return tag, "Z", _as_string(raw[3:i]), raw[i+1:]
     elif code == "H": #Hex, null terminated string
         i = 3
-        while ord(raw[i]) != 0: i+= 1
+        while ord(raw[i:i+1]) != 0: i+= 1
         if (i-3) % 2 == 1:
             #Warning only?
             raise ValueError("Odd number of bytes for hex string? %r" % raw)
-        return tag, "H", raw[3:i], raw[i+1:]
+        return tag, "H", _as_string(raw[3:i]), raw[i+1:]
     elif code == "f": #Single precision float
         #TODO, leave it as a float rather than turning it into a string
         #which is a short term solution during testing
