@@ -1391,10 +1391,10 @@ del bit, prop, help, p, _make_prop
 
 
 def _next_tag_raw(raw):
-    tag = raw[0:2]
-    code = raw[2]
+    tag = _as_string(raw[0:2])
+    code = _as_string(raw[2:3])
     if code == "B":
-        sub_code = raw[3]
+        sub_code = _as_string(raw[3:4])
         length = struct.unpack("<I", raw[4:8])[0]
         if sub_code == "f": #float
             values = struct.unpack(("<%if" % length), raw[8:8+length*4])
@@ -1420,7 +1420,7 @@ def _next_tag_raw(raw):
         else:
             raise ValueError("Unknown BAM tag B sub-element type %r (for %r tag)" % (sub_code, tag))
     elif code == "C": #u_int8
-        return tag, "i", ord(raw[3]), raw[4:]
+        return tag, "i", ord(raw[3:4]), raw[4:]
     elif code == "S": #u_int16
         return tag, "i", struct.unpack("<H", raw[3:5])[0], raw[5:]
     elif code == "I": #u_int32
@@ -1436,18 +1436,18 @@ def _next_tag_raw(raw):
             value -= 256
         return tag, "i", value, raw[4:]
     elif code == "A": #Single char
-        return tag, "A", raw[3], raw[4:]
+        return tag, "A", _as_string(raw[3:4]), raw[4:]
     elif code == "Z": #Null terminated string
         i = 3
-        while ord(raw[i]) != 0: i+= 1
-        return tag, "Z", raw[3:i], raw[i+1:]
+        while ord(raw[i:i+1]) != 0: i+= 1
+        return tag, "Z", _as_string(raw[3:i]), raw[i+1:]
     elif code == "H": #Hex, null terminated string
         i = 3
-        while ord(raw[i]) != 0: i+= 1
+        while ord(raw[i:i+1]) != 0: i+= 1
         if (i-3) % 2 == 1:
             #Warning only?
             raise ValueError("Odd number of bytes for hex string? %r" % raw)
-        return tag, "H", raw[3:i], raw[i+1:]
+        return tag, "H", _as_string(raw[3:i]), raw[i+1:]
     elif code == "f": #Single precision float
         #TODO, leave it as a float rather than turning it into a string
         #which is a short term solution during testing
