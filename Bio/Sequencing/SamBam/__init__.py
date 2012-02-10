@@ -217,12 +217,12 @@ class SamIterator(object):
     >>> sam = SamIterator(open("SamBam/ex1.bam"))
     Traceback (most recent call last):
     ...
-    ValueError: This looks like a BAM file or gzipped file, not a SAM file.
+    ValueError: Not a SAM file, perhaps it is BAM format or compressed?.
 
     >>> sam = SamIterator(open("SamBam/ex1.uncompressed.bam"))
     Traceback (most recent call last):
     ...
-    ValueError: This looks like an uncompressed BAM file, not a SAM file.
+    ValueError: Not a SAM file, perhaps it is BAM format or compressed?.
 
     """
     def __init__(self, handle, required_flag=0, excluded_flag=0):
@@ -232,12 +232,19 @@ class SamIterator(object):
         headers = []
         self._saved_line = None
         self._references = []
-        line = handle.readline()
-        if line.startswith("\x1f\x8b"):
-            raise ValueError("This looks like a BAM file or gzipped file, not a SAM file.")
-        if line.startswith("BAM" + chr(1)):
+        try:
+            line = handle.readline()
+        except UnicodeDecodeError:
+            #This could be almost any binary file, but I want the same error on python 3
+            raise ValueError("Not a SAM file, perhaps it is BAM format or compressed?.")
+        if sys.version_info[0] < 3 and line.startswith("\x1f\x8b"):
+            #This is triggered on Python 2, means BAM or GZIP but want same error as Python 3
+            #raise ValueError("This looks like a BAM file or gzipped file, not a SAM file.")
+            raise ValueError("Not a SAM file, perhaps it is BAM format or compressed?.")
+        if sys.version_info[0] < 3 and line.startswith("BAM" + chr(1)):
             #i.e. a Naked uncompressed BAM file without the gzip/BGZF wrapper
-            raise ValueError("This looks like an uncompressed BAM file, not a SAM file.")
+            #raise ValueError("This looks like an uncompressed BAM file, not a SAM file.")
+            raise ValueError("Not a SAM file, perhaps it is BAM format or compressed?.")
         while line:
             if line[0] != "@":
                 self._saved_line = line
