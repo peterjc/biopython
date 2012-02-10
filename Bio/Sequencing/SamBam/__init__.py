@@ -174,6 +174,8 @@ import struct
 
 #Biopython imports:
 from Bio import bgzf
+from Bio._py3k import _as_bytes, _as_string
+_null_byte = _as_bytes("\0")
 
 class SamIterator(object):
     """Loop over a SAM file returning SamRead objects.
@@ -361,7 +363,7 @@ class BamIterator(object):
         self._required_flag = required_flag
         self._excluded_flag = excluded_flag
         if gzipped:
-            h = gzip.GzipFile(fileobj=handle)
+            h = gzip.GzipFile(fileobj=handle, mode="rb")
         else:
             #Uncompressed BAM (useful in testing)
             h = handle
@@ -507,8 +509,8 @@ def reg2bin(beg, end):
     Note that this indexing scheme is limited to references of 512Mbps
     (that is 2^29 base pairs).
 
-    >>> reg2bin(9, 13)
-    4681
+    >>> 4681 == reg2bin(9, 13)
+    True
 
     """
     assert 0 <= beg <= end < 2**29, "Bad region %i:%i" % (beg, end)
@@ -550,14 +552,14 @@ def _bam_file_header(handle):
 
     """
     magic = handle.read(4)
-    if magic != "BAM\1":
+    if magic != _as_bytes("BAM\1"):
         raise ValueError("After decompression BAM files should start "
-                         "with 'BAM\1', not %s" % repr(magic))
+                         "with bytes 'BAM\1', not %r" % magic)
     assert 4 == struct.calcsize("<i")
     data = handle.read(4)
     #raise ValueError("Got %s" % repr(data))
     header_length = struct.unpack("<i", data)[0]
-    header = handle.read(header_length).rstrip("\0")
+    header = _as_string(handle.read(header_length).rstrip(_null_byte))
     data = handle.read(4)
     #raise ValueError("Got %s" % repr(data))
     num_refs = struct.unpack("<i", data)[0]
@@ -578,7 +580,7 @@ def _bam_file_reference(handle):
 
     """
     ref_name_len = struct.unpack("<i", handle.read(4))[0]
-    ref_name = handle.read(ref_name_len).rstrip("\0")
+    ref_name = _as_string(handle.read(ref_name_len).rstrip(_null_byte))
     ref_len = struct.unpack("<i", handle.read(4))[0]
     return ref_name, ref_len
 
@@ -638,7 +640,7 @@ def _bam_file_read_header(handle):
                          % (read_len, repr(data),
                             repr(handle.read(read_name_len)), flag))
 
-    read_name = handle.read(read_name_len).rstrip("\0")
+    read_name = _as_string(handle.read(read_name_len).rstrip(_null_byte))
     end_offset = start_offset + block_size + 4
     #Block size includes misc fields, read name, seq len, qual len and cigar len
     tag_len = block_size - 32 - read_name_len - ((read_len+1)/2) - read_len - cigar_len * 4
