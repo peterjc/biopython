@@ -657,7 +657,8 @@ def _build_decoder():
         encode[first.lower()] = b
         for j,second in enumerate("=ACMGRSVTWYHKDBN"):
             b = chr(i*16 + j)
-            decode[b] = first+second
+            decode[b] = first+second #For Python 2
+            decode[i*16+j] = first+second #For Python 3
             encode[first+second] = b
             encode[first.lower()+second] = b
             encode[first.lower()+second.lower()] = b
@@ -692,9 +693,7 @@ _decode_dibase_byte, _encode_dibase_byte = _build_decoder()
 def _decode_seq(binary, seq_len):
     r"""Helper function to decode BAM style sequence (PRIVATE).
 
-    >>> binary = chr(16+2) + chr(64+8)
-    >>> binary
-    '\x12H'
+    >>> binary = _as_bytes(chr(16+2) + chr(64+8))
     >>> print _decode_seq(binary, 4)
     ACGT
     >>> print _decode_seq(binary, 3)
@@ -704,8 +703,8 @@ def _decode_seq(binary, seq_len):
     """
     seq = "".join(_decode_dibase_byte[b] for b in binary)
     return seq[:seq_len]
-assert _decode_seq('\x12H', 4) == 'ACGT'
-assert _decode_seq('\x12H', 3) == 'ACG'
+assert _decode_seq(_as_bytes('\x12H'), 4) == 'ACGT'
+assert _decode_seq(_as_bytes('\x12H'), 3) == 'ACG'
 
 def _encode_seq(seq):
     r"""Helper function to encode BAM style sequence (PRIVATE).
