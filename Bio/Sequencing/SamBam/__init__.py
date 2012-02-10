@@ -12,10 +12,9 @@ somewhat (which is a wrapper for the samtools C API).
 The SAM and BAM parsers return SamRead and BamRead objects, but these
 should behave identically (modulo the tag ordering):
 
-    >>> from itertools import izip_longest
     >>> sam = SamIterator(open("SamBam/ex1.sam"))
     >>> bam = BamIterator(open("SamBam/ex1.bam", "rb"))
-    >>> for s, b in izip_longest(sam,bam):
+    >>> for s, b in zip(sam,bam):
     ...     assert s.qname == b.qname
     ...     assert s.flag == b.flag
     ...     assert s.seq == b.seq
@@ -176,7 +175,9 @@ import sys
 #Biopython imports:
 from Bio import bgzf
 from Bio._py3k import _as_bytes, _as_string
+_empty_bytes_string = _as_bytes("")
 _null_byte = _as_bytes("\0")
+_ff_byte = _as_bytes("\xFF")
 
 class SamIterator(object):
     """Loop over a SAM file returning SamRead objects.
@@ -217,12 +218,12 @@ class SamIterator(object):
     >>> sam = SamIterator(open("SamBam/ex1.bam"))
     Traceback (most recent call last):
     ...
-    ValueError: This looks like a BAM file or gzipped file, not a SAM file.
+    ValueError: Not a SAM file, perhaps it is BAM format or compressed?.
 
     >>> sam = SamIterator(open("SamBam/ex1.uncompressed.bam"))
     Traceback (most recent call last):
     ...
-    ValueError: This looks like an uncompressed BAM file, not a SAM file.
+    ValueError: Not a SAM file, perhaps it is BAM format or compressed?.
 
     """
     def __init__(self, handle, required_flag=0, excluded_flag=0):
@@ -232,12 +233,19 @@ class SamIterator(object):
         headers = []
         self._saved_line = None
         self._references = []
-        line = handle.readline()
-        if line.startswith("\x1f\x8b"):
-            raise ValueError("This looks like a BAM file or gzipped file, not a SAM file.")
-        if line.startswith("BAM" + chr(1)):
+        try:
+            line = handle.readline()
+        except UnicodeDecodeError:
+            #This could be almost any binary file, but I want the same error on python 3
+            raise ValueError("Not a SAM file, perhaps it is BAM format or compressed?.")
+        if sys.version_info[0] < 3 and line.startswith("\x1f\x8b"):
+            #This is triggered on Python 2, means BAM or GZIP but want same error as Python 3
+            #raise ValueError("This looks like a BAM file or gzipped file, not a SAM file.")
+            raise ValueError("Not a SAM file, perhaps it is BAM format or compressed?.")
+        if sys.version_info[0] < 3 and line.startswith("BAM" + chr(1)):
             #i.e. a Naked uncompressed BAM file without the gzip/BGZF wrapper
-            raise ValueError("This looks like an uncompressed BAM file, not a SAM file.")
+            #raise ValueError("This looks like an uncompressed BAM file, not a SAM file.")
+            raise ValueError("Not a SAM file, perhaps it is BAM format or compressed?.")
         while line:
             if line[0] != "@":
                 self._saved_line = line
@@ -846,39 +854,39 @@ class SamBamReadTags(dict):
 
     def _as_bam(self):
         """Returns the tags binary encodes in BAM formatting (bytes string)."""
-        data = ""
+        data = _empty_bytes_string
         for key, (code, value) in self.iteritems():
             assert len(key) ==2, key
             if code in ["Z", "H"]:
                 #Store as null terminated string, easy
                 assert isinstance(value, basestring), "%s %s %r" % (key, code, value)
-                data += key + code + value + chr(0)
+                data += _as_bytes(key + code + value) + _null_byte
             elif code == "i":
                 #TODO - Time this with try/except letting struct do bounds checking
                 #Integer, but how much space will we need in BAM?
                 if value >= 0:
                     #Use an unsigned int
                     if value < 2**8:
-                        data += key + "C" + struct.pack("<B", value)
+                        data += _as_bytes(key + "C") + struct.pack("<B", value)
                     elif value < 2**16:
-                        data += key + "S" + struct.pack("<H", value)
+                        data += _as_bytes(key + "S") + struct.pack("<H", value)
                     elif value < 2**32:
-                        data += key + "I" + struct.pack("<I", value)
+                        data += _as_bytes(key + "I") + struct.pack("<I", value)
                     else:
                         raise ValueError("%s:%s:%i too big for BAM unsigned 32bit int" % (key, code, value))
                 else:
                     #Use a signed int
                     if -2**7 < value:
-                        data += key + "c" + struct.pack("<b", value)
+                        data += _as_bytes(key + "c") + struct.pack("<b", value)
                     elif -2**15 < value:
-                        data += key + "s" + struct.pack("<h", value)
+                        data += _as_bytes(key + "s") + struct.pack("<h", value)
                     elif -2**31 < value:
-                        data += key + "i" + struct.pack("<i", value)
+                        data += _as_bytes(key + "i") + struct.pack("<i", value)
                     else:
                         raise ValueError("%s:%s:%i too big for BAM signed 32bit int" % (key, code, value))
             elif code=="f":
                 #Float
-                data += key + code + struct.pack("<f", value)
+                data += _as_bytes(key + code) + struct.pack("<f", value)
             elif code[0]=="B":
                 #Array of ints/floats etc
                 assert len(code)==2
@@ -886,11 +894,11 @@ class SamBamReadTags(dict):
                               "s":"h", "S":"H",
                               "i":"i", "I":"I",
                               "f":"f"}
-                data += key + code + struct.pack("<I%i%s" % (len(value), bam2struct[code[1]]),
+                data += _as_bytes(key + code) + struct.pack("<I%i%s" % (len(value), bam2struct[code[1]]),
                                                  len(value), *value)
             elif code=="A":
                 assert len(value)==1 and isinstance(value, basestring)
-                data += key + code + value
+                data += _as_bytes(key + code + value)
             else:
                 #TODO - BAM encoding of other tag types
                 raise NotImplementedError("TODO - Storing %s tags in BAM (here for tag %s)" % (code, key))
@@ -1014,7 +1022,7 @@ class SamBamRead(object):
             #Have no CIGAR for unmapped reads (given their partner's position)
             #Do what samtools does:
             bin = reg2bin(self.pos, self.pos + 1)
-        bin_mq_nl = bin<<16 | self.mapq<<8 | (len(self.qname)+1)
+        bin_mq_nl = int(bin)<<16 | int(self.mapq)<<8 | (len(self.qname)+1)
         try:
             cigar = self._binary_cigar #See BamRead subclass
         except AttributeError:
@@ -1047,13 +1055,13 @@ class SamBamRead(object):
             if self.qual:
                 #TODO - Store this as ints? Currently FASTQ encoded...
                 #TODO - Reuse the dict in Bio.SeqIO.QualityIO for this
-                if sys.version_info[0] >= 3:
+                if self.qual and isinstance(self.qual[0], int):
                     #Iteration over a bytes string gives integers
-                    qual = "".join(chr(q-33) for q in self.qual)
+                    qual = _empty_bytes_string.join(chr(q-33) for q in self.qual)
                 else:
-                    qual = "".join(chr(ord(q)-33) for q in self.qual)
+                    qual = _as_bytes("".join(chr(ord(q)-33) for q in self.qual))
             else:
-                qual = chr(0xFF) * l_seq
+                qual = _ff_bytes * l_seq
         assert len(qual) == l_seq, "%r (len %i) for %r (len %i = %i)" \
                % (qual, len(qual), self.qual, len(self.qual), l_seq)
         try:
@@ -1064,7 +1072,7 @@ class SamBamRead(object):
                            ref_index, self.pos,
                            bin_mq_nl, flag_nc, l_seq,
                            next_index, self.pnext, self.tlen)
-        data += self.qname + chr(0) + cigar + seq + qual + tags
+        data += _as_bytes(self.qname) + _null_byte + cigar + seq + qual + tags
         #First byte is the length of the REST of the record,
         return struct.pack("<I", len(data)) + data
 
