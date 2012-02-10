@@ -12,10 +12,9 @@ somewhat (which is a wrapper for the samtools C API).
 The SAM and BAM parsers return SamRead and BamRead objects, but these
 should behave identically (modulo the tag ordering):
 
-    >>> from itertools import izip_longest
     >>> sam = SamIterator(open("SamBam/ex1.sam"))
     >>> bam = BamIterator(open("SamBam/ex1.bam", "rb"))
-    >>> for s, b in izip_longest(sam,bam):
+    >>> for s, b in zip(sam,bam):
     ...     assert s.qname == b.qname
     ...     assert s.flag == b.flag
     ...     assert s.seq == b.seq
