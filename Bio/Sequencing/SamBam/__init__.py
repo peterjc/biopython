@@ -1,4 +1,4 @@
-# Copyright 2010-2011 by Peter Cock.
+# Copyright 2010-2012 by Peter Cock.
 # All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
@@ -171,6 +171,7 @@ would be 454 paired end reads, since they are on the same strand.
 
 import gzip
 import struct
+import sys
 
 #Biopython imports:
 from Bio import bgzf
@@ -1053,7 +1054,11 @@ class SamBamRead(object):
             if self.qual:
                 #TODO - Store this as ints? Currently FASTQ encoded...
                 #TODO - Reuse the dict in Bio.SeqIO.QualityIO for this
-                qual = "".join(chr(ord(q)-33) for q in self.qual)
+                if sys.version_info[0] >= 3:
+                    #Iteration over a bytes string gives integers
+                    qual = "".join(chr(q-33) for q in self.qual)
+                else:
+                    qual = "".join(chr(ord(q)-33) for q in self.qual)
             else:
                 qual = chr(0xFF) * l_seq
         assert len(qual) == l_seq, "%r (len %i) for %r (len %i = %i)" \
@@ -1333,7 +1338,11 @@ class BamRead(SamBamRead):
             return self._qual
         except AttributeError:
             #TODO - Reuse dict mapping from FASTQ parser, will be faster
-            qual = "".join(chr(33+ord(byte)) for byte in self._binary_qual)
+            if sys.version_info[0] >= 3:
+                #Iteration over a bytes string gives integers
+                qual = "".join(chr(33+byte) for byte in self._binary_qual)
+            else:
+                qual = "".join(chr(33+ord(byte)) for byte in self._binary_qual)
             self._qual = qual
             return qual
     def _set_qual(self, value):
