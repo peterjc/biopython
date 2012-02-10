@@ -416,7 +416,7 @@ class BamIterator(object):
                 mate_ref_pos, inferred_insert_size, tag_len \
                 = _bam_file_read_header(h)
             raw_cigar = h.read(cigar_len * 4)
-            raw_seq = h.read((read_len+1)/2) # round up to make it even
+            raw_seq = h.read((read_len+1)//2) # round up to make it even
             raw_qual = h.read(read_len)
             raw_tags = h.read(tag_len)
             assert h.tell() == end_offset, \
@@ -643,7 +643,7 @@ def _bam_file_read_header(handle):
     read_name = _as_string(handle.read(read_name_len).rstrip(_null_byte))
     end_offset = start_offset + block_size + 4
     #Block size includes misc fields, read name, seq len, qual len and cigar len
-    tag_len = block_size - 32 - read_name_len - ((read_len+1)/2) - read_len - cigar_len * 4
+    tag_len = block_size - 32 - read_name_len - ((read_len+1)//2) - read_len - cigar_len * 4
     return read_name, start_offset, end_offset, ref_id, ref_pos, bin, \
            map_qual, cigar_len, flag, read_len, mate_ref_id, mate_ref_pos, \
            inferred_insert_size, tag_len
