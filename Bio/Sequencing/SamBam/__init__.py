@@ -210,16 +210,7 @@ class SamIterator(object):
     using an argument of 2 requires the reads be properly mapped.
 
     If your SAM file is gzip compressed, use the Python standard library gzip
-    to decompress it during parsing:
-
-    >>> import gzip
-    >>> count = 0
-    >>> handle = gzip.open("SamBam/ex1.sam.gz")
-    >>> for read in SamIterator(handle):
-    ...     count += 1
-    >>> handle.close()
-    >>> print count
-    3270
+    to decompress it during parsing. i.e. handle = gzip.open(filename, "r")
 
     You should be alerted to mixing up SAM and BAM as inputs,
 
