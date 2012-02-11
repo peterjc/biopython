@@ -448,6 +448,9 @@ class BamIterator(object):
         >>> print bam._unmapped
         0
         >>> region = bam.fetch("chr1", 120, 150)
+        >>> for read in region:
+        ...     print read
+        BIN 4681 chunk from virtual offset 38 to 3570343329
 
         """
         #TODO - Nice slice style API using start:end as well/instead?
@@ -457,6 +460,17 @@ class BamIterator(object):
         index, offsets = self._indexes[i]
         #Now find the bins for this region, and the offsets for these bins
         bins = reg2bins(start, end)
+        for bin in bins:
+            #yield "BIN %i" % bin
+            try:
+                chunks = index[bin]
+            except KeyError:
+                #No chunks for this bin
+                continue
+            for s_offset, e_offset in chunks:
+                yield "BIN %i chunk from virtual offset %i to %i" \
+                      % (bin, s_offset, e_offset)
+
 
 def _load_next_bam_read(h, references, required_flag, excluded_flag):
             """Load next BAM read/fragement from handle or raise StopIteration."""
