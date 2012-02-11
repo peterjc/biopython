@@ -173,6 +173,7 @@ import struct
 import sys
 
 #Biopython imports:
+from bai import _load_bai
 from Bio import bgzf
 from Bio._py3k import _as_bytes, _as_string
 _empty_bytes_string = _as_bytes("")
@@ -358,7 +359,7 @@ class BamIterator(object):
     3270
 
     """
-    def __init__(self, handle, required_flag=0, excluded_flag=0, gzipped=True):
+    def __init__(self, handle, required_flag=0, excluded_flag=0, gzipped=True, bai_filename=None):
         self._handle = handle
         self._required_flag = required_flag
         self._excluded_flag = excluded_flag
@@ -381,6 +382,9 @@ class BamIterator(object):
             #Generate a minimal SAM style header from the BAM header (good idea?)
             self.text = _ref_list_to_sam_header(self._references)
         self._h = h
+        if bai_filename:
+            #TODO - Make this automatics when we have a normal file handle?
+            self._load_index(bai_filename)
 
 
     @property
@@ -415,6 +419,44 @@ class BamIterator(object):
             #If the read didn't match the required flags will get None
             if read is not None:
                 yield read
+
+    def _load_index(self, bai_filename):
+        handle = open(bai_filename, "rb")
+        indexes, unmapped = _load_bai(handle)
+        handle.close()
+        if len(indexes) != len(self._references):
+            raise ValueError("Have %i references from BAM, but %i from BAI" \
+                             % (len(self._references), len(indexes)))
+        self._indexes = indexes
+        self._unmapped = unmapped
+
+    def fetch(self, reference, start, end):
+        """Fetch aligned reads within region specified by reference, start and end.
+
+        Note that start and end should use Python style counting.
+
+        This requires a BAM index file to be present (i.e. a BAI file).
+        Currently any BAM index file (BAI file) must be specified explicitly,
+        this is an interim measure while indexing is being developed:
+
+        >>> with open("SamBam/ex1.bam", "rb") as handle:
+        ...     bam = BamIterator(handle, bai_filename="SamBam/ex1.bam.bai")
+        >>> print bam.nreferences
+        2
+        >>> print bam.references
+        ('chr1', 'chr2')
+        >>> print bam._unmapped
+        0
+        >>> region = bam.fetch("chr1", 120, 150)
+
+        """
+        #TODO - Nice slice style API using start:end as well/instead?
+        i = self.references.index(reference)
+        if not self._indexes:
+            raise ValueError("BAI file not loaded")
+        index, offsets = self._indexes[i]
+        #Now find the bins for this region, and the offsets for these bins
+        bins = reg2bins(start, end)
 
 def _load_next_bam_read(h, references, required_flag, excluded_flag):
             """Load next BAM read/fragement from handle or raise StopIteration."""
