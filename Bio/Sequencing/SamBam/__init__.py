@@ -1070,7 +1070,7 @@ class SamBamRead(object):
                 else:
                     qual = _as_bytes("".join(chr(ord(q)-33) for q in self.qual))
             else:
-                qual = _ff_bytes * l_seq
+                qual = _ff_byte * l_seq
         assert len(qual) == l_seq, "%r (len %i) for %r (len %i = %i)" \
                % (qual, len(qual), self.qual, len(self.qual), l_seq)
         try:
