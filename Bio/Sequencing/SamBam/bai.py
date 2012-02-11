@@ -12,30 +12,47 @@ somewhat (which is a wrapper for the samtools C API).
 
 import struct
 
+_BAM_MAX_BIN =  37450 # (8^6-1)/7+1
+
 def _test_bai(handle):
     """Test function for loading a BAI file.
 
     >>> handle = open("SamBam/ex1.bam.bai", "rb")
     >>> _test_bai(handle)
     2 references
+    1 bins, 1 linear baby-bins, 1446 reads mapped, 18 unmapped
+    1 bins, 1 linear baby-bins, 1789 reads mapped, 17 unmapped
     0 unmapped reads
     >>> handle.close()
 
     >>> handle = open("SamBam/tags.bam.bai", "rb")
     >>> _test_bai(handle)
     2 references
+    1 bins, 1 linear baby-bins, 417 reads mapped, 0 unmapped
+    0 bins, 0 linear baby-bins, ? reads mapped, ? unmapped
     0 unmapped reads
     >>> handle.close()
 
     >>> handle = open("SamBam/bins.bam.bai", "rb")
     >>> _test_bai(handle)
     3 references
+    1 bins, 1 linear baby-bins, 152 reads mapped, 0 unmapped
+    5 bins, 4 linear baby-bins, 397 reads mapped, 0 unmapped
+    73 bins, 64 linear baby-bins, 5153 reads mapped, 0 unmapped
     12 unmapped reads
     >>> handle.close()
 
     """
     indexes, unmapped = _load_bai(handle)
     print "%i references" % len(indexes)
+    for chunks, linear, mapped, ref_unmapped, u_start, u_end in indexes:
+        if mapped is None:
+            assert ref_unmapped is None
+            print "%i bins, %i linear baby-bins, ? reads mapped, ? unmapped" \
+                  % (len(chunks), len(linear))
+        else:
+            print "%i bins, %i linear baby-bins, %i reads mapped, %i unmapped" \
+                  % (len(chunks), len(linear), mapped, ref_unmapped)
     if unmapped is None:
         print "Index missing unmapped reads count"
     else:
@@ -55,6 +72,8 @@ def _load_bai(handle):
     for n in xrange(n_ref):
         indexes.append(_load_ref_index(handle))
     #This is missing on very old samtools index files,
+    #and isn't in the SAM/BAM specifiction yet either.
+    #This was reverse engineered vs "samtools idxstats"
     data = handle.read(8)
     if data:
         unmapped = struct.unpack("<Q", data)[0]
@@ -80,19 +99,31 @@ def _load_ref_index(handle):
     index is just a tuple of virtual offsets (the position of the first
     aligned read in that interval) for the smallest sized bins.
     """
+    mapped = None
+    unmapped = None
+    unmapped_start = None
+    unmapped_end = None
     #First the chunks for each bin,
     n_bin = struct.unpack("<i", handle.read(4))[0]
     chunks_dict = dict()
     for b in xrange(n_bin):
         bin, chunks = struct.unpack("<ii", handle.read(8))
-        chunks_list = []
-        for chunk in xrange(chunks):
-            #Append tuple of (chunk beginning, chunk end)
-            chunks_list.append(struct.unpack("<QQ", handle.read(16)))
-        chunks_dict[bin] = chunks_list
+        if bin == _BAM_MAX_BIN:
+            #At the time of writing this isn't in the SAM/BAM specification,
+            #gleaned from the samtools source code instead.
+            assert chunks == 2, chunks
+            unmapped_start, unmapped_end = struct.unpack("<QQ", handle.read(16))
+            mapped, unmapped = struct.unpack("<QQ", handle.read(16))
+        else:
+            chunks_list = []
+            for chunk in xrange(chunks):
+                #Append tuple of (chunk beginning, chunk end)
+                chunks_list.append(struct.unpack("<QQ", handle.read(16)))
+            chunks_dict[bin] = chunks_list
     #Now the linear index (for the smallest bins)
     n_intv = struct.unpack("<i", handle.read(4))[0]
-    return chunks_dict, struct.unpack("<%iQ" % n_intv, handle.read(8*n_intv))
+    return chunks_dict, struct.unpack("<%iQ" % n_intv, handle.read(8*n_intv)), \
+           mapped, unmapped, unmapped_start, unmapped_end
 
 def _test():
     """Run the module's doctests (PRIVATE).
