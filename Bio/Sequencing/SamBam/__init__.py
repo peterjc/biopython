@@ -578,12 +578,17 @@ def reg2bins(beg, end):
 
     Based on the C function reg2bins given in the SAM/BAM specification.
     Note that this indexing scheme is limited to references of 512Mbps
-    (that is 2^29 base pairs). 
+    (that is 2^29 base pairs).
+
+    >>> reg2bins(9, 13)
+    [0, 1, 9, 73, 585, 4681]
+
     """
-    bins = []
+    assert 0 <= beg <= end < 2**29, "Bad region %i:%i" % (beg, end)
+    bins = [0]
     end -= 1
-    for power in [26, 23, 20, 17, 14]:
-        for k in range(1 + (beg>>power), 2 + (end>>power)):
+    for power, offset in [(26, 1), (23, 9), (20, 73), (17, 585), (14, 4681)]:
+        for k in range(offset + (beg>>power), offset + 1 + (end>>power)):
             bins.append(k)
     return bins
 
