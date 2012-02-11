@@ -439,37 +439,60 @@ class BamIterator(object):
         Currently any BAM index file (BAI file) must be specified explicitly,
         this is an interim measure while indexing is being developed:
 
-        >>> with open("SamBam/ex1.bam", "rb") as handle:
-        ...     bam = BamIterator(handle, bai_filename="SamBam/ex1.bam.bai")
+        >>> handle = open("SamBam/ex1.bam", "rb")
+        >>> bam = BamIterator(handle, bai_filename="SamBam/ex1.bam.bai")
         >>> print bam.nreferences
         2
         >>> print bam.references
         ('chr1', 'chr2')
         >>> print bam._unmapped
         0
-        >>> region = bam.fetch("chr1", 120, 150)
-        >>> for read in region:
-        ...     print read
-        BIN 4681 chunk from virtual offset 38 to 3570343329
+        >>> reads = list(bam.fetch("chr1", 120, 150))
+        >>> len(reads)
+        3235
+        >>> handle.close()
 
         """
         #TODO - Nice slice style API using start:end as well/instead?
-        i = self.references.index(reference)
+        references = self.references
+        i = references.index(reference)
         if not self._indexes:
             raise ValueError("BAI file not loaded")
-        index, offsets = self._indexes[i]
+        index, offsets, mapped, unmapped, u_start, u_end = self._indexes[i]
         #Now find the bins for this region, and the offsets for these bins
         bins = reg2bins(start, end)
+        h = self._h
+        required_flag = 0
+        excluded_flag = 0x4 #Unmapped
+        #print "Baby-bin offsets:", offsets
         for bin in bins:
-            #yield "BIN %i" % bin
+            #print "bin %i" % bin
             try:
                 chunks = index[bin]
             except KeyError:
                 #No chunks for this bin
                 continue
+            if bin < 4681:
+                min_offset = None
+            else:
+                #The high number bins 4681-37449 are the baby-bins, 19Kbp,
+                #which get a linear index of offsets as well
+                min_offset = offsets[bin-4681]
             for s_offset, e_offset in chunks:
-                yield "BIN %i chunk from virtual offset %i to %i" \
-                      % (bin, s_offset, e_offset)
+                #print "bin %i chunk from virtual offset %i to %i" \
+                #      % (bin, s_offset, e_offset)
+                if min_offset and s_offset < min_offset:
+                    #print "Over-riding with baby-bin's start %i" % min_offset
+                    h.seek(min_offset)
+                else:
+                    h.seek(s_offset)
+                #Exploits the fact that virtual offsets are ordered
+                while h.tell() <= e_offset:
+                    read = _load_next_bam_read(h, references,
+                                               required_flag, excluded_flag)
+                    #If the read didn't match the required flags will get None
+                    if read is not None:
+                        yield read
 
 
 def _load_next_bam_read(h, references, required_flag, excluded_flag):
@@ -619,6 +642,7 @@ def _bam_file_header(handle):
     ''
     >>> num_refs
     2
+    >>> handle.close()
 
     """
     magic = handle.read(4)
@@ -647,6 +671,7 @@ def _bam_file_reference(handle):
     ...     print _bam_file_reference(handle)
     ('chr1', 1575)
     ('chr2', 1584)
+    >>> handle.close()
 
     """
     ref_name_len = struct.unpack("<i", handle.read(4))[0]
@@ -671,6 +696,7 @@ def _bam_file_read_header(handle):
     >>> x = handle.seek(153)
     >>> print _bam_file_read_header(handle)[:3]
     ('EAS56_57:6:190:289:82', 153, 292)
+    >>> handle.close()
 
     Returns a tuple of the read name, start offset, end offset, etc.
 
@@ -1705,6 +1731,22 @@ def _pysam():
             pysam.Samfile("SamBam/ex1_header.bam", "rb"))
     compare(BamIterator(open("SamBam/ex1.bam", "rb")),
             pysam.Samfile("SamBam/ex1.bam", "rb"))
+
+    #Indexing...
+    def index_check(bam, bai, regions):
+        pysam_bam = pysam.Samfile(bam, "rb")
+        handle = open(bam, "rb")
+        biopy_bam = BamIterator(handle, bai_filename = bai)
+        for ref, start, end in regions:
+            pysam_list = list(pysam_bam.fetch(ref, start, end))
+            biopy_list = list(biopy_bam.fetch(ref, start, end))
+            #assert len(pysam_list) == len(biopy_list), \
+            print "%i vs %i reads for %s region %i:%i" \
+                % (len(pysam_list), len(biopy_list), ref, start, end)
+        handle.close()
+    index_check("SamBam/ex1.bam", "SamBam/ex1.bam.bai", [
+                    ("chr1", 120, 130),
+                ])
 
 def _comp_float(a,b):
     return repr(a)==repr(b) or a==b or abs(float(a)-float(b))<0.000001,
