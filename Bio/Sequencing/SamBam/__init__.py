@@ -411,6 +411,15 @@ class BamIterator(object):
         #Assumes the handle is just after the header!
         #Loop over the reads
         while True:
+            read = _load_next_bam_read(h, references, required_flag, excluded_flag)
+            #If the read didn't match the required flags will get None
+            if read is not None:
+                yield read
+
+def _load_next_bam_read(h, references, required_flag, excluded_flag):
+            """Load next BAM read/fragement from handle or raise StopIteration."""
+            #TODO - Remove indent (left in for a small diff)
+            #TODO - Skip unwanted reads within this function?
             read_name, start_offset, end_offset, ref_id, ref_pos, \
                 bin, map_qual, cigar_len, flag, read_len, mate_ref_id, \
                 mate_ref_pos, inferred_insert_size, tag_len \
@@ -422,9 +431,9 @@ class BamIterator(object):
             assert h.tell() == end_offset, \
                 "%i vs %i diff %i\n" % (h.tell(), end_offset, h.tell()-end_offset)
             if required_flag and flag & required_flag != required_flag:
-                continue
+                return None
             if flag & excluded_flag:
-                continue
+                return None
             if ref_id == -1:
                 ref_name = "*"
             else:
@@ -448,7 +457,7 @@ class BamIterator(object):
                     print "%s mapping to %i:%i, expected bin %i, got %i" \
                     % (read_name, ref_pos, ref_pos+mapped_len, expected_bin, bin)
             """
-            yield BamRead(read_name, flag, ref_name, ref_pos, map_qual,
+            return BamRead(read_name, flag, ref_name, ref_pos, map_qual,
                           raw_cigar, mate_ref_name, mate_ref_pos,
                           inferred_insert_size, read_len,
                           raw_seq, raw_qual, raw_tags)
