@@ -34,6 +34,15 @@ def _test_bai(handle):
     >>> handle.close()
 
     """
+    indexes, unmapped = _load_bai(handle)
+    print "%i references" % len(indexes)
+    if unmapped is None:
+        print "Index missing unmapped reads count"
+    else:
+        print "%i unmapped reads" % unmapped
+
+def _load_bai(handle):
+    indexes = []
     magic = handle.read(4)
     if magic != "BAI" + chr(1):
         raise ValueError("BAM index files should start 'BAI\1', not %r" \
@@ -42,20 +51,22 @@ def _test_bai(handle):
     assert 8 == struct.calcsize("<Q")
     data = handle.read(4)
     n_ref = struct.unpack("<i", data)[0]
-    print "%i references" % n_ref
+    #print "%i references" % n_ref
     for n in xrange(n_ref):
-        chunks, ioffsets = _load_ref_index(handle)
+        indexes.append(_load_ref_index(handle))
     #This is missing on very old samtools index files,
     data = handle.read(8)
     if data:
         unmapped = struct.unpack("<Q", data)[0]
-        print "%i unmapped reads" % unmapped
+        #print "%i unmapped reads" % unmapped
     else:
-        print "Index missing unmapped reads count"
+        unmapped = None
+        #print "Index missing unmapped reads count"
     data = handle.read()
     if data:
         print "%i extra bytes" % len(data)
         print repr(data)
+    return indexes, unmapped
 
 def _load_ref_index(handle):
     """Load offset chunks for bins (dict), and linear index (tuple).
