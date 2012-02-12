@@ -168,7 +168,6 @@ would be 454 paired end reads, since they are on the same strand.
 
 """
 
-import gzip
 import struct
 import sys
 
@@ -364,7 +363,7 @@ class BamIterator(object):
         self._required_flag = required_flag
         self._excluded_flag = excluded_flag
         if gzipped:
-            h = gzip.GzipFile(fileobj=handle, mode="rb")
+            h = bgzf.BgzfReader(fileobj=handle, mode="rb")
         else:
             #Uncompressed BAM (useful in testing)
             h = handle
@@ -449,7 +448,7 @@ class BamIterator(object):
         0
         >>> reads = list(bam.fetch("chr1", 120, 150))
         >>> len(reads)
-        3235
+        1447
         >>> handle.close()
 
         """
@@ -464,13 +463,14 @@ class BamIterator(object):
         h = self._h
         required_flag = 0
         excluded_flag = 0x4 #Unmapped
+        #print "%s region %i:%i covers bins %r" % (reference, start, end, bins)
         #print "Baby-bin offsets:", offsets
         for bin in bins:
             #print "bin %i" % bin
             try:
                 chunks = index[bin]
             except KeyError:
-                #No chunks for this bin
+                #print "No chunks for bin %i" % bin
                 continue
             if bin < 4681:
                 min_offset = None
@@ -479,8 +479,11 @@ class BamIterator(object):
                 #which get a linear index of offsets as well
                 min_offset = offsets[bin-4681]
             for s_offset, e_offset in chunks:
-                #print "bin %i chunk from virtual offset %i to %i" \
-                #      % (bin, s_offset, e_offset)
+                #from Bio.bgzf import split_virtual_offset
+                #print "bin %i chunk from virtual offset %i (%i, %i) to %i (%i, %i)" \
+                #      % (bin,
+                #         s_offset, split_virtual_offset(s_offset)[0], split_virtual_offset(s_offset)[1],
+                #         e_offset, split_virtual_offset(e_offset)[0], split_virtual_offset(e_offset)[1])
                 if min_offset and s_offset < min_offset:
                     #print "Over-riding with baby-bin's start %i" % min_offset
                     h.seek(min_offset)
@@ -488,11 +491,24 @@ class BamIterator(object):
                     h.seek(s_offset)
                 #Exploits the fact that virtual offsets are ordered
                 while h.tell() <= e_offset:
-                    read = _load_next_bam_read(h, references,
-                                               required_flag, excluded_flag)
+                    #now = h.tell()
+                    #print "Now at %i (%i, %i) and about to load read..." \
+                    #      % (now, split_virtual_offset(now)[0], split_virtual_offset(now)[1])
+                    try:
+                        read = _load_next_bam_read(h, references,
+                                                   required_flag, excluded_flag)
+                    except StopIteration:
+                        #Could happen with a bug in BGZF handling.
+                        data = h.read(20)
+                        now = h.tell()
+                        raise ValueError("Premature end of file? Now %i (%i, %i), %r, expected to get to %i (%i, %i)" \
+                              % (now, split_virtual_offset(now)[0], split_virtual_offset(now)[1], data,
+                                 e_offset, split_virtual_offset(e_offset)[0], split_virtual_offset(e_offset)[1]))
+                        break
                     #If the read didn't match the required flags will get None
                     if read is not None:
                         yield read
+            #print "Done all chunks for bin %i" % bin
 
 
 def _load_next_bam_read(h, references, required_flag, excluded_flag):
@@ -507,8 +523,9 @@ def _load_next_bam_read(h, references, required_flag, excluded_flag):
             raw_seq = h.read((read_len+1)//2) # round up to make it even
             raw_qual = h.read(read_len)
             raw_tags = h.read(tag_len)
-            assert h.tell() == end_offset, \
-                "%i vs %i diff %i\n" % (h.tell(), end_offset, h.tell()-end_offset)
+            #Can't do offset arithmatic with BGZF
+            #assert h.tell() == end_offset, \
+            #    "%i vs %i diff %i\n" % (h.tell(), end_offset, h.tell()-end_offset)
             if required_flag and flag & required_flag != required_flag:
                 return None
             if flag & excluded_flag:
@@ -636,7 +653,8 @@ def _bam_file_header(handle):
     Assumings the handle is at the start of the file and has already been
     decompressed (e.g. with the gzip module).
 
-    >>> handle = gzip.open("SamBam/ex1.bam")
+    >>> import gzip
+    >>> handle = gzip.open("SamBam/ex1.bam", "rb")
     >>> header, num_refs = _bam_file_header(handle)
     >>> header
     ''
@@ -665,7 +683,8 @@ def _bam_file_reference(handle):
     Assumings the handle is just after the header and has already been                                             
     decompressed (e.g. with the gzip module)
 
-    >>> handle = gzip.open("SamBam/ex1.bam")
+    >>> import gzip
+    >>> handle = gzip.open("SamBam/ex1.bam", "rb")
     >>> header, num_refs = _bam_file_header(handle)
     >>> for i in range(num_refs):
     ...     print _bam_file_reference(handle)
@@ -682,7 +701,8 @@ def _bam_file_reference(handle):
 def _bam_file_read_header(handle):
     """Parse the header of the next read in a BAM file (PRIVATE).
 
-    >>> handle = gzip.open("SamBam/ex1.bam")
+    >>> import gzip
+    >>> handle = gzip.open("SamBam/ex1.bam", "rb")
     >>> header, num_refs = _bam_file_header(handle)
     >>> for i in range(num_refs):
     ...     print _bam_file_reference(handle)
@@ -1734,18 +1754,34 @@ def _pysam():
 
     #Indexing...
     def index_check(bam, bai, regions):
+        print bam
         pysam_bam = pysam.Samfile(bam, "rb")
         handle = open(bam, "rb")
         biopy_bam = BamIterator(handle, bai_filename = bai)
         for ref, start, end in regions:
+            print "%s region %i:%i" % (ref, start, end)
             pysam_list = list(pysam_bam.fetch(ref, start, end))
+            print "%s region %i:%i has %i reads (pysam)" \
+                  % (ref, start, end, len(pysam_list))
+            for read in pysam_list[:12]:
+                print " - %s at %i" % (read.qname, read.pos)
+            if len(pysam_list) > 12: print " - etc"
             biopy_list = list(biopy_bam.fetch(ref, start, end))
-            #assert len(pysam_list) == len(biopy_list), \
+            print "%s region %i:%i has %i reads (biopy)" \
+                  % (ref, start, end, len(biopy_list))
+            for read in biopy_list[:12]:
+                print " - %s at %i" % (read.qname, read.pos)
+            if len(biopy_list) > 12: print " - etc"
+             #assert len(pysam_list) == len(biopy_list), \
             print "%i vs %i reads for %s region %i:%i" \
                 % (len(pysam_list), len(biopy_list), ref, start, end)
         handle.close()
     index_check("SamBam/ex1.bam", "SamBam/ex1.bam.bai", [
                     ("chr1", 120, 130),
+                ])
+    index_check("SamBam/bins.bam", "SamBam/bins.bam.bai", [
+                    ("large", 120, 130),
+                    ("large", 1000, 1010),
                 ])
 
 def _comp_float(a,b):
@@ -1884,7 +1920,7 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..", "..", "..", "Tests")):
-        print "Runing doctests..."
+        #print "Runing doctests..."
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..", "..", "..", "Tests"))
         doctest.testmod()
