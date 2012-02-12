@@ -453,8 +453,8 @@ class BamIterator(object):
 
         """
         #TODO - Nice slice style API using start:end as well/instead?
-        references = self.references
-        i = references.index(reference)
+        references = self._references
+        i = self.references.index(reference)
         if not self._indexes:
             raise ValueError("BAI file not loaded")
         index, offsets, mapped, unmapped, u_start, u_end = self._indexes[i]
@@ -523,6 +523,7 @@ class BamIterator(object):
                         pass
                     #TODO - Calculate the alignment end & check against region start
                     else:
+                        assert reference == read.rname, "%s vs %s for read %s" % (reference, read.rname, read.qname)
                         #Looks good
                         yield read
             #print "Done all chunks for bin %i" % bin
