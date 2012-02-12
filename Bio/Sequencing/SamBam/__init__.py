@@ -448,7 +448,7 @@ class BamIterator(object):
         0
         >>> reads = list(bam.fetch("chr1", 120, 150))
         >>> len(reads)
-        1447
+        19
         >>> handle.close()
 
         """
@@ -465,6 +465,7 @@ class BamIterator(object):
         excluded_flag = 0x4 #Unmapped
         #print "%s region %i:%i covers bins %r" % (reference, start, end, bins)
         #print "Baby-bin offsets:", offsets
+        all_chunks = []
         for bin in bins:
             #print "bin %i" % bin
             try:
@@ -479,6 +480,15 @@ class BamIterator(object):
                 #which get a linear index of offsets as well
                 min_offset = offsets[bin-4681]
             for s_offset, e_offset in chunks:
+                if e_offset < min_offset:
+                    assert False
+                elif s_offset < min_offset:
+                    all_chunks.append((min_offset, e_offset))
+                else:
+                    all_chunks.append((s_offset, e_offset))
+        all_chunks.sort()
+        #TODO - Must we remove/merge overlapping chunks?
+        for s_offset, e_offset in all_chunks:
                 #from Bio.bgzf import split_virtual_offset
                 #print "bin %i chunk from virtual offset %i (%i, %i) to %i (%i, %i)" \
                 #      % (bin,
@@ -490,7 +500,7 @@ class BamIterator(object):
                 else:
                     h.seek(s_offset)
                 #Exploits the fact that virtual offsets are ordered
-                while h.tell() <= e_offset:
+                while h.tell() < e_offset:
                     #now = h.tell()
                     #print "Now at %i (%i, %i) and about to load read..." \
                     #      % (now, split_virtual_offset(now)[0], split_virtual_offset(now)[1])
@@ -505,8 +515,15 @@ class BamIterator(object):
                               % (now, split_virtual_offset(now)[0], split_virtual_offset(now)[1], data,
                                  e_offset, split_virtual_offset(e_offset)[0], split_virtual_offset(e_offset)[1]))
                         break
-                    #If the read didn't match the required flags will get None
-                    if read is not None:
+                    if read is None:
+                        #If the read didn't match the required flags will get None
+                        pass
+                    elif end <= read.pos:
+                        #Doesn't overlap
+                        pass
+                    #TODO - Calculate the alignment end & check against region start
+                    else:
+                        #Looks good
                         yield read
             #print "Done all chunks for bin %i" % bin
 
