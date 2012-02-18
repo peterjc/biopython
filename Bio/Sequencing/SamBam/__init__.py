@@ -179,6 +179,8 @@ _empty_bytes_string = _as_bytes("")
 _null_byte = _as_bytes("\0")
 _ff_byte = _as_bytes("\xFF")
 
+#TODO - Define CIGAR operator constants here?
+
 class SamIterator(object):
     """Loop over a SAM file returning SamRead objects.
 
@@ -1285,6 +1287,45 @@ class SamBamRead(object):
         self._tags = tags
         return tags
 
+    @property
+    def alen(self):
+        """Aligned length of the read on the reference genome (None if unavailable).
+
+        The aligned length is given by the sum of the CIGAR M/=/X/D/N operations.
+
+        See also the pos and aend properties.
+        """
+        if self.cigar is None:
+            return None
+        length = 0
+        for op, op_len in self.cigar:
+            #The CIGAR operators MIDNSHP=X are represented using 0 to 7 (as in BAM)
+            if op in [0, 2, 3, 6, 7]:
+                length += op_len
+        return length
+
+    @property
+    def aend(self):
+        """Aligned end position of the read on the reference (None for unmapped).
+
+        For mapped reads this equals the sum of the pos and alen properties:
+
+        >>> with open("SamBam/ex1.sam") as handle:
+        ...     for read in SamIterator(handle):
+        ...         if read.is_mapped:
+        ...             print read.qname, read.pos, read.alen, read.aend
+        ...         if read.qname == "EAS219_FC30151:3:40:1128:1940": break
+        EAS56_57:6:190:289:82 99 35 134
+        EAS51_64:3:190:727:308 102 35 137
+        EAS112_34:7:141:80:875 109 35 144
+        EAS219_FC30151:3:40:1128:1940 111 35 146
+        """
+        start = self.pos
+        length = self.alen
+        if start is None or length is None:
+            return None
+        else:
+            return start + length
 
 class SamRead(SamBamRead):
     """Represents a SAM/BAM entry created from a SAM file entry.
@@ -1743,6 +1784,8 @@ def _pysam():
             #assert a.rname == b.rname, "%r vs %r" % (a.rname, b.rname)
             #See http://code.google.com/p/pysam/issues/detail?id=25
             assert a.pos == b.pos, "%r vs %r" % (a.pos, b.pos)
+            assert a.alen == b.alen, "%r vs %r" % (a.alen, b.alen)
+            assert a.aend == b.aend, "%r vs %r" % (a.aend, b.aend)
             assert a.mapq == b.mapq, "%r vs %r" % (a.mapq, b.mapq)
             assert a.cigar == b.cigar, "%r vs %r" % (a.cigar, b.cigar)
             #assert a.mrnm == b.mrnm, "%r vs %r" % (a.mrnm, b.mrnm)
