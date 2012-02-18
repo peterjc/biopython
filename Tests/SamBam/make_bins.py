@@ -77,7 +77,7 @@ for i in xrange(12):
 h.close()
 print "SAM done"
 
-assert 0 == os.system("samtools view -S -b bins.sam > bins.bam")
+assert 0 == os.system("samtools view -h -S -b bins.sam > bins.bam")
 assert 0 == os.system("samtools index bins.bam")
 print "BAM done"
 
