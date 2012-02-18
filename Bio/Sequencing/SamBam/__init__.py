@@ -1298,8 +1298,8 @@ class SamBamRead(object):
             return None
         length = 0
         for op, op_len in self.cigar:
-            #The CIGAR operators MIDNSHP=X are represented using 0 to 7 (as in BAM)
-            if op in [0, 2, 3, 6, 7]:
+            #The CIGAR operators MIDNSHP=X are represented using 0 to 8 (as in BAM)
+            if op in [0, 2, 3, 7, 8]:
                 length += op_len
         return length
 
@@ -1411,8 +1411,10 @@ class SamRead(SamBamRead):
 class BamRead(SamBamRead):
     """Represents a SAM/BAM entry created from a BAM file entry.
 
-    This is a subclass of SamBamRead, and it intended for use in creating
+    This is a subclass of SamBamRead, and is intended for use in creating
     a read object from an entry in a BAM file.
+
+    If creating a read in code, use the SamBamRead class instead.
     """
     def __init__(self, qname, flag, rname, pos, mapq, binary_cigar,
                  rnext, pnext, tlen, read_len, binary_seq, binary_qual,
@@ -1461,12 +1463,12 @@ class BamRead(SamBamRead):
         self._binary_qual = binary_qual
         self._binary_tags = binary_tags
         self._tags = None
-    
+
     @property
     def cigar(self):
         """CIGAR string parsed into a list of tuples (operator code, count).
         
-        The CIGAR operators MIDNSHP=X are represented using 0 to 7 (as in BAM).
+        The CIGAR operators MIDNSHP=X are represented using 0 to 8 (as in BAM).
 
         Any empty CIGAR string (represented as * in SAM) is given as None.
         """
