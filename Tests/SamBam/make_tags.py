@@ -68,6 +68,6 @@ for i in [0, 1, 2, 15, 16, 16, 31, 32, 33, 63, 64, 65, 128, 256, 32000, 33000,64
 h.close()
 print "SAM done"
 
-assert 0 == os.system("samtools view -S -b tags.sam > tags.bam")
+assert 0 == os.system("samtools view -h -S -b tags.sam > tags.bam")
 assert 0 == os.system("samtools index tags.bam")
 print "BAM done"
