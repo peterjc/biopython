@@ -520,10 +520,9 @@ class BamIterator(object):
                     if read is None:
                         #If the read didn't match the required flags will get None
                         pass
-                    elif end <= read.pos:
+                    elif end <= read.pos or read.aend <= start:
                         #Doesn't overlap
                         pass
-                    #TODO - Calculate the alignment end & check against region start
                     else:
                         assert reference == read.rname, "%s vs %s for read %s" % (reference, read.rname, read.qname)
                         #Looks good
@@ -1824,16 +1823,28 @@ def _pysam():
             pysam_list = list(pysam_bam.fetch(ref, start, end))
             print "%s region %i:%i has %i reads (pysam)" \
                   % (ref, start, end, len(pysam_list))
-            for read in pysam_list[:12]:
-                print " - %s at %i" % (read.qname, read.pos)
-            if len(pysam_list) > 12: print " - etc"
+            if len(pysam_list) <= 10:
+                for read in pysam_list:
+                    print " - %s at %i" % (read.qname, read.pos)
+            else:
+                for read in pysam_list[:5]:
+                    print " - %s at %i" % (read.qname, read.pos)
+                print " - etc"
+                for read in pysam_list[-5:]:
+                    print " - %s at %i" % (read.qname, read.pos)
             biopy_list = list(biopy_bam.fetch(ref, start, end))
             print "%s region %i:%i has %i reads (biopy)" \
                   % (ref, start, end, len(biopy_list))
-            for read in biopy_list[:12]:
-                print " - %s at %i" % (read.qname, read.pos)
-            if len(biopy_list) > 12: print " - etc"
-             #assert len(pysam_list) == len(biopy_list), \
+            if len(biopy_list) <= 10:
+                for read in biopy_list:
+                    print " - %s at %i" % (read.qname, read.pos)
+            else:
+                for read in biopy_list[:5]:
+                    print " - %s at %i" % (read.qname, read.pos)
+                print " - etc"
+                for read in biopy_list[-5:]:
+                    print " - %s at %i" % (read.qname, read.pos)
+            #assert len(pysam_list) == len(biopy_list), \
             print "%i vs %i reads for %s region %i:%i" \
                 % (len(pysam_list), len(biopy_list), ref, start, end)
         handle.close()
