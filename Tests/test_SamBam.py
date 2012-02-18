@@ -28,45 +28,43 @@ class MiscTests(unittest.TestCase):
     """Misc SAM/BAM tests."""
 
     def compare(self, a_iter, b_iter):
-        assert a_iter.nreferences == b_iter.nreferences, \
-            "%r vs %r" % (a_iter.nreferences, b_iter.nreferences)
-        assert a_iter.references == b_iter.references, \
-            "%r vs %r" % (a_iter.references, b_iter.references)
-        assert a_iter.lengths == b_iter.lengths, \
-            "%r vs %r" % (a_iter.lengths, b_iter.lengths)
+        self.assertEqual(a_iter.nreferences, b_iter.nreferences)
+        self.assertEqual(a_iter.references, b_iter.references)
+        self.assertEqual(a_iter.lengths, b_iter.lengths)
         if a_iter.header and b_iter.header:
-            assert a_iter.header == b_iter.header, \
-                "%r vs %r" % (a_iter.header, b_iter.header)
+            self.assertEqual(a_iter.header, b_iter.header)
         for a, b in izip_longest(a_iter, b_iter):
-            assert b is not None, "Extra read in a: %r" % str(a)
-            assert a is not None, "Extra read in b: %r" % str(b)
-            assert a.qname == b.qname, "%r vs %r" % (a.qname, b.qname)
-            assert a.flag == b.flag, "%r vs %r" % (a.flag, b.flag)
-            assert a.rname == b.rname, "%r vs %r" % (a.rname, b.rname)
-            assert a.pos == b.pos, "%r vs %r" % (a.pos, b.pos)
-            assert a.mapq == b.mapq, "%r vs %r" % (a.mapq, b.mapq)
-            assert a.cigar == b.cigar, "%r vs %r" % (a.cigar, b.cigar)
-            assert a.mrnm == b.mrnm, "%r vs %r" % (a.mrnm, b.mrnm)                                                        
-            assert a.mpos == b.mpos, "%r vs %r" % (a.pos, b.pos)
-            assert a.isize == b.isize, "%r vs %r" % (a.isize, b.isize)
-            assert a.seq == b.seq, "%r vs %r" % (a.seq, b.seq)
-            assert a.qual == b.qual, "%r vs %r" % (a.qual, b.qual)
-            assert a.tags.keys() == b.tags.keys(), "%r vs %r" % (a.tags.keys(), b.tags.keys())
+            self.assertTrue(b is not None, "Extra read in a: %r" % str(a))
+            self.assertTrue(a is not None, "Extra read in b: %r" % str(b))
+            self.assertEqual(a.qname, b.qname)
+            self.assertEqual(a.flag, b.flag)
+            self.assertEqual(a.rname, b.rname)
+            self.assertEqual(a.pos, b.pos)
+            self.assertEqaul(a.alen, b.alen)
+            self.assertEqual(a.aend, b.aend)
+            self.assertEqual(a.mapq, b.mapq)
+            self.assertEqual(a.cigar, b.cigar)
+            self.assertEqual(a.mrnm, b.mrnm)
+            self.assertEqual(a.mpos, b.mpos)
+            self.assertEqual(a.isize, b.isize)
+            self.assertEqual(a.seq, b.seq)
+            self.assertEqual(a.qual, b.qual)
+            self.assertEqual(a.tags.keys(), b.tags.keys())
             for key in a.tags:
-                assert a.tags[key][0] == b.tags[key][0], \
+                self.assertEqual(a.tags[key][0], b.tags[key][0],
                        "%s tag %s has codes %s vs %s" % \
-                       (a.qname, key, a.tags[key][0], b.tags[key][0])
+                       (a.qname, key, a.tags[key][0], b.tags[key][0]))
                 if a.tags[key][0]=="f":
-                    assert str(a.tags[key][1]) == str(b.tags[key][1]) or \
-                           abs(a.tags[key][1] - b.tags[key][1]) < 0.00001, \
-                           "%s tag %s have %f vs %f" % \
-                           (a.qname, key, a.tags[key][1], b.tags[key][1])
+                    self.assertTrue(str(a.tags[key][1]) == str(b.tags[key][1]) or \
+                                    abs(a.tags[key][1] - b.tags[key][1]) < 0.00001, \
+                                    "%s tag %s have %f vs %f" % \
+                                    (a.qname, key, a.tags[key][1], b.tags[key][1]))
                 elif a.tags[key][0]=="Bf":
                     pass
                 else:
-                    assert a.tags[key][1] == b.tags[key][1], \
+                    self.assertEqual(a.tags[key][1], b.tags[key][1],
                            "%s tag %s:%s has %s vs %s" % \
-                           (a.qname, key, a.tags[key][0], a.tags[key][1], b.tags[key][1])
+                           (a.qname, key, a.tags[key][0], a.tags[key][1], b.tags[key][1]))
             #Float formating in tags is annoying...
             #assert str(a) == str(b), "Reads disagree,\n%s\n%s\n" % (a,b)
 
@@ -80,8 +78,8 @@ class MiscTests(unittest.TestCase):
         for read in SamIterator(open("SamBam/tags.sam")):
             #TODO - Test API for getting tag values
             tag = str(read).rstrip("\n").split("\t")[-1]
-            assert read.qname == "tag_" + tag, \
-                   "%s vs tag of %s" % (read.qname, tag)
+            self.assertEqual(read.qname, "tag_" + tag,
+                             "%s vs tag of %s" % (read.qname, tag))
 
     def test_tags_bam(self):
         for read in BamIterator(open("SamBam/tags.bam", "rb")):
@@ -92,28 +90,29 @@ class MiscTests(unittest.TestCase):
             if ":f:" in tag:
                 old = float(read.qname.split(":")[2])
                 new = float(tag.split(":")[2])
-                assert _comp_float(old, new), \
-                       "%s vs tag of %s" % (read.qname, tag)
+                self.assertTrue(_comp_float(old, new),
+                                "%s vs tag of %s" % (read.qname, tag))
             elif ":B:" in tag:
-                assert read.qname.startswith("tag_" + tag[:5]), \
-                       "%s vs tag of %s" % (read.qname, tag)
+                self.assertTrue(read.qname.startswith("tag_" + tag[:5]),
+                                "%s vs tag of %s" % (read.qname, tag))
                 if ":B:f," in read.qname:
                     old = tuple(float(v) for v in read.qname.split(":B:f,")[1].split(","))
                     new = tuple(float(v) for v in tag.split(":")[2][2:].split(","))
-                    assert len(old) == len(new), \
-                           "Count mismatch %i vs %i in %s\n%s\n%s\n" \
-                           % (read.qname, len(old), len(new), old, new)
+                    self.assertEqual(len(old), len(new),
+                                     "Ccount mismatch %i vs %i in %s\n%s\n%s\n" \
+                                     % (len(old), len(new), read.qname, old, new))
                     for a,b in zip(old, new):
-                        assert _comp_float(a, b), \
-                               "Mismatch in %s,\n%s\n%s" % (read.qname, old, new)
+                        self.assertTrue(_comp_float(a, b),
+                                        "Mismatch in %s,\n%s\n%s" % (read.qname, old, new))
                 else:
                     #Integers
                     old = [int(v) for v in read.qname.split(":B:")[1][2:].split(",")]
                     new = [int(v) for v in tag.split(":")[2][2:].split(",")]
-                    assert old == new, "Mismatch in read %s vs %s\n%r\n%r" % (read.qname, tag, old, new)
+                    self.assertEqual(old, new,
+                            "Mismatch in read %s vs %s\n%r\n%r" % (read.qname, tag, old, new))
             else:
-                assert read.qname == "tag_" + tag, \
-                       "Please check %s vs tag of %s" % (read.qname, tag)
+                self.assertEqual(read.qname, "tag_" + tag,
+                                 "Please check %s vs tag of %s" % (read.qname, tag))
 
 
 class RecreateTests(unittest.TestCase):

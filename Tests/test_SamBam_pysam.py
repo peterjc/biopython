@@ -13,6 +13,7 @@ except ImportError:
         "Install pysam if you want to test against it.")
 
 import unittest
+from itertools import izip_longest
 
 from Bio.Sequencing.SamBam import SamIterator, BamIterator
 
@@ -20,36 +21,33 @@ class CrossCheckParsing(unittest.TestCase):
     """Cross checking our SAM/BAM parsing against pysam."""
 
     def compare(self, a_iter, b_iter):
-        from itertools import izip_longest
-        assert a_iter.nreferences == b_iter.nreferences, \
-            "%r vs %r" % (a_iter.nreferences, b_iter.nreferences)
-        assert a_iter.references == b_iter.references, \
-            "%r vs %r" % (a_iter.references, b_iter.references)
-        assert a_iter.lengths == b_iter.lengths, \
-            "%r vs %r" % (a_iter.lengths, b_iter.lengths)
+        self.assertEqual(a_iter.nreferences, b_iter.nreferences)
+        self.assertEqual(a_iter.references, b_iter.references)
+        self.assertEqual(a_iter.lengths, b_iter.lengths)
         if a_iter.header and b_iter.header:
             #pysam doesn't infer a minimal SAM header from BAM header
-            assert a_iter.header == b_iter.header, \
-                "%r vs %r" % (a_iter.header, b_iter.header)
+            self.assertEqual(a_iter.header, b_iter.header)
         for a, b in izip_longest(a_iter, b_iter):
-            #Note using mrnm and isize to test these aliases
-            assert b is not None, "Extra read in a: %r" % str(a)
-            assert a is not None, "Extra read in b: %r" % str(b)
-            assert a.qname == b.qname, "%r vs %r" % (a.qname, b.qname)
-            assert a.flag == b.flag, "%r vs %r" % (a.flag, b.flag)
-            #assert a.rname == b.rname, "%r vs %r" % (a.rname, b.rname)
+            self.assertTrue(b is not None, "Extra read in a: %r" % str(a))
+            self.assertTrue(a is not None, "Extra read in b: %r" % str(b))
+            self.assertEqual(a.qname, b.qname)
+            self.assertEqual(a.flag, b.flag)
             #See http://code.google.com/p/pysam/issues/detail?id=25
-            assert a.pos == b.pos, "%r vs %r" % (a.pos, b.pos)
-            assert a.alen == b.alen, "%r vs %r" % (a.alen, b.alen)
-            assert a.aend == b.aend, "%r vs %r" % (a.aend, b.aend)
-            assert a.mapq == b.mapq, "%r vs %r" % (a.mapq, b.mapq)
-            assert a.cigar == b.cigar, "%r vs %r" % (a.cigar, b.cigar)
-            #assert a.mrnm == b.mrnm, "%r vs %r" % (a.mrnm, b.mrnm)
+            #self.assertEqual(a.rname, b.rname)
+            self.assertEqual(a.pos, b.pos)
+            self.assertEqual(a.alen, b.alen)
+            self.assertEqual(a.aend, b.aend)
+            self.assertEqual(a.mapq, b.mapq)
+            self.assertEqual(a.cigar, b.cigar)
             #See http://code.google.com/p/pysam/issues/detail?id=25
-            assert a.mpos == b.mpos, "%r vs %r" % (a.pos, b.pos)
-            assert a.isize == b.isize, "%r vs %r" % (a.isize, b.isize) 
-            assert a.seq == b.seq, "%r vs %r" % (a.seq, b.seq)
-            assert a.qual == b.qual, "%r vs %r" % (a.qual, b.qual)
+            #self.assertEqual(a.mrnm, b.mrnm)
+            self.assertEqual(a.mpos, b.mpos)
+            self.assertEqual(a.isize, b.isize) #legacy alias
+            self.assertEqual(a.seq, b.seq)
+            self.assertEqual(a.qual, b.qual)
+            #TODO - tags (not represented same way at the moment)
+
+            #assert str(a) == str(b), "Reads disagree,\n%s\n%s\n" % (a,b)
             #Would compare str(a)==str(b) but pysam does not attempt
             #to return a valid SAM record like this.
             #See http://code.google.com/p/pysam/issues/detail?id=74
