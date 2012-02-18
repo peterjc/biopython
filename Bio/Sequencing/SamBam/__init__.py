@@ -1755,106 +1755,6 @@ def _cross_check_header_refs(reads, header="", referencenames=None, referencelen
         references = _sam_header_to_ref_list(header)
     return header, references
 
-def _pysam():
-    try:
-        import pysam
-    except ImportError:
-        return
-    print "Running tests against pysam..."
-    
-    def compare(a_iter, b_iter):
-        from itertools import izip_longest
-        assert a_iter.nreferences == b_iter.nreferences, \
-            "%r vs %r" % (a_iter.nreferences, b_iter.nreferences)
-        assert a_iter.references == b_iter.references, \
-            "%r vs %r" % (a_iter.references, b_iter.references)
-        assert a_iter.lengths == b_iter.lengths, \
-            "%r vs %r" % (a_iter.lengths, b_iter.lengths)
-        if a_iter.header and b_iter.header:
-            #pysam doesn't infer a minimal SAM header from BAM header
-            assert a_iter.header == b_iter.header, \
-                "%r vs %r" % (a_iter.header, b_iter.header)
-        for a, b in izip_longest(a_iter, b_iter):
-            #Note using mrnm and isize to test these aliases
-            assert b is not None, "Extra read in a: %r" % str(a)
-            assert a is not None, "Extra read in b: %r" % str(b)
-            assert a.qname == b.qname, "%r vs %r" % (a.qname, b.qname)
-            assert a.flag == b.flag, "%r vs %r" % (a.flag, b.flag)
-            #assert a.rname == b.rname, "%r vs %r" % (a.rname, b.rname)
-            #See http://code.google.com/p/pysam/issues/detail?id=25
-            assert a.pos == b.pos, "%r vs %r" % (a.pos, b.pos)
-            assert a.alen == b.alen, "%r vs %r" % (a.alen, b.alen)
-            assert a.aend == b.aend, "%r vs %r" % (a.aend, b.aend)
-            assert a.mapq == b.mapq, "%r vs %r" % (a.mapq, b.mapq)
-            assert a.cigar == b.cigar, "%r vs %r" % (a.cigar, b.cigar)
-            #assert a.mrnm == b.mrnm, "%r vs %r" % (a.mrnm, b.mrnm)
-            #See http://code.google.com/p/pysam/issues/detail?id=25
-            assert a.mpos == b.mpos, "%r vs %r" % (a.pos, b.pos)
-            assert a.isize == b.isize, "%r vs %r" % (a.isize, b.isize) 
-            assert a.seq == b.seq, "%r vs %r" % (a.seq, b.seq)
-            assert a.qual == b.qual, "%r vs %r" % (a.qual, b.qual)
-            #Would compare str(a)==str(b) but pysam does not attempt
-            #to return a valid SAM record like this.
-            #See http://code.google.com/p/pysam/issues/detail?id=74
-            #and http://code.google.com/p/pysam/issues/detail?id=75
-    
-    #TODO, use pysam on the SAM file
-    #http://code.google.com/p/pysam/issues/detail?id=73
-    #compare(SamIterator(open("SamBam/ex1.sam")),
-    #        pysam.Samfile("SamBam/ex1.sam", "r"))
-    #Avoid this by using a copy of the SAM file with a header:
-    compare(SamIterator(open("SamBam/ex1_header.sam")),
-            pysam.Samfile("SamBam/ex1_header.sam", "r"))
-    compare(SamIterator(open("SamBam/ex1_header.sam")),
-            pysam.Samfile("SamBam/ex1_header.sam", "r"))
-    compare(SamIterator(open("SamBam/ex1_header.sam")),
-            pysam.Samfile("SamBam/ex1_header.bam", "rb"))
-    compare(BamIterator(open("SamBam/ex1.bam", "rb")),
-            pysam.Samfile("SamBam/ex1.bam", "rb"))
-
-    #Indexing...
-    def index_check(bam, bai, regions):
-        print bam
-        pysam_bam = pysam.Samfile(bam, "rb")
-        handle = open(bam, "rb")
-        biopy_bam = BamIterator(handle, bai_filename = bai)
-        for ref, start, end in regions:
-            print "%s region %i:%i" % (ref, start, end)
-            pysam_list = list(pysam_bam.fetch(ref, start, end))
-            print "%s region %i:%i has %i reads (pysam)" \
-                  % (ref, start, end, len(pysam_list))
-            if len(pysam_list) <= 10:
-                for read in pysam_list:
-                    print " - %s at %i" % (read.qname, read.pos)
-            else:
-                for read in pysam_list[:5]:
-                    print " - %s at %i" % (read.qname, read.pos)
-                print " - etc"
-                for read in pysam_list[-5:]:
-                    print " - %s at %i" % (read.qname, read.pos)
-            biopy_list = list(biopy_bam.fetch(ref, start, end))
-            print "%s region %i:%i has %i reads (biopy)" \
-                  % (ref, start, end, len(biopy_list))
-            if len(biopy_list) <= 10:
-                for read in biopy_list:
-                    print " - %s at %i" % (read.qname, read.pos)
-            else:
-                for read in biopy_list[:5]:
-                    print " - %s at %i" % (read.qname, read.pos)
-                print " - etc"
-                for read in biopy_list[-5:]:
-                    print " - %s at %i" % (read.qname, read.pos)
-            #assert len(pysam_list) == len(biopy_list), \
-            print "%i vs %i reads for %s region %i:%i" \
-                % (len(pysam_list), len(biopy_list), ref, start, end)
-        handle.close()
-    index_check("SamBam/ex1.bam", "SamBam/ex1.bam.bai", [
-                    ("chr1", 120, 130),
-                ])
-    index_check("SamBam/bins.bam", "SamBam/bins.bam.bai", [
-                    ("large", 120, 130),
-                    ("large", 1000, 1010),
-                ])
 
 def _comp_float(a,b):
     return repr(a)==repr(b) or a==b or abs(float(a)-float(b))<0.000001,
@@ -1997,7 +1897,6 @@ def _test():
         os.chdir(os.path.join("..", "..", "..", "Tests"))
         doctest.testmod()
         print "Done"
-        _pysam()
         _test_misc()
         os.chdir(cur_dir)
         del cur_dir
@@ -2007,7 +1906,6 @@ def _test():
         os.chdir(os.path.join("Tests"))
         doctest.testmod()
         print "Done"
-        _pysam()
         _test_misc()
         os.chdir(cur_dir)
         del cur_dir
