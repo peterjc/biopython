@@ -1519,7 +1519,10 @@ class BamRead(SamBamRead):
             return self._qual
         except AttributeError:
             #TODO - Reuse dict mapping from FASTQ parser, will be faster
-            if sys.version_info[0] >= 3:
+            if not self._binary_qual:
+                #This would be * in SAM
+                qual = None
+            elif sys.version_info[0] >= 3:
                 #Iteration over a bytes string gives integers
                 qual = "".join(chr(33+byte) for byte in self._binary_qual)
             else:
