@@ -35,8 +35,8 @@ class MiscTests(unittest.TestCase):
         if a_iter.header and b_iter.header:
             self.assertEqual(a_iter.header, b_iter.header)
         for a, b in izip_longest(a_iter, b_iter):
-            self.assertTrue(b is not None, "Extra read in a: %r" % str(a))
-            self.assertTrue(a is not None, "Extra read in b: %r" % str(b))
+            self.assertFalse(b is None, "Extra read in a:\n%s" % a)
+            self.assertFalse(a is None, "Extra read in b:\n%s" % b)
             self.assertEqual(a.qname, b.qname)
             self.assertEqual(a.flag, b.flag,
                              "%r vs %r for:\n%s\n%s"  % (a.flag, b.flag, a, b))
@@ -49,11 +49,14 @@ class MiscTests(unittest.TestCase):
             self.assertEqual(a.aend, b.aend,
                              "%r vs %r for:\n%s\n%s"  % (a.aend, b.aend, a, b))
             self.assertEqual(a.mapq, b.mapq)
-            self.assertEqual(a.cigar, b.cigar)
-            self.assertEqual(a.mrnm, b.mrnm)
+            self.assertEqual(a.cigar, b.cigar,
+                             "%r vs %r for:\n%s\n%s" % (a.cigar, b.cigar, a, b))
+            self.assertEqual(a.rnext, b.rnext,
+                             "%r vs %r for:\n%s\n%s" % (a.rnext, b.rnext, a, b))
             self.assertEqual(a.mpos, b.mpos)
             self.assertEqual(a.isize, b.isize)
-            self.assertEqual(a.seq, b.seq)
+            self.assertEqual(a.seq, b.seq,
+                             "%r vs %r for:\n%s\n%s" % (a.seq, b.seq, a, b))
             self.assertEqual(a.qual, b.qual)
             self.assertEqual(a.tags.keys(), b.tags.keys())
             for key in a.tags:
@@ -74,7 +77,23 @@ class MiscTests(unittest.TestCase):
             #Float formating in tags is annoying...
             #assert str(a) == str(b), "Reads disagree,\n%s\n%s\n" % (a,b)
 
-    def test_reproduce_tags(self):
+    def test_bam_vs_bam_ex1(self):
+        self.compare(BamIterator(open("SamBam/ex1_header.bam", "rb")),
+                     BamIterator(gzip.open("SamBam/ex1_header.bam"), gzipped=False))
+
+    def test_sam_vs_bam_ex1_header(self):
+        self.compare(SamIterator(open("SamBam/ex1_header.sam")),
+                     BamIterator(open("SamBam/ex1_header.bam", "rb")))
+        self.compare(SamIterator(open("SamBam/ex1_header.sam")),
+                     BamIterator(gzip.open("SamBam/ex1_header.bam"), gzipped=False))
+
+    def test_sam_vs_bam_bins(self):
+        self.compare(SamIterator(open("SamBam/bins.sam")),
+                     BamIterator(open("SamBam/bins.bam", "rb")))
+        self.compare(SamIterator(open("SamBam/bins.sam")),
+                     BamIterator(gzip.open("SamBam/bins.bam"), gzipped=False))
+
+    def test_sam_vs_bam_tags(self):
         self.compare(SamIterator(open("SamBam/tags.sam")),
                      BamIterator(open("SamBam/tags.bam", "rb")))
         self.compare(SamIterator(open("SamBam/tags.sam")),
@@ -90,7 +109,7 @@ class MiscTests(unittest.TestCase):
     def test_tags_bam(self):
         for read in BamIterator(open("SamBam/tags.bam", "rb")):
             tag = str(read).rstrip("\n").split("\t")[-1]
-            assert read.qname.startswith("tag_" + tag[:5])
+            self.assertTrue(read.qname.startswith("tag_" + tag[:5]))
             if read.qname == "tag_" + tag:
                 continue
             if ":f:" in tag:

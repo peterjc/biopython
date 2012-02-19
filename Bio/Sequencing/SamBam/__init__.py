@@ -200,7 +200,7 @@ class SamIterator(object):
     >>> print read.rname, read.pos
     chr1 111
     >>> print read.rnext, read.pnext #RNEXT and PNEXT aka MRNM and MPOS
-    = 290
+    chr1 290
     >>> print read.tlen #TLEN aka ISIZE
     214
     >>> print read.cigar
@@ -553,6 +553,9 @@ def _load_next_bam_read(h, references, required_flag, excluded_flag):
                 ref_name = "*"
             else:
                 ref_name = references[ref_id][0]
+            #Note SAM files can use '=' when RNAME and RNEXT match,
+            #for consistency can either expand the '=' on loading SAM,
+            #or use the '=' when loading BAM.
             if mate_ref_id == -1:
                 mate_ref_name = "*"
             else:
@@ -1089,7 +1092,11 @@ class SamBamRead(object):
         self.pos = pos
         self.mapq = mapq
         self.cigar_str = cigar_str
-        self.rnext = rnext
+        if nrext == "=":
+            #Want the full name to be consistent with BAM
+            self.rnext = rname
+        else:
+            self.rnext = rnext
         self.pnext = pnext
         self.tlen = tlen
         self.seq = seq
@@ -1111,8 +1118,12 @@ class SamBamRead(object):
         qual = self.qual
         if qual is None:
             qual = "*"
+        rnext = self.rnext
+        if rnext != "*" and rnext == self.rname:
+            rnext = "="
+            #Use '=' for RNEXT if not * and matches RNAME, gives smaller file
         parts = [self.qname, str(self.flag), self.rname, str(self.pos+1),
-                 str(self.mapq), self.cigar_str, self.rnext, str(self.pnext+1),
+                 str(self.mapq), self.cigar_str, rnext, str(self.pnext+1),
                  str(self.tlen), seq, qual]
         try:
             #See if this is a SAM record where we never un-parsed the tags
@@ -1120,8 +1131,6 @@ class SamBamRead(object):
         except AttributeError:
             if self.tags:
                 parts.append(str(self.tags))
-        if self.rnext == self.rname and self.rnext != "*":
-            parts[6] = "="
         try:
             return "\t".join(parts) + "\n"
         except TypeError, e:
@@ -1250,6 +1259,7 @@ class SamBamRead(object):
                 count = ""
         return answer
 
+    #TODO - Expose RNEXT as a property so can control '=' behaviour?
     @property
     def mrnm(self):
         """Use RNEXT instead, replaced mate's reference name (MRNM).
@@ -1376,7 +1386,12 @@ class SamRead(SamBamRead):
         self.pos = int(parts[3]) - 1
         self.mapq = int(parts[4])
         self.cigar_str = parts[5]
-        self.rnext = parts[6] #RNEXT aka MRNM, not an integer!
+        rnext = parts[6] #RNEXT aka MRNM, not an integer!
+        if rnext != "*" and rnext == "=":
+            #Expand RNEXT '=' into the full name from RNAME
+            self.rnext = self.rname
+        else:
+            self.rnext = rnext
         self.pnext = int(parts[7]) - 1 #PNEXT aka MPOS
         self.tlen = int(parts[8]) #TLEN aka ISAIZE
         if parts[9] == "*":
@@ -1455,6 +1470,7 @@ class BamRead(SamBamRead):
         self.pos = pos
         self.mapq = mapq
         self._binary_cigar = binary_cigar
+        assert rnext != "="
         self.rnext = rnext #RNEXT aka MRNM, the actual name, not the integer!
         self.pnext = pnext #PNEXT aka MPOS
         self.tlen = tlen #TLEN aka ISIZE
