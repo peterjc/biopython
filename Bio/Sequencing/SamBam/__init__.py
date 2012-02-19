@@ -1086,7 +1086,7 @@ class SamBamRead(object):
         self.pos = pos
         self.mapq = mapq
         self.cigar_str = cigar_str
-        if nrext == "=":
+        if rnext == "=":
             #Want the full name to be consistent with BAM
             self.rnext = rname
         else:
@@ -1448,7 +1448,7 @@ class BamRead(SamBamRead):
         Getting the read as a SAM formatted line is easy, print it or use str(),
 
         >>> str(read)
-        'rd01\t1\t*\t0\t255\t*\t*\t0\t0\t\t\n'
+        'rd01\t1\t*\t0\t255\t*\t*\t0\t0\t*\t*\n'
     
         You can modify values too, this overrides any values parsed
         from the raw data and will be used if saving the record back
