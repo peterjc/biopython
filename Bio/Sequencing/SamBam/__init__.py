@@ -1398,12 +1398,14 @@ class SamRead(SamBamRead):
         else:
             self.qual = parts[10]
         self._raw_tags = parts[11:]
-        self._tags = None
 
     @property
     def tags(self):
-        if self._tags:
+        try:
             return self._tags
+        except AttributeError:
+            #This has not been decoded from the raw string yet
+            pass
         tags = SamBamReadTags()
         for tag in self._raw_tags:
             key, code, data = tag.split(":",2)
@@ -1473,7 +1475,6 @@ class BamRead(SamBamRead):
         self._binary_seq = binary_seq
         self._binary_qual = binary_qual
         self._binary_tags = binary_tags
-        self._tags = None
 
     @property
     def cigar(self):
@@ -1537,7 +1538,12 @@ class BamRead(SamBamRead):
                 #Iteration over a bytes string gives integers
                 qual = "".join(chr(33+byte) for byte in self._binary_qual)
             else:
-                qual = "".join(chr(33+ord(byte)) for byte in self._binary_qual)
+                try:
+                    qual = "".join(chr(33+ord(byte)) for byte in self._binary_qual)
+                except ValueError, e:
+                    print self.qname, self._binary_qual
+                    for byte in self._binary_qual: print byte, ord(byte)
+                    raise
             self._qual = qual
             return qual
     def _set_qual(self, value):
@@ -1548,8 +1554,11 @@ class BamRead(SamBamRead):
 
     @property
     def tags(self):
-        if self._tags:
+        try:
             return self._tags
+        except AttributeError:
+            #This hasn't been decoded from the binary verion yet
+            pass
         raw = self._binary_tags
         tags = SamBamReadTags()
         while raw:
