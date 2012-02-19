@@ -178,6 +178,7 @@ from Bio._py3k import _as_bytes, _as_string
 _empty_bytes_string = _as_bytes("")
 _null_byte = _as_bytes("\0")
 _ff_byte = _as_bytes("\xFF")
+_bam_magic = _as_bytes("BAM" + chr(1))
 
 #TODO - Define CIGAR operator constants here?
 
@@ -240,11 +241,11 @@ class SamIterator(object):
         except UnicodeDecodeError:
             #This could be almost any binary file, but I want the same error on python 3
             raise ValueError("Not a SAM file, perhaps it is BAM format or compressed?.")
-        if sys.version_info[0] < 3 and line.startswith("\x1f\x8b"):
+        if sys.version_info[0] < 3 and line.startswith(_as_bytes("\x1f\x8b")):
             #This is triggered on Python 2, means BAM or GZIP but want same error as Python 3
             #raise ValueError("This looks like a BAM file or gzipped file, not a SAM file.")
             raise ValueError("Not a SAM file, perhaps it is BAM format or compressed?.")
-        if sys.version_info[0] < 3 and line.startswith("BAM" + chr(1)):
+        if sys.version_info[0] < 3 and line.startswith(_bam_magic):
             #i.e. a Naked uncompressed BAM file without the gzip/BGZF wrapper
             #raise ValueError("This looks like an uncompressed BAM file, not a SAM file.")
             raise ValueError("Not a SAM file, perhaps it is BAM format or compressed?.")
@@ -798,12 +799,13 @@ def _build_decoder():
     decode = {}
     encode = {}
     for i,first in enumerate("=ACMGRSVTWYHKDBN"):
-        b = chr(i*16)
+        b = _as_bytes(chr(i*16))
         encode[first] = b
         encode[first.lower()] = b
         for j,second in enumerate("=ACMGRSVTWYHKDBN"):
             b = chr(i*16 + j)
             decode[b] = first+second #For Python 2
+            b = _as_bytes(b)
             decode[i*16+j] = first+second #For Python 3
             encode[first+second] = b
             encode[first.lower()+second] = b
@@ -828,10 +830,10 @@ def _build_decoder():
     assert decode[chr(64+4)] == "GG", decode[chr(64+4)]
     assert decode[chr(64+15)] == "GN", decode[chr(64+15)]
 
-    assert encode["gn"] == chr(79)
-    assert encode["Gn"] == chr(79)
-    assert encode["gN"] == chr(79)
-    assert encode["GN"] == chr(79)
+    assert encode["gn"] == _as_bytes(chr(79))
+    assert encode["Gn"] == _as_bytes(chr(79))
+    assert encode["gN"] == _as_bytes(chr(79))
+    assert encode["GN"] == _as_bytes(chr(79))
 
     return decode, encode
 _decode_dibase_byte, _encode_dibase_byte = _build_decoder()
@@ -855,19 +857,19 @@ assert _decode_seq(_as_bytes('\x12H'), 3) == 'ACG'
 def _encode_seq(seq):
     r"""Helper function to encode BAM style sequence (PRIVATE).
 
-    >>> _encode_seq("ACGT") == '\x12H'
+    >>> _encode_seq("ACGT") == _as_bytes('\x12H')
     True
-    >>> _encode_seq("ACG=") == _encode_seq("ACG") == '\x12@'
+    >>> _encode_seq("ACG=") == _encode_seq("ACG") == _as_bytes('\x12@')
     True
 
     """
     answer = []
     for i in range(0, len(seq), 2):
         answer.append(_encode_dibase_byte[seq[i:i+2]])
-    return "".join(answer)
-assert _encode_seq("ACGT") == '\x12H', _encode_seq("ACGT")
-assert _encode_seq("ACG=") == '\x12@', _encode_seq("ACG=")
-assert _encode_seq("ACG") == '\x12@'
+    return _empty_bytes_string.join(answer)
+assert _encode_seq("ACGT") == _as_bytes('\x12H'), _encode_seq("ACGT")
+assert _encode_seq("ACG=") == _as_bytes('\x12@'), _encode_seq("ACG=")
+assert _encode_seq("ACG") == _as_bytes('\x12@')
 
 class SamBamReadTags(dict):
     r"""Represents the tags for a SAM/BAM read.
@@ -1183,7 +1185,7 @@ class SamBamRead(object):
                 cigar = [op_len<<4|op for op, op_len in self.cigar]
                 cigar = struct.pack("<%iI" % len(cigar), *cigar)
             else:
-                cigar = ""
+                cigar = _empty_bytes_string
         flag_nc = self.flag << 16 | (len(cigar)//4)
         if self.rnext == "=":
             next_index = ref_index
@@ -1199,7 +1201,7 @@ class SamBamRead(object):
             else:
                 assert l_seq == 0
                 assert not self.qual
-                seq = ""
+                seq = _empty_bytes_string
         assert len(seq) == (l_seq+1) // 2, "%r (len %i) for %s (len %i = %i)" \
                % (seq, len(seq), self.seq, len(self.seq), l_seq)
         try:
@@ -1651,7 +1653,7 @@ def _next_tag_raw(raw):
     elif code == "i": #int32
         return tag, "i", struct.unpack("<i", raw[3:7])[0], raw[7:]
     elif code == "c": #int8
-        value = ord(raw[3])
+        value = ord(raw[3:4])
         if value >= 128:
             #Negative bit set
             value -= 256
@@ -1744,16 +1746,16 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     header, references = _cross_check_header_refs(reads, header,
                                                   referencenames,
                                                   referencelengths)
-    header = _check_header_text(header)
+    header = _as_bytes(_check_header_text(header))
     #Write BAM header:
-    handle.write("BAM" + chr(1))
+    handle.write(_bam_magic)
     handle.write(struct.pack("<I", len(header)))
     handle.write(header)
     handle.write(struct.pack("<I", len(references)))
     for r, l in references:
         try:
             handle.write(struct.pack("<I", len(r)+1))
-            handle.write(r + chr(0))
+            handle.write(_as_bytes(r) + _null_byte)
             handle.write(struct.pack("<I", l))
         except Exception:
             raise ValueError("Problem with reference %r, %r" % (r,l))
