@@ -535,6 +535,9 @@ def _load_next_bam_read(h, references, required_flag, excluded_flag):
             raw_cigar = h.read(cigar_len * 4)
             raw_seq = h.read((read_len+1)//2) # round up to make it even
             raw_qual = h.read(read_len)
+            if raw_qual == _ff_byte * read_len:
+                #If all 0xFF, treat like QUAL * in SAM
+                raw_qual = _empty_bytes_string
             raw_tags = h.read(tag_len)
             #Can't do offset arithmatic with BGZF
             #assert h.tell() == end_offset, \
@@ -1189,7 +1192,10 @@ class SamBamRead(object):
         assert len(seq) == (l_seq+1) // 2, "%r (len %i) for %s (len %i = %i)" \
                % (seq, len(seq), self.seq, len(self.seq), l_seq)
         try:
-            qual = self._binary_qual #See BamRead subclass
+            if self._binary_qual:
+                qual = self._binary_qual #See BamRead subclass
+            else:
+                qual = _ff_byte * l_seq
         except AttributeError:
             if self.qual:
                 #TODO - Store this as ints? Currently FASTQ encoded...
@@ -1201,8 +1207,8 @@ class SamBamRead(object):
                     qual = _as_bytes("".join(chr(ord(q)-33) for q in self.qual))
             else:
                 qual = _ff_byte * l_seq
-        assert len(qual) == l_seq, "%r (len %i) for %r (len %i = %i)" \
-               % (qual, len(qual), self.qual, len(self.qual), l_seq)
+        assert len(qual) == l_seq, "%r (len %i) for %r (len %i)" \
+               % (qual, len(qual), self.qual, l_seq)
         try:
             tags = self._binary_tags #See BamRead subclass
         except AttributeError:
