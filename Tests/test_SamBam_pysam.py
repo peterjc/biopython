@@ -131,7 +131,7 @@ class CrossCheckParsing(unittest.TestCase):
 
 
     def index_check(self, bam, bai, regions):
-        print bam
+        #print bam
         pysam_bam = pysam.Samfile(bam, "rb")
         handle = open(bam, "rb")
         biopy_bam = BamIterator(handle, bai_filename = bai)
