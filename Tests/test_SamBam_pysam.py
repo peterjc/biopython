@@ -151,6 +151,11 @@ class CrossCheckParsing(unittest.TestCase):
                             ("chr1", 120, 130),
                         ])
 
+    def test_index_tags(self):
+        self.index_check("SamBam/tags.bam", "SamBam/tags.bam.bai", [
+                            ("chr1", 120, 130),
+                        ])
+
     def test_index_bins(self):
         self.index_check("SamBam/bins.bam", "SamBam/bins.bam.bai", [
                             ("large", 120, 130),
