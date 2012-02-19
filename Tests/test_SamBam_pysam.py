@@ -18,20 +18,23 @@ from itertools import izip_longest
 from Bio.Sequencing.SamBam import SamIterator, BamIterator
 
 class CrossCheckParsing(unittest.TestCase):
-    """Cross checking our SAM/BAM parsing against pysam."""
+    """Cross checking our SAM/BAM against pysam."""
 
     def compare(self, a_iter, b_iter):
         #Note this differs from the comparison in test_SamBam.py
         #in order to account for differences with pysam
-        self.assertEqual(a_iter.nreferences, b_iter.nreferences)
-        self.assertEqual(a_iter.references, b_iter.references)
-        self.assertEqual(a_iter.lengths, b_iter.lengths)
-        if a_iter.header and b_iter.header:
-            #pysam doesn't infer a minimal SAM header from BAM header
-            self.assertEqual(a_iter.header, b_iter.header)
+        if isinstance(a_iter, list) or isinstance(b_iter, list):
+            pass
+        else:
+            self.assertEqual(a_iter.nreferences, b_iter.nreferences)
+            self.assertEqual(a_iter.references, b_iter.references)
+            self.assertEqual(a_iter.lengths, b_iter.lengths)
+            if a_iter.header and b_iter.header:
+                #pysam doesn't infer a minimal SAM header from BAM header
+                self.assertEqual(a_iter.header, b_iter.header)
         for a, b in izip_longest(a_iter, b_iter):
-            self.assertTrue(b is not None, "Extra read in a: %r" % str(a))
-            self.assertTrue(a is not None, "Extra read in b: %r" % str(b))
+            self.assertFalse(b is None, "Extra read in a:\n%s" % a)
+            self.assertFalse(a is None, "Extra read in b:\n%s" % b)
             self.assertEqual(a.qname, b.qname)
             self.assertEqual(a.flag, b.flag,
                              "%r vs %r for:\n%s\n%s"  % (a.flag, b.flag, a, b))
@@ -46,12 +49,13 @@ class CrossCheckParsing(unittest.TestCase):
             #                 "%r vs %r for:\n%s\n%s"  % (a.aend, b.aend, a, b))
             self.assertEqual(a.mapq, b.mapq)
             self.assertEqual(a.cigar, b.cigar,
-                             "%r vs %s for:\n%s\n%s" % (a.cigar, b.cigar, a, b))
+                             "%r vs %r for:\n%s\n%s" % (a.cigar, b.cigar, a, b))
             #See http://code.google.com/p/pysam/issues/detail?id=25
             #self.assertEqual(a.mrnm, b.mrnm)
             self.assertEqual(a.mpos, b.mpos)
             self.assertEqual(a.isize, b.isize) #legacy alias
-            self.assertEqual(a.seq, b.seq)
+            self.assertEqual(a.seq, b.seq,
+                             "%r vs %r for:\n%s\n%s" % (a.seq, b.seq, a, b))
             self.assertEqual(a.qual, b.qual)
             #TODO - tags (not represented same way at the moment)
 
@@ -105,8 +109,23 @@ class CrossCheckParsing(unittest.TestCase):
         self.compare(BamIterator(open("SamBam/tags.bam", "rb")),
                      pysam.Samfile("SamBam/tags.bam", "rb"))
 
-class CrossCheckRandomAccess(unittest.TestCase):
-    """Cross checking our BAM random access against pysam."""
+
+    def test_bins_sam_vs_sam(self):
+        self.compare(SamIterator(open("SamBam/bins.sam")),
+                     pysam.Samfile("SamBam/bins.sam", "r"))
+
+    def test_bins_bam_vs_sam(self):
+        self.compare(BamIterator(open("SamBam/bins.bam", "rb")),
+                     pysam.Samfile("SamBam/bins.sam", "r"))
+
+    def test_bins_sam_vs_bam(self):
+        self.compare(SamIterator(open("SamBam/bins.sam")),
+                     pysam.Samfile("SamBam/bins.bam", "rb"))
+
+    def test_bins_bam_vs_bam(self):
+        self.compare(BamIterator(open("SamBam/bins.bam", "rb")),
+                     pysam.Samfile("SamBam/bins.bam", "rb"))
+
 
     def index_check(self, bam, bai, regions):
         print bam
@@ -118,30 +137,10 @@ class CrossCheckRandomAccess(unittest.TestCase):
             pysam_list = list(pysam_bam.fetch(ref, start, end))
             print "%s region %i:%i has %i reads (pysam)" \
                   % (ref, start, end, len(pysam_list))
-            if len(pysam_list) <= 10:
-                for read in pysam_list:
-                    print " - %s at %i" % (read.qname, read.pos)
-            else:
-                for read in pysam_list[:5]:
-                    print " - %s at %i" % (read.qname, read.pos)
-                print " - etc"
-                for read in pysam_list[-5:]:
-                    print " - %s at %i" % (read.qname, read.pos)
             biopy_list = list(biopy_bam.fetch(ref, start, end))
             print "%s region %i:%i has %i reads (biopy)" \
                   % (ref, start, end, len(biopy_list))
-            if len(biopy_list) <= 10:
-                for read in biopy_list:
-                    print " - %s at %i" % (read.qname, read.pos)
-            else:
-                for read in biopy_list[:5]:
-                    print " - %s at %i" % (read.qname, read.pos)
-                print " - etc"
-                for read in biopy_list[-5:]:
-                    print " - %s at %i" % (read.qname, read.pos)
-            #assert len(pysam_list) == len(biopy_list), \
-            print "%i vs %i reads for %s region %i:%i" \
-                % (len(pysam_list), len(biopy_list), ref, start, end)
+            self.compare(pysam_list, biopy_list)
         handle.close()
 
     def test_index_ex1(self):
