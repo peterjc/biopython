@@ -152,12 +152,12 @@ class RecreateTests(unittest.TestCase):
     def check_old_new(self, old, new, name):
         self.assertEqual(old[:100], new[:100])
         self.assertEqual(len(old), len(new))
-        #Idea behind using batches of 32 is for easier cross referencing
-        #with a tools like hexdump
-        for i in range(0, len(old), 32):
-            self.assertEqual(old[i:i+32], new[i:i+32],
-                             "Mismatch recreating %s bytes %i to %i,\n%r\n%r\n" \
-                             % (name, i, i+32, old[i:i+32], new[i:i+32]))
+        #Idea behind using batches of 16 is for easier cross referencing
+        #with a tools like hexdump -C
+        for i in range(0, len(old), 16):
+            self.assertEqual(old[i:i+16], new[i:i+16],
+                             "Mismatch recreating %s bytes %i to %i (0x%x to 0x%x),\n%r\n%r\n" \
+                             % (name, i, i+16, i, i+16, old[i:i+16], new[i:i+16]))
         self.assertEqual(old, new, "Could not recreate %s perfectly" % name)
 
     def check_bam_to_bam(self, bam_filename):
