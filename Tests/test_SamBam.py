@@ -28,6 +28,7 @@ class MiscTests(unittest.TestCase):
     """Misc SAM/BAM tests."""
 
     def compare(self, a_iter, b_iter):
+        #Note considerable overlap with method in test_SamBam_pysam.py
         self.assertEqual(a_iter.nreferences, b_iter.nreferences)
         self.assertEqual(a_iter.references, b_iter.references)
         self.assertEqual(a_iter.lengths, b_iter.lengths)
@@ -37,11 +38,16 @@ class MiscTests(unittest.TestCase):
             self.assertTrue(b is not None, "Extra read in a: %r" % str(a))
             self.assertTrue(a is not None, "Extra read in b: %r" % str(b))
             self.assertEqual(a.qname, b.qname)
-            self.assertEqual(a.flag, b.flag)
-            self.assertEqual(a.rname, b.rname)
-            self.assertEqual(a.pos, b.pos)
-            self.assertEqaul(a.alen, b.alen)
-            self.assertEqual(a.aend, b.aend)
+            self.assertEqual(a.flag, b.flag,
+                             "%r vs %r for:\n%s\n%s"  % (a.flag, b.flag, a, b))
+            self.assertEqual(a.rname, b.rname,
+                             "%r vs %r for:\n%s\n%s"  % (a.rname, b.rname, a, b))
+            self.assertEqual(a.pos, b.pos,
+                             "%r vs %r for:\n%s\n%s"  % (a.pos, b.pos, a, b))
+            self.assertEqual(a.alen, b.alen,
+                             "%r vs %r for:\n%s\n%s"  % (a.alen, b.alen, a, b))
+            self.assertEqual(a.aend, b.aend,
+                             "%r vs %r for:\n%s\n%s"  % (a.aend, b.aend, a, b))
             self.assertEqual(a.mapq, b.mapq)
             self.assertEqual(a.cigar, b.cigar)
             self.assertEqual(a.mrnm, b.mrnm)
