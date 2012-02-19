@@ -1501,7 +1501,11 @@ class BamRead(SamBamRead):
         try:
             return self._seq
         except AttributeError:
-            seq = _decode_seq(self._binary_seq, self._read_len)
+            if self._read_len == 0:
+                #This would be * in SAM format
+                seq = None
+            else:
+                seq = _decode_seq(self._binary_seq, self._read_len)
             self._seq = seq
             return seq
     def _set_seq(self, value):
@@ -1515,7 +1519,10 @@ class BamRead(SamBamRead):
             return self._qual
         except AttributeError:
             #TODO - Reuse dict mapping from FASTQ parser, will be faster
-            if sys.version_info[0] >= 3:
+            if not self._binary_qual:
+                #This would be * in SAM
+                qual = None
+            elif sys.version_info[0] >= 3:
                 #Iteration over a bytes string gives integers
                 qual = "".join(chr(33+byte) for byte in self._binary_qual)
             else:
