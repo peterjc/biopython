@@ -489,19 +489,13 @@ class BamIterator(object):
                 else:
                     all_chunks.append((s_offset, e_offset))
         all_chunks.sort()
-        #TODO - Must we remove/merge overlapping chunks?
+        #Chunks are now start order sorted, but can overlap.
+        #Must not parse reads more than once!
         for s_offset, e_offset in all_chunks:
-                #from Bio.bgzf import split_virtual_offset
-                #print "bin %i chunk from virtual offset %i (%i, %i) to %i (%i, %i)" \
-                #      % (bin,
-                #         s_offset, split_virtual_offset(s_offset)[0], split_virtual_offset(s_offset)[1],
-                #         e_offset, split_virtual_offset(e_offset)[0], split_virtual_offset(e_offset)[1])
-                if min_offset and s_offset < min_offset:
-                    #print "Over-riding with baby-bin's start %i" % min_offset
-                    h.seek(min_offset)
-                else:
+                #Note virtual offsets are ordered (but can't do addition/subtraction)
+                if h.tell() < s_offset:
+                    #We can skip a bit of data between chunks
                     h.seek(s_offset)
-                #Exploits the fact that virtual offsets are ordered
                 while h.tell() < e_offset:
                     #now = h.tell()
                     #print "Now at %i (%i, %i) and about to load read..." \
