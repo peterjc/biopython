@@ -799,12 +799,13 @@ def _build_decoder():
     decode = {}
     encode = {}
     for i,first in enumerate("=ACMGRSVTWYHKDBN"):
-        b = chr(i*16)
+        b = _as_bytes(chr(i*16))
         encode[first] = b
         encode[first.lower()] = b
         for j,second in enumerate("=ACMGRSVTWYHKDBN"):
             b = chr(i*16 + j)
             decode[b] = first+second #For Python 2
+            b = _as_bytes(b)
             decode[i*16+j] = first+second #For Python 3
             encode[first+second] = b
             encode[first.lower()+second] = b
@@ -829,10 +830,10 @@ def _build_decoder():
     assert decode[chr(64+4)] == "GG", decode[chr(64+4)]
     assert decode[chr(64+15)] == "GN", decode[chr(64+15)]
 
-    assert encode["gn"] == chr(79)
-    assert encode["Gn"] == chr(79)
-    assert encode["gN"] == chr(79)
-    assert encode["GN"] == chr(79)
+    assert encode["gn"] == _as_bytes(chr(79))
+    assert encode["Gn"] == _as_bytes(chr(79))
+    assert encode["gN"] == _as_bytes(chr(79))
+    assert encode["GN"] == _as_bytes(chr(79))
 
     return decode, encode
 _decode_dibase_byte, _encode_dibase_byte = _build_decoder()
@@ -865,10 +866,10 @@ def _encode_seq(seq):
     answer = []
     for i in range(0, len(seq), 2):
         answer.append(_encode_dibase_byte[seq[i:i+2]])
-    return "".join(answer)
-assert _encode_seq("ACGT") == '\x12H', _encode_seq("ACGT")
-assert _encode_seq("ACG=") == '\x12@', _encode_seq("ACG=")
-assert _encode_seq("ACG") == '\x12@'
+    return _empty_bytes_string.join(answer)
+assert _encode_seq("ACGT") == _as_bytes('\x12H'), _encode_seq("ACGT")
+assert _encode_seq("ACG=") == _as_bytes('\x12@'), _encode_seq("ACG=")
+assert _encode_seq("ACG") == _as_bytes('\x12@')
 
 class SamBamReadTags(dict):
     r"""Represents the tags for a SAM/BAM read.
@@ -1184,7 +1185,7 @@ class SamBamRead(object):
                 cigar = [op_len<<4|op for op, op_len in self.cigar]
                 cigar = struct.pack("<%iI" % len(cigar), *cigar)
             else:
-                cigar = ""
+                cigar = _empty_bytes_string
         flag_nc = self.flag << 16 | (len(cigar)//4)
         if self.rnext == "=":
             next_index = ref_index
@@ -1200,7 +1201,7 @@ class SamBamRead(object):
             else:
                 assert l_seq == 0
                 assert not self.qual
-                seq = ""
+                seq = _empty_bytes_string
         assert len(seq) == (l_seq+1) // 2, "%r (len %i) for %s (len %i = %i)" \
                % (seq, len(seq), self.seq, len(self.seq), l_seq)
         try:
