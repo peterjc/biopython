@@ -491,6 +491,7 @@ class BamIterator(object):
         all_chunks.sort()
         #Chunks are now start order sorted, but can overlap.
         #Must not parse reads more than once!
+        h.seek(all_chunks[0][0]) #Go to the start of the first chunk
         for s_offset, e_offset in all_chunks:
                 #Note virtual offsets are ordered (but can't do addition/subtraction)
                 if h.tell() < s_offset:
