@@ -1150,12 +1150,13 @@ class SamBamRead(object):
             #l_seq = sum(op_len for op, op_len in self.cigar if op in [0,1,4,7,8])
             #But for BAM we just want the length for the SEQ and QUAL entries
             l_seq = 0
-        if self.pos < 0:
+        if self.pos == -1 and not self.cigar:
+            #Hack to match samtools 0.1.18, seems bam_reg2bin(-1, 0) gives 4680
+            bin = 4680
+        elif self.pos < 0:
             bin = 0
         elif self.cigar:
-            #Encoding is MIDNSHP=X
-            #Want 'M' = 0, 'D' = 2, 'N' = 3, '=' = 7, 'X' = 8
-            bin = reg2bin(self.pos, self.pos + sum(op_len for op, op_len in self.cigar if op in [0,2,3,7,8]))
+            bin = reg2bin(self.pos, self.aend)
         else:
             #Have no CIGAR for unmapped reads (given their partner's position)
             #Do what samtools does:
