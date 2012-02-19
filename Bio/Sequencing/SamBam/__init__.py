@@ -178,6 +178,7 @@ from Bio._py3k import _as_bytes, _as_string
 _empty_bytes_string = _as_bytes("")
 _null_byte = _as_bytes("\0")
 _ff_byte = _as_bytes("\xFF")
+_bam_magic = _as_bytes("BAM" + chr(1))
 
 #TODO - Define CIGAR operator constants here?
 
@@ -240,11 +241,11 @@ class SamIterator(object):
         except UnicodeDecodeError:
             #This could be almost any binary file, but I want the same error on python 3
             raise ValueError("Not a SAM file, perhaps it is BAM format or compressed?.")
-        if sys.version_info[0] < 3 and line.startswith("\x1f\x8b"):
+        if sys.version_info[0] < 3 and line.startswith(_as_bytes("\x1f\x8b")):
             #This is triggered on Python 2, means BAM or GZIP but want same error as Python 3
             #raise ValueError("This looks like a BAM file or gzipped file, not a SAM file.")
             raise ValueError("Not a SAM file, perhaps it is BAM format or compressed?.")
-        if sys.version_info[0] < 3 and line.startswith("BAM" + chr(1)):
+        if sys.version_info[0] < 3 and line.startswith(_bam_magic):
             #i.e. a Naked uncompressed BAM file without the gzip/BGZF wrapper
             #raise ValueError("This looks like an uncompressed BAM file, not a SAM file.")
             raise ValueError("Not a SAM file, perhaps it is BAM format or compressed?.")
@@ -1744,16 +1745,16 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     header, references = _cross_check_header_refs(reads, header,
                                                   referencenames,
                                                   referencelengths)
-    header = _check_header_text(header)
+    header = _as_bytes(_check_header_text(header))
     #Write BAM header:
-    handle.write("BAM" + chr(1))
+    handle.write(_bam_magic)
     handle.write(struct.pack("<I", len(header)))
     handle.write(header)
     handle.write(struct.pack("<I", len(references)))
     for r, l in references:
         try:
             handle.write(struct.pack("<I", len(r)+1))
-            handle.write(r + chr(0))
+            handle.write(_as_bytes(r) + _null_byte)
             handle.write(struct.pack("<I", l))
         except Exception:
             raise ValueError("Problem with reference %r, %r" % (r,l))
