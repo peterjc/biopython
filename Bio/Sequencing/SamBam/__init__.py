@@ -1653,7 +1653,7 @@ def _next_tag_raw(raw):
     elif code == "i": #int32
         return tag, "i", struct.unpack("<i", raw[3:7])[0], raw[7:]
     elif code == "c": #int8
-        value = ord(raw[3])
+        value = ord(raw[3:4])
         if value >= 128:
             #Negative bit set
             value -= 256
