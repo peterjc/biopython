@@ -1501,7 +1501,11 @@ class BamRead(SamBamRead):
         try:
             return self._seq
         except AttributeError:
-            seq = _decode_seq(self._binary_seq, self._read_len)
+            if self._read_len == 0:
+                #This would be * in SAM format
+                seq = None
+            else:
+                seq = _decode_seq(self._binary_seq, self._read_len)
             self._seq = seq
             return seq
     def _set_seq(self, value):
