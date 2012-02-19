@@ -23,7 +23,10 @@ class CrossCheckParsing(unittest.TestCase):
     def compare(self, a_iter, b_iter):
         #Note this differs from the comparison in test_SamBam.py
         #in order to account for differences with pysam
+        #Also it copes with lists (useful with fetch testing)
         if isinstance(a_iter, list) or isinstance(b_iter, list):
+            self.assertEqual(len(a_iter), len(b_iter))
+        elif isinstance(a_iter, list) or isinstance(b_iter, list):
             pass
         else:
             self.assertEqual(a_iter.nreferences, b_iter.nreferences)
@@ -133,13 +136,13 @@ class CrossCheckParsing(unittest.TestCase):
         handle = open(bam, "rb")
         biopy_bam = BamIterator(handle, bai_filename = bai)
         for ref, start, end in regions:
-            print "%s region %i:%i" % (ref, start, end)
+            #print "%s region %i:%i" % (ref, start, end)
             pysam_list = list(pysam_bam.fetch(ref, start, end))
-            print "%s region %i:%i has %i reads (pysam)" \
-                  % (ref, start, end, len(pysam_list))
+            #print "%s region %i:%i has %i reads (pysam)" \
+            #      % (ref, start, end, len(pysam_list))
             biopy_list = list(biopy_bam.fetch(ref, start, end))
-            print "%s region %i:%i has %i reads (biopy)" \
-                  % (ref, start, end, len(biopy_list))
+            #print "%s region %i:%i has %i reads (biopy)" \
+            #      % (ref, start, end, len(biopy_list))
             self.compare(pysam_list, biopy_list)
         handle.close()
 
