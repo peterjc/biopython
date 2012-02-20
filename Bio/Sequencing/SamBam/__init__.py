@@ -171,6 +171,12 @@ would be 454 paired end reads, since they are on the same strand.
 import struct
 import sys
 
+try:
+    #Python 2.7+
+    from collections import OrderedDict
+except ImportError:
+    from Bio._py3k import OrderedDict
+
 #Biopython imports:
 from bai import _load_bai
 from Bio import bgzf
@@ -871,7 +877,7 @@ assert _encode_seq("ACGT") == _as_bytes('\x12H'), _encode_seq("ACGT")
 assert _encode_seq("ACG=") == _as_bytes('\x12@'), _encode_seq("ACG=")
 assert _encode_seq("ACG") == _as_bytes('\x12@')
 
-class SamBamReadTags(dict):
+class SamBamReadTags(OrderedDict):
     r"""Represents the tags for a SAM/BAM read.
 
     Although left ambiguous in early versions of the SAM/BAM specification,
@@ -965,29 +971,7 @@ class SamBamReadTags(dict):
                 raise TypeError("H type SAM/BAM tag values must be hexadecimal strings, not:\n%r" % data)
         else:
             raise ValueError("SAM/BAM tag type %r not supported" % code)
-        try:
-            order = self._order
-        except AttributeError:
-            self._order = order = self.keys()
-        if key not in order:
-            order.append(key)
-            assert key in self._order
-        return dict.__setitem__(self, key, (code, data))
-
-    def iteritems(self):
-        #TODO - Fix this hack, used to preserve tag order for testing
-        try:
-            order = self._order
-        except AttributeError:
-            order = []
-        for key in order:
-            try:
-                yield key, self[key]
-            except KeyError:
-                pass
-        for key, value in dict.iteritems(self):
-            if key not in order:
-                yield key, value
+        return OrderedDict.__setitem__(self, key, (code, data))
 
     def __str__(self):
         """Returns the tags tab separated in SAM formatting."""
