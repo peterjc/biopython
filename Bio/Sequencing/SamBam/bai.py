@@ -12,7 +12,10 @@ somewhat (which is a wrapper for the samtools C API).
 
 import struct
 
+from Bio._py3k import _as_bytes
+
 _BAM_MAX_BIN =  37450 # (8^6-1)/7+1
+_BAI_magic = _as_bytes("BAI\1")
 
 def _test_bai(handle):
     """Test function for loading a BAI file.
@@ -61,9 +64,9 @@ def _test_bai(handle):
 def _load_bai(handle):
     indexes = []
     magic = handle.read(4)
-    if magic != "BAI" + chr(1):
-        raise ValueError("BAM index files should start 'BAI\1', not %r" \
-                         % magic)
+    if magic != _BAI_magic:
+        raise ValueError("BAM index files should start %r, not %r" \
+                         % (_BAI_magic, magic))
     assert 4 == struct.calcsize("<i")
     assert 8 == struct.calcsize("<Q")
     data = handle.read(4)
