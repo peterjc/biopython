@@ -863,9 +863,9 @@ assert _decode_seq(_as_bytes('\x12H'), 3) == 'ACG'
 def _encode_seq(seq):
     r"""Helper function to encode BAM style sequence (PRIVATE).
 
-    >>> _encode_seq("ACGT") == '\x12H'
+    >>> _encode_seq("ACGT") == _as_bytes('\x12H')
     True
-    >>> _encode_seq("ACG=") == _encode_seq("ACG") == '\x12@'
+    >>> _encode_seq("ACG=") == _encode_seq("ACG") == _as_bytes('\x12@')
     True
 
     """
