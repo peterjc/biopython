@@ -75,8 +75,9 @@ def idxstats(bam_filename, bai_filename):
 
     for (reference, length), (chunks, linear, mapped, ref_unmapped, u_start, u_end) in zip(references, indexes):
         if mapped is None:
-            sys.stderr.write("ERROR - Missing unmapped reads for %s" % reference)
-            sys.exit(1)
+            mapped = 0
+        if ref_unmapped is None:
+            ref_unmapped = 0
         #TODO - Check length versus linear bins
         yield reference, length, mapped, ref_unmapped
     yield "*", 0, 0, unmapped
