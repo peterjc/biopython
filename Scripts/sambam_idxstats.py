@@ -78,6 +78,14 @@ def idxstats(bam_filename, bai_filename):
             mapped = 0
         if ref_unmapped is None:
             ref_unmapped = 0
+        if linear:
+            #Get one linear index chunk per 16kb (2**14 bp)
+            min_len = (2**14) * (len(linear)-1)
+            max_len = (2**14) * len(linear)
+            if not (min_len <= length <= max_len):
+                sys.stderr.write("WARNING: BAM file says %s is %i bp, but BAI says %i to %i bp"
+                                 " (from %i linear index entries each of 16384bp)\n" \
+                                 % (reference, length, min_len, max_len, len(linear)))
         #TODO - Check length versus linear bins
         yield reference, length, mapped, ref_unmapped
     yield "*", 0, 0, unmapped
