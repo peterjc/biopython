@@ -33,11 +33,8 @@ entries of asterisk, zero and zero for the first three columns).
 
 import sys
 import os
-import gzip
 
-
-from Bio.Sequencing import SamBam
-from Bio.Sequencing.SamBam import bai
+from Bio.Sequencing.SamBam.bai import idxstats
 
 if len(sys.argv) != 2:
     sts.stderr.write("ERROR - Missing required argument (BAM filename)\n\n")
@@ -55,40 +52,6 @@ if not os.path.isfile(bai_filename):
     sys.exit(1)
 #TODO - Try replacing .bam with .bai instead
 
-def idxstats(bam_filename, bai_filename):
-    #Don't need random access, so can just use gzip not bgzf
-    handle = gzip.open(bam_filename, "rb")
-    header_text, ref_count = SamBam._bam_file_header(handle)
-    references = [SamBam._bam_file_reference(handle) for i in range(ref_count)]
-    handle.close()
-
-    handle = open(bai_filename, "rb")
-    indexes, unmapped = bai._load_bai(handle)
-    if unmapped is None:
-        sys.stderr.write("ERROR - Old index lacks unmapped read information, re-index your BAM file\n")
-        sys.exit(1)
-
-    if len(indexes) != len(references):
-        sys.write("ERROR: BAM file has %i references, BAI has %i\n" \
-                  % (len(references), len(indexes)))
-        sys.exit(1)
-
-    for (reference, length), (chunks, linear, mapped, ref_unmapped, u_start, u_end) in zip(references, indexes):
-        if mapped is None:
-            mapped = 0
-        if ref_unmapped is None:
-            ref_unmapped = 0
-        if linear:
-            #Get one linear index chunk per 16kb (2**14 bp)
-            min_len = (2**14) * (len(linear)-1)
-            max_len = (2**14) * len(linear)
-            if not (min_len <= length <= max_len):
-                sys.stderr.write("WARNING: BAM file says %s is %i bp, but BAI says %i to %i bp"
-                                 " (from %i linear index entries each of 16384bp)\n" \
-                                 % (reference, length, min_len, max_len, len(linear)))
-        #TODO - Check length versus linear bins
-        yield reference, length, mapped, ref_unmapped
-    yield "*", 0, 0, unmapped
-
 for name, length, mapped, placed in idxstats(bam_filename, bai_filename):
     print "%s\t%s\t%i\t%i" % (name, length, mapped, placed)
+
