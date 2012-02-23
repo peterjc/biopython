@@ -18,6 +18,48 @@ from Bio._py3k import _as_bytes
 _BAM_MAX_BIN =  37450 # (8^6-1)/7+1
 _BAI_magic = _as_bytes("BAI\1")
 
+
+def reg2bin(beg, end):
+    """Turn a beg:end region into a bin BAM/UCSC indexing bin number.
+
+    Based on the C function reg2bin given in the SAM/BAM specification.
+    Note that this indexing scheme is limited to references of 512Mbps
+    (that is 2^29 base pairs).
+
+    >>> 4681 == reg2bin(9, 13)
+    True
+
+    """
+    assert 0 <= beg <= end < 2**29, "Bad region %i:%i" % (beg, end)
+    end -= 1
+    if (beg>>14 == end>>14): return ((1<<15)-1)/7 + (beg>>14)
+    if (beg>>17 == end>>17): return ((1<<12)-1)/7 + (beg>>17)
+    if (beg>>20 == end>>20): return ((1<<9)-1)/7  + (beg>>20)
+    if (beg>>23 == end>>23): return ((1<<6)-1)/7  + (beg>>23)
+    if (beg>>26 == end>>26): return ((1<<3)-1)/7  + (beg>>26)
+    return 0
+
+
+def reg2bins(beg, end):
+    """Turn beg:end region into list of BAM/UCSC indexing bin numbers overlapping it.
+
+    Based on the C function reg2bins given in the SAM/BAM specification.
+    Note that this indexing scheme is limited to references of 512Mbps
+    (that is 2^29 base pairs).
+
+    >>> reg2bins(9, 13)
+    [0, 1, 9, 73, 585, 4681]
+
+    """
+    assert 0 <= beg <= end < 2**29, "Bad region %i:%i" % (beg, end)
+    bins = [0]
+    end -= 1
+    for power, offset in [(26, 1), (23, 9), (20, 73), (17, 585), (14, 4681)]:
+        for k in range(offset + (beg>>power), offset + 1 + (end>>power)):
+            bins.append(k)
+    return bins
+
+
 def _test_bai(handle):
     """Test function for loading a BAI file.
 
