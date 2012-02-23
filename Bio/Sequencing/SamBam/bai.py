@@ -11,6 +11,7 @@ somewhat (which is a wrapper for the samtools C API).
 """
 
 import struct
+import gzip
 
 from Bio._py3k import _as_bytes
 
@@ -127,6 +128,51 @@ def _load_ref_index(handle):
     n_intv = struct.unpack("<i", handle.read(4))[0]
     return chunks_dict, struct.unpack("<%iQ" % n_intv, handle.read(8*n_intv)), \
            mapped, unmapped, unmapped_start, unmapped_end
+
+
+def idxstats(bam_filename, bai_filename):
+    """Generator function returning tuples for each reference.
+
+    Mimics the output of 'samtools idxstats example.bam' returning
+    reference name (string), reference length, number of mapped
+    reads, and number of placed but unmapped reads (integers).
+    Finally returns a tuple of "*", 0, 0, and the number of
+    unplaced unmapped reads.
+    """
+    #Don't need random access, so can just use gzip not bgzf
+    handle = gzip.open(bam_filename, "rb")
+    from Bio.Sequencing.SamBam import _bam_file_header #lazy import
+    from Bio.Sequencing.SamBam import _bam_file_reference #lazy import
+    header_text, ref_count = _bam_file_header(handle)
+    references = [_bam_file_reference(handle) for i in range(ref_count)]
+    handle.close()
+
+    handle = open(bai_filename, "rb")
+    indexes, unmapped = _load_bai(handle)
+    if unmapped is None:
+        raise ValueError("Old index lacks unmapped read information, re-index your BAM file")
+
+    if len(indexes) != len(references):
+        raise ValueError("BAM file has %i references, BAI has %i" \
+                  % (len(references), len(indexes)))
+
+    for (reference, length), (chunks, linear, mapped, ref_unmapped, u_start, u_end) in zip(references, indexes):
+        if mapped is None:
+            mapped = 0
+        if ref_unmapped is None:
+            ref_unmapped = 0
+        if linear:
+            #Get one linear index chunk per 16kb (2**14 bp)
+            min_len = (2**14) * (len(linear)-1)
+            max_len = (2**14) * len(linear)
+            if not (min_len <= length <= max_len):
+                import warnings
+                warnings.warn("WARNING: BAM file says %s is %i bp, but BAI says %i to %i bp"
+                              " (from %i linear index entries each of 16384bp)\n" \
+                              % (reference, length, min_len, max_len, len(linear)))
+        yield reference, length, mapped, ref_unmapped
+    yield "*", 0, 0, unmapped
+
 
 def _test():
     """Run the module's doctests (PRIVATE).
