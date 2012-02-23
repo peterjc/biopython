@@ -14,7 +14,26 @@ try:
 except ImportError:
     #That was renamed in Python 3, should be fixed by 2to3 but not:
     #http://bugs.python.org/issue11438
-    from itertools import zip_longest as izip_longest
+    try:
+        from itertools import zip_longest as izip_longest
+    except ImportError:
+        #Not present at all on Python 2.5 or Jython
+        def izip_longest(A, B):
+            a_iter = iter(A)
+            b_iter = iter(B)
+            while True:
+                try:
+                    a = a_iter.next()
+                except StopIteration:
+                    a = None
+                try:
+                    b = b_iter.next()
+                except StopIteration:
+                    b = None
+                if a is None and b is None:
+                    break
+                else:
+                    yield a, b
 
 try:
     #This is in Python 2.6+, but we need it on Python 3
