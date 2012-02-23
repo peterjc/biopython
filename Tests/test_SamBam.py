@@ -9,7 +9,12 @@ import unittest
 import gzip
 import os
 import sys
-from itertools import izip_longest
+try:
+    from itertools import izip_longest
+except ImportError:
+    #That was renamed in Python 3, should be fixed by 2to3 but not:
+    #http://bugs.python.org/issue11438
+    from itertools import zip_longest as izip_longest
 
 try:
     #This is in Python 2.6+, but we need it on Python 3
