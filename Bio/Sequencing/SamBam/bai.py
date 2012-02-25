@@ -180,6 +180,13 @@ def idxstats(bam_filename, bai_filename):
     reads, and number of placed but unmapped reads (integers).
     Finally returns a tuple of "*", 0, 0, and the number of
     unplaced unmapped reads.
+
+    >>> for values in idxstats("SamBam/ex1.bam", "SamBam/ex1.bam.bai"):
+    ...     print "%s\t%i\t%i\t%i" % values
+    chr1   1575      1446      18
+    chr2   1584      1789      17
+    *   0      0      0
+
     """
     #Don't need random access, so can just use gzip not bgzf
     handle = gzip.open(bam_filename, "rb")
