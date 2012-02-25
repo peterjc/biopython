@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os
-from Bio.Sequencing.SamBam import reg2bin
+from Bio.Sequencing.SamBam.bai import reg2bin
 
 h = open("bins.sam", "w")
 
@@ -60,6 +60,16 @@ for ref, ref_len in references:
                        (ref, count, start-1, end, length, bin, hex(bin))
                 h.write("%s\t%i\t%s\t%i\t255\t%s\t*\t0\t0\t%s\t*\n" \
                         % (name, flag, ref, start, cigar, seq))
+            #That was a simple single fragment mapped read.
+            #Now write a pair where only one is mapped
+            name = "%s:pair:%i..%i:len%i:mapped_bin%s:hex_mapped_bin%s" % \
+                   (ref, start-1, end, length, bin, hex(bin))
+            flag = 0x1 + 0x8 + 0x40 #Part 1 mapped, partner not mapped
+            h.write("%s\t%i\t%s\t%i\t255\t%s\t*\t0\t0\t%s\t*\n" \
+                    % (name, flag, ref, start, cigars[0], seq))
+            flag = 0x1 + 0x4 + 0x80 #Part 2 unmapped, partner is mapped
+            h.write("%s\t%i\t%s\t%i\t255\t%s\t*\t0\t0\t%s\t*\n" \
+                    % (name, flag, ref, start, "*", seq))
     print "%s len %i, %i reads in %i bins:" % (ref, ref_len, count, len(bins))
     print "(bins %i, ..., %i)" % (min(bins), max(bins))
 
