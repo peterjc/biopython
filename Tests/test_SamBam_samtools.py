@@ -10,6 +10,7 @@ import unittest
 
 from Bio import MissingExternalDependencyError
 
+from Bio.Sequencing.SamBam.bai import idxstats
 
 #################################################################
 
@@ -36,11 +37,14 @@ if not samtools_exe:
 
 class SamtoolsIdxstats(unittest.TestCase):
     def compare(self, bam_filename):
+        bai_filename = bam_filename + ".bai"
         #TODO - Switch to subprocess for testing under Windows
-        old = commands.getoutput("%s idxstats %s" % (samtools_exe, bam_filename))
-        new = commands.getoutput("../Scripts/sambam_idxstats.py %s" % bam_filename)
-        self.assertEqual(old, new,
-                         "samtools idxstats %s:\n%s\n\nVersus:\n%s" % (bam_filename, old, new))
+        old = commands.getoutput("%s idxstats %s" % (samtools_exe, bam_filename)).strip().split("\n")
+        new = ["%s\t%s\t%i\t%i" % values for values in idxstats(bam_filename, bai_filename)]
+        self.assertEqual(len(old), len(new))
+        for o,n in zip(old, new):
+            self.assertEqual(o, n,
+                "samtools idxstats %s:\n%s\n\nVersus:\n%s" % (bam_filename, old, new))
 
     def test_ex1(self):
         self.compare("SamBam/ex1.bam")
