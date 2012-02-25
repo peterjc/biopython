@@ -68,7 +68,7 @@ def _test_bai(handle):
     2 references
     1 bins, 1 linear baby-bins, 1446 reads mapped, 18 unmapped
     1 bins, 1 linear baby-bins, 1789 reads mapped, 17 unmapped
-    0 unmapped reads
+    0 unmapped unplaced reads
     >>> handle.close()
 
     >>> handle = open("SamBam/tags.bam.bai", "rb")
@@ -76,20 +76,20 @@ def _test_bai(handle):
     2 references
     1 bins, 1 linear baby-bins, 417 reads mapped, 0 unmapped
     0 bins, 0 linear baby-bins, ? reads mapped, ? unmapped
-    0 unmapped reads
+    0 unmapped unplaced reads
     >>> handle.close()
 
     >>> handle = open("SamBam/bins.bam.bai", "rb")
     >>> _test_bai(handle)
     3 references
-    1 bins, 1 linear baby-bins, 152 reads mapped, 0 unmapped
-    5 bins, 4 linear baby-bins, 397 reads mapped, 0 unmapped
-    73 bins, 64 linear baby-bins, 5153 reads mapped, 0 unmapped
-    12 unmapped reads
+    1 bins, 1 linear baby-bins, 194 reads mapped, 42 unmapped
+    5 bins, 4 linear baby-bins, 684 reads mapped, 287 unmapped
+    73 bins, 64 linear baby-bins, 10196 reads mapped, 5043 unmapped
+    12 unmapped unplaced reads
     >>> handle.close()
 
     """
-    indexes, unmapped = _load_bai(handle)
+    indexes, unmapped_unplaced = _load_bai(handle)
     print "%i references" % len(indexes)
     for chunks, linear, mapped, ref_unmapped, u_start, u_end in indexes:
         if mapped is None:
@@ -99,10 +99,10 @@ def _test_bai(handle):
         else:
             print "%i bins, %i linear baby-bins, %i reads mapped, %i unmapped" \
                   % (len(chunks), len(linear), mapped, ref_unmapped)
-    if unmapped is None:
-        print "Index missing unmapped reads count"
+    if unmapped_unplaced is None:
+        print "Index missing unmapped unplaced reads count"
     else:
-        print "%i unmapped reads" % unmapped
+        print "%i unmapped unplaced reads" % unmapped_unplaced
 
 def _load_bai(handle):
     indexes = []
