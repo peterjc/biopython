@@ -10785,10 +10785,109 @@ Section~\ref{sec:gd_nice_example}).}
 
 All the examples so far have used a single track, but you can have more than
 one track -- for example show the genes on one, and repeat regions on another.
+In this example we're going to draw genes on one track, and GC skew on another.
+
+First download the
+\href{ftp://ftp.ncbi.nih.gov/genomes/Bacteria/Listeria_innocua_Clip11262_uid61567/NC_003212.gbk}
+{NC\_003212.gbk} file, the complete genome of \textit{Listeria innocua} in GenBank
+format. You should be able to apply this example to almost any GenBank file, but
+there will be differences in annotation etc. We'll parse this with \verb|Bio.SeqIO|,
+
+\begin{verbatim}
+from Bio import SeqIO
+record = SeqIO.read("NC_003212.gbk", "gb")
+\end{verbatim}
+
+Now we'll create a diagram, 
+
+\begin{verbatim}
+from Bio.Graphics import GenomeDiagram
+from reportlab.lib.colors import green, purple, yellow, gold
+
+name = "Listeria innocua"
+gd_diagram = GenomeDiagram.Diagram(name)
+\end{verbatim}
+
+Next, we'll create a track for the GC content. GenomeDiagram expects graph
+data as a list of (position, value) pairs, which we can calculate like so.
+Note we take special care at the end of the genome to avoid calculating
+the GC content of a small window, which could easily give an extreme value:
+
+\begin{verbatim}
+from Bio.SeqUtils import GC
+step = len(record)//200
+stop = len(record) - len(record)%step
+#Deal with very end section by full length window from end                                                                          
+data = [(i, GC(record.seq[i:i+step])) for i in range(0, stop, step)]
+data.append((len(record)-step, GC(record.seq[-step:])))
+
+gd_gc_track = gd_diagram.new_track(1, name="GC content",
+                                   scale_largetick_interval=1e6,
+                                   scale_smalltick_interval=1e5)
+gds_gc_graph_set = gd_gc_track.new_set(type="graph")
+gds_gc_graph_set.new_graph(data, 'GC content', style='line',
+                           color=yellow)
+
+\end{verbatim}
+
+That used a line graph, now for the GC skew let's use a bar chart:
+
+\begin{verbatim}
+from Bio.SeqUtils import gc_skew
+skew = [(i, gc_skew(record.seq[i:i+step])) for i in range(0, stop, step)]
+data.append((len(record)-step, gc_skew(record.seq[-step:])))
+
+gd_gc_skew_track = gd_diagram.new_track(2, name="GC skew", height=0.5,
+                                        scale_largetick_interval=1e6,
+                                        scale_smalltick_interval=1e5)
+gds_gc_skew_graph_set = gd_gc_skew_track.new_set(type="graph")
+gds_gc_skew_graph_set.new_graph(skew, 'GC skew', style='bar',
+                                color=blue, altcolor=lightblue)
+\end{verbatim}
+
+Finally we add a track to hold the genes, but unlike previous feature track
+examples, this time we will use two feature sets - one for normal genes,
+and one for phage genes, which we will draw in different colors. This way
+we can ensure all the phage genes are drawn on top of any neighbouring
+non-phage genes which might obscure them from view:
+
+\begin{verbatim}
+gd_track_for_features = gd_diagram.new_track(3, name="CDS",
+                                            greytrack=True)
+
+gd_feature_set = gd_track_for_features.new_set()
+gd_phage_set = gd_track_for_features.new_set()
+
+for feature in record.features:
+    if feature.type != "CDS":
+        #Exclude this feature                                                                                                       
+        continue
+    #Get all the note qualifiers as one string (expect just one)                                                                    
+    note = " ".join(feature.qualifiers.get("note",[])).lower()
+    if " phage" in note or " prophage" in note or " bacteriophage" in note:
+        gd_phage_set.add_feature(feature, color=purple, label=False)
+    else:
+        gd_feature_set.add_feature(feature, color=green, label=False)
+\end{verbatim}
+
+And produce the figure,
+
+\begin{verbatim}
+gd_diagram.draw(format="circular", circular="True", pagesize="A4",
+                start=0, end=len(record), circle_core = 0.75)
+gd_diagram.write(name + ".pdf", "PDF")
+gd_diagram.write(name + ".eps", "EPS")
+gd_diagram.write(name + ".svg", "SVG")
+\end{verbatim}
+
+\subsection{Multiple track lengths}
+\label{sec:gd_multiple_track_lengths}
+
+In the previous example we had multiple tracks but they were all the same length.
 In this example we're going to show three phage genomes side by side to scale,
 inspired by Figure 6 in \href{http://dx.doi.org/10.1128/?JB.184.21.6026-6036.2002}
 {Proux \textit{et al.} 2002}.
-We'll need the GenBank files for the following three phage:
+We'll need the GenBank files for the following three phage - e.g. from NCBI Entrez:
 \begin{itemize}
 \item \verb|NC_002703| -- Lactococcus phage Tuc2009, complete genome ($38347$ bp)
 \item \verb|AF323668| -- Bacteriophage bIL285, complete genome ($35538$ bp)
@@ -10883,7 +10982,7 @@ gd_diagram.write(name + ".svg", "SVG")
 \caption{Linear diagram with three tracks for Lactococcus phage Tuc2009
 (NC\_002703), bacteriophage bIL285 (AF323668), and prophage 5 from
 \textit{Listeria innocua} Clip11262 (NC\_003212)
-(see Section~\ref{sec:gd_multiple_tracks}).}
+(see Section~\ref{sec:gd_multiple_track_lengths}).}
 \label{fig:three_track_simple}
 \end{figure}
 \end{latexonly}
