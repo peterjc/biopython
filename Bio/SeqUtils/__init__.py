@@ -35,10 +35,33 @@ def GC(seq):
     40.0
 
     Note that this will return zero for an empty sequence.
+
+    See also the gc function (lower case name).
     """
     try:
         gc = sum(map(seq.count,['G','C','g','c','S','s']))
         return gc*100.0/len(seq)
+    except ZeroDivisionError:
+        return 0.0
+
+def gc(seq):
+    """Calculates G+C content, returns the percentage (float between 0 and 1).
+
+    Copes mixed case sequences, and with the ambiguous nucleotide S (G or C)
+    when counting the G and C content.  The percentage is calculated against
+    the full length, e.g.:
+
+    >>> from Bio.SeqUtils import gc
+    >>> print "%0.1f" % gc("ACTGN")
+    0.4
+
+    Note that this will return zero for an empty sequence.
+
+    See also the GC function (upper case name).
+    """
+    try:
+        gc = sum(map(seq.count,['G','C','g','c','S','s']))
+        return float(gc)/len(seq)
     except ZeroDivisionError:
         return 0.0
         
@@ -83,8 +106,27 @@ def GC123(seq):
     gcall = 100.0*gcall/nall
     return gcall, gc[0], gc[1], gc[2]
 
+def gc_skew(seq):
+    """Calculates GC skew (G-C)/(G+C) for the sequence.
+
+    >>> from Bio.SeqUtils import gc_skew
+    >>> gc_skew("ACGTN")
+    0.0
+    >>> gc_skew("AGGTN")
+    1.0
+    >>> gc_skew("ACCTN")
+    -1.0
+
+    Does NOT look at any ambiguous nucleotides.
+
+    See also the GC_skew function for a sliding window approach.
+    """
+    g = seq.count('G') + seq.count('g')
+    c = seq.count('C') + seq.count('c')
+    return (g-c)/float(g+c)
+
 def GC_skew(seq, window = 100):
-    """Calculates GC skew (G-C)/(G+C) for multuple windows along the sequence.
+    """Calculates GC skew (G-C)/(G+C) for multiple windows along the sequence.
 
     Returns a list of ratios (floats), controlled by the length of the sequence
     and the size of the window.
@@ -95,6 +137,7 @@ def GC_skew(seq, window = 100):
     values = []
     for i in range(0, len(seq), window):
         s = seq[i: i + window]
+        #Could call new gc_skew function, but overhead might be slow?
         g = s.count('G') + s.count('g')
         c = s.count('C') + s.count('c')
         skew = (g-c)/float(g+c)
