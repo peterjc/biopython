@@ -1712,7 +1712,7 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
         handle.write(read._as_bam(refs))
         count += 1
     handle.flush() #Important with BGZF as it buffers data
-    handle.flush() #Again to trigger empty BGZF block as EOF marker
+    #BgzfWriter will write empty BGZF EOF marker on close
     return count
 
 def _check_header_text(text):
