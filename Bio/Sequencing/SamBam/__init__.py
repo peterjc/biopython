@@ -1,4 +1,4 @@
-# Copyright 2010-2012 by Peter Cock.
+# Copyright 2010-2013 by Peter Cock.
 # All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
@@ -606,9 +606,9 @@ def ParseSamHeader(text):
         k1 = line[1:3]
         d2 = dict()
         for part in line[4:].rstrip().split("\t"):
-            assert part[2] == ":"
+            assert part[2] == ":", "Bad header line: %r" % line
             k, v = part.split(":",1)
-            assert len(k)==2
+            assert len(k)==2, "Bad header line: %r" % line
             if k1=="SQ" and k=="LN":
                 #Currently the only case need to cast
                 v = int(v)
@@ -1504,8 +1504,8 @@ class BamRead(SamBamRead):
                 try:
                     qual = "".join(chr(33+ord(byte)) for byte in self._binary_qual)
                 except ValueError, e:
-                    print self.qname, self._binary_qual
-                    for byte in self._binary_qual: print byte, ord(byte)
+                    print "Error in %s qual %r" % (self.qname, self._binary_qual)
+                    for byte in self._binary_qual: print repr(byte), ord(byte)
                     raise
             self._qual = qual
             return qual
