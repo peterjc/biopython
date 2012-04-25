@@ -1504,8 +1504,8 @@ class BamRead(SamBamRead):
                 try:
                     qual = "".join(chr(33+ord(byte)) for byte in self._binary_qual)
                 except ValueError, e:
-                    print self.qname, self._binary_qual
-                    for byte in self._binary_qual: print byte, ord(byte)
+                    print "Error in %s qual %r" % (self.qname, self._binary_qual)
+                    for byte in self._binary_qual: print repr(byte), ord(byte)
                     raise
             self._qual = qual
             return qual
