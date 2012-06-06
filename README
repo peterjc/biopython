@@ -173,6 +173,9 @@ Distribution Structure
 
 README       -- This file.
 
+README.md    -- This file with a 'markdown' extension, used to make the readme
+                file look nice on GitHub.
+
 NEWS         -- Release notes and news
 
 LICENSE      -- What you can do with the code.
