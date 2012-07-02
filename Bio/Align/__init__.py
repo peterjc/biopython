@@ -611,6 +611,120 @@ class MultipleSeqAlignment(_Alignment):
                               id = descriptor, description = descriptor))
 
 
+def _sequence_back_translate(aligned_protein_record, unaligned_nucleotide_record, gap=None):
+    #TODO - Separate arguments for protein gap and nucleotide gap?
+    if hasattr(aligned_protein_record.seq.alphabet, "gap_char"):
+        if not gap:
+            gap = aligned_protein_record.seq.alphabet.gap_char
+        elif gap != aligned_protein_record.seq.alphabet.gap_char:
+            raise ValueError("Gap %r does not match %r from %r aligned protein alphabet" \
+                             % (gap, aligned_protein_record.seq.alphabet.gap_char,
+                                aligned_protein_record.id))
+    if not gap:
+        raise ValueError("Please supply the protein alignment gap character")
+
+    alpha = unaligned_nucleotide_record.seq.alphabet
+    if hasattr(alpha, "gap_char"):
+        gap_codon = alpha.gap_char * 3
+        assert len(gap_codon) == 3
+    else:
+        from Bio.Alphabet import Gapped
+        alpha = Gapped(alpha, gap)
+        gap_codon = gap*3
+
+    seq = []
+    nuc = str(unaligned_nucleotide_record.seq)
+    for amino_acid in aligned_protein_record.seq:
+        if amino_acid == gap:
+            seq.append(gap_codon)
+        else:
+            seq.append(nuc[:3])
+            nuc = nuc[3:]
+    assert not nuc, "Nucleotide sequence for %r longer than protein %s" \
+        % (unaligned_nucleotide_record.id, aligned_protein_record.id)
+
+    aligned_nuc = unaligned_nucleotide_record[:] #copy for most annotation
+    aligned_nuc.letter_annotation = {} #clear this
+    aligned_nuc.seq = Seq("".join(seq), alpha) #replace this
+    assert len(aligned_protein_record.seq) * 3 == len(aligned_nuc)
+    return aligned_nuc
+
+def alignment_back_translate(protein_alignment, nucleotide_records, key_function=None, gap=None):
+    """Thread nucleotide sequences onto a protein alignment.
+
+    Returns a new nucleotide alignment which will be 'codon aware', based
+    on the given protein alignment object and dictionary (or dictionary like
+    object such as the Bio.SeqIO indexing) of unaligned nucleotides.
+
+    The gap character can be specified in two ways - either as an explicit
+    argument, or via the sequence's alphabet.
+
+    For example, consider the following toy example set of nucelotides,
+    here constructed by hand - you'd probably use Bio.SeqIO.index(...)
+    or Bio.SeqIO.index_db(...) to load the nucleotides:
+
+        >>> from Bio.Alphabet import generic_dna
+        >>> from Bio.Seq import Seq
+        >>> from Bio.SeqRecord import SeqRecord
+        >>> from Bio.SeqIO import to_dict
+        >>> a = SeqRecord(Seq("GGUGAGGAACGA", generic_dna), id="Alpha")
+        >>> b = SeqRecord(Seq("GGCGGGCGU", generic_dna), id="Beta")
+        >>> c = SeqRecord(Seq("GGUCGG", generic_dna), id="Gamma")
+        >>> nuc_dict = to_dict([a, b, c])
+
+    Now suppose we have an alignment of their protein translations, again
+    constructed by hand - you'd probably use Bio.AlignIO.read(...) here:
+
+        >>> from Bio.Alphabet import generic_protein
+        >>> from Bio.Seq import Seq
+        >>> from Bio.SeqRecord import SeqRecord
+        >>> from Bio.Align import MultipleSeqAlignment
+        >>> a = SeqRecord(Seq("DEER", generic_protein), id="Alpha")
+        >>> b = SeqRecord(Seq("DE-R", generic_protein), id="Beta")
+        >>> c = SeqRecord(Seq("D--R", generic_protein), id="Gamma")
+        >>> prot_align = MultipleSeqAlignment([a, b, c])
+        >>> print prot_align
+        ProteinAlphabet() alignment with 3 rows and 4 columns
+        DEER Alpha
+        DE-R Beta
+        D--R Gamma
+
+    Now, with the sample data prepared, we can demonstrate this function:
+
+        >>> nuc_align = alignment_back_translate(prot_align, nuc_dict, gap="-")
+        >>> print nuc_align
+        DNAAlphabet() alignment with 3 rows and 12 columns
+        GGUGAGGAACGA Alpha
+        GGCGGG---CGU Beta
+        GGU------CGG Gamma
+
+    Notice how the caps in the nucleotide are all multiples of three in length.
+    i.e. Each gap in the protein alignment becomes a triple gap in the nucleotide
+    alignment.
+
+    WARNING - This does not check the translation as given is correct!
+    """
+    #TODO - Separate arguments for protein and nucleotide gap characters?
+    if key_function is None:
+        key_function = lambda x: x
+
+    if hasattr(protein_alignment._alphabet, "gap_char"):
+        if not gap:
+            gap = protein_alignment._alphabet.gap_char
+        elif gap != protein_alignment._alphabet.gap_char:
+            raise ValueError("Gap %r does not match %r from protein alignment alphabet" \
+                             % (gap, protein_alignment._alphabet.gap_char))
+
+    aligned = []
+    for protein in protein_alignment:
+        try:
+            nucleotide = nucleotide_records[key_function(protein.id)]
+        except KeyError:
+            raise ValueError("Could not find nucleotide sequence for protein %r" \
+                             % protein.id)
+        aligned.append(_sequence_back_translate(protein, nucleotide, gap))
+    return MultipleSeqAlignment(aligned)
+
 def _test():
     """Run the Bio.Align module's doctests.
 
