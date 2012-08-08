@@ -45,8 +45,9 @@ Or,
 
     >>> print record[:50].format("qual")
     >425_7_(71-A03-19).b.ab1
-    10 10 10 10 8 8 6 6 6 6 8 7 6 6 6 8 3 0 3 6 6 6 8 6 6 6 6 7
-    10 13 6 6 3 0 3 8 8 8 8 10 8 8 8 6 6 6 6 6 6 6
+    10 10 10 10 8 8 6 6 6 6 8 7 6 6 6 8 3 0 3 6
+    6 6 8 6 6 6 6 7 10 13 6 6 3 0 3 8 8 8 8 10
+    8 8 8 6 6 6 6 6 6 6
     <BLANKLINE>
 
 Note these examples only show the first 50 bases to keep the output short.

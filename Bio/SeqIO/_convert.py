@@ -272,6 +272,11 @@ def _fastq_convert_qual(in_handle, out_handle, mapping):
 
     Mapping should be a dictionary mapping expected ASCII characters from the
     FASTQ quality string to PHRED quality scores (as strings).
+
+    Wraps at 20 scores, ensuring lines of up to 59 characters, but shorter if
+    single digit scores are present. With FASTQ input cannot have three or
+    more digit scores present. This matches the main QUAL writing code which
+    defaults to wrapping at 60 characters.
     """
     from Bio.SeqIO.QualityIO import FastqGeneralIterator
     #For real speed, don't even make SeqRecord and Seq objects!
@@ -284,21 +289,8 @@ def _fastq_convert_qual(in_handle, out_handle, mapping):
             qualities_strs = [mapping[ascii] for ascii in qual]
         except KeyError:
             raise ValueError("Invalid character in quality string")
-        data = " ".join(qualities_strs)
-        while len(data) > 60:
-            #Know quality scores are either 1 or 2 digits, so there
-            #must be a space in any three consecutive characters.
-            if data[60] == " ":
-                out_handle.write(data[:60] + "\n")
-                data = data[61:]
-            elif data[59] == " ":
-                out_handle.write(data[:59] + "\n")
-                data = data[60:]
-            else:
-                assert data[58] == " ", "Internal logic failure in wrapping"
-                out_handle.write(data[:58] + "\n")
-                data = data[59:]
-        out_handle.write(data + "\n")
+        for i in range(0, len(qual)+1, 20):
+            out_handle.write(" ".join(qualities_strs[i:i+20]) + "\n")
     return count
 
     

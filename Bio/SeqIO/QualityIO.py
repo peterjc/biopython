@@ -1171,8 +1171,8 @@ def FastqSolexaIterator(handle, alphabet = single_letter_alphabet, title2ids = N
     >>> print record.format("qual")
     >slxa_0001_1_0001_01
     40 39 38 37 36 35 34 33 32 31 30 29 28 27 26 25 24 23 22 21
-    20 19 18 17 16 15 14 13 12 11 10 10 9 8 7 6 5 5 4 4 3 3 2 2
-    1 1
+    20 19 18 17 16 15 14 13 12 11 10 10 9 8 7 6 5 5 4 4
+    3 3 2 2 1 1
     <BLANKLINE>
 
     As shown above, the poor quality Solexa reads have been mapped to the
@@ -1468,10 +1468,11 @@ class QualPhredWriter(SequentialSequenceWriter):
         Arguments:
          - handle - Handle to an output file, e.g. as returned
                     by open(filename, "w")
-         - wrap   - Optional line length used to wrap sequence lines.
-                    Defaults to wrapping the sequence at 60 characters
+         - wrap   - Optional line length used to wrap quality lines.
+                    Defaults to limiting the quality lines to 60 characters
+                    but for efficiency may produce shorter lines.
                     Use zero (or None) for no wrapping, giving a single
-                    long line for the sequence.
+                    long line for the qualities.
          - record2title - Optional function to return the text to be
                     used for the title line of each record.  By default
                     a combination of the record.id and record.description
@@ -1488,6 +1489,7 @@ class QualPhredWriter(SequentialSequenceWriter):
             if wrap < 1:
                 raise ValueError
         self.wrap = wrap
+        self._two_digit_wrap = (wrap+1)//3 #Two digits plus space
         self.record2title = record2title
 
     def write_record(self, record):
@@ -1498,6 +1500,7 @@ class QualPhredWriter(SequentialSequenceWriter):
 
         handle = self.handle
         wrap = self.wrap
+        two_digit_wrap = self._two_digit_wrap
 
         if self.record2title:
             title = self.clean(self.record2title(record))
@@ -1524,19 +1527,12 @@ class QualPhredWriter(SequentialSequenceWriter):
             else:
                 raise e
 
-        if wrap > 5:
-            #Fast wrapping
-            data = " ".join(qualities_strs)
-            while True:
-                if len(data) <= wrap:
-                    self.handle.write(data + "\n")
-                    break
-                else:
-                    #By construction there must be spaces in the first X chars
-                    #(unless we have X digit or higher quality scores!)
-                    i = data.rfind(" ", 0, wrap)
-                    handle.write(data[:i] + "\n")
-                    data = data[i+1:]
+        if not qualities:
+            handle.write("\n")
+        elif max(qualities) < 100:
+            #Use speed up assuming (up to) two digits per quality
+            for i in range(0, len(qualities), two_digit_wrap):
+                handle.write(" ".join(qualities_strs[i:i+two_digit_wrap]) + "\n")
         elif wrap:
             #Safe wrapping
             while qualities_strs:
