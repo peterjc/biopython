@@ -1,5 +1,5 @@
 # Copyright 2010 by Andrea Pierleoni
-# Revisions copyright 2010 by Peter Cock
+# Revisions copyright 2010-2012 by Peter Cock
 # All rights reserved.
 #
 # This code is part of the Biopython distribution and governed by its
@@ -27,15 +27,24 @@ except ImportError:
     from StringIO import StringIO
 import warnings
 
-#For speed try to use cElementTree rather than ElemenTree
-try:
-    if (3,0,0) <= sys.version_info[:3] <= (3,1,3):
-        #workaround for bug in python 3 to 3.1.3  see http://bugs.python.org/issue9257
+if sys.platform == "cli":
+    #IronPython's ElementTree is broken, giving:
+    #NotImplementedError: iterparse is not supported on IronPython. (CP #31923)
+    #A common workarround is to install the standalone module:
+    try:
+        from elementtree import ElementTree
+    except ImportError:
+        #Well, let's try the provided version in case the bug is fixed?
         from xml.etree import ElementTree as ElementTree
-    else:
-        from xml.etree import cElementTree as ElementTree
-except ImportError:
+elif (3,0,0) <= sys.version_info[:3] <= (3,1,3):
+    #workaround for bug in python 3 to 3.1.3  see http://bugs.python.org/issue9257
     from xml.etree import ElementTree as ElementTree
+else:
+    #For speed try to use cElementTree rather than ElementTree
+    try:
+        from xml.etree import cElementTree as ElementTree
+    except ImportError:
+        from xml.etree import ElementTree as ElementTree
 
 NS = "{http://uniprot.org/uniprot}"
 REFERENCE_JOURNAL = "%(name)s %(volume)s:%(first)s-%(last)s(%(pub_date)s)"
