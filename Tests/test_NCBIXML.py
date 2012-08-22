@@ -5,7 +5,14 @@
 
 import os
 import unittest
+from Bio import MissingPythonDependencyError
 from Bio.Blast import NCBIXML
+
+try:
+    from xml.parsers import expat
+except ImportError:
+    raise MissingPythonDependencyError("Missing xml.parsers.expat "
+                                       "(known IronPython bug 20023)")
 
 E_VALUE_THRESH = 1e-10
 

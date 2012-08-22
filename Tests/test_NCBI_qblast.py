@@ -16,7 +16,14 @@ import sys
 import requires_internet
 requires_internet.check()
 from Bio import MissingExternalDependencyError 
+from Bio import MissingPythonDependencyError
 from urllib2 import HTTPError
+
+try:
+    from xml.parsers import expat
+except ImportError:
+    raise MissingPythonDependencyError("Missing xml.parsers.expat "
+                                       "(known IronPython bug 20023)")
 
 #We want to test these:
 from Bio.Blast import NCBIWWW
