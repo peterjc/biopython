@@ -23,15 +23,23 @@ import warnings
 
 from Bio.Phylo import PhyloXML as PX
 
-if (3, 0, 0) <= sys.version_info[:3] <= (3, 1, 3):
-    # Workaround for cElementTree regression in python 3.0--3.1.3
-    # See http://bugs.python.org/issue9257
-    from xml.etree import ElementTree
+if sys.platform== "cli":
+    #IronPython's ElementTree is broken, giving:
+    #NotImplementedError: iterparse is not supported on IronPython. (CP #31923)
+    #A common workarround is to install the standalone module:
+    try:
+        from elementtree importElementTree
+    except ImportError:
+        #Well, let's try the provided version in case the bug is fixed?
+        from xml.etree import ElementTree as ElementTree
+elif (3,0,0) <= sys.version_info[:3] <= (3,1,3):
+    #workaround for bug in python 3 to 3.1.3  see http://bugs.python.org/issue9257
+    from xml.etree import ElementTree as ElementTree
 else:
+    #For speed try to use cElementTree rather than ElementTree
     try:
         from xml.etree import cElementTree as ElementTree
     except ImportError:
-        # Alternative Python implementation, perhaps?
         from xml.etree import ElementTree as ElementTree
 
 # Recognize the phyloXML namespace when parsing
