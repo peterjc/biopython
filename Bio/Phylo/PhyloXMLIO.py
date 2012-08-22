@@ -28,7 +28,7 @@ if sys.platform== "cli":
     #NotImplementedError: iterparse is not supported on IronPython. (CP #31923)
     #A common workarround is to install the standalone module:
     try:
-        from elementtree importElementTree
+        from elementtree import ElementTree
     except ImportError:
         #Well, let's try the provided version in case the bug is fixed?
         from xml.etree import ElementTree as ElementTree
