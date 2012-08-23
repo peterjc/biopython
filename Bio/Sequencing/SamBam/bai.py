@@ -91,7 +91,7 @@ def _test_bai(handle):
     """
     indexes, unmapped_unplaced = _load_bai(handle)
     print "%i references" % len(indexes)
-    for chunks, linear, mapped, ref_unmapped, u_start, u_end in indexes:
+    for chunks, linear, mapped, ref_unmapped, u_start, u_end, e_start, e_end, in indexes:
         if mapped is None:
             assert ref_unmapped is None
             print "%i bins, %i linear baby-bins, ? reads mapped, ? unmapped" \
@@ -99,6 +99,8 @@ def _test_bai(handle):
         else:
             print "%i bins, %i linear baby-bins, %i reads mapped, %i unmapped" \
                   % (len(chunks), len(linear), mapped, ref_unmapped)
+        if e_start or e_end:
+            print "Embedded reference offset %i to %i" % (e_start, e_end)
     if unmapped_unplaced is None:
         print "Index missing unmapped unplaced reads count"
     else:
@@ -144,11 +146,19 @@ def _load_ref_index(handle):
     are lists of chunk begining and end virtual offsets. The linear
     index is just a tuple of virtual offsets (the position of the first
     aligned read in that interval) for the smallest sized bins.
+
+    In addition, you also get six values back: The number of mapped
+    reads, unmapped reads, the start and end offsets of the reads,
+    and the start and end offset for the embedded reference. None
+    is used if the information is missing (i.e. out of date index
+    file lacking these values).
     """
     mapped = None
     unmapped = None
     unmapped_start = None
     unmapped_end = None
+    embed_start = None
+    embed_end = None
     #First the chunks for each bin,
     n_bin = struct.unpack("<i", handle.read(4))[0]
     chunks_dict = dict()
@@ -157,9 +167,12 @@ def _load_ref_index(handle):
         if bin == _BAM_MAX_BIN:
             #At the time of writing this isn't in the SAM/BAM specification,
             #gleaned from the samtools source code instead.
-            assert chunks == 2, chunks
+            assert chunks >= 2, chunks
             unmapped_start, unmapped_end = struct.unpack("<QQ", handle.read(16))
             mapped, unmapped = struct.unpack("<QQ", handle.read(16))
+            if chunks >= 3:
+                embed_start, embed_end = struct.unpack("<QQ", handle.read(16))
+                assert chunks == 3, chunks
         else:
             chunks_list = []
             for chunk in xrange(chunks):
@@ -169,7 +182,7 @@ def _load_ref_index(handle):
     #Now the linear index (for the smallest bins)
     n_intv = struct.unpack("<i", handle.read(4))[0]
     return chunks_dict, struct.unpack("<%iQ" % n_intv, handle.read(8*n_intv)), \
-           mapped, unmapped, unmapped_start, unmapped_end
+           mapped, unmapped, unmapped_start, unmapped_end, embed_start, embed_end
 
 
 def idxstats(bam_filename, bai_filename):
@@ -205,7 +218,7 @@ def idxstats(bam_filename, bai_filename):
         raise ValueError("BAM file has %i references, BAI has %i" \
                   % (len(references), len(indexes)))
 
-    for (reference, length), (chunks, linear, mapped, ref_unmapped, u_start, u_end) in zip(references, indexes):
+    for (reference, length), (chunks, linear, mapped, ref_unmapped, u_start, u_end, e_start, e_end) in zip(references, indexes):
         if mapped is None:
             mapped = 0
         if ref_unmapped is None:
