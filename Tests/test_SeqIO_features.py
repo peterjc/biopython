@@ -269,6 +269,10 @@ class SeqFeatureExtractionWritingReading(unittest.TestCase):
                          set(i for i in range(1000) if i in feature))
         if feature.strand == +1:
             self.assertEqual(s, "".join(parent[i] for i in feature))
+        if len(feature):
+            self.assertEqual(feature.location.start, min(feature.location))
+            self.assertEqual(feature.location.end, max(feature.location)+1)
+        self.assertTrue(len(feature) <= feature.location.end - feature.location.start)
             
 
     def test_simple_rna(self):
