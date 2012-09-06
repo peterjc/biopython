@@ -534,3 +534,8 @@ class DBSeqRecord(SeqRecord):
     def __del_annotations(self): del self._annotations
     annotations = property(__get_annotations, __set_annotations,
                            __del_annotations, "Annotations")
+
+    @property
+    def region(self):
+        """Dummy compatibility method to report region as None (read only)."""
+        None

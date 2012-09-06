@@ -94,6 +94,8 @@ class SeqRecord(object):
     Additional attributes:
      - name        - Sequence name, e.g. gene name (string)
      - description - Additional text (string)
+     - region      - Record which sub-region of the sequence with this ID
+                     is present (FeatureLocation or None).
      - dbxrefs     - List of database cross references (list of strings)
      - features    - Any (sub)features defined (list of SeqFeature objects)
      - annotations - Further information about the whole sequence (dictionary)
@@ -147,7 +149,7 @@ class SeqRecord(object):
     def __init__(self, seq, id = "<unknown id>", name = "<unknown name>",
                  description = "<unknown description>", dbxrefs = None,
                  features = None, annotations = None,
-                 letter_annotations = None):
+                 letter_annotations = None, region = None):
         """Create a SeqRecord.
 
         Arguments:
@@ -161,6 +163,9 @@ class SeqRecord(object):
          - letter_annotations - Dictionary of per-letter-annotations, values
                                 should be strings, list or tuples of the same
                                 length as the full sequence.
+         - region      - FeatureLocation giving start, end and optionally
+                         strand describing which region this SeqRecord is
+                         from in the full parent sequence (default is None).
 
         You will typically use Bio.SeqIO to read in sequences from files as
         SeqRecord objects.  However, you may want to create your own SeqRecord
@@ -187,6 +192,13 @@ class SeqRecord(object):
         self.id = id
         self.name = name
         self.description = description
+
+        if region is not None:
+            #Do we need to worry about circular imports? Could this be a top level import?
+            from Bio.SeqFeature import FeatureLocation
+            if not isinstance(region, FeatureLocation):
+                raise TypeError("region argument should be a FeatureLocation (or None)")
+        self.region = region
 
         # database cross references (for the whole sequence)
         if dbxrefs is None:
@@ -585,6 +597,8 @@ class SeqRecord(object):
         lines = []
         if self.id:
             lines.append("ID: %s" % self.id)
+        if self.region:
+            lines[-1] += " region %s" % self.region
         if self.name:
             lines.append("Name: %s" % self.name)
         if self.description:
@@ -804,6 +818,7 @@ class SeqRecord(object):
         if not isinstance(other, SeqRecord):
             #Assume it is a string or a Seq.
             #Note can't transfer any per-letter-annotations
+            #and the region location won't apply anymore
             return SeqRecord(self.seq + other,
                              id = self.id, name = self.name,
                              description = self.description,
@@ -836,6 +851,7 @@ class SeqRecord(object):
         for k,v in self.letter_annotations.iteritems():
             if k in other.letter_annotations:
                 answer.letter_annotations[k] = v + other.letter_annotations[k]
+        #TODO - Can we combine the two region locations?
         return answer
         
     def __radd__(self, other):
@@ -865,6 +881,7 @@ class SeqRecord(object):
                                "the other SeqRecord being added!")
         #Assume it is a string or a Seq.
         #Note can't transfer any per-letter-annotations
+        #nor the region location
         offset = len(other)
         return SeqRecord(other + self.seq,
                          id = self.id, name = self.name,
@@ -900,13 +917,15 @@ class SeqRecord(object):
         "#$%&'()
         <BLANKLINE>
         """
+        #TODO - Should we be copying the region location?
         return SeqRecord(self.seq.upper(),
                          id = self.id, name = self.name,
                          description = self.description,
                          dbxrefs = self.dbxrefs[:],
                          features = self.features[:],
                          annotations = self.annotations.copy(),
-                         letter_annotations=self.letter_annotations.copy())
+                         letter_annotations=self.letter_annotations.copy(),
+                         region = self.region)
 
     def lower(self):
         """Returns a copy of the record with a lower case sequence.
@@ -940,13 +959,15 @@ class SeqRecord(object):
         >>> old.dbxrefs == new.dbxrefs
         True
         """
+        #TODO - Should we be copying the region location? 
         return SeqRecord(self.seq.lower(),
                          id = self.id, name = self.name,
                          description = self.description,
                          dbxrefs = self.dbxrefs[:],
                          features = self.features[:],
                          annotations = self.annotations.copy(),
-                         letter_annotations=self.letter_annotations.copy())
+                         letter_annotations=self.letter_annotations.copy(),
+                         region = self.region)
 
     def reverse_complement(self, id=False, name=False, description=False,
                            features=True, annotations=False,
@@ -1121,6 +1142,8 @@ class SeqRecord(object):
             #Copy the old per letter annotations, reversing them
             for key, value in self.letter_annotations.iteritems():
                 answer._per_letter_annotations[key] = value[::-1]
+        #We can't reverse complement the region location without knowing
+        #the full length of the parent sequence.
         return answer
 
 def _test():
