@@ -22,6 +22,7 @@ which can also be used to store a multiple sequence alignments.
 
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
+from Bio.SeqFeature import FeatureLocation
 from Bio.Align import MultipleSeqAlignment
 from Interfaces import AlignmentIterator
 from Bio.Alphabet import single_letter_alphabet, generic_dna, generic_protein
@@ -43,6 +44,8 @@ def _extract_alignment_region(alignment_seq_with_flanking, annotation):
     """
     align_stripped = alignment_seq_with_flanking.strip("-")
     display_start = int(annotation['al_display_start'])
+    reg_start = int(annotation['al_start']) - 1
+    reg_end = int(annotation['al_stop'])
     if int(annotation['al_start']) <= int(annotation['al_stop']):
         start = int(annotation['al_start']) \
               - display_start
@@ -50,6 +53,7 @@ def _extract_alignment_region(alignment_seq_with_flanking, annotation):
               - display_start + 1
     else:
         #FASTA has flipped this sequence...
+        reg_start, reg_end = reg_end, reg_start
         start = display_start \
               - int(annotation['al_start'])
         end   = display_start \
@@ -58,7 +62,10 @@ def _extract_alignment_region(alignment_seq_with_flanking, annotation):
     assert 0 <= start and start < end and end <= len(align_stripped), \
            "Problem with sequence start/stop,\n%s[%i:%i]\n%s" \
            % (alignment_seq_with_flanking, start, end, annotation)
-    return align_stripped[start:end]
+    assert 0 <= reg_start < reg_end, \
+           "Problem with sequence region start/stop,\n%s[%i:%i]\n%s" \
+           % (alignment_seq_with_flanking, reg_start, reg_end, annotation)
+    return align_stripped[start:end], FeatureLocation(reg_start, reg_end)
 
 def FastaM10Iterator(handle, alphabet = single_letter_alphabet):
     """Alignment iterator for the FASTA tool's pairwise alignment output.
@@ -112,16 +119,19 @@ def FastaM10Iterator(handle, alphabet = single_letter_alphabet):
         q = "?" #Just for printing len(q) in debug below
         m = "?" #Just for printing len(m) in debug below
         tool = global_tags.get("tool", "").upper()
-        try:
-            q = _extract_alignment_region(query_seq, query_tags)
+        #try:
+        if True:
+            q, query_region = _extract_alignment_region(query_seq, query_tags)
             if tool in ["TFASTX"] and len(match_seq) == len(q):
                 m = match_seq
+                match_region = None
                 #Quick hack until I can work out how -, * and / characters
                 #and the apparent mix of aa and bp coordindates works.
             else:
-                m = _extract_alignment_region(match_seq, match_tags)
-            assert len(q) == len(m)
-        except AssertionError, err:
+                m, match_region = _extract_alignment_region(match_seq, match_tags)
+            assert len(q) == len(m), "%s (len %i) vs %s (len %i)" % (q, len(q), m, len(m))
+        #except AssertionError, err:
+        if False:
             print "Darn... amino acids vs nucleotide coordinates?"
             print tool
             print query_seq
@@ -152,8 +162,9 @@ def FastaM10Iterator(handle, alphabet = single_letter_alphabet):
                            id = query_id,
                            name = "query",
                            description = query_descr,
-                           annotations = {"original_length" : int(query_tags["sq_len"])})
-        #TODO - handle start/end coordinates properly. Short term hack for now:
+                           annotations = {"original_length" : int(query_tags["sq_len"])},
+                           region = query_region)
+        #Leave these two private attributes for backwards compatibility:
         record._al_start = int(query_tags["al_start"])
         record._al_stop = int(query_tags["al_stop"])
         alignment.append(record)
@@ -176,8 +187,9 @@ def FastaM10Iterator(handle, alphabet = single_letter_alphabet):
                            id = match_id,
                            name = "match",
                            description = match_descr,
-                           annotations = {"original_length" : int(match_tags["sq_len"])})
-        #TODO - handle start/end coordinates properly. Short term hack for now:
+                           annotations = {"original_length" : int(match_tags["sq_len"])},
+                           region = match_region)
+        #Leave these two private attributes for backwards compatibility:
         record._al_start = int(match_tags["al_start"])
         record._al_stop = int(match_tags["al_stop"])
         alignment.append(record)
