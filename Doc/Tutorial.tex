@@ -197,14 +197,50 @@ and HTML formats
   The correct capitalization is ``Biopython'', not ``BioPython'' (even though
   that would have matched BioPerl, BioJava and BioRuby).
 
+  \item \emph{What is the status of Biopython under Python 3?} \\
+  At the time of writing, Biopython is considered to be at \emph{beta} under
+  Python 3. That means it mostly works, but we're actively asking people to
+  test and help fix any remaining issues, and may make non-backwards
+  campatible changes to achieve this.
+
+  Since there are several syntax changes between Python 2 and Python 3, for
+  now this tutorial and our other documentation concentrates on Python 2. You
+  will need to be familiar with the key changes in order to adapt the examples
+  (e.g. \verb|print| becomes a function instead of a statement).
+
+  Furthermore, any Biopython \verb|import| statement must also be changed to
+  use lower case module names. This is a short term pain, but means in the
+  long term Biopython can (finally) adopt a conventional naming style (see
+  the PEP8 guidelines). For example, use this on Python 2:
+  \begin{verbatim}
+  >>> from Bio.Seq import Seq
+  \end{verbatim}
+  Use this on Python 3:
+  \begin{verbatim}
+  >>> from bio.seq import Seq
+  \end{verbatim}
+  Notice that under Python 3, the sequence class is title case (\verb|Seq|)
+  but the module name is lower case (\verb|seq|), resolving the historic
+  ambiguity present in Biopython under Python 2 where both are title case
+  (\verb|Seq|).
+
   \item \emph{How do I find out what version of Biopython I have installed?} \\
-  Use this:
+
+  Use this on Python 2:
   \begin{verbatim}
   >>> import Bio
   >>> print Bio.__version__
   ...
   \end{verbatim}
-  If the ``\verb|import Bio|'' line fails, Biopython is not installed.
+
+  On Python 3 we've adopted PEP8 style lower case module names, so use:
+  \begin{verbatim}
+  >>> import bio
+  >>> print bio.__version__
+  ...
+  \end{verbatim}
+
+  If the ``\verb|import|'' line fails, Biopython is not installed.
   If the second line fails, your version is very out of date.
   If the version string ends with a plus, you don't have an official
   release, but a snapshot of the in development code. 
