@@ -36,17 +36,128 @@ import os
 import lib2to3.main
 from io import StringIO
 
+#Initial idea was to define a new fixer, but how do I invoke it?
+#from lib2to3.fixes.fix_imports import FixImports
+#MAPPING = {'Bio' : 'bio'}
+#class LowerCaseNamespace(FixImports):
+#    mapping = MAPPING
+
+#Second idea was to monkey patch an existing import fixer.
+#This works, but sadly only seems intended to handle the top
+#level renames (in our case, only simple imports from Bio or
+#BioSQL were changed to lower case).
+#from lib2to3.fixes import fix_imports2 
+#for name in ["Bio", "Bio.Alphabet", "Bio.Seq", "Bio.SeqRecord", "Bio.SeqFeature", "BioSQL"]:
+#    fix_imports2.MAPPING[name] = name.lower()
+
+#Third idea - brute force hackery?
+
+#TODO - get list of module names either from setup.py or
+#walking the file system.
+
+NAMES = [] #Updated later!
+
+def hack_simple_import(line, core):
+    global NAMES
+    assert core.startswith("import "), core
+    old = core[7:].strip()
+    if old in NAMES:
+        #print("%r --> %r" % (line, line.replace(old, old.lower())))
+        return line.replace(old, old.lower())
+    else:
+        return line
+
+def hack_from_import(line, core):
+    global NAMES
+    old = line
+    assert core.startswith("from ") and " import " in core, core
+    if "#" in line:
+        i = line.find("#")
+        comment = " " + line[i:].lstrip()
+        line = line[:i]
+    else:
+        comment = ""
+    from_part = core[5:].split(" import ", 1)[0]
+    if from_part not in NAMES:
+        return line
+    if " as " in line:
+        i = line.find(" as ")
+        as_part = line[i:]
+        line = line[:i]
+    else:
+        as_part = ""
+    bits = []
+    for x in line.split(" import ", 1)[1].split(","):
+        x = x.strip()
+        if from_part + "." + x in NAMES:
+            x = x.lower()
+        bits.append(x)
+    new = line.split(" import ", 1)[0].lower() + " import " + ", ".join(bits) + as_part + comment
+    new = new.rstrip() + "\n"
+    #print("OLD: %r\nNEW: %r\n" % (old, new))
+    return new
+
+def hack_import(module, line):
+    core = line.strip()
+    if "#" in core:
+        core = core[:core.find("#")].strip()
+    if core.startswith("from "):
+        if core.endswith("\\") or core.endswith(","):
+            raise NotImplementedError("Continued line %r" % line)
+        return hack_from_import(line, core)
+    elif line.lstrip().startswith("import "):
+        if core.endswith("\\") or core.endswith(","):
+            raise NotImplementedError("Continued line %r" % line)
+        return hack_simple_import(line, core)
+    else:
+        return line
+
+def hack_file_import_lines(f):
+    #Evil hack to change our import lines to use lower case...
+    if f.endswith("/__init__.py"):
+        m = f[:-12].split(os.path.sep)
+    elif f.endswith(".py"):
+        m = f[-3:].split(os.path.sep)
+    else:
+        assert False, f
+    h = open(f, "r")
+    lines = list(h)
+    h.close()
+    h = open(f, "w")
+    in_triple_quote = False
+    for line in lines:
+        assert line.count('"""') <= 2, line
+        if line.count('"""') == 1:
+            in_triple_quote = not in_triple_quote
+            h.write(line)
+        elif in_triple_quote:
+            #Probably a docstring...
+            if line.lstrip().startswith(">>> "):
+                i = line.find(">>> ")
+                h.write(line[:i] + ">>> " + hack_import(m, line[i+4:]))
+            else:
+                h.write(line)
+        else:
+            #Should be normal code...
+            h.write(hack_import(m, line))
+    h.close()
+    #TODO - Work out why this fails (commented out to allow
+    #all later files to be processed, to spot other issues):
+    #if in_triple_quote:
+    #    raise ValueError("Triple quote confused in %s" % f)
 
 def run2to3(filenames):
     stderr = sys.stderr
-    handle = StringIO()
-    try:
-        #Want to capture stderr (otherwise too noisy)
-        sys.stderr = handle
-        while filenames:
-            filename = filenames.pop(0)
-            print("Converting %s" % filename)
-            #TODO - Configurable options per file?
+    for filename in filenames:
+        sys.stderr = stderr
+        print("Converting %s" % filename)
+        #First, our evil hackery of the import lines:
+        hack_file_import_lines(filename)
+        #TODO - Configurable options per file?
+        try:
+            #Want to capture stderr (otherwise too noisy)
+            handle = StringIO()
+            sys.stderr = handle
             args = ["--nofix=long", "--no-diffs", "-n", "-w"]
             e = lib2to3.main.main("lib2to3.fixes", args + [filename])
             if e != 0:
@@ -63,19 +174,34 @@ def run2to3(filenames):
                 os.remove(filename) #Don't want a half edited file!
                 raise RuntimeError("Error %i from 2to3 (doctests) on %s" \
                                    % (e, filename))
-    except KeyboardInterrupt:
-        sys.stderr = stderr
-        sys.stderr.write("Interrupted during %s\n" % filename)
-        os.remove(filename) #Don't want a half edited file!
-        for filename in filenames:
-            if os.path.isfile(filename):
-                #Don't want uncoverted files left behind:
-                os.remove(filename)
-        sys.exit(1)
-    finally:
-        #Restore stderr
-        sys.stderr = stderr
+        except KeyboardInterrupt:
+            sys.stderr = stderr
+            sys.stderr.write("Interrupted during %s\n" % filename)
+            os.remove(filename) #Don't want a half edited file!
+            for filename in filenames:
+                if os.path.isfile(filename):
+                    #Don't want uncoverted files left behind:
+                    os.remove(filename)
+            sys.exit(1)
+        finally:
+            #Restore stderr
+            sys.stderr = stderr
 
+def get_module_names(py2folder):
+    for top in ["Bio", "BioSQL"]:
+        yield top
+        for dirpath, dirnames, filenames in os.walk(os.path.join(py2folder, top)):
+            for f in filenames:
+                if dirpath.startswith("./"):
+                    dirpath = dirpath[2:]
+                parts = dirpath.split(os.path.sep)
+                if f == "__init__.py":
+                    pass
+                elif f.endswith(".py"):
+                    parts.append(f[:-3])
+                else:
+                    continue
+                yield ".".join(parts)
 
 def do_update(py2folder, py3folder, verbose=False):
     if not os.path.isdir(py2folder):
@@ -175,6 +301,8 @@ def main(python2_source, python3_source,
     print("and the converted files cached under %s" % python3_source)
     if not os.path.isdir(python3_source):
         os.mkdir(python3_source)
+    global NAMES #Used in our import hack
+    NAMES = list(get_module_names(python2_source))
     for child in children:
         print("Processing %s" % child)
         if child in ["Bio", "BioSQL"]:
