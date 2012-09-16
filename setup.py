@@ -345,17 +345,20 @@ elif is_pypy() or is_ironpython():
     # Skip C extensions for now
     EXTENSIONS = []
 elif sys.version_info[0] == 3:
+    # Make all the module names lower case (PEP8),
+    PACKAGES = [m.lower() for m in PACKAGES]
     # TODO - Must update our C extensions for Python 3
     EXTENSIONS = [
-    Extension('Bio.cpairwise2',
-              ['Bio/cpairwise2module.c'],
-              include_dirs=["Bio"]
+    Extension('bio.cpairwise2',
+              ['bio/cpairwise2module.c'],
+              include_dirs=["bio"]
               ),
-    Extension('Bio.Nexus.cnexus',
-              ['Bio/Nexus/cnexus.c']
+    Extension('bio.Nexus.cnexus',
+              ['bio/Nexus/cnexus.c']
               ),
     ]
-else :
+else:
+    #Python 2
     EXTENSIONS = [
     Extension('Bio.cpairwise2',
               ['Bio/cpairwise2module.c'],
