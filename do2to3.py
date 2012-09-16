@@ -5,6 +5,11 @@ in setup.py since (as far as I can see) that does not allow us to alter the
 2to3 options. In particular, we need to turn off the long fixer for some of
 our files.
 
+Furthermore, we have also decided to make some custom changes as part of the
+Python 2 to Python 3 migration - adopting lower case PEP8 conformant module
+names. This means we also need to rename files and folders to lower case,
+and adjust the import lines. e.g. 'import Bio' becomes 'import bio'.
+
 This code is intended to be called from setup.py automatically under Python 3,
 and is not intended for end users. The basic idea follows the approach taken
 by NumPy with their setup.py file calling tools/py3tool.py to do the 2to3
@@ -72,17 +77,18 @@ def run2to3(filenames):
         sys.stderr = stderr
 
 
-def do_update(py2folder, py3folder, verbose=False):
+def do_update(py2folder, py3folder, verbose=True):
     if not os.path.isdir(py2folder):
         raise ValueError("Python 2 folder %r does not exist" % py2folder)
     if not os.path.isdir(py3folder):
         os.mkdir(py3folder)
     #First remove any files from the 3to2 conversion which no
-    #longer existing the Python 2 origin (only expected to happen
+    #longer exist in the Python 2 origin (only expected to happen
     #on a development machine).
     for dirpath, dirnames, filenames in os.walk(py3folder):
         relpath = os.path.relpath(dirpath, py3folder)
         for d in dirnames:
+            #TODO - Handle case changes... tricky...
             new = os.path.join(py3folder, relpath, d)
             old = os.path.join(py2folder, relpath, d)
             if not os.path.isdir(old):
@@ -107,8 +113,11 @@ def do_update(py2folder, py3folder, verbose=False):
         elif relpath == ".":
             relpath = ""
         for d in dirnames:
-            new = os.path.join(py3folder, relpath, d)
+            #Note use of lower to change module names:
+            new = os.path.join(py3folder, relpath.lower(), d.lower())
             if not os.path.isdir(new):
+                if verbose:
+                    print ("Creating directory %s" % new)
                 os.mkdir(new)
         for f in filenames:
             if f.startswith("."):
@@ -121,14 +130,20 @@ def do_update(py2folder, py3folder, verbose=False):
             elif f.endswith(".pyc") or f.endswith("$py.class"):
                 #Ignore compiled python
                 continue
+            if f.endswith(".py"):
+                f_new = f.lower()
             old = os.path.join(py2folder, relpath, f)
-            new = os.path.join(py3folder, relpath, f)
+            if f.endswith(".py"):
+                new = os.path.join(py3folder, relpath.lower(), f.lower())
+            else:
+                #Do not make non-python filenames lowercase (e.g. DTD files)
+                new = os.path.join(py3folder, relpath.lower(), f)
             #The filesystem can (in Linux) record nanoseconds, but
             #when copying only microsecond accuracy is used.
             #See http://bugs.python.org/issue10148
             #Compare modified times down to milliseconds only. In theory
             #might able to use times down to microseconds (10^-6), but
-            #that doesn't work on this Windows machine I'm testing on.
+            #that doesn't work on the Windows machine I'm testing on.
             if os.path.isfile(new) \
             and round(os.stat(new).st_mtime*1000) >= \
                 round(os.stat(old).st_mtime*1000):
@@ -162,8 +177,9 @@ def main(python2_source, python3_source,
         os.mkdir(python3_source)
     for child in children:
         print("Processing %s" % child)
+        #Note we make the path name lower case on Python 3
         do_update(os.path.join(python2_source, child),
-                  os.path.join(python3_source, child))
+                  os.path.join(python3_source, child.lower()))
     print("Python 2to3 processing done.")
               
 if __name__ == "__main__":
