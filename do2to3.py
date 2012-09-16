@@ -77,7 +77,7 @@ def run2to3(filenames):
         sys.stderr = stderr
 
 
-def do_update(py2folder, py3folder, verbose=True):
+def do_update(py2folder, py3folder, verbose=False):
     if not os.path.isdir(py2folder):
         raise ValueError("Python 2 folder %r does not exist" % py2folder)
     if not os.path.isdir(py3folder):
@@ -177,9 +177,14 @@ def main(python2_source, python3_source,
         os.mkdir(python3_source)
     for child in children:
         print("Processing %s" % child)
-        #Note we make the path name lower case on Python 3
-        do_update(os.path.join(python2_source, child),
-                  os.path.join(python3_source, child.lower()))
+        if child in ["Bio", "BioSQL"]:
+            #Note we make the path name lower case on Python 3
+            do_update(os.path.join(python2_source, child),
+                      os.path.join(python3_source, child.lower()))
+        else:
+            #Don't change the case of the Tests folder etc
+            do_update(os.path.join(python2_source, child),
+                      os.path.join(python3_source, child))
     print("Python 2to3 processing done.")
               
 if __name__ == "__main__":
