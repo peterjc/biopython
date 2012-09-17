@@ -33,6 +33,7 @@ if sys.version_info[0] < 3:
 
 import shutil
 import os
+import re
 import lib2to3.main
 from io import StringIO
 
@@ -50,101 +51,138 @@ from io import StringIO
 #for name in ["Bio", "Bio.Alphabet", "Bio.Seq", "Bio.SeqRecord", "Bio.SeqFeature", "BioSQL"]:
 #    fix_imports2.MAPPING[name] = name.lower()
 
-#Third idea - brute force hackery?
-
-#TODO - get list of module names either from setup.py or
-#walking the file system.
-
+#Third idea - brute force hackery, see NAMES list
 NAMES = [] #Updated later!
 
-def hack_simple_import(line, core):
-    global NAMES
-    assert core.startswith("import "), core
-    old = core[7:].strip()
-    if old in NAMES:
-        #print("%r --> %r" % (line, line.replace(old, old.lower())))
-        return line.replace(old, old.lower())
+def strip_comment(text):
+    if "#" in text:
+        return text[:text.find("#")].strip()
     else:
-        return line
-
-def hack_from_import(line, core):
-    global NAMES
-    old = line
-    assert core.startswith("from ") and " import " in core, core
-    if "#" in line:
-        i = line.find("#")
-        comment = " " + line[i:].lstrip()
-        line = line[:i]
-    else:
-        comment = ""
-    from_part = core[5:].split(" import ", 1)[0]
-    if from_part not in NAMES:
-        return line
-    if " as " in line:
-        i = line.find(" as ")
-        as_part = line[i:]
-        line = line[:i]
-    else:
-        as_part = ""
-    bits = []
-    for x in line.split(" import ", 1)[1].split(","):
-        x = x.strip()
-        if from_part + "." + x in NAMES:
-            x = x.lower()
-        bits.append(x)
-    new = line.split(" import ", 1)[0].lower() + " import " + ", ".join(bits) + as_part + comment
-    new = new.rstrip() + "\n"
-    #print("OLD: %r\nNEW: %r\n" % (old, new))
-    return new
-
-def hack_import(module, line):
-    core = line.strip()
-    if "#" in core:
-        core = core[:core.find("#")].strip()
-    if core.startswith("from "):
-        if core.endswith("\\") or core.endswith(","):
-            raise NotImplementedError("Continued line %r" % line)
-        return hack_from_import(line, core)
-    elif line.lstrip().startswith("import "):
-        if core.endswith("\\") or core.endswith(","):
-            raise NotImplementedError("Continued line %r" % line)
-        return hack_simple_import(line, core)
-    else:
-        return line
+        return text.strip()
 
 def hack_file_import_lines(f):
-    #Evil hack to change our import lines to use lower case...
+    """Evil hack to change our import lines to use lower case..."""
+    #TODO - Support local imports
+    global NAMES, re_plain_import, re_from_import
+
     if f.endswith("/__init__.py"):
         m = f[:-12].split(os.path.sep)
     elif f.endswith(".py"):
         m = f[-3:].split(os.path.sep)
     else:
         assert False, f
+
+    file_mapping = set()
+    doc_mapping = set()
+
     h = open(f, "r")
     lines = list(h)
     h.close()
+
     h = open(f, "w")
     in_triple_quote = False
     for line in lines:
         assert line.count('"""') <= 2, line
+        core = strip_comment(line)
+
         if line.count('"""') == 1:
             in_triple_quote = not in_triple_quote
             h.write(line)
-        elif in_triple_quote:
-            #Probably a docstring...
-            if line.lstrip().startswith(">>> "):
-                i = line.find(">>> ")
-                h.write(line[:i] + ">>> " + hack_import(m, line[i+4:]))
+            #Start/end/one line docstring => clear doc_mapping,
+            doc_mapping = set()
+        elif core.startswith(">>> "):
+            assert in_triple_quote
+            core = core[4:]
+            #Will need to update rest of this docstring post import...
+            if re_plain_import.match(core):
+                if " as " in core:
+                    #No need to change use of the " as " name later
+                    i = line.find(" as ")
+                    h.write(line[:i].lower() + line[i:])
+                else:
+                    name = core[7:].strip()
+                    assert name in NAMES, \
+                        "Hmm. %r from file %s, Line:\n%s" % (name, f, line)
+                    doc_mapping.add(name)
+                    h.write(line.lower()) #TODO - Preserve case of any comment?
+            elif re_from_import.match(core):
+                base = line.split("from ",1)[1].split(" import ",1)[0].strip()
+                assert base in NAMES
+                if " as " in core:
+                    name = line.split(" import ",1)[1].split(" as ",1)[0]
+                    if base + "." + name in NAMES:
+                        i = line.find(" as ")
+                    else:
+                        i = line.find(" import ")
+                    h.write(line[:i].lower() + line[i:])
+                    #Don't need to change later use of the 'as' name
+                else:
+                    names = [x.strip() for x in line.split(" import ",1)[1].split(",")]
+                    new_names = []
+                    for name in names:
+                        if base + "." + name in NAMES:
+                            doc_mapping.add(name)
+                            new_names.append(name.lower())
+                        else:
+                            new_names.append(name)
+                    h.write(line.split(" import ",1)[0].lower() \
+                                + " import " + ", ".join(new_names) + "\n")
             else:
+                #Boring line; do we need to apply any import replacements?
+                for name in doc_mapping:
+                    for template in ["[%s.", "(%s ", "(%s.", " %s.", " %s ", " %s)"]:
+                        x = template % name
+                        line = line.replace(x, x.lower())
                 h.write(line)
+        elif re_plain_import.match(core):
+            if " as " in core:
+                name = line.split("import ",1)[1].split(" as ",1)[0]
+                assert name in NAMES
+                i = line.find(" as ")
+                h.write(line[:i].lower() + line[i:])
+                #Don't need to change later use of the 'as' name 
+            else:
+                name = core[7:].strip()
+                assert name in NAMES, "Hmm. %r from file %s, Line:\n%s" % (name, f, line)
+                file_mapping.add(name)
+                h.write(line.lower()) #TODO - Preserve case of any comment?
+        elif re_from_import.match(core):
+            #print(core)
+            base = line.split("from ",1)[1].split(" import ",1)[0].strip()
+            assert base in NAMES
+            if " as " in core:
+                name = line.split(" import ",1)[1].split(" as ",1)[0]
+                if base + "." + name in NAMES:
+                    i = line.find(" as ")
+                else:
+                    i = line.find(" import ")
+                h.write(line[:i].lower() + line[i:])
+                #Don't need to change later use of the 'as' name
+            else:
+                names = [x.strip() for x in line.split(" import ",1)[1].split(",")]
+                new_names = []
+                for name in names:
+                    #Don't collect object/function names
+                    if base + "." + name in NAMES:
+                        file_mapping.add(name)
+                        new_names.append(name.lower())
+                    else:
+                        new_names.append(name)
+                h.write(line.split(" import ",1)[0].lower() \
+                                + " import " + ", ".join(new_names) + "\n")
         else:
-            #Should be normal code...
-            h.write(hack_import(m, line))
+            #Boring line; do we need to apply any import replacements?
+            for name in file_mapping:
+                for template in ["(%s ", "(%s.", " %s.", " %s ", " %s)"]:
+                    x = template % name
+                    line = line.replace(x, x.lower())
+            h.write(line)
     h.close()
     #TODO - Work out why this fails (commented out to allow
     #all later files to be processed, to spot other issues):
-    #if in_triple_quote:
-    #    raise ValueError("Triple quote confused in %s" % f)
+    if in_triple_quote:
+        print("Triple quote confused in %s" % f)
+        #raise ValueError("Triple quote confused in %s" % f)
 
 def run2to3(filenames):
     stderr = sys.stderr
@@ -202,6 +240,8 @@ def get_module_names(py2folder):
                 else:
                     continue
                 yield ".".join(parts)
+    #Special cases like C modules,
+    yield "Bio.PDB.mmCIF.MMCIFlex"
 
 def do_update(py2folder, py3folder, verbose=False):
     if not os.path.isdir(py2folder):
@@ -301,8 +341,11 @@ def main(python2_source, python3_source,
     print("and the converted files cached under %s" % python3_source)
     if not os.path.isdir(python3_source):
         os.mkdir(python3_source)
-    global NAMES #Used in our import hack
+    global NAMES, re_plain_import, re_from_import  #Used in our import hack
     NAMES = list(get_module_names(python2_source))
+    re_plain_import = re.compile("import (%s)" % "|".join(NAMES))
+    re_from_import = re.compile("from (%s) import (.+)" % "|".join(NAMES))
+
     for child in children:
         print("Processing %s" % child)
         if child in ["Bio", "BioSQL"]:
