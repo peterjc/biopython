@@ -77,6 +77,8 @@ def hack_file_import_lines(f):
         m = ".".join(m[2:])
     #assert m.startswith("bio"), ("%r from %s" % (m, f))
 
+    TEMPLATES = [",%s.", "=%s.", "[%s.", "(%s ", "(%s.", " %s.", " %s ", " %s)"]
+
     #Top level imports:
     NAMES = list(OLD_NAMES)
     #Relative imports:
@@ -146,7 +148,7 @@ def hack_file_import_lines(f):
             else:
                 #Boring line; do we need to apply any import replacements?
                 for name in doc_mapping:
-                    for template in ["[%s.", "(%s ", "(%s.", " %s.", " %s ", " %s)"]:
+                    for template in TEMPLATES:
                         x = template % name
                         line = line.replace(x, x.lower())
                 h.write(line)
@@ -207,7 +209,7 @@ def hack_file_import_lines(f):
         else:
             #Boring line; do we need to apply any import replacements?
             for name in file_mapping:
-                for template in ["(%s ", "(%s.", " %s.", " %s ", " %s)"]:
+                for template in TEMPLATES:
                     x = template % name
                     line = line.replace(x, x.lower())
             h.write(line)
