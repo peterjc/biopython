@@ -62,15 +62,16 @@ def strip_comment(text):
 
 def hack_file_import_lines(f):
     """Evil hack to change our import lines to use lower case..."""
-    #TODO - Support local imports
     global NAMES, re_plain_import, re_from_import
 
     if f.endswith("/__init__.py"):
         m = f[:-12].split(os.path.sep)
     elif f.endswith(".py"):
-        m = f[-3:].split(os.path.sep)
+        m = f[:-3].split(os.path.sep)
     else:
         assert False, f
+    m = ".".join(m[2:])
+    #assert m.startswith("bio"), ("%r from %s" % (m, f))
 
     file_mapping = set()
     doc_mapping = set()
@@ -140,12 +141,31 @@ def hack_file_import_lines(f):
                 assert name in NAMES
                 i = line.find(" as ")
                 h.write(line[:i].lower() + line[i:])
-                #Don't need to change later use of the 'as' name 
+                #Don't need to change later use of the 'as' name
             else:
                 name = core[7:].strip()
                 assert name in NAMES, "Hmm. %r from file %s, Line:\n%s" % (name, f, line)
                 file_mapping.add(name)
                 h.write(line.lower()) #TODO - Preserve case of any comment?
+        elif core.startswith("import "):
+            #This could be a local import, e.g. 'import FastaIO'
+            #in Bio/SeqIO/__init__.py should become 'import fastaio'
+            if " as " in core:
+                name = core.split("import ",1)[1].split(" as ")[0].strip()
+                if (m + "." + name).lower() in [x.lower() for x in NAMES]:
+                    i = line.find(" as ")
+                    h.write(line[:i].lower() + line[i:])
+                    #Don't need to change later use of the 'as' name
+                else:
+                    h.write(line)
+            else:
+                name = core.split("import ",1)[1].strip()
+                if (m + "." + name).lower() in [x.lower() for x in NAMES]:
+                    h.write(line.lower())
+                    file_mapping.add(name)
+                else:
+                    #Nope, not one of our imports
+                    h.write(line)
         elif re_from_import.match(core):
             #print(core)
             base = line.split("from ",1)[1].split(" import ",1)[0].strip()
@@ -343,8 +363,8 @@ def main(python2_source, python3_source,
         os.mkdir(python3_source)
     global NAMES, re_plain_import, re_from_import  #Used in our import hack
     NAMES = list(get_module_names(python2_source))
-    re_plain_import = re.compile("import (%s)" % "|".join(NAMES))
-    re_from_import = re.compile("from (%s) import (.+)" % "|".join(NAMES))
+    re_plain_import = re.compile("^import (%s)$" % "|".join(NAMES))
+    re_from_import = re.compile("^from (%s) import (.+)$" % "|".join(NAMES))
 
     for child in children:
         print("Processing %s" % child)
