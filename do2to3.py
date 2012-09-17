@@ -51,8 +51,8 @@ from io import StringIO
 #for name in ["Bio", "Bio.Alphabet", "Bio.Seq", "Bio.SeqRecord", "Bio.SeqFeature", "BioSQL"]:
 #    fix_imports2.MAPPING[name] = name.lower()
 
-#Third idea - brute force hackery, see NAMES list
-NAMES = [] #Updated later!
+#Third idea - brute force hackery, see OLD_NAMES list
+OLD_NAMES = [] #Updated later!
 
 def strip_comment(text):
     if "#" in text:
@@ -62,7 +62,7 @@ def strip_comment(text):
 
 def hack_file_import_lines(f):
     """Evil hack to change our import lines to use lower case..."""
-    global NAMES, re_plain_import, re_from_import
+    global OLD_NAMES
 
     if f.endswith("/__init__.py"):
         m = f[:-12].split(os.path.sep)
@@ -70,8 +70,23 @@ def hack_file_import_lines(f):
         m = f[:-3].split(os.path.sep)
     else:
         assert False, f
-    m = ".".join(m[2:])
+    if f.endswith("/__init__.py"):
+        b = m = ".".join(m[2:])
+    else:
+        b = ".".join(m[2:-1])
+        m = ".".join(m[2:])
     #assert m.startswith("bio"), ("%r from %s" % (m, f))
+
+    #Top level imports:
+    NAMES = list(OLD_NAMES)
+    #Relative imports:
+    for name in OLD_NAMES:
+        if name.lower().startswith(b + "."):
+            #print("Adding %s as a local import" % name)
+            NAMES.append(name[len(b)+1:])
+    #Now turn them into regular expressions:
+    re_plain_import = re.compile("^import (%s)$" % "|".join(NAMES))
+    re_from_import = re.compile("^from (%s) import (.+)$" % "|".join(NAMES))
 
     file_mapping = set()
     doc_mapping = set()
@@ -167,7 +182,6 @@ def hack_file_import_lines(f):
                     #Nope, not one of our imports
                     h.write(line)
         elif re_from_import.match(core):
-            #print(core)
             base = line.split("from ",1)[1].split(" import ",1)[0].strip()
             assert base in NAMES
             if " as " in core:
@@ -361,10 +375,8 @@ def main(python2_source, python3_source,
     print("and the converted files cached under %s" % python3_source)
     if not os.path.isdir(python3_source):
         os.mkdir(python3_source)
-    global NAMES, re_plain_import, re_from_import  #Used in our import hack
-    NAMES = list(get_module_names(python2_source))
-    re_plain_import = re.compile("^import (%s)$" % "|".join(NAMES))
-    re_from_import = re.compile("^from (%s) import (.+)$" % "|".join(NAMES))
+    global OLD_NAMES
+    OLD_NAMES = list(get_module_names(python2_source))
 
     for child in children:
         print("Processing %s" % child)
