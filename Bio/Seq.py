@@ -830,12 +830,12 @@ class Seq(object):
             raise ValueError("RNA cannot be transcribed!")
 
         if self.alphabet==IUPAC.unambiguous_dna:
-            alphabet = IUPAC.unambiguous_rna
+            alpha = IUPAC.unambiguous_rna
         elif self.alphabet==IUPAC.ambiguous_dna:
-            alphabet = IUPAC.ambiguous_rna
+            alpha = IUPAC.ambiguous_rna
         else:
-            alphabet = Alphabet.generic_rna
-        return Seq(str(self).replace('T','U').replace('t','u'), alphabet)
+            alpha = Alphabet.generic_rna
+        return Seq(str(self).replace('T','U').replace('t','u'), alpha)
     
     def back_transcribe(self):
         """Returns the DNA sequence from an RNA sequence. New Seq object.
@@ -865,12 +865,12 @@ class Seq(object):
             raise ValueError("DNA cannot be back transcribed!")
 
         if self.alphabet==IUPAC.unambiguous_rna:
-            alphabet = IUPAC.unambiguous_dna
+            alpha = IUPAC.unambiguous_dna
         elif self.alphabet==IUPAC.ambiguous_rna:
-            alphabet = IUPAC.ambiguous_dna
+            alpha = IUPAC.ambiguous_dna
         else:
-            alphabet = Alphabet.generic_dna
-        return Seq(str(self).replace("U", "T").replace("u", "t"), alphabet)
+            alpha = Alphabet.generic_dna
+        return Seq(str(self).replace("U", "T").replace("u", "t"), alpha)
 
     def translate(self, table="Standard", stop_symbol="*", to_stop=False,
                   cds=False):
@@ -995,11 +995,11 @@ class Seq(object):
         protein = _translate_str(str(self), codon_table, \
                                  stop_symbol, to_stop, cds)
         if stop_symbol in protein:
-            alphabet = Alphabet.HasStopCodon(codon_table.protein_alphabet,
+            alpha = Alphabet.HasStopCodon(codon_table.protein_alphabet,
                                              stop_symbol = stop_symbol)
         else:
-            alphabet = codon_table.protein_alphabet
-        return Seq(protein, alphabet)
+            alpha = codon_table.protein_alphabet
+        return Seq(protein, alpha)
 
     def ungap(self, gap=None):
         """Return a copy of the sequence without the gap character(s).
