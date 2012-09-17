@@ -18,7 +18,7 @@ from Bio.SeqRecord import SeqRecord
 from Bio.Nexus import Nexus
 from Bio.Align import MultipleSeqAlignment
 from Interfaces import AlignmentWriter
-from Bio import Alphabet
+from Bio import Alphabet as _alphabet
 
 #You can get a couple of example files here:
 #http://www.molecularevolution.org/resources/fileformats/
@@ -113,15 +113,15 @@ class NexusWriter(AlignmentWriter):
 
         Raises an exception if this is not possible."""
         #Get the base alphabet (underneath any Gapped or StopCodon encoding)
-        a = Alphabet._get_base_alphabet(alphabet)
+        a = _alphabet._get_base_alphabet(alphabet)
 
-        if not isinstance(a, Alphabet.Alphabet):
+        if not isinstance(a, _alphabet.Alphabet):
             raise TypeError("Invalid alphabet")
-        elif isinstance(a, Alphabet.ProteinAlphabet):
+        elif isinstance(a, _alphabet.ProteinAlphabet):
             return "protein"
-        elif isinstance(a, Alphabet.DNAAlphabet):
+        elif isinstance(a, _alphabet.DNAAlphabet):
             return "dna"
-        elif isinstance(a, Alphabet.RNAAlphabet):
+        elif isinstance(a, _alphabet.RNAAlphabet):
             return "rna"
         else:
             #Must be something like NucleotideAlphabet or

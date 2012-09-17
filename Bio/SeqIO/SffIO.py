@@ -217,7 +217,7 @@ http://www.ncbi.nlm.nih.gov/Traces/trace.cgi?cmd=show&f=formats&m=doc&s=formats
 
 """
 from Bio.SeqIO.Interfaces import SequenceWriter
-from Bio import Alphabet
+from Bio import Alphabet as _alphabet
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 import struct
@@ -748,7 +748,7 @@ class _AddTellHandle(object):
 
 
 #This is a generator function!
-def SffIterator(handle, alphabet=Alphabet.generic_dna, trim=False):
+def SffIterator(handle, alphabet=_alphabet.generic_dna, trim=False):
     """Iterate over Standard Flowgram Format (SFF) reads (as SeqRecord objects).
 
     handle - input file, an SFF file, e.g. from Roche 454 sequencing.
@@ -814,11 +814,11 @@ def SffIterator(handle, alphabet=Alphabet.generic_dna, trim=False):
     >>> handle.close()
 
     """
-    if isinstance(Alphabet._get_base_alphabet(alphabet),
-                  Alphabet.ProteinAlphabet):
+    if isinstance(_alphabet._get_base_alphabet(alphabet),
+                  _alphabet.ProteinAlphabet):
         raise ValueError("Invalid alphabet, SFF files do not hold proteins.")
-    if isinstance(Alphabet._get_base_alphabet(alphabet),
-                  Alphabet.RNAAlphabet):
+    if isinstance(_alphabet._get_base_alphabet(alphabet),
+                  _alphabet.RNAAlphabet):
         raise ValueError("Invalid alphabet, SFF files do not hold RNA.")
     try:
         assert 0 == handle.tell()
@@ -879,7 +879,7 @@ def SffIterator(handle, alphabet=Alphabet.generic_dna, trim=False):
 
 
 #This is a generator function!
-def _SffTrimIterator(handle, alphabet=Alphabet.generic_dna):
+def _SffTrimIterator(handle, alphabet=_alphabet.generic_dna):
     """Iterate over SFF reads (as SeqRecord objects) with trimming (PRIVATE)."""
     return SffIterator(handle, alphabet, trim=True)
 

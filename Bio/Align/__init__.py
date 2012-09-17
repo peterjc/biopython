@@ -13,7 +13,7 @@ __docformat__ = "epytext en" #Don't just use plain text in epydoc API pages!
 
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
-from Bio import Alphabet
+from Bio import Alphabet as _alphabet
 
 #We only import this and subclass it for some limited backward compatibilty.
 from Bio.Align.Generic import Alignment as _Alignment
@@ -137,8 +137,8 @@ class MultipleSeqAlignment(_Alignment):
         compatible "hack" so as not to disrupt existing scripts and users, but
         is deprecated and will be removed in a future release.
         """
-        if isinstance(records, Alphabet.Alphabet) \
-        or isinstance(records, Alphabet.AlphabetEncoder):
+        if isinstance(records, _alphabet.Alphabet) \
+        or isinstance(records, _alphabet.AlphabetEncoder):
             if alphabet is None:
                 #TODO - Remove this backwards compatible mode!                
                 alphabet = records
@@ -154,22 +154,22 @@ class MultipleSeqAlignment(_Alignment):
             else :
                 raise ValueError("Invalid records argument")
         if alphabet is not None :
-            if not (isinstance(alphabet, Alphabet.Alphabet) \
-            or isinstance(alphabet, Alphabet.AlphabetEncoder)):
+            if not (isinstance(alphabet, _alphabet.Alphabet) \
+            or isinstance(alphabet, _alphabet.AlphabetEncoder)):
                 raise ValueError("Invalid alphabet argument")
             self._alphabet = alphabet
         else :
             #Default while we add sequences, will take a consensus later
-            self._alphabet = Alphabet.single_letter_alphabet
+            self._alphabet = _alphabet.single_letter_alphabet
 
         self._records = []
         if records:
             self.extend(records)
             if alphabet is None:
                 #No alphabet was given, take a consensus alphabet
-                self._alphabet = Alphabet._consensus_alphabet(rec.seq.alphabet for \
-                                                              rec in self._records \
-                                                              if rec.seq is not None)
+                self._alphabet = _alphabet._consensus_alphabet(rec.seq.alphabet for \
+                                                               rec in self._records \
+                                                               if rec.seq is not None)
 
     def extend(self, records):
         """Add more SeqRecord objects to the alignment as rows.
@@ -294,7 +294,7 @@ class MultipleSeqAlignment(_Alignment):
             
         #Using not self.alphabet.contains(record.seq.alphabet) needs fixing
         #for AlphabetEncoders (e.g. gapped versus ungapped).
-        if not Alphabet._check_type_compatible([self._alphabet, record.seq.alphabet]):
+        if not _alphabet._check_type_compatible([self._alphabet, record.seq.alphabet]):
             raise ValueError("New sequence's alphabet is incompatible")
         self._records.append(record)
 
@@ -357,7 +357,7 @@ class MultipleSeqAlignment(_Alignment):
         if len(self) != len(other):
             raise ValueError("When adding two alignments they must have the same length"
                              " (i.e. same number or rows)")
-        alpha = Alphabet._consensus_alphabet([self._alphabet, other._alphabet])
+        alpha = _alphabet._consensus_alphabet([self._alphabet, other._alphabet])
         merged = (left+right for left,right in zip(self, other))
         return MultipleSeqAlignment(merged, alpha)
 

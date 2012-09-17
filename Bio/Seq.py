@@ -17,7 +17,7 @@ import string #for maketrans only
 import array
 import sys
 
-from Bio import Alphabet
+from Bio import Alphabet as _alphabet
 from Bio.Alphabet import IUPAC
 from Bio.Data.IUPACData import ambiguous_dna_complement, ambiguous_rna_complement
 from Bio.Data import CodonTable
@@ -68,7 +68,7 @@ class Seq(object):
     reverse_complement, transcribe, back_transcribe and translate (which are
     not applicable to sequences with a protein alphabet).
     """
-    def __init__(self, data, alphabet = Alphabet.generic_alphabet):
+    def __init__(self, data, alphabet = _alphabet.generic_alphabet):
         """Create a Seq object.
 
         Arguments:
@@ -265,12 +265,12 @@ class Seq(object):
         """
         if hasattr(other, "alphabet"):
             #other should be a Seq or a MutableSeq
-            if not Alphabet._check_type_compatible([self.alphabet,
-                                                    other.alphabet]):
+            if not _alphabet._check_type_compatible([self.alphabet,
+                                                     other.alphabet]):
                 raise TypeError("Incompatible alphabets %s and %s" \
                                 % (repr(self.alphabet), repr(other.alphabet)))
             #They should be the same sequence type (or one of them is generic)
-            a = Alphabet._consensus_alphabet([self.alphabet, other.alphabet])
+            a = _alphabet._consensus_alphabet([self.alphabet, other.alphabet])
             return self.__class__(str(self) + str(other), a)
         elif isinstance(other, basestring):
             #other is a plain string - use the current alphabet
@@ -296,12 +296,12 @@ class Seq(object):
         """
         if hasattr(other, "alphabet"):
             #other should be a Seq or a MutableSeq
-            if not Alphabet._check_type_compatible([self.alphabet,
-                                                    other.alphabet]):
+            if not _alphabet._check_type_compatible([self.alphabet,
+                                                     other.alphabet]):
                 raise TypeError("Incompatable alphabets %s and %s" \
                                 % (repr(self.alphabet), repr(other.alphabet)))
             #They should be the same sequence type (or one of them is generic)
-            a = Alphabet._consensus_alphabet([self.alphabet, other.alphabet])
+            a = _alphabet._consensus_alphabet([self.alphabet, other.alphabet])
             return self.__class__(str(other) + str(self), a)
         elif isinstance(other, basestring):
             #other is a plain string - use the current alphabet
@@ -353,7 +353,7 @@ class Seq(object):
             return other_sequence
 
         #Other should be a Seq or a MutableSeq
-        if not Alphabet._check_type_compatible([self.alphabet, other_alpha]):
+        if not _alphabet._check_type_compatible([self.alphabet, other_alpha]):
             raise TypeError("Incompatable alphabets %s and %s" \
                             % (repr(self.alphabet), repr(other_alpha)))
         #Return as a string
@@ -749,12 +749,12 @@ class Seq(object):
            ...
         ValueError: Proteins do not have complements!
         """
-        base = Alphabet._get_base_alphabet(self.alphabet)
-        if isinstance(base, Alphabet.ProteinAlphabet):
+        base = _alphabet._get_base_alphabet(self.alphabet)
+        if isinstance(base, _alphabet.ProteinAlphabet):
             raise ValueError("Proteins do not have complements!")
-        if isinstance(base, Alphabet.DNAAlphabet):
+        if isinstance(base, _alphabet.DNAAlphabet):
             ttable = _dna_complement_table
-        elif isinstance(base, Alphabet.RNAAlphabet):
+        elif isinstance(base, _alphabet.RNAAlphabet):
             ttable = _rna_complement_table
         elif ('U' in self._data or 'u' in self._data) \
         and ('T' in self._data or 't' in self._data):
@@ -823,10 +823,10 @@ class Seq(object):
            ...
         ValueError: Proteins cannot be transcribed!
         """
-        base = Alphabet._get_base_alphabet(self.alphabet)
-        if isinstance(base, Alphabet.ProteinAlphabet):
+        base = _alphabet._get_base_alphabet(self.alphabet)
+        if isinstance(base, _alphabet.ProteinAlphabet):
             raise ValueError("Proteins cannot be transcribed!")
-        if isinstance(base, Alphabet.RNAAlphabet):
+        if isinstance(base, _alphabet.RNAAlphabet):
             raise ValueError("RNA cannot be transcribed!")
 
         if self.alphabet==IUPAC.unambiguous_dna:
@@ -834,7 +834,7 @@ class Seq(object):
         elif self.alphabet==IUPAC.ambiguous_dna:
             alpha = IUPAC.ambiguous_rna
         else:
-            alpha = Alphabet.generic_rna
+            alpha = _alphabet.generic_rna
         return Seq(str(self).replace('T','U').replace('t','u'), alpha)
     
     def back_transcribe(self):
@@ -858,10 +858,10 @@ class Seq(object):
            ...
         ValueError: Proteins cannot be back transcribed!
         """
-        base = Alphabet._get_base_alphabet(self.alphabet)
-        if isinstance(base, Alphabet.ProteinAlphabet):
+        base = _alphabet._get_base_alphabet(self.alphabet)
+        if isinstance(base, _alphabet.ProteinAlphabet):
             raise ValueError("Proteins cannot be back transcribed!")
-        if isinstance(base, Alphabet.DNAAlphabet):
+        if isinstance(base, _alphabet.DNAAlphabet):
             raise ValueError("DNA cannot be back transcribed!")
 
         if self.alphabet==IUPAC.unambiguous_rna:
@@ -869,7 +869,7 @@ class Seq(object):
         elif self.alphabet==IUPAC.ambiguous_rna:
             alpha = IUPAC.ambiguous_dna
         else:
-            alpha = Alphabet.generic_dna
+            alpha = _alphabet.generic_dna
         return Seq(str(self).replace("U", "T").replace("u", "t"), alpha)
 
     def translate(self, table="Standard", stop_symbol="*", to_stop=False,
@@ -955,8 +955,8 @@ class Seq(object):
                              + "a 256 character string mapping table like " \
                              + "the python string object's translate method. " \
                              + "Use str(my_seq).translate(...) instead.")
-        if isinstance(Alphabet._get_base_alphabet(self.alphabet),
-                      Alphabet.ProteinAlphabet):
+        if isinstance(_alphabet._get_base_alphabet(self.alphabet),
+                      _alphabet.ProteinAlphabet):
             raise ValueError("Proteins cannot be translated!")
         try:
             table_id = int(table)
@@ -995,8 +995,8 @@ class Seq(object):
         protein = _translate_str(str(self), codon_table, \
                                  stop_symbol, to_stop, cds)
         if stop_symbol in protein:
-            alpha = Alphabet.HasStopCodon(codon_table.protein_alphabet,
-                                             stop_symbol = stop_symbol)
+            alpha = _alphabet.HasStopCodon(codon_table.protein_alphabet,
+                                           stop_symbol = stop_symbol)
         else:
             alpha = codon_table.protein_alphabet
         return Seq(protein, alpha)
@@ -1075,7 +1075,7 @@ class Seq(object):
             elif gap != self.alphabet.gap_char:
                 raise ValueError("Gap %s does not match %s from alphabet" \
                                  % (repr(gap), repr(self.alphabet.gap_char)))
-            alpha = Alphabet._ungap(self.alphabet)
+            alpha = _alphabet._ungap(self.alphabet)
         elif not gap:
             raise ValueError("Gap character not given and not defined in alphabet")
         else:
@@ -1135,7 +1135,7 @@ class UnknownSeq(Seq):
     >>> known_seq + unk_four
     Seq('ACGT????', Alphabet())
     """
-    def __init__(self, length, alphabet = Alphabet.generic_alphabet, character = None):
+    def __init__(self, length, alphabet = _alphabet.generic_alphabet, character = None):
         """Create a new UnknownSeq object.
 
         If character is ommited, it is determed from the alphabet, "N" for
@@ -1151,12 +1151,12 @@ class UnknownSeq(Seq):
                 raise ValueError("character argument should be a single letter string.")
             self._character = character
         else:
-            base = Alphabet._get_base_alphabet(alphabet)
+            base = _alphabet._get_base_alphabet(alphabet)
             #TODO? Check the case of the letters in the alphabet?
             #We may have to use "n" instead of "N" etc.
-            if isinstance(base, Alphabet.NucleotideAlphabet):
+            if isinstance(base, _alphabet.NucleotideAlphabet):
                 self._character = "N"
-            elif isinstance(base, Alphabet.ProteinAlphabet):
+            elif isinstance(base, _alphabet.ProteinAlphabet):
                 self._character = "X"
             else:
                 self._character = "?"
@@ -1328,8 +1328,8 @@ class UnknownSeq(Seq):
         >>> print my_nuc.complement()
         ????????
         """
-        if isinstance(Alphabet._get_base_alphabet(self.alphabet),
-                      Alphabet.ProteinAlphabet):
+        if isinstance(_alphabet._get_base_alphabet(self.alphabet),
+                      _alphabet.ProteinAlphabet):
             raise ValueError("Proteins do not have complements!")
         return self
 
@@ -1346,8 +1346,8 @@ class UnknownSeq(Seq):
         >>> print my_nuc.reverse_complement()
         ??????????
         """
-        if isinstance(Alphabet._get_base_alphabet(self.alphabet),
-                      Alphabet.ProteinAlphabet):
+        if isinstance(_alphabet._get_base_alphabet(self.alphabet),
+                      _alphabet.ProteinAlphabet):
             raise ValueError("Proteins do not have complements!")
         return self
 
@@ -1453,10 +1453,10 @@ class UnknownSeq(Seq):
         XXX
 
         """
-        if isinstance(Alphabet._get_base_alphabet(self.alphabet),
-                      Alphabet.ProteinAlphabet):
+        if isinstance(_alphabet._get_base_alphabet(self.alphabet),
+                      _alphabet.ProteinAlphabet):
             raise ValueError("Proteins cannot be translated!")
-        return UnknownSeq(self._length//3, Alphabet.generic_protein, "X")
+        return UnknownSeq(self._length//3, _alphabet.generic_protein, "X")
 
     def ungap(self, gap=None):
         """Return a copy of the sequence without the gap character(s).
@@ -1523,7 +1523,7 @@ class MutableSeq(object):
     Note that the MutableSeq object does not support as many string-like
     or biological methods as the Seq object.
     """
-    def __init__(self, data, alphabet = Alphabet.generic_alphabet):
+    def __init__(self, data, alphabet = _alphabet.generic_alphabet):
         if sys.version_info[0] == 3:
             self.array_indicator = "u"
         else:
@@ -1591,8 +1591,8 @@ class MutableSeq(object):
                           "the interim please use id(seq1)==id(seq2) or "
                           "str(seq1)==str(seq2) to make your code explicit "
                           "and to avoid this warning.", FutureWarning)
-            if not Alphabet._check_type_compatible([self.alphabet,
-                                                    other.alphabet]):
+            if not _alphabet._check_type_compatible([self.alphabet,
+                                                     other.alphabet]):
                 raise TypeError("Incompatable alphabets %s and %s" \
                                 % (repr(self.alphabet), repr(other.alphabet)))
             #They should be the same sequence type (or one of them is generic)
@@ -1651,12 +1651,12 @@ class MutableSeq(object):
         Returns a new MutableSeq object."""
         if hasattr(other, "alphabet"):
             #other should be a Seq or a MutableSeq
-            if not Alphabet._check_type_compatible([self.alphabet,
-                                                    other.alphabet]):
+            if not _alphabet._check_type_compatible([self.alphabet,
+                                                     other.alphabet]):
                 raise TypeError("Incompatable alphabets %s and %s" \
                                 % (repr(self.alphabet), repr(other.alphabet)))
             #They should be the same sequence type (or one of them is generic)
-            a = Alphabet._consensus_alphabet([self.alphabet, other.alphabet])
+            a = _alphabet._consensus_alphabet([self.alphabet, other.alphabet])
             if isinstance(other, MutableSeq):
                 #See test_GAQueens.py for an historic usage of a non-string
                 #alphabet!  Adding the arrays should support this.
@@ -1672,12 +1672,12 @@ class MutableSeq(object):
     def __radd__(self, other):
         if hasattr(other, "alphabet"):
             #other should be a Seq or a MutableSeq
-            if not Alphabet._check_type_compatible([self.alphabet,
-                                                    other.alphabet]):
+            if not _alphabet._check_type_compatible([self.alphabet,
+                                                     other.alphabet]):
                 raise TypeError("Incompatable alphabets %s and %s" \
                                 % (repr(self.alphabet), repr(other.alphabet)))
             #They should be the same sequence type (or one of them is generic)
-            a = Alphabet._consensus_alphabet([self.alphabet, other.alphabet])
+            a = _alphabet._consensus_alphabet([self.alphabet, other.alphabet])
             if isinstance(other, MutableSeq):
                 #See test_GAQueens.py for an historic usage of a non-string
                 #alphabet!  Adding the arrays should support this.
@@ -1787,8 +1787,8 @@ class MutableSeq(object):
 
         No return value.
         """
-        if isinstance(Alphabet._get_base_alphabet(self.alphabet),
-                      Alphabet.ProteinAlphabet):
+        if isinstance(_alphabet._get_base_alphabet(self.alphabet),
+                      _alphabet.ProteinAlphabet):
             raise ValueError("Proteins do not have complements!")
         if self.alphabet in (IUPAC.ambiguous_dna, IUPAC.unambiguous_dna):
             d = ambiguous_dna_complement
