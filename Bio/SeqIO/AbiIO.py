@@ -21,7 +21,7 @@ import struct
 
 from os.path import basename
 
-from Bio import Alphabet
+from Bio import Alphabet as _alphabet
 from Bio.Alphabet.IUPAC import ambiguous_dna, unambiguous_dna
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
@@ -80,11 +80,11 @@ def AbiIterator(handle, alphabet=None, trim=False):
     """
     # raise exception is alphabet is not dna
     if alphabet is not None:
-        if isinstance(Alphabet._get_base_alphabet(alphabet),
-                      Alphabet.ProteinAlphabet):
+        if isinstance(_alphabet._get_base_alphabet(alphabet),
+                      _alphabet.ProteinAlphabet):
             raise ValueError("Invalid alphabet, ABI files do not hold proteins.")
-        if isinstance(Alphabet._get_base_alphabet(alphabet),
-                      Alphabet.RNAAlphabet):
+        if isinstance(_alphabet._get_base_alphabet(alphabet),
+                      _alphabet.RNAAlphabet):
             raise ValueError("Invalid alphabet, ABI files do not hold RNA.")
 
     # raise exception if handle mode is not 'rb'

@@ -17,9 +17,9 @@ originally introduced by SwissProt ("swiss" format in Bio.SeqIO).
 """
 import sys
 
-from Bio import Seq
+from Bio.Seq import Seq
 from Bio import SeqFeature
-from Bio import Alphabet
+from Bio import Alphabet as _alphabet
 from Bio.SeqRecord import SeqRecord
 try:
     from cStringIO import StringIO
@@ -39,7 +39,7 @@ except ImportError:
 NS = "{http://uniprot.org/uniprot}"
 REFERENCE_JOURNAL = "%(name)s %(volume)s:%(first)s-%(last)s(%(pub_date)s)"
 
-def UniprotIterator(handle, alphabet=Alphabet.ProteinAlphabet(), return_raw_comments=False):
+def UniprotIterator(handle, alphabet=_alphabet.ProteinAlphabet(), return_raw_comments=False):
     """Generator function to parse UniProt XML as SeqRecord objects.
     
     parses an XML entry at a time from any UniProt XML file 
@@ -50,10 +50,10 @@ def UniprotIterator(handle, alphabet=Alphabet.ProteinAlphabet(), return_raw_comm
     return_raw_comments = True --> comment fields are returned as complete xml to allow further processing
     skip_parsing_errors = True --> if parsing errors are found, skip to next entry
     """
-    if isinstance(alphabet, Alphabet.NucleotideAlphabet):
+    if isinstance(alphabet, _alphabet.NucleotideAlphabet):
         raise ValueError, "Wrong alphabet %r" % alphabet
-    if isinstance(alphabet, Alphabet.Gapped):
-        if isinstance(alphabet.alphabet, Alphabet.NucleotideAlphabet):
+    if isinstance(alphabet, _alphabet.Gapped):
+        if isinstance(alphabet.alphabet, _alphabet.NucleotideAlphabet):
             raise ValueError, "Wrong alphabet %r" % alphabet
 
     if not hasattr(handle, "read"):
@@ -80,7 +80,7 @@ class Parser(object):
     return_raw_comments=True to get back the complete comment field in XML format
     alphabet=Alphabet.ProteinAlphabet()    can be modified if needed, default is protein alphabet.
     """
-    def __init__(self, elem, alphabet=Alphabet.ProteinAlphabet(), return_raw_comments=False):
+    def __init__(self, elem, alphabet=_alphabet.ProteinAlphabet(), return_raw_comments=False):
         self.entry=elem
         self.alphabet=alphabet
         self.return_raw_comments=return_raw_comments
@@ -448,8 +448,8 @@ class Parser(object):
                     self.ParsedSeqRecord.annotations['sequence_%s' % k] = int(v)
                 else:
                     self.ParsedSeqRecord.annotations['sequence_%s' % k] = v
-            seq=''.join((element.text.split()))
-            self.ParsedSeqRecord.seq=Seq.Seq(seq,self.alphabet)
+            seq = ''.join((element.text.split()))
+            self.ParsedSeqRecord.seq = Seq(seq, self.alphabet)
             
         #============================================#
         #Initialize SeqRecord
