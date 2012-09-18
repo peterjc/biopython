@@ -60,6 +60,28 @@ def strip_comment(text):
     else:
         return text.strip()
 
+def child_modules(full_name, imported_as):
+    """Returns a list of module names as might be used in the code.
+
+    For example, given "from Bio import SeqIO", then "SeqIO.SffIO"
+    could be valid given we know "Bio.SeqIO.SffIO" is a module.
+
+    So child_modules("Bio.SeqIO", "SeqIO") -> ["SeqIO.SffIO", ...]
+    """
+    global OLD_NAMES
+    assert full_name in OLD_NAMES, full_name
+    for name in OLD_NAMES:
+        if name.startswith(full_name + "."):
+            child = imported_as + name[len(full_name):]
+            #print("%s as %s -> %s" % (full_name, imported_as, child))
+            yield child
+
+#Check:
+OLD_NAMES = ["Bio", "Bio.SeqIO", "Bio.SeqIO.SffIO"]
+assert list(child_modules("Bio.SeqIO", "SeqIO")) == ["SeqIO.SffIO"]
+assert list(child_modules("Bio.SeqIO", "x")) == ["x.SffIO"]
+OLD_NAMES = []
+
 def hack_file_import_lines(f):
     """Evil hack to change our import lines to use lower case..."""
     global OLD_NAMES
@@ -79,7 +101,8 @@ def hack_file_import_lines(f):
         assert m == m.lower(), "Expected lower case names in %s -> %s" % (f, m)
     #assert m.startswith("bio"), ("%r from %s" % (m, f))
 
-    TEMPLATES = [",%s.", "=%s.", "[%s.", "(%s ", "(%s.", " %s.", " %s)", " %s,"]
+    TEMPLATES = [",%s.", "=%s.", "[%s.", "(%s ", "(%s.", " %s.", " %s)", " %s,",
+                 " return %s.", "= %s."]
     #Using " %s " triggers false positives, e.g in strings
 
     #Top level imports:
@@ -126,6 +149,7 @@ def hack_file_import_lines(f):
                     assert name in NAMES, \
                         "Hmm. %r from file %s, Line:\n%s" % (name, f, line)
                     doc_mapping.add(name)
+                    doc_mapping.update(child_modules(name, name))
                     h.write(line.lower()) #TODO - Preserve case of any comment?
             elif re_from_import.match(core):
                 base = line.split("from ",1)[1].split(" import ",1)[0].strip()
@@ -141,6 +165,7 @@ def hack_file_import_lines(f):
                             new_names.append(name.lower() + " as " + name_as.split(" as ",1)[1].strip())
                         else:
                             doc_mapping.add(name)
+                            doc_mapping.update(child_modules(base + "." + name, name))
                             new_names.append(name.lower())
                     else:
                         #Don't care if used 'as' or not:
@@ -149,7 +174,7 @@ def hack_file_import_lines(f):
                             + " import " + ", ".join(new_names) + "\n")
             else:
                 #Boring line; do we need to apply any import replacements?
-                for name in doc_mapping:
+                for name in reversed(sorted(doc_mapping)):
                     for template in TEMPLATES:
                         x = template % name
                         line = line.replace(x, x.lower())
@@ -165,6 +190,8 @@ def hack_file_import_lines(f):
                 name = core[7:].strip()
                 assert name in NAMES, "Hmm. %r from file %s, Line:\n%s" % (name, f, line)
                 file_mapping.add(name)
+                if name in OLD_NAMES:
+                    file_mapping.update(child_modules(name, name))
                 h.write(line.lower()) #TODO - Preserve case of any comment?
         elif core.startswith("import "):
             #This could be a local import, e.g. 'import FastaIO'
@@ -182,6 +209,7 @@ def hack_file_import_lines(f):
                 if (m + "." + name).lower() in [x.lower() for x in NAMES]:
                     h.write(line.lower())
                     file_mapping.add(name)
+                    file_mapping.update(child_modules(base + "." + name, name))
                 else:
                     #Nope, not one of our imports
                     h.write(line)
@@ -200,6 +228,7 @@ def hack_file_import_lines(f):
                         new_names.append(name.lower() + " as " + name_as.split(" as ",1)[1].strip())
                     else:
                         file_mapping.add(name)
+                        file_mapping.update(child_modules(base + "." + name, name))
                         new_names.append(name.lower())
                 else:
                     #Don't care if used 'as' or not:                                                                                                                       
@@ -208,12 +237,14 @@ def hack_file_import_lines(f):
                             + " import " + ", ".join(new_names) + "\n")
         else:
             #Boring line; do we need to apply any import replacements?
-            for name in file_mapping:
+            #Sorting to ensure do "SeqIO.UniprotIO" replacement before "SeqIO"
+            for name in reversed(sorted(file_mapping)):
                 for template in TEMPLATES:
                     x = template % name
                     line = line.replace(x, x.lower())
                 if line.startswith(name + "."):
                     line = name.lower() + line[len(name):]
+            assert "seqio.SffIO" not in line, (line, reversed(sorted(file_mapping)))
             h.write(line)
     h.close()
     #TODO - Work out why this fails (commented out to allow
