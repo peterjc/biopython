@@ -169,7 +169,7 @@ def hack_file_import_lines(f):
                             new_names.append(name.lower())
                     else:
                         #Don't care if used 'as' or not:
-                        new_names.append(name)
+                        new_names.append(name_as)
                 h.write(line.split(" import ",1)[0].lower() \
                             + " import " + ", ".join(new_names) + "\n")
             else:
@@ -217,6 +217,11 @@ def hack_file_import_lines(f):
             base = line.split("from ",1)[1].split(" import ",1)[0].strip()
             assert base in NAMES
             names = [x.strip() for x in line.split(" import ",1)[1].split(",")]
+            if names[0].startswith("("):
+                #Remove (name1, name2, ... nameN) brackets
+                assert names[-1].endswith(")")
+                names[0] = names[0][1:]
+                names[-1] = names[-1][:-1] 
             new_names = []
             for name_as in names:
                 if " as " in name_as:
@@ -225,16 +230,17 @@ def hack_file_import_lines(f):
                     name = name_as
                 if base + "." + name in NAMES:
                     if " as " in name_as:
-                        new_names.append(name.lower() + " as " + name_as.split(" as ",1)[1].strip())
+                        new_names.append(name.lower() + " as " \
+                                             + name_as.split(" as ",1)[1].strip())
                     else:
                         file_mapping.add(name)
                         file_mapping.update(child_modules(base + "." + name, name))
                         new_names.append(name.lower())
                 else:
-                    #Don't care if used 'as' or not:                                                                                                                       
-                    new_names.append(name)
-                h.write(line.split(" import ",1)[0].lower() \
-                            + " import " + ", ".join(new_names) + "\n")
+                    #Don't care if used 'as' or not:
+                    new_names.append(name_as)
+            h.write(line.split(" import ",1)[0].lower() \
+                        + " import " + ", ".join(new_names) + "\n")
         else:
             #Boring line; do we need to apply any import replacements?
             #Sorting to ensure do "SeqIO.UniprotIO" replacement before "SeqIO"
@@ -270,7 +276,7 @@ def run2to3(filenames):
             if e != 0:
                 sys.stderr = stderr
                 sys.stderr.write(handle.getvalue())
-                os.remove(filename) #Don't want a half edited file!
+                #os.remove(filename) #Don't want a half edited file!
                 raise RuntimeError("Error %i from 2to3 on %s" \
                                    % (e, filename))
             #And again for any doctests,
