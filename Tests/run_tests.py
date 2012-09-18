@@ -117,6 +117,8 @@ except ImportError:
 #Skip Bio.Seq doctest under Python 3, see http://bugs.python.org/issue7490
 if sys.version_info[0] == 3:
     DOCTEST_MODULES.remove("Bio.Seq")
+    #We adopted lower case module names under Python 3
+    DOCTEST_MODULES = [x.lower() for x in DOCTEST_MODULES]
 
 system_lang = os.environ.get('LANG', 'C') #Cache this
 
