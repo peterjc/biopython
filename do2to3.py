@@ -77,7 +77,8 @@ def hack_file_import_lines(f):
         m = ".".join(m[2:])
     #assert m.startswith("bio"), ("%r from %s" % (m, f))
 
-    TEMPLATES = [",%s.", "=%s.", "[%s.", "(%s ", "(%s.", " %s.", " %s ", " %s)", " %s,"]
+    TEMPLATES = [",%s.", "=%s.", "[%s.", "(%s ", "(%s.", " %s.", " %s)", " %s,"]
+    #Using " %s " triggers false positives, e.g in strings
 
     #Top level imports:
     NAMES = list(OLD_NAMES)
