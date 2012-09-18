@@ -17,7 +17,7 @@ __docformat__ = "epytext en" #Don't just use plain text in epydoc API pages!
 # biopython
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
-from Bio import Alphabet
+from Bio.Alphabet import Alphabet, AlphabetEncoder
 
 class Alignment(object):
     """Represent a set of alignments (DEPRECATED).
@@ -52,8 +52,8 @@ class Alignment(object):
         import warnings
         import Bio
         warnings.warn("With the introduction of the MultipleSeqAlignment class in Bio.Align, this base class is deprecated and is likely to be removed in a future release of Biopython.", Bio.BiopythonDeprecationWarning)
-        if not (isinstance(alphabet, Alphabet.Alphabet) \
-        or isinstance(alphabet, Alphabet.AlphabetEncoder)):
+        if not (isinstance(alphabet, Alphabet) \
+        or isinstance(alphabet, AlphabetEncoder)):
             raise ValueError("Invalid alphabet argument")
         self._alphabet = alphabet
         # hold everything at a list of SeqRecord objects
