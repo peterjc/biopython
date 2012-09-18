@@ -240,6 +240,8 @@ class ComparisonTestCase(unittest.TestCase):
         # first check that we are dealing with the right output
         # the first line of the output file is the test name
         expected_test = expected.readline().strip()
+        if sys.version_info[0] == 3:
+            expected_test = expected_test.lower()
 
         if expected_test != self.name:
             expected.close()
