@@ -152,8 +152,6 @@ def hack_file_import_lines(f):
                     for template in TEMPLATES:
                         x = template % name
                         line = line.replace(x, x.lower())
-                    if line.startswith(name + "."):
-                        line = name.lower() + line[len(name):]
                 h.write(line)
         elif re_plain_import.match(core):
             if " as " in core:
