@@ -75,6 +75,7 @@ def hack_file_import_lines(f):
     else:
         b = ".".join(m[2:-1])
         m = ".".join(m[2:])
+    assert m == m.lower(), "Expected lower case names in %s -> %s" % (f, m)
     #assert m.startswith("bio"), ("%r from %s" % (m, f))
 
     TEMPLATES = [",%s.", "=%s.", "[%s.", "(%s ", "(%s.", " %s.", " %s)", " %s,"]
@@ -83,6 +84,7 @@ def hack_file_import_lines(f):
     #Top level imports:
     NAMES = list(OLD_NAMES)
     #Relative imports:
+    #print("Adding any local imports in %s relative to %s" % (f, b))
     for name in OLD_NAMES:
         if name.lower().startswith(b + "."):
             #print("Adding %s as a local import" % name)
@@ -311,6 +313,8 @@ def do_update(py2folder, py3folder, verbose=False):
     to_convert = []
     for dirpath, dirnames, filenames in os.walk(py2folder):
         if verbose: print("Processing %s" % dirpath)
+        if dirpath.startswith("./"):
+            dirpath = dirpath[2:]
         relpath = os.path.relpath(dirpath, py2folder)
         #This is just to give cleaner filenames
         if relpath[:2] == "/.":
@@ -319,7 +323,10 @@ def do_update(py2folder, py3folder, verbose=False):
             relpath = ""
         for d in dirnames:
             #Note use of lower to change module names:
-            new = os.path.join(py3folder, relpath.lower(), d.lower())
+            if dirpath.startswith("Bio"):
+                new = os.path.join(py3folder, relpath.lower(), d.lower())
+            else:
+                new = os.path.join(py3folder, relpath, d)
             if not os.path.isdir(new):
                 if verbose:
                     print ("Creating directory %s" % new)
@@ -339,10 +346,18 @@ def do_update(py2folder, py3folder, verbose=False):
                 f_new = f.lower()
             old = os.path.join(py2folder, relpath, f)
             if f.endswith(".py"):
-                new = os.path.join(py3folder, relpath.lower(), f.lower())
+                if dirpath.startswith("Bio"):
+                    new = os.path.join(py3folder, relpath.lower(), f.lower())
+                else:
+                    new = os.path.join(py3folder, relpath, f.lower())
             else:
                 #Do not make non-python filenames lowercase (e.g. DTD files)
-                new = os.path.join(py3folder, relpath.lower(), f)
+                if dirpath.startswith("Bio"):
+                    new = os.path.join(py3folder, relpath.lower(), f)
+                else:
+                    new = os.path.join(py3folder, relpath, f)
+            #print("Converting %s --> %s and %s aka %s and %s --> %s" \
+            #          % (old, py3folder, dirpath, relpath, f, new))
             #The filesystem can (in Linux) record nanoseconds, but
             #when copying only microsecond accuracy is used.
             #See http://bugs.python.org/issue10148
