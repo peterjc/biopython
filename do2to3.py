@@ -109,7 +109,7 @@ def hack_file_import_lines(f):
             h.write(line)
             #Start/end/one line docstring => clear doc_mapping,
             doc_mapping = set()
-        elif core.startswith(">>> "):
+        elif core.startswith(">>> ") or core.startswith("... "):
             assert in_triple_quote
             core = core[4:]
             #Will need to update rest of this docstring post import...
