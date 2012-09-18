@@ -75,7 +75,8 @@ def hack_file_import_lines(f):
     else:
         b = ".".join(m[2:-1])
         m = ".".join(m[2:])
-    assert m == m.lower(), "Expected lower case names in %s -> %s" % (f, m)
+    if m.lower().startswith("bio."):
+        assert m == m.lower(), "Expected lower case names in %s -> %s" % (f, m)
     #assert m.startswith("bio"), ("%r from %s" % (m, f))
 
     TEMPLATES = [",%s.", "=%s.", "[%s.", "(%s ", "(%s.", " %s.", " %s)", " %s,"]
@@ -128,26 +129,24 @@ def hack_file_import_lines(f):
                     h.write(line.lower()) #TODO - Preserve case of any comment?
             elif re_from_import.match(core):
                 base = line.split("from ",1)[1].split(" import ",1)[0].strip()
-                assert base in NAMES
-                if " as " in core:
-                    name = line.split(" import ",1)[1].split(" as ",1)[0]
-                    if base + "." + name in NAMES:
-                        i = line.find(" as ")
+                names = [x.strip() for x in line.split(" import ",1)[1].split(",")]
+                new_names = []
+                for name_as in names:
+                    if " as " in name_as:
+                        name = name_as.split(" as ",1)[0].strip()
                     else:
-                        i = line.find(" import ")
-                    h.write(line[:i].lower() + line[i:])
-                    #Don't need to change later use of the 'as' name
-                else:
-                    names = [x.strip() for x in line.split(" import ",1)[1].split(",")]
-                    new_names = []
-                    for name in names:
-                        if base + "." + name in NAMES:
+                        name = name_as
+                    if base + "." + name in NAMES:
+                        if " as " in name_as:
+                            new_names.append(name.lower() + " as " + name_as.split(" as ",1)[1].strip())
+                        else:
                             doc_mapping.add(name)
                             new_names.append(name.lower())
-                        else:
-                            new_names.append(name)
-                    h.write(line.split(" import ",1)[0].lower() \
-                                + " import " + ", ".join(new_names) + "\n")
+                    else:
+                        #Don't care if used 'as' or not:
+                        new_names.append(name)
+                h.write(line.split(" import ",1)[0].lower() \
+                            + " import " + ", ".join(new_names) + "\n")
             else:
                 #Boring line; do we need to apply any import replacements?
                 for name in doc_mapping:
@@ -189,26 +188,24 @@ def hack_file_import_lines(f):
         elif re_from_import.match(core):
             base = line.split("from ",1)[1].split(" import ",1)[0].strip()
             assert base in NAMES
-            if " as " in core:
-                name = line.split(" import ",1)[1].split(" as ",1)[0]
-                if base + "." + name in NAMES:
-                    i = line.find(" as ")
+            names = [x.strip() for x in line.split(" import ",1)[1].split(",")]
+            new_names = []
+            for name_as in names:
+                if " as " in name_as:
+                    name = name_as.split(" as ",1)[0].strip()
                 else:
-                    i = line.find(" import ")
-                h.write(line[:i].lower() + line[i:])
-                #Don't need to change later use of the 'as' name
-            else:
-                names = [x.strip() for x in line.split(" import ",1)[1].split(",")]
-                new_names = []
-                for name in names:
-                    #Don't collect object/function names
-                    if base + "." + name in NAMES:
+                    name = name_as
+                if base + "." + name in NAMES:
+                    if " as " in name_as:
+                        new_names.append(name.lower() + " as " + name_as.split(" as ",1)[1].strip())
+                    else:
                         file_mapping.add(name)
                         new_names.append(name.lower())
-                    else:
-                        new_names.append(name)
+                else:
+                    #Don't care if used 'as' or not:                                                                                                                       
+                    new_names.append(name)
                 h.write(line.split(" import ",1)[0].lower() \
-                                + " import " + ", ".join(new_names) + "\n")
+                            + " import " + ", ".join(new_names) + "\n")
         else:
             #Boring line; do we need to apply any import replacements?
             for name in file_mapping:
