@@ -250,6 +250,9 @@ def hack_file_import_lines(f):
                     line = line.replace(x, x.lower())
                 if line.startswith(name + "."):
                     line = name.lower() + line[len(name):]
+                if line.strip() == "del %s" % name:
+                    #e.g. the 'del Entrez' line in Bio/Entrez/Parser.py
+                    line = line.replace(name, name.lower())
             assert "seqio.SffIO" not in line, (line, reversed(sorted(file_mapping)))
             h.write(line)
     h.close()

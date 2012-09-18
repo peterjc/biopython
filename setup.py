@@ -422,6 +422,17 @@ except NameError:
 os.chdir(src_path)
 sys.path.insert(0, src_path)
 
+if sys.version_info[0] < 3:
+    pack_data = {
+        'Bio.Entrez': ['DTDs/*.dtd', 'DTDs/*.ent', 'DTDs/*.mod'],
+        'Bio.PopGen': ['SimCoal/data/*.par'],
+         }
+else:
+    pack_data ={
+        'bio.entrez': ['dtds/*.dtd', 'dtds/*.ent', 'dtds/*.mod'],
+        'bio.popgen': ['simCoal/data/*.par'],
+         }
+
 setup_args = {
     "name" : 'biopython',
     "version" : __version__,
@@ -438,10 +449,7 @@ setup_args = {
         },
     "packages" : PACKAGES,
     "ext_modules" : EXTENSIONS,
-    "package_data" : {
-        'Bio.Entrez': ['DTDs/*.dtd', 'DTDs/*.ent', 'DTDs/*.mod'],
-        'Bio.PopGen': ['SimCoal/data/*.par'],
-         },
+    "package_data" : pack_data,
    }
 
 if _SETUPTOOLS:

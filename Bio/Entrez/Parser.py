@@ -34,7 +34,7 @@ be used directly.
 # contents may change over time. About half the code in this parser deals
 # wih parsing the DTD, and the other half with the XML itself.
 
-
+import sys
 import os.path
 import urlparse
 import urllib
@@ -141,7 +141,10 @@ class DataHandler(object):
     del home
 
     from Bio import Entrez
-    global_dtd_dir = os.path.join(str(Entrez.__path__[0]), "DTDs")
+    if sys.version_info[0] < 3:
+        global_dtd_dir = os.path.join(str(Entrez.__path__[0]), "DTDs")
+    else:
+        global_dtd_dir = os.path.join(str(Entrez.__path__[0]), "dtds")
     del Entrez
 
     def __init__(self, validate):
