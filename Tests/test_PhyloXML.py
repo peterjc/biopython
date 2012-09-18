@@ -651,11 +651,11 @@ class MethodTests(unittest.TestCase):
         self.assertTrue(isinstance(aln, MultipleSeqAlignment))
         self.assertEqual(len(aln), 0)
         # Add sequences to the terminals
-        alphabet = Alphabet.Gapped(Alphabet.generic_dna)
+        alpha = Alphabet.Gapped(Alphabet.generic_dna)
         for tip, seqstr in zip(tree.get_terminals(),
                 ('AA--TTA', 'AA--TTG', 'AACCTTC')):
             tip.sequences.append(PX.Sequence.from_seqrecord(
-                SeqRecord(Seq(seqstr, alphabet), id=str(tip))))
+                SeqRecord(Seq(seqstr, alpha), id=str(tip))))
         # Check the alignment
         aln = tree.to_alignment()
         self.assertTrue(isinstance(aln, MultipleSeqAlignment))
