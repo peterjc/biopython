@@ -59,6 +59,7 @@ def strip_comment(text):
         return text[:text.find("#")].strip()
     else:
         return text.strip()
+assert strip_comment("from Bio import SeqIO # To parse a FASTA file\n") == "from Bio import SeqIO"
 
 def child_modules(full_name, imported_as):
     """Returns a list of module names as might be used in the code.
@@ -224,9 +225,9 @@ def hack_the_imports(old_text, module_name, module_base):
                     #Nope, not one of our imports
                     h.write(line)
         elif re_from_import.match(core):
-            base = line.split("from ",1)[1].split(" import ",1)[0].strip()
+            base = core.split("from ",1)[1].split(" import ",1)[0].strip()
             assert base in NAMES
-            names = [x.strip() for x in line.split(" import ",1)[1].split(",")]
+            names = [x.strip() for x in core.split(" import ",1)[1].split(",")]
             if names[0].startswith("("):
                 #Remove (name1, name2, ... nameN) brackets
                 assert names[-1].endswith(")")
@@ -273,7 +274,7 @@ def hack_the_imports(old_text, module_name, module_base):
     return h.getvalue()
 
 conversion_tests = [
-    ("""from Bio import SeqIO
+    ("""from Bio import SeqIO # To parse a FASTA file
 record = SeqIO.read("example.faa", "fasta")
 print record
 """, "X", "X", """from bio import seqio
