@@ -220,7 +220,7 @@ def hack_the_imports(old_text, module_name, module_base):
                 if (m + "." + name).lower() in [x.lower() for x in NAMES]:
                     h.write(line.lower())
                     file_mapping.add(name)
-                    file_mapping.update(child_modules(base + "." + name, name))
+                    file_mapping.update(child_modules(b + "." + name, name))
                 else:
                     #Nope, not one of our imports
                     h.write(line)
@@ -280,6 +280,12 @@ print record
 """, "X", "X", """from bio import seqio
 record = seqio.read("example.faa", "fasta")
 print record
+"""),
+    ("""import ProtParamData
+import IsoelectricPoint
+""", "Bio.SeqUtils", "Bio.SeqUtils",
+"""import protparamdata
+import isoelectricpoint
 """),
 ]
 
