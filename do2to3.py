@@ -84,8 +84,6 @@ OLD_NAMES = []
 
 def hack_file_import_lines(f):
     """Evil hack to change our import lines to use lower case..."""
-    global OLD_NAMES
-
     if f.endswith("/__init__.py"):
         m = f[:-12].split(os.path.sep)
     elif f.endswith(".py"):
@@ -101,9 +99,25 @@ def hack_file_import_lines(f):
         assert m == m.lower(), "Expected lower case names in %s -> %s" % (f, m)
     #assert m.startswith("bio"), ("%r from %s" % (m, f))
 
+    h = open(f, "r")
+    old = h.read()
+    h.close()
+
+    new = hack_the_imports(old, m, b)
+
+    h = open(f, "w")
+    h.write(new)
+    h.close()
+
+def hack_the_imports(old_text, module_name, module_base):
+    m = module_name
+    b = module_base
     TEMPLATES = [",%s.", "=%s.", "[%s.", "(%s ", "(%s.", " %s.", " %s)", " %s,",
                  " return %s.", "= %s."]
     #Using " %s " triggers false positives, e.g in strings
+
+    global OLD_NAMES
+    assert OLD_NAMES, "Namespace not loaded yet!"
 
     #Top level imports:
     NAMES = list(OLD_NAMES)
@@ -120,13 +134,9 @@ def hack_file_import_lines(f):
     file_mapping = set()
     doc_mapping = set()
 
-    h = open(f, "r")
-    lines = list(h)
-    h.close()
-
-    h = open(f, "w")
+    h = StringIO()
     in_triple_quote = False
-    for line in lines:
+    for line in StringIO(old_text):
         assert line.count('"""') <= 2, line
         core = strip_comment(line)
 
@@ -255,12 +265,49 @@ def hack_file_import_lines(f):
                     line = line.replace(name, name.lower())
             assert "seqio.SffIO" not in line, (line, reversed(sorted(file_mapping)))
             h.write(line)
-    h.close()
     #TODO - Work out why this fails (commented out to allow
     #all later files to be processed, to spot other issues):
     if in_triple_quote:
         print("Triple quote confused in %s" % f)
         #raise ValueError("Triple quote confused in %s" % f)
+    return h.getvalue()
+
+conversion_tests = [
+    ("""from Bio import SeqIO
+record = SeqIO.read("example.faa", "fasta")
+print record
+""", "X", "X", """from bio import seqio
+record = seqio.read("example.faa", "fasta")
+print record
+"""),
+]
+
+pending_tests = [
+(
+#Next example is tricky - there is a Bio/PDB/PDBParser.py file
+#but the import below will actually get a class instead due to
+#the shadowing import line in Bio/PDB/__init__.py (NASTY!)
+"""from Bio.PDB import PDBParser
+parser = PDBParser()
+print dir(parser)
+""", "X,", "X",
+"""from bio.pdb import PDBParser
+parser = PDBParser()
+print dir(parser)
+"""),
+]
+def test_the_hack():
+    global conversion_tests
+    for old, m, b, new in conversion_tests:
+        tmp = hack_the_imports(old, m, b)
+        if tmp != new:
+            if tmp == old:
+                print("Test failed, wanted:\n\n%s\n->\n\n%s\nBut got no change!" \
+                          % (old, new))
+            else:
+                print("Test failed, wanted:\n\n%s\n->\n\n%s\nBut got this:\n\n%s" \
+                          % (old, new, tmp))
+                sys.exit(1)
 
 def run2to3(filenames):
     stderr = sys.stderr
@@ -434,6 +481,7 @@ def main(python2_source, python3_source,
         os.mkdir(python3_source)
     global OLD_NAMES
     OLD_NAMES = list(get_module_names(python2_source))
+    test_the_hack()
 
     for child in children:
         print("Processing %s" % child)
