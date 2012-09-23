@@ -285,8 +285,8 @@ class SeqInterfaceTest(unittest.TestCase):
         """Make sure Seqs from BioSQL implement the right interface.
         """
         test_seq = self.item.seq
-        alphabet = test_seq.alphabet
-        self.assertTrue(isinstance(alphabet, Alphabet.Alphabet))
+        alpha = test_seq.alphabet
+        self.assertTrue(isinstance(alpha, Alphabet.Alphabet))
         data = test_seq.data
         self.assertEqual(type(data), type(""))
         string_rep = str(test_seq)

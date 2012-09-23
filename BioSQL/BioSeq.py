@@ -163,22 +163,22 @@ def _retrieve_seq(adaptor, primary_id):
     #We have no way of knowing if these sequences will use IUPAC
     #alphabets, and we certainly can't assume they are unambiguous!
     if moltype == "dna":
-        alphabet = Alphabet.generic_dna
+        alpha = Alphabet.generic_dna
     elif moltype == "rna":
-        alphabet = Alphabet.generic_rna
+        alpha = Alphabet.generic_rna
     elif moltype == "protein":
-        alphabet = Alphabet.generic_protein
+        alpha = Alphabet.generic_protein
     elif moltype == "unknown":
         #This is used in BioSQL/Loader.py and would happen
         #for any generic or nucleotide alphabets.
-        alphabet = Alphabet.single_letter_alphabet
+        alpha = Alphabet.single_letter_alphabet
     else:
         raise AssertionError("Unknown moltype: %s" % moltype)
 
     if have_seq:
-        return DBSeq(primary_id, adaptor, alphabet, 0, int(length))
+        return DBSeq(primary_id, adaptor, alpha, 0, int(length))
     else:
-        return UnknownSeq(length, alphabet)
+        return UnknownSeq(length, alpha)
 
 def _retrieve_dbxrefs(adaptor, primary_id):
     """Retrieve the database cross references for the sequence."""

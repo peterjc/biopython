@@ -593,13 +593,13 @@ class DatabaseLoader:
         
         # determine the string representation of the alphabet
         if isinstance(record.seq.alphabet, Alphabet.DNAAlphabet):
-            alphabet = "dna"
+            alpha = "dna"
         elif isinstance(record.seq.alphabet, Alphabet.RNAAlphabet):
-            alphabet = "rna"
+            alpha = "rna"
         elif isinstance(record.seq.alphabet, Alphabet.ProteinAlphabet):
-            alphabet = "protein"
+            alpha = "protein"
         else:
-            alphabet = "unknown"
+            alpha = "unknown"
 
         if isinstance(record.seq, UnknownSeq):
             seq_str = None
@@ -612,7 +612,7 @@ class DatabaseLoader:
         self.adaptor.execute(sql, (bioentry_id,
                                    len(record.seq),
                                    seq_str,
-                                   alphabet))
+                                   alpha))
 
     def _load_comment(self, record, bioentry_id):
         """Record a SeqRecord's annotated comment in the database (PRIVATE).
