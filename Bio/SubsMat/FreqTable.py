@@ -1,4 +1,4 @@
-from Bio import Alphabet
+from Bio import Alphabet as _alphabet
 COUNT = 1
 FREQ = 2
 ##################################################################
@@ -70,7 +70,7 @@ class FreqTable(dict):
         else:
             raise ValueError("bad dict_type")
         if not alphabet:
-            self.alphabet = Alphabet.Alphabet()
+            self.alphabet = _alphabet.Alphabet()
             self.alphabet.letters = self._alphabet_from_input()
 
 def read_count(f):

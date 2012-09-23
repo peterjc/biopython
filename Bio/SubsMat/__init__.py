@@ -115,9 +115,9 @@ import copy
 import math
 import warnings
 
-# BioPython imports
+# Biopython imports
 import Bio
-from Bio import Alphabet
+from Bio import Alphabet as _alphabet
 from Bio.SubsMat import FreqTable
 
 log = math.log
@@ -172,8 +172,8 @@ class SeqMat(dict):
           except ValueError:
               raise ValueError("Failed to store data in a dictionary")
       if alphabet == None:
-         alphabet = Alphabet.Alphabet()
-      assert Alphabet.generic_alphabet.contains(alphabet)
+         alphabet = _alphabet.Alphabet()
+      assert _alphabet.generic_alphabet.contains(alphabet)
       self.alphabet = alphabet
 
       # If passed alphabet is empty, use the letters in the matrix itself
