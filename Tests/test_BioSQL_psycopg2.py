@@ -8,7 +8,7 @@ import os
 from Bio import MissingExternalDependencyError
 from BioSQL import BioSeqDatabase
 
-from common_BioSQL import *
+from common_biosql import *
 
 ##################################
 # Start of user-editable section #

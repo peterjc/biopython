@@ -9,7 +9,7 @@ import tempfile
 from Bio import MissingExternalDependencyError
 from BioSQL import BioSeqDatabase
 
-from common_BioSQL import *
+from common_biosql import *
 
 # Constants for the database driver
 DBHOST = 'localhost'
