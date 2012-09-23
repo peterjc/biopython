@@ -114,7 +114,7 @@ def hack_the_imports(old_text, module_name, module_base):
     m = module_name
     b = module_base
     TEMPLATES = [",%s.", "=%s.", "[%s.", "(%s ", "(%s.", " %s.", " %s)", " %s,",
-                 " return %s.", "= %s."]
+                 " return %s.", "= %s.", "getattr(%s,"]
     #Using " %s " triggers false positives, e.g in strings
 
     global OLD_NAMES
