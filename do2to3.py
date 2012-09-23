@@ -287,6 +287,14 @@ import IsoelectricPoint
 """import protparamdata
 import isoelectricpoint
 """),
+    ("""import warnings
+from Bio import MissingExternalDependencyError
+raise MissingExternalDependencyError("Opps")
+""", "Tests", "Tests",
+"""import warnings
+from bio import MissingExternalDependencyError
+raise MissingExternalDependencyError("Opps")
+"""),
 ]
 
 pending_tests = [
