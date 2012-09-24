@@ -31,7 +31,8 @@ def parse(handle):
         if not line: continue # Ignore empty lines
         c = line[0]
         if c=='^':
-            if rec: yield rec
+            if rec:
+                yield rec
             rec = Record.Record()
             rec.entity_type, rec.entity_id = _read_key_value(line)
         elif c=='!':
@@ -56,4 +57,5 @@ def parse(handle):
         else:
             row = line.split("\t")
             rec.table_rows.append(row)
-    yield rec
+    if rec:
+        yield rec
