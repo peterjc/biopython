@@ -25,15 +25,15 @@ def _read_key_value(line):
 
 
 def parse(handle):
-    record = None
+    rec = None
     for line in handle:
         line = line.strip('\n').strip('\r')
         if not line: continue # Ignore empty lines
         c = line[0]
         if c=='^':
-            if record: yield record
-            record = Record.Record()
-            record.entity_type, record.entity_id = _read_key_value(line)
+            if rec: yield rec
+            rec = Record.Record()
+            rec.entity_type, rec.entity_id = _read_key_value(line)
         elif c=='!':
             if line in ('!Sample_table_begin',
                         '!Sample_table_end',
@@ -41,19 +41,19 @@ def parse(handle):
                         '!Platform_table_end'):
                 continue
             key, value = _read_key_value(line)
-            if key in record.entity_attributes:
-                if type(record.entity_attributes[key])==list:
-                    record.entity_attributes[key].append(value)
+            if key in rec.entity_attributes:
+                if type(rec.entity_attributes[key])==list:
+                    rec.entity_attributes[key].append(value)
                 else:
-                    existing = record.entity_attributes[key]
-                    record.entity_attributes[key] = [existing, value]
+                    existing = rec.entity_attributes[key]
+                    rec.entity_attributes[key] = [existing, value]
             else:
-                record.entity_attributes[key] = value
+                rec.entity_attributes[key] = value
         elif c=='#':
             key, value = _read_key_value(line)
-            assert key not in record.col_defs
-            record.col_defs[key] = value
+            assert key not in rec.col_defs
+            rec.col_defs[key] = value
         else:
             row = line.split("\t")
-            record.table_rows.append(row)
-    yield record
+            rec.table_rows.append(row)
+    yield rec
