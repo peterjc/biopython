@@ -54,8 +54,8 @@ class Record(object):
         if len(columns) != 6:
             raise ValueError("I don't understand the format of %s" % line)
         
-        self.sid, pdbid, residues, self.sccs, self.sunid, hierarchy = columns
-        self.residues = Residues.Residues(residues)
+        self.sid, pdbid, res, self.sccs, self.sunid, hierarchy = columns
+        self.residues = Residues.Residues(res)
         self.residues.pdbid = pdbid
         self.sunid = int(self.sunid)
         
