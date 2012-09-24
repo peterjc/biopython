@@ -53,6 +53,7 @@ from io import StringIO
 
 #Third idea - brute force hackery, see OLD_NAMES list
 OLD_NAMES = [] #Updated later!
+SHADOWED = ["Bio.PDB.PDBParser", "Bio.PDB.PDBIO", "Bio.PDB.Vector"]
 
 def strip_comment(text):
     if "#" in text:
@@ -117,6 +118,7 @@ def hack_the_imports(old_text, module_name, module_base):
                  " return %s.", "= %s.", "getattr(%s,"]
     #Using " %s " triggers false positives, e.g in strings
 
+    global SHADOWED
     global OLD_NAMES
     assert OLD_NAMES, "Namespace not loaded yet!"
 
@@ -171,7 +173,10 @@ def hack_the_imports(old_text, module_name, module_base):
                         name = name_as.split(" as ",1)[0].strip()
                     else:
                         name = name_as
-                    if base + "." + name in NAMES:
+                    if base + "." + name in SHADOWED:
+                        #Special case
+                        new_names.append(name_as)
+                    elif base + "." + name in NAMES:
                         if " as " in name_as:
                             new_names.append(name.lower() + " as " + name_as.split(" as ",1)[1].strip())
                         else:
@@ -239,7 +244,10 @@ def hack_the_imports(old_text, module_name, module_base):
                     name = name_as.split(" as ",1)[0].strip()
                 else:
                     name = name_as
-                if base + "." + name in NAMES:
+                if base + "." + name in SHADOWED:
+                    #leave it alone, special case
+                    new_names.append(name_as)
+                elif base + "." + name in NAMES:
                     if " as " in name_as:
                         new_names.append(name.lower() + " as " \
                                              + name_as.split(" as ",1)[1].strip())
@@ -295,22 +303,21 @@ raise MissingExternalDependencyError("Opps")
 from bio import MissingExternalDependencyError
 raise MissingExternalDependencyError("Opps")
 """),
-]
-
-pending_tests = [
-(
 #Next example is tricky - there is a Bio/PDB/PDBParser.py file
 #but the import below will actually get a class instead due to
 #the shadowing import line in Bio/PDB/__init__.py (NASTY!)
-"""from Bio.PDB import PDBParser
+    ("""from Bio.PDB import PDBParser, Vector, PDBIO
 parser = PDBParser()
 print dir(parser)
+v = Vector()
 """, "X,", "X",
-"""from bio.pdb import PDBParser
+"""from bio.pdb import PDBParser, Vector, PDBIO
 parser = PDBParser()
 print dir(parser)
+v = Vector()
 """),
 ]
+
 def test_the_hack():
     global conversion_tests
     for old, m, b, new in conversion_tests:
