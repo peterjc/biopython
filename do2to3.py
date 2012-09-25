@@ -460,6 +460,10 @@ def do_update(py2folder, py3folder, verbose=False):
                 #Do not make non-python filenames lowercase (e.g. DTD files)
                 if dirpath.startswith("Bio"):
                     new = os.path.join(py3folder, relpath.lower(), f)
+                elif "output" == relpath and py2folder.endswith("/Tests"):
+                    #The print and compare code expects the output filename
+                    #to match the input filename, e.g. test_SeqIO(.py)
+                    new = os.path.join(py3folder, relpath, f.lower())
                 else:
                     new = os.path.join(py3folder, relpath, f)
             #print("Converting %s --> %s and %s aka %s and %s --> %s" \
