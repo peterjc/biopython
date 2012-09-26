@@ -167,8 +167,8 @@ def stop_training(log_likelihood_change, num_iterations):
 print "Training with the Standard Trainer..."
 known_training_seq = Trainer.TrainingSequence(rolls, states)
 
-trainer = Trainer.KnownStateTrainer(standard_mm)
-trained_mm = trainer.train([known_training_seq])
+trainer_obj = Trainer.KnownStateTrainer(standard_mm)
+trained_mm = trainer_obj.train([known_training_seq])
 
 if VERBOSE:
     print trained_mm.transition_prob
@@ -185,8 +185,8 @@ if VERBOSE:
 print "Training with Baum-Welch..."
 training_seq = Trainer.TrainingSequence(rolls, Seq("", DiceTypeAlphabet()))
 
-trainer = Trainer.BaumWelchTrainer(baum_welch_mm)
-trained_mm = trainer.train([training_seq], stop_training)
+trainer_obj = Trainer.BaumWelchTrainer(baum_welch_mm)
+trained_mm = trainer_obj.train([training_seq], stop_training)
 
 if VERBOSE:
     print trained_mm.transition_prob
