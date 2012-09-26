@@ -260,6 +260,12 @@ def hack_the_imports(old_text, module_name, module_base):
                     new_names.append(name_as)
             h.write(line.split(" import ",1)[0].lower() \
                         + " import " + ", ".join(new_names) + "\n")
+        elif in_triple_quote:
+            #This should be doctest, could be doctest output
+            #print("Doctest special: %r, %r" % (core, doc_mapping))
+            if core in doc_mapping or core in OLD_NAMES:
+                line = line.replace(core, core.lower())
+            h.write(line)
         else:
             #Boring line; do we need to apply any import replacements?
             #Sorting to ensure do "SeqIO.UniprotIO" replacement before "SeqIO"
@@ -316,6 +322,24 @@ parser = PDBParser()
 print dir(parser)
 v = Vector()
 """),
+#Special case for doctests where print module name
+    ('''
+"""
+And now a doctest,
+
+>>> from Bio.bgzf import *
+>>> print(open.__module__)
+Bio.bgzf
+"""
+''', "X", "X", '''
+"""
+And now a doctest,
+
+>>> from bio.bgzf import *
+>>> print(open.__module__)
+bio.bgzf
+"""
+'''),
 ]
 
 def test_the_hack():
