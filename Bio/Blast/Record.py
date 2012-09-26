@@ -231,11 +231,11 @@ class MultipleAlignment(object):
                 seq_parts[n] += seq
                 n += 1
 
-        generic = Generic.Alignment(alphabet)
+        align = Generic.Alignment(alphabet)
         for (name,seq) in zip(seq_names,seq_parts):
-            generic.add_sequence(name, seq)
+            align.add_sequence(name, seq)
 
-        return generic
+        return align
 
 class Round(object):
     """Holds information from a PSI-BLAST round.
