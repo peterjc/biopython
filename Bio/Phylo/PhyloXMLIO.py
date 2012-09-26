@@ -21,6 +21,7 @@ __docformat__ = "restructuredtext en"
 import sys
 
 from Bio.Phylo import PhyloXML as PX
+from Bio.Phylo import BaseTree
 
 if (3, 0, 0) <= sys.version_info[:3] <= (3, 1, 3):
     # Workaround for cElementTree regression in python 3.0--3.1.3
@@ -103,17 +104,17 @@ def write(obj, file, encoding='utf-8', indent=True):
             return tree
         if isinstance(tree, PX.Clade):
             return tree.to_phylogeny()
-        if isinstance(tree, PX.BaseTree.Tree):
+        if isinstance(tree, BaseTree.Tree):
             return PX.Phylogeny.from_tree(tree)
-        if isinstance(tree, PX.BaseTree.Clade):
-            return PX.Phylogeny.from_tree(PX.BaseTree.Tree(root=tree))
+        if isinstance(tree, BaseTree.Clade):
+            return PX.Phylogeny.from_tree(BaseTree.Tree(root=tree))
         else:
             raise ValueError("iterable must contain Tree or Clade types")
 
     if isinstance(obj, PX.Phyloxml):
         pass
-    elif (isinstance(obj, PX.BaseTree.Tree) or
-          isinstance(obj, PX.BaseTree.Clade)):
+    elif (isinstance(obj, BaseTree.Tree) or
+          isinstance(obj, BaseTree.Clade)):
         obj = fix_single(obj).to_phyloxml()
     elif hasattr(obj, '__iter__'):
         obj = PX.Phyloxml({}, phylogenies=(fix_single(t) for t in obj))
