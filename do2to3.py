@@ -105,28 +105,28 @@ def hack_file_import_lines(f):
     old = h.read()
     h.close()
 
-    new = hack_the_imports(old, m, b)
+    global OLD_NAMES, SHADOWED
+    new = hack_the_imports(old, m, b, OLD_NAMES, SHADOWED)
 
     h = open(f, "w")
     h.write(new)
     h.close()
 
-def hack_the_imports(old_text, module_name, module_base):
+def hack_the_imports(old_text, module_name, module_base,
+                     old_module_names, shadowed):
     m = module_name
     b = module_base
     TEMPLATES = [",%s.", "=%s.", "[%s.", "(%s ", "(%s.", " %s.", " %s)", " %s,",
                  " return %s.", "= %s.", "getattr(%s,"]
     #Using " %s " triggers false positives, e.g in strings
 
-    global SHADOWED
-    global OLD_NAMES
-    assert OLD_NAMES, "Namespace not loaded yet!"
+    assert old_module_names, "Namespace empty!"
 
     #Top level imports:
-    NAMES = list(OLD_NAMES)
+    NAMES = list(old_module_names)
     #Relative imports:
     #print("Adding any local imports in %s relative to %s" % (f, b))
-    for name in OLD_NAMES:
+    for name in old_module_names:
         if name.lower().startswith(b + "."):
             #print("Adding %s as a local import" % name)
             NAMES.append(name[len(b)+1:])
@@ -173,7 +173,7 @@ def hack_the_imports(old_text, module_name, module_base):
                         name = name_as.split(" as ",1)[0].strip()
                     else:
                         name = name_as
-                    if base + "." + name in SHADOWED:
+                    if base + "." + name in shadowed:
                         #Special case
                         new_names.append(name_as)
                     elif base + "." + name in NAMES:
@@ -244,7 +244,7 @@ def hack_the_imports(old_text, module_name, module_base):
                     name = name_as.split(" as ",1)[0].strip()
                 else:
                     name = name_as
-                if base + "." + name in SHADOWED:
+                if base + "." + name in shadowed:
                     #leave it alone, special case
                     new_names.append(name_as)
                 elif base + "." + name in NAMES:
@@ -345,7 +345,7 @@ bio.bgzf
 def test_the_hack():
     global conversion_tests
     for old, m, b, new in conversion_tests:
-        tmp = hack_the_imports(old, m, b)
+        tmp = hack_the_imports(old, m, b, OLD_NAMES, SHADOWED)
         if tmp != new:
             if tmp == old:
                 print("Test failed, wanted:\n\n%s\n->\n\n%s\nBut got no change!" \
