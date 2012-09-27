@@ -164,7 +164,7 @@ def stop_training(log_likelihood_change, num_iterations):
         return 0
 
 # -- Standard Training with known states
-print "Training with the Standard Trainer..."
+print "Training with the KnownStateTrainer..."
 known_training_seq = Trainer.TrainingSequence(rolls, states)
 
 trainer_obj = Trainer.KnownStateTrainer(standard_mm)
