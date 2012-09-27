@@ -13,7 +13,11 @@ import sys
 #This is a workaround to work with the test system
 #In any case the problem is with the test system
 for instance in sys.path:
-    test_path = os.path.join(instance, 'Bio', 'PopGen', 'SimCoal', 'data')
+    if sys.version_info[0] < 3:
+        test_path = os.path.join(instance, 'Bio', 'PopGen', 'SimCoal', 'data')
+    else:
+        #We adopted lower case module names with Python 3
+        test_path = os.path.join(instance, 'bio', 'popgen', 'simcoal', 'data')
     if os.access(test_path, os.F_OK):
         builtin_tpl_dir = test_path
         break
