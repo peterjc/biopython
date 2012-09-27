@@ -90,6 +90,8 @@ def hack_file_import_lines(f):
         m = f[:-12].split(os.path.sep)
     elif f.endswith(".py"):
         m = f[:-3].split(os.path.sep)
+    elif f.endswith("Tutorial.tex"):
+        m = ["X"]
     else:
         assert False, f
     if f.endswith("/__init__.py"):
@@ -139,7 +141,7 @@ def hack_the_imports(old_text, module_name, module_base,
 
     h = StringIO()
     in_triple_quote = False
-    for line in StringIO(old_text):
+    for i, line in enumerate(StringIO(old_text)):
         assert line.count('"""') <= 2, line
         core = strip_comment(line)
 
@@ -147,9 +149,18 @@ def hack_the_imports(old_text, module_name, module_base,
             in_triple_quote = not in_triple_quote
             h.write(line)
             #Start/end/one line docstring => clear doc_mapping,
-            doc_mapping = set()
+            #doc_mapping = set()
+        elif core.startswith(r"\begin{verbatim}"):
+            assert not in_triple_quote, (i, line)
+            #print(i, doc_mapping)
+            in_triple_quote = True
+            h.write(line)
+        elif core.startswith(r"\end{verbatim}"):
+            assert in_triple_quote, (i, line)
+            in_triple_quote = False
+            h.write(line)
         elif core.startswith(">>> ") or core.startswith("... "):
-            assert in_triple_quote
+            assert in_triple_quote, line
             core = core[4:]
             #Will need to update rest of this docstring post import...
             if re_plain_import.match(core):
@@ -362,6 +373,8 @@ def run2to3(filenames):
         print("Converting %s" % filename)
         #First, our evil hackery of the import lines:
         hack_file_import_lines(filename)
+        if filename.endswith(".tex"):
+            continue
         #TODO - Configurable options per file?
         try:
             #Want to capture stderr (otherwise too noisy)
@@ -509,7 +522,7 @@ def do_update(py2folder, py3folder, verbose=False):
                    "Modified time not copied! %0.8f vs %0.8f, diff %f" \
                    % (os.stat(old).st_mtime, os.stat(new).st_mtime,
                       abs(os.stat(old).st_mtime-os.stat(new).st_mtime))
-            if f.endswith(".py"):
+            if f.endswith(".py") or f.endswith("Tutorial.tex"):
                 #Also run 2to3 on it
                 to_convert.append(new)
                 if verbose: print("Will convert %s" % new)
