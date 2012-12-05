@@ -455,14 +455,25 @@ class CircularDrawer(AbstractDrawer):
                            fontSize=feature.label_size,
                            fillColor=feature.label_color)
             labelgroup = Group(label)
-            label_angle = startangle + 0.5 * pi     # Make text radial
-            sinval, cosval = startsin, startcos
+            #Use same label_position options as linear drawer for consistency:
             if feature.strand != -1:
                 # Feature is on top, or covers both strands
-                if startangle < pi: # Turn text round and anchor end to inner radius
+                if feature.label_position in ('start', "5'", 'left'):
+                    label_angle = startangle
+                    sinval, cosval = startsin, startcos
+                elif feature.label_position in ('middle', 'center', 'centre'):
+                    label_angle = midangle
+                    sinval, cosval = midsin, midcos
+                else:
+                    label_angle = endangle
                     sinval, cosval = endsin, endcos
-                    label_angle = endangle - 0.5 * pi
+                # Now add/remove pi/2 (right angle) to make text radial
+                if label_angle < pi:
+                    # Turn text round and anchor end to inner radius
+                    label_angle = label_angle - 0.5 * pi
                     labelgroup.contents[0].textAnchor = 'end'
+                else:
+                    label_angle = label_angle + 0.5 * pi
                 pos = self.xcenter+top*sinval
                 coslabel = cos(label_angle)
                 sinlabel = sin(label_angle)
@@ -470,10 +481,21 @@ class CircularDrawer(AbstractDrawer):
                                         pos, self.ycenter+top*cosval)
             else:
                 # Feature on bottom strand
-                if startangle < pi: # Turn text round and anchor end to inner radius
+                if feature.label_position in ('start', "5'", 'left'):
+                    label_angle = endangle
                     sinval, cosval = endsin, endcos
-                    label_angle = endangle - 0.5 * pi
+                elif feature.label_position in ('middle', 'center', 'centre'):
+                    label_angle = midangle
+                    sinval, cosval = midsin, midcos
                 else:
+                    label_angle = startangle
+                    sinval, cosval = startsin, startcos
+                # Now add/remove pi/2 (right angle) to make text radial
+                if label_angle < pi:
+                    # Turn text round and anchor end to inner radius
+                    label_angle = label_angle - 0.5 * pi
+                else:
+                    label_angle = label_angle + 0.5 * pi
                     labelgroup.contents[0].textAnchor = 'end'
                 pos = self.xcenter+btm*sinval
                 coslabel = cos(label_angle)
