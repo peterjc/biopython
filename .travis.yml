@@ -27,6 +27,9 @@ before_install:
   - "if [[ $MSQL == 'yes' ]]; then pip install mysql-python --use-mirrors 2>&1 | tail -n 2; fi"
 
 install:
+#Recently TravisCI builds have been failing with a path problem of some kind,
+  - pwd
+  - ls -l
   - "/usr/bin/yes | $PYTHON_EXE setup.py install 2>&1 | tail -n 2"
 
 before_script:
