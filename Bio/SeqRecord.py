@@ -105,6 +105,8 @@ class SeqRecord(object):
                      A typical use would be to hold a list of integers
                      representing sequencing quality scores, or a string
                      representing the secondary structure.
+     - location    - A (compound) FeatureLocation which can be used to
+                     describe which part of the parent sequence this is from.
 
     You will typically use Bio.SeqIO to read in sequences from files as
     SeqRecord objects.  However, you may want to create your own SeqRecord
@@ -145,10 +147,10 @@ class SeqRecord(object):
     MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF
 
     """
-    def __init__(self, seq, id = "<unknown id>", name = "<unknown name>",
-                 description = "<unknown description>", dbxrefs = None,
-                 features = None, annotations = None,
-                 letter_annotations = None):
+    def __init__(self, seq, id="<unknown id>", name="<unknown name>",
+                 description="<unknown description>", dbxrefs=None,
+                 features=None, annotations=None,
+                 letter_annotations = None, location=None):
         """Create a SeqRecord.
 
         Arguments:
@@ -162,6 +164,7 @@ class SeqRecord(object):
          - letter_annotations - Dictionary of per-letter-annotations, values
                                 should be strings, list or tuples of the same
                                 length as the full sequence.
+         - location    - Optional (FeatureLocation or CompoundLocation)
 
         You will typically use Bio.SeqIO to read in sequences from files as
         SeqRecord objects.  However, you may want to create your own SeqRecord
@@ -226,6 +229,19 @@ class SeqRecord(object):
         elif not isinstance(features, list):
             raise TypeError("features argument should be a list (of SeqFeature objects)")
         self.features = features
+
+        if location is not None:
+            l = len(seq)
+            if l != len(location):
+                try:
+                    #If the gap char is not set this can fail!
+                    l = len(seq.ungap())
+                except:
+                    pass
+                if l != len(location):
+                    raise ValueError("len(location) = %i != %i, the (ungapped) sequence length.",
+                                     len(location), l)
+        self.location = location
 
     #TODO - Just make this a read only property?
     def _set_per_letter_annotations(self, value):
@@ -454,6 +470,11 @@ class SeqRecord(object):
                     if start <= f.location.nofuzzy_start \
                     and f.location.nofuzzy_end <= stop:
                         answer.features.append(f._shift(-start))
+                #TODO - Can we slice the location too?
+                #if self.location is not None and len(self.location)==parent_length:
+                #    #Good, nothing nasty like gapped sequence to worry about!
+                #    #If FeatureLocation and CompoundLocation did slicing, then:
+                #    answer.location = self.location[index]
 
             #Slice all the values to match the sliced sequence
             #(this should also work with strides, even negative strides):
@@ -585,6 +606,8 @@ class SeqRecord(object):
         lines = []
         if self.id:
             lines.append("ID: %s" % self.id)
+        if self.location is not None:
+            lines.append("Location: %s" % self.location)
         if self.name:
             lines.append("Name: %s" % self.name)
         if self.description:
@@ -629,8 +652,8 @@ class SeqRecord(object):
         SeqRecord(seq=Seq('MASRGVNKVILVGNLGQDPEVRYMPNGGAVANITLATSESWRDKATGEMKEQTE...IPF', ProteinAlphabet()), id='NP_418483.1', name='b4059', description='ssDNA-binding protein', dbxrefs=['ASAP:13298', 'GI:16131885', 'GeneID:948570'])
 
         Note that long sequences are shown truncated. Also note that any
-        annotations, letter_annotations and features are not shown (as they
-        would lead to a very long string).
+        annotations, letter_annotations, features, etc are not shown (as
+        they would lead to a very long string).
         """
         return self.__class__.__name__ \
          + "(seq=%s, id=%s, name=%s, description=%s, dbxrefs=%s)" \
@@ -804,6 +827,7 @@ class SeqRecord(object):
         if not isinstance(other, SeqRecord):
             #Assume it is a string or a Seq.
             #Note can't transfer any per-letter-annotations
+            #nor the location
             return SeqRecord(self.seq + other,
                              id = self.id, name = self.name,
                              description = self.description,
@@ -836,6 +860,8 @@ class SeqRecord(object):
         for k, v in self.letter_annotations.iteritems():
             if k in other.letter_annotations:
                 answer.letter_annotations[k] = v + other.letter_annotations[k]
+        if self.location is not None and other.location is not None:
+            answer.location = self.location + other.location
         return answer
 
     def __radd__(self, other):
@@ -865,6 +891,7 @@ class SeqRecord(object):
                                "the other SeqRecord being added!")
         #Assume it is a string or a Seq.
         #Note can't transfer any per-letter-annotations
+        #nor location
         offset = len(other)
         return SeqRecord(other + self.seq,
                          id = self.id, name = self.name,
@@ -900,13 +927,18 @@ class SeqRecord(object):
         "#$%&'()
         <BLANKLINE>
         """
+        if self.location is None:
+            loc = None
+        else:
+            loc = self.location.copy()
         return SeqRecord(self.seq.upper(),
                          id = self.id, name = self.name,
                          description = self.description,
                          dbxrefs = self.dbxrefs[:],
                          features = self.features[:],
                          annotations = self.annotations.copy(),
-                         letter_annotations=self.letter_annotations.copy())
+                         letter_annotations=self.letter_annotations.copy(),
+                         location = loc)
 
     def lower(self):
         """Returns a copy of the record with a lower case sequence.
@@ -940,13 +972,18 @@ class SeqRecord(object):
         >>> old.dbxrefs == new.dbxrefs
         True
         """
+        if self.location is None:
+            loc = None
+        else:
+            loc = self.location.copy()
         return SeqRecord(self.seq.lower(),
                          id = self.id, name = self.name,
                          description = self.description,
                          dbxrefs = self.dbxrefs[:],
                          features = self.features[:],
                          annotations = self.annotations.copy(),
-                         letter_annotations=self.letter_annotations.copy())
+                         letter_annotations=self.letter_annotations.copy(),
+                         location = loc)
 
     def reverse_complement(self, id=False, name=False, description=False,
                            features=True, annotations=False,
@@ -1121,6 +1158,7 @@ class SeqRecord(object):
             #Copy the old per letter annotations, reversing them
             for key, value in self.letter_annotations.iteritems():
                 answer._per_letter_annotations[key] = value[::-1]
+        #We can invert the location, but only if we know the parent seq length.
         return answer
 
 

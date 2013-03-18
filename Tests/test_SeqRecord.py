@@ -10,7 +10,7 @@ and confirms they are consistent using our different parsers.
 """
 import unittest
 from Bio import SeqIO
-from Bio.Alphabet import generic_dna, generic_rna, generic_protein
+from Bio.Alphabet import generic_dna, generic_rna, generic_protein, Gapped
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqFeature import SeqFeature, FeatureLocation, ExactPosition
@@ -60,6 +60,30 @@ class SeqRecordCreation(unittest.TestCase):
             self.assertTrue(False, "Wrong length letter_annotations should fail!")
         except (TypeError, ValueError), e:
             pass
+
+    def test_location(self):
+        rec = SeqRecord(Seq("ACGT", generic_dna), id="Test",
+                        location=FeatureLocation(10,14))
+        self.assertEqual(len(rec), len(rec.location))
+        rc = rec.reverse_complement()
+        self.assertTrue(rc.location is None)
+
+        s = Seq("A-CGT", Gapped(generic_dna))
+        self.assertEqual(5, len(s))
+        self.assertEqual(4, len(s.ungap()))
+        rec = SeqRecord(s, id="Test", location=FeatureLocation(10,14))
+        self.assertEqual(len(rec.seq.ungap()), len(rec.location))
+        rc = rec.reverse_complement()
+        self.assertTrue(rc.location is None)
+
+        try:
+            rec = SeqRecord(Seq("ACGT", generic_dna), id="Test",
+                            location=FeatureLocation(10,15))
+            self.assertTrue(False, "Sequence and location length mismatch should fail!")
+        except ValueError:
+            pass
+
+
 
 
 class SeqRecordMethods(unittest.TestCase):
