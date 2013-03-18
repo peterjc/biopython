@@ -642,6 +642,12 @@ class FeatureLocation(object):
         self.ref = ref
         self.ref_db = ref_db
 
+    def copy(self):
+        """Returns a new FeatureLocation object with the same values."""
+        #TODO - Copy the start and end position objects too?
+        return FeatureLocation(self.start, self.end,
+                               self.strand, self.ref, self.ref_db)
+
     def _get_strand(self):
         return self._strand
 
@@ -991,6 +997,10 @@ class CompoundLocation(object):
                                  "FeatureLocation objects, not %s" % loc.__class__)
         if len(self.parts) < 2:
             raise ValueError("CompoundLocation should have at least 2 parts")
+
+    def copy():
+        """Returns a new CompoundLocation object with the same values"""
+        return CompoundLocation([loc.copy() for loc in self.parts], self.operator)
 
     def __str__(self):
         """Returns a representation of the location (with python counting)."""
