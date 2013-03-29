@@ -596,7 +596,10 @@ def _load_next_bam_read(h, references, required_flag, excluded_flag):
                           raw_seq, raw_qual, raw_tags)
 
 def ParseSamHeader(text):
-    """Parse the SAM plain text header into a two-level dictionary."""
+    """Parse the SAM plain text header into a two-level dictionary.
+
+    Note comment entries are stored as a list, not a dictionary.
+    """
     d1 = dict()
     for line in text.split("\n"):
         if not line.strip():
@@ -604,6 +607,14 @@ def ParseSamHeader(text):
         assert line[0] == "@"
         assert line[3] == "\t"
         k1 = line[1:3]
+        if k1 == "CO":
+            #Comments are not tab separated key:value entries
+            #TODO - Compare how pysam stores the comment lines
+            try:
+                d1["CO"].append(line[4:].rstrip())
+            except KeyError:
+                d1["CO"] = [line[4:].rstrip()]
+            continue
         d2 = dict()
         for part in line[4:].rstrip().split("\t"):
             assert part[2] == ":", "Bad header line: %r" % line
