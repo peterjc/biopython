@@ -1723,7 +1723,12 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
         handle.write(read._as_bam(refs))
         count += 1
     handle.flush() #Important with BGZF as it buffers data
-    #BgzfWriter will write empty BGZF EOF marker on close
+    if gzipped:
+        #BgzfWriter would write empty BGZF EOF marker on close, but that
+        #doesn't get called (since the caller has only got the raw handle).
+        #Since we didn't open the handle, seems wrong to close it. So:
+        handle._handle.write(bgzf._bgzf_eof)
+        handle._handle.flush()
     return count
 
 def _check_header_text(text):
