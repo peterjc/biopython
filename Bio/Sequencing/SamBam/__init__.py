@@ -1,4 +1,4 @@
-# Copyright 2010-2012 by Peter Cock.
+# Copyright 2010-2013 by Peter Cock.
 # All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
@@ -606,9 +606,9 @@ def ParseSamHeader(text):
         k1 = line[1:3]
         d2 = dict()
         for part in line[4:].rstrip().split("\t"):
-            assert part[2] == ":"
+            assert part[2] == ":", "Bad header line: %r" % line
             k, v = part.split(":",1)
-            assert len(k)==2
+            assert len(k)==2, "Bad header line: %r" % line
             if k1=="SQ" and k=="LN":
                 #Currently the only case need to cast
                 v = int(v)
