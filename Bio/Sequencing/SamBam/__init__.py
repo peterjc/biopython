@@ -1137,8 +1137,12 @@ class SamBamRead(object):
             cigar = self._binary_cigar #See BamRead subclass
         except AttributeError:
             if self.cigar:
+                ops = len(self.cigar)
+                if ops > 65535:
+                    raise ValueError("CIGAR overflow, read %r has %i CIGAR operators, but "
+                                     "BAM only allows 2**16 - 1 = 65535." % (self.rname, ops))
                 cigar = [op_len<<4|op for op, op_len in self.cigar]
-                cigar = struct.pack("<%iI" % len(cigar), *cigar)
+                cigar = struct.pack("<%iI" % ops, *cigar)
             else:
                 cigar = _empty_bytes_string
         flag_nc = self.flag << 16 | (len(cigar)//4)
