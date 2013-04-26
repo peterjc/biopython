@@ -70,6 +70,9 @@ for ref, ref_len in references:
             flag = 0x1 + 0x4 + 0x80 #Part 2 unmapped, partner is mapped
             h.write("%s\t%i\t%s\t%i\t255\t%s\t*\t0\t0\t%s\t*\n" \
                     % (name, flag, ref, start, "*", seq))
+        #Now write a placed unmapped read with no CIGAR
+        h.write("%s\t%i\t%s\t%i\t255\t%s\t*\t0\t0\t%s\t*\n" \
+                    % ("%s-placed-%i" % (ref, start), 0x4, ref, start, "*", "*"))
     print "%s len %i, %i reads in %i bins:" % (ref, ref_len, count, len(bins))
     print "(bins %i, ..., %i)" % (min(bins), max(bins))
 
