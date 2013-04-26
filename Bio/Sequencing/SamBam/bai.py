@@ -82,9 +82,9 @@ def _test_bai(handle):
     >>> handle = open("SamBam/bins.bam.bai", "rb")
     >>> _test_bai(handle)
     3 references
-    1 bins, 1 linear baby-bins, 194 reads mapped, 42 unmapped
-    5 bins, 4 linear baby-bins, 684 reads mapped, 287 unmapped
-    73 bins, 64 linear baby-bins, 10196 reads mapped, 5043 unmapped
+    32768 bins, 1 linear baby-bins, 194 reads mapped, 65581 unmapped
+    32769 bins, 4 linear baby-bins, 684 reads mapped, 65826 unmapped
+    32777 bins, 64 linear baby-bins, 10196 reads mapped, 70582 unmapped
     12 unmapped unplaced reads
     >>> handle.close()
 
