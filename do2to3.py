@@ -1,13 +1,17 @@
 """Helper script for building and installing Biopython on Python 3.
 
+We are moving towards a single code base where all our files are valid under
+both Python 2 and 3 at the same time, but for now we develop under Python 2
+and run the 2to3 converter on our code at install time.
+
 Note that we can't just use distutils.command.build_py function build_py_2to3
 in setup.py since (as far as I can see) that does not allow us to alter the
 2to3 options. In particular, we need to turn off the long fixer for some of
 our files.
 
 This code is intended to be called from setup.py automatically under Python 3,
-and is not intended for end users. The basic idea follows the approach taken
-by NumPy with their setup.py file calling tools/py3tool.py to do the 2to3
+and is not intended for end users. The basic idea follows the approach initially
+taken by NumPy with their setup.py file calling tools/py3tool.py to do the 2to3
 conversion automatically.
 
 This calls the lib2to3 library functions to convert the Biopython source code
@@ -31,6 +35,25 @@ import os
 import time
 import lib2to3.main
 from io import StringIO
+
+DUAL = "# This file targets both Python 2 and Python 3 at the same time"
+MONO = "# TODO - Targets Python 2 only (use 2to3 to run under Python 3)"
+
+def should_run2to3(filename):
+    handle = open(filename)
+    lines = [handle.readline().strip() for i in range(20)]
+    handle.close()
+    if DUAL in lines:
+        if MONO in lines:
+            raise RuntimeError("%s contains both dual and 2to3 markers" \
+                               % filename)
+        #print("Note dual coding file %r" % filename)
+        return False
+    elif MONO in lines:
+        return True
+    else:
+        #print("WARNING - no 2to3 declaration in %r" % filename)
+        return True # TODO - Long term assume dual
 
 
 def run2to3(filenames):
@@ -151,7 +174,7 @@ def do_update(py2folder, py3folder, verbose=False):
                    "Modified time not copied! %0.8f vs %0.8f, diff %f" \
                    % (os.stat(old).st_mtime, os.stat(new).st_mtime,
                       abs(os.stat(old).st_mtime - os.stat(new).st_mtime))
-            if f.endswith(".py"):
+            if f.endswith(".py") and should_run2to3(old):
                 #Also run 2to3 on it
                 to_convert.append(new)
                 if verbose:
