@@ -1,3 +1,4 @@
+# This file targets both Python 2 and Python 3 at the same time
 """
 A whole bunch of substitution matrices for use in alignments, etc.
 
@@ -5,6 +6,7 @@ The info on this page was obtained from:
     http://www.embl-heidelberg.de/~vogt/matrices/mlist1.html
 and was extracted using the code in 'get_matrices.py.'
 """
+
 # a list of all available substitution matrices
 available_matrices = ['benner6', 'benner22', 'benner74', 'blosum100',
                       'blosum30', 'blosum35', 'blosum40', 'blosum45',

@@ -4,6 +4,8 @@
 # as part of this package.
 #
 # NOTE - This file has been split in two as a work arround for Jython JVM limits.
+#
+# This file targets both Python 2 and Python 3 at the same time
 
 import os
 import unittest

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+#
+# This file targets both Python 2 and Python 3 at the same time
+
 """Tests HotRand.
 """
 # standard library

@@ -1,6 +1,8 @@
 # Additional protein alphabets used in the SCOP database and PDB files.
 #
 # See Bio.SCOP for more information about SCOP and Biopython's SCOP module.
+#
+# This file targets both Python 2 and Python 3 at the same time
 
 protein_letters_3to1 = {
     '00C':'C','01W':'X','02K':'A','03Y':'C','07O':'C',

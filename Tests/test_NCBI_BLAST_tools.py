@@ -6,6 +6,8 @@
 # This unit test attempts to locate the blastall executable and the nr
 # database, and if it finds them then do some standalone blast searches
 # using Bio.Blast.NCBIStandalone to call the command line tool.
+#
+# This file targets both Python 2 and Python 3 at the same time
 
 import os
 import sys

@@ -1,3 +1,5 @@
+# This file targets both Python 2 and Python 3 at the same time
+
 import unittest
 
 from Bio.Sequencing import Ace
