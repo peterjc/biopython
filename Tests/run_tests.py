@@ -38,7 +38,11 @@ import doctest
 import distutils.util
 import gc
 from io import BytesIO
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    #e.g. Python 3
+    from io import StringIO
 
 
 def is_pypy():
