@@ -2,6 +2,8 @@
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
+#
+# This file targets both Python 2 and Python 3 at the same time
 
 """Additional unit tests for Bio.SeqIO.QualityIO (covering FASTQ and QUAL)."""
 
@@ -707,7 +709,7 @@ class MappingTests(unittest.TestCase):
         """Mapping check for FASTQ Illumina (0 to 62) to Sanger (0 to 62)"""
         seq = "N"*63
         qual = "".join(chr(64+q) for q in range(0,63))
-        expected_phred = range(63)
+        expected_phred = list(range(63))
         in_handle = StringIO("@Test\n%s\n+\n%s" % (seq,qual))
         out_handle = StringIO()
         SeqIO.write(SeqIO.parse(in_handle, "fastq-illumina"),
