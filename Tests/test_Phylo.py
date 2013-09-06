@@ -2,6 +2,8 @@
 # This code is part of the Biopython distribution and governed by its
 # license. Please see the LICENSE file that should have been included
 # as part of this package.
+#
+# This file targets both Python 2 and Python 3 at the same time
 
 """Unit tests for the Bio.Phylo module."""
 
@@ -165,8 +167,8 @@ class TreeTests(unittest.TestCase):
             # Root is bifurcating
             self.assertEqual(len(tree.root.clades), 2)
             # Deepest tips under each child of the root are equally deep
-            deep_dist_0 = max(tree.clade[0].depths().itervalues())
-            deep_dist_1 = max(tree.clade[1].depths().itervalues())
+            deep_dist_0 = max(tree.clade[0].depths().values())
+            deep_dist_1 = max(tree.clade[1].depths().values())
             self.assertAlmostEqual(deep_dist_0, deep_dist_1)
 
     # Magic method
