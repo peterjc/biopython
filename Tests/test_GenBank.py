@@ -3,10 +3,7 @@
 """
 # standard library
 import os
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
+from Bio._py3k import StringIO
 import warnings
 
 from Bio import BiopythonParserWarning
