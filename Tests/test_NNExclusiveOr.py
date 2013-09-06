@@ -1,8 +1,12 @@
 #!/usr/bin/env python
+#
+# This file targets both Python 2 and Python 3 at the same time
+
 """Test function to teach the neural network an XOR function.
 
 This is a very basic test of Neural Network functionality.
 """
+
 # Neural Network code we'll be using
 from Bio.NeuralNetwork.Training import TrainingExample
 from Bio.NeuralNetwork.BackPropagation import Layer
@@ -52,10 +56,9 @@ def stopping_criteria(num_iterations, validation_error, training_error):
     """
     if num_iterations % 100 == 0:
         if VERBOSE:
-            print "error:", validation_error
+            print("error: %s" %  validation_error)
     if num_iterations >= 2000:
-        return 1
-
-    return 0
+        return True
+    return False
 
 main()

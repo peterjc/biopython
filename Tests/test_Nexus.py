@@ -1,3 +1,5 @@
+# This file targets both Python 2 and Python 3 at the same time
+
 import os.path
 import unittest
 import tempfile
@@ -113,7 +115,7 @@ class NexusTest1(unittest.TestCase):
              "three": [16, 17, 18, 19, 20, 21, 22, 23],
              "two":   [8, 9, 10, 11, 12, 13, 14, 15],
             })
-        self.assertEqual(n.taxpartitions.keys(), ['taxpart'])
+        self.assertEqual(list(n.taxpartitions.keys()), ['taxpart'])
         self.assertEqual(n.taxpartitions['taxpart'],
             {"badnames":  ["isn'that [a] strange name?",
                            'one should be punished, for (that)!',
@@ -187,7 +189,7 @@ class NexusTest1(unittest.TestCase):
                                                         'c': [1]})
         self.assertEqual(nf1.charpartitions['part'], {'one': [0, 1, 2, 3]})
 
-        self.assertEqual(nf1.taxpartitions.keys(), ['taxpart'])
+        self.assertEqual(list(nf1.taxpartitions.keys()), ['taxpart'])
         self.assertEqual(nf1.taxpartitions['taxpart'],
             {"badnames":  ["isn'that [a] strange name?",
                            'one should be punished, for (that)!',
@@ -198,7 +200,7 @@ class NexusTest1(unittest.TestCase):
         f2=tempfile.NamedTemporaryFile("w+")
         n.write_nexus_data(f2,
                            delete=['t2_the_name'],
-                           exclude=range(3,40,4))
+                           exclude=list(range(3,40,4)))
         f2.seek(0)
         nf2=Nexus.Nexus(f2)
         self.assertEqual(os.path.normpath(nf2.filename),
@@ -283,7 +285,7 @@ class NexusTest1(unittest.TestCase):
              "three": [12, 13, 14, 15, 16, 17],
              "two":   [6, 7, 8, 9, 10, 11],
             })
-        self.assertEqual(nf2.taxpartitions.keys(), ['taxpart'])
+        self.assertEqual(list(nf2.taxpartitions.keys()), ['taxpart'])
         self.assertEqual(nf2.taxpartitions['taxpart'],
             {"badnames":  ["isn'that [a] strange name?",
                            'one should be punished, for (that)!',

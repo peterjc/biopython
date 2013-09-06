@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+#
+# This file targets both Python 2 and Python 3 at the same time
+
 """Test the GenBank parser and make sure everything is working smoothly.
 """
 # standard library
@@ -77,8 +80,7 @@ for parser in all_parsers:
                 print("Name: %s" % cur_record.name)
                 print("Description %s" % cur_record.description)
                 print("Annotations***")
-                ann_keys = cur_record.annotations.keys()
-                ann_keys.sort()
+                ann_keys = sorted(cur_record.annotations.keys())
                 for ann_key in ann_keys:
                     if ann_key != 'references':
                         print("Key: %s" % ann_key)

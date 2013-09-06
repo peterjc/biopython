@@ -1,8 +1,13 @@
+# This file targets both Python 2 and Python 3 at the same time
+
 from Bio import FSSP
 from Bio.FSSP import FSSPTools
 import sys
 import os
-import cPickle
+# try:
+#     import cPickle as pickle
+# except ImportError:
+#     import pickle
 
 test_file = os.path.join('FSSP', '1cnv.fssp')
 f = sys.stdout
@@ -26,13 +31,12 @@ f.write("...Done\n")
 # sum_ge_15, align_ge_15 = FSSPTools.filter(sum_rec, align_rec, 'pID', 15,100)
 
 # f.write("\nnumber of records filtered in: %d\n" % len(sum_ge_15))
-# k = sum_ge_15.keys()
-# k.sort()
+# k = sorted(sum_ge_15.keys())
 # f.write("\nRecords filtered in %s\n" % k)
 # Pickling takes too long.. remove from test.
 # f.write("\nLet's Pickle this\n")
 # dump_file = os.path.join('FSSP', 'mydump.pik')
-# cPickle.dump((head_rec, sum_rec, align_rec),open(dump_file, 'w'))
+# pickle.dump((head_rec, sum_rec, align_rec),open(dump_file, 'w'))
 
 f.write("\nFilter by name\n")
 name_list = ['2hvm0', '1hvq0', '1nar0', '2ebn0']
@@ -40,13 +44,11 @@ f.write("\nname list %s\n" % str(name_list))
 sum_newnames, align_newnames = FSSPTools.name_filter(sum_rec, align_rec,
                                                      name_list)
 
-ks = sum_newnames.keys()
-ks.sort()
+ks = sorted(sum_newnames.keys())
 for key in ks:
     f.write("%s : %s\n" % (key, sum_newnames[key]))
 
 dict = align_newnames['0P168'].pos_align_dict
-ks = dict.keys()
-ks.sort()
+ks = sorted(dict.keys())
 for key in ks:
     f.write("%s : %s\n" % (key, dict[key]))

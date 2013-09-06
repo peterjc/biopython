@@ -2,6 +2,8 @@
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
+#
+# This file targets both Python 2 and Python 3 at the same time
 
 # python unittest framework
 import unittest
@@ -455,13 +457,16 @@ class CrystalTestCase(unittest.TestCase):
         self.assertEqual(self.crystal.keys(), self.crystal.data.keys())
 
     def testValues(self):
-        self.assertEqual(self.crystal.values(), self.crystal.data.values())
+        self.assertEqual(self.crystal.values(),
+                         list(self.crystal.data.values()))
 
     def testItems(self):
-        self.assertEqual(self.crystal.items(), self.crystal.data.items())
+        self.assertEqual(self.crystal.items(),
+                         list(self.crystal.data.items()))
 
     def testKeys(self):
-        self.assertEqual(self.crystal.keys(), self.crystal.data.keys())
+        self.assertEqual(self.crystal.keys(),
+                         list(self.crystal.data.keys()))
 
     def testHasKey(self):
         self.assertTrue('b' in self.crystal)

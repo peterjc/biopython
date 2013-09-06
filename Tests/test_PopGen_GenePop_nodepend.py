@@ -2,7 +2,8 @@
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
-
+#
+# This file targets both Python 2 and Python 3 at the same time
 
 import os
 import unittest
@@ -75,9 +76,9 @@ class ParserTest(unittest.TestCase):
 
 class FileParserTest(unittest.TestCase):
     def setUp(self):
-        self.files = map(lambda x: os.path.join("PopGen", x),
+        self.files = [os.path.join("PopGen", x) for x in \
              ["c2line.gen", "c3line.gen", "c2space.gen",
-              "c3space.gen", "haplo3.gen", "haplo2.gen"])
+              "c3space.gen", "haplo3.gen", "haplo2.gen"]]
         self.pops_indivs = [
             (3, [4, 3, 5]),
             (3, [4, 3, 5]),
