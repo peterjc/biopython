@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+#
+# TODO - Targets Python 2 only (use 2to3 to run under Python 3)
+
 """Test for the Uniprot parser on Uniprot XML files.
 """
 import os

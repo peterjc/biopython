@@ -1,6 +1,9 @@
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
+#
+# TODO - Targets Python 2 only (use 2to3 to run under Python 3)
+
 from Bio.Seq import UnknownSeq
 from Bio.SeqUtils.CheckSum import seguid
 from Bio.SeqFeature import ExactPosition, UnknownPosition
