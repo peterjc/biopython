@@ -2,6 +2,8 @@
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
+#
+# This file targets both Python 2 and Python 3 at the same time
 
 """Tests for our Python 2/3 compatibility layer, Bio._py3k"""
 
@@ -16,7 +18,7 @@ class ODTest(unittest.TestCase):
         d[5] = "five"
         d[1] = "one"
         d[3] = "three"
-        self.assertEqual(d.keys(), [5, 1, 3])
+        self.assertEqual(list(d.keys()), [5, 1, 3])
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner(verbosity = 2)

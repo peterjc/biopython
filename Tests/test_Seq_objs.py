@@ -2,6 +2,8 @@
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
+#
+# This file targets both Python 2 and Python 3 at the same time
 
 """Unittests for the Seq objects."""
 import unittest
@@ -241,19 +243,18 @@ class StringMethodTests(unittest.TestCase):
         """Check matches the python string rstrip method."""
         #Calling (r)split should return a list of Seq-like objects, we'll
         #just apply str() to each of them so it matches the string method
-        self._test_method("rstrip", pre_comp_function=lambda x : map(str,x))
-
+        self._test_method("rstrip", pre_comp_function=lambda x: [str(y) for y in x])
     def test_str_rsplit(self):
         """Check matches the python string rstrip method."""
         #Calling (r)split should return a list of Seq-like objects, we'll
         #just apply str() to each of them so it matches the string method
-        self._test_method("rstrip", pre_comp_function=lambda x : map(str,x))
+        self._test_method("rstrip", pre_comp_function=lambda x: [str(y) for y in x])
 
     def test_str_lsplit(self):
         """Check matches the python string rstrip method."""
         #Calling (r)split should return a list of Seq-like objects, we'll
         #just apply str() to each of them so it matches the string method
-        self._test_method("rstrip", pre_comp_function=lambda x : map(str,x))
+        self._test_method("rstrip", pre_comp_function=lambda x: [str(y) for y in x])
 
     def test_str_length(self):
         """Check matches the python string __len__ method."""

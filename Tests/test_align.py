@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+#
+# This file targets both Python 2 and Python 3 at the same time
+
 """test_align.py
 
 A script to test alignment stuff.
@@ -87,8 +90,7 @@ print('consensus: %r' % consensus)
 
 
 print('Replacement dictionary')
-ks = align_info.replacement_dictionary(['N']).keys()
-ks.sort()
+ks = sorted(align_info.replacement_dictionary(['N']).keys())
 for key in ks:
     print("%s : %s" % (key, align_info.replacement_dictionary(['N'])[key]))
 

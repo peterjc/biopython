@@ -2,6 +2,8 @@
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
+#
+# This file targets both Python 2 and Python 3 at the same time
 
 """SeqFeature related tests for SeqRecord objects from Bio.SeqIO.
 
@@ -80,8 +82,8 @@ class SeqRecordMethods(unittest.TestCase):
 
     def test_slice_variantes(self):
         """Simple slices using different start/end values"""
-        for start in range(-30,30)+[None] :
-            for end in range(-30,30)+[None] :
+        for start in list(range(-30,30))+[None] :
+            for end in list(range(-30,30))+[None] :
                 if start is None and end is None:
                     continue
                 rec = self.record[start:end]

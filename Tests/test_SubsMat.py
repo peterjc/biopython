@@ -1,6 +1,8 @@
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
+#
+# This file targets both Python 2 and Python 3 at the same time
 
 try:
     from numpy import corrcoef
@@ -10,7 +12,10 @@ except ImportError:
     raise MissingExternalDependencyError(
         "Install NumPy if you want to use Bio.SubsMat.")
 
-import cPickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 import sys
 import os
 from Bio import SubsMat
@@ -31,7 +36,7 @@ for i in ftab_prot.alphabet.letters:
 pickle_file = os.path.join('SubsMat', 'acc_rep_mat.pik')
 #Don't want to use text mode on Python 3,
 with open(pickle_file, 'rb') as handle:
-    acc_rep_mat = cPickle.load(handle)
+    acc_rep_mat = pickle.load(handle)
 acc_rep_mat = SubsMat.AcceptedReplacementsMatrix(acc_rep_mat)
 obs_freq_mat = SubsMat._build_obs_freq_mat(acc_rep_mat)
 ftab_prot2 = SubsMat._exp_freq_table_from_obs_freq(obs_freq_mat)
@@ -39,16 +44,14 @@ obs_freq_mat.print_mat(f=f,format=" %4.3f")
 
 
 f.write("Diff between supplied and matrix-derived frequencies, should be small\n")
-ks = ftab_prot.keys()
-ks.sort()
+ks = sorted(ftab_prot.keys())
 for i in ks:
     f.write("%s %.2f\n" % (i,abs(ftab_prot[i] - ftab_prot2[i])))
 
 s = 0.
 f.write("Calculating sum of letters for an observed frequency matrix\n")
 counts = obs_freq_mat.sum()
-keys = counts.keys()
-keys.sort()
+keys = sorted(counts.keys())
 for key in keys:
     f.write("%s\t%.2f\n" % (key, counts[key]))
     s += counts[key]
