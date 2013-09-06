@@ -1,6 +1,8 @@
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
+#
+# This file targets both Python 2 and Python 3 at the same time
 
 #TODO - Don't use "from XXX import *"
 try:
@@ -72,7 +74,7 @@ def simple_matrix_print(matrix):
 
 # output results
 print(simple_matrix_print(y_on_x1))
-print
+print("")
 print(simple_matrix_print(y_on_x2))
-print
+print("")
 print("%.2f" % rms)
