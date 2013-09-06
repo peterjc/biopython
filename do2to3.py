@@ -39,7 +39,7 @@ from io import StringIO
 DUAL = "# This file targets both Python 2 and Python 3 at the same time"
 MONO = "# TODO - Targets Python 2 only (use 2to3 to run under Python 3)"
 
-def should_run2to3(filename):
+def should_run2to3(filename, default):
     handle = open(filename)
     lines = [handle.readline().strip() for i in range(20)]
     handle.close()
@@ -53,7 +53,7 @@ def should_run2to3(filename):
         return True
     else:
         #print("WARNING - no 2to3 declaration in %r" % filename)
-        return True # TODO - Long term assume dual
+        return default
 
 
 def run2to3(filenames):
@@ -104,7 +104,7 @@ def run2to3(filenames):
             print("Converting %s took %0.1fs" % (filename, taken))
 
 
-def do_update(py2folder, py3folder, verbose=False):
+def do_update(py2folder, py3folder, default2to3, verbose=False):
     if not os.path.isdir(py2folder):
         raise ValueError("Python 2 folder %r does not exist" % py2folder)
     if not os.path.isdir(py3folder):
@@ -174,7 +174,7 @@ def do_update(py2folder, py3folder, verbose=False):
                    "Modified time not copied! %0.8f vs %0.8f, diff %f" \
                    % (os.stat(old).st_mtime, os.stat(new).st_mtime,
                       abs(os.stat(old).st_mtime - os.stat(new).st_mtime))
-            if f.endswith(".py") and should_run2to3(old):
+            if f.endswith(".py") and should_run2to3(old, default2to3):
                 #Also run 2to3 on it
                 to_convert.append(new)
                 if verbose:
@@ -188,7 +188,8 @@ def do_update(py2folder, py3folder, verbose=False):
 
 
 def main(python2_source, python3_source,
-         children=["Bio", "BioSQL", "Tests", "Scripts", "Doc"]):
+         children=["Bio", "BioSQL", "Tests", "Scripts", "Doc"],
+         default2to3={"Tests": False}):
     #Note want to use different folders for Python 3.1, 3.2, etc
     #since the 2to3 libraries have changed so the conversion
     #may differ slightly.
@@ -201,7 +202,8 @@ def main(python2_source, python3_source,
     for child in children:
         print("Processing %s" % child)
         do_update(os.path.join(python2_source, child),
-                  os.path.join(python3_source, child))
+                  os.path.join(python3_source, child),
+                  default2to3.get(child, True))
     print("Python 2to3 processing done.")
 
 if __name__ == "__main__":
