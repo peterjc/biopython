@@ -79,8 +79,8 @@
         """
 
 from __future__ import print_function
-from future_builtins import zip
-from future_builtins import filter
+from Bio._six.moves import zip
+from Bio._six.moves import filter
 
 import re
 import itertools
