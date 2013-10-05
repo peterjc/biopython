@@ -96,7 +96,7 @@ def run2to3(filenames):
                     "--fix=unicode",
                     #"--fix=urllib", -- handled via six.moves.urllib
                     #"--fix=ws_comma", -- optional fixer
-                    "--fix=xrange",
+                    #"--fix=xrange", -- handled via six.moves.range
                     #"--fix=xreadlines", -- already applied
                     #"--fix=zip", -- not needed anymore
                     "-n", "-w"]
