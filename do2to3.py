@@ -84,7 +84,7 @@ def run2to3(filenames):
                     #"--fix=import", -- already applied
                     "--fix=imports",
                     #"--fix=imports2",
-                    #"--fix=input", -- we avoid the input function
+                    #"--fix=input", -- we avoid the Python 2 input function
                     #"--fix=intern", -- we're not using the intern function
                     #"--fix=isinstance", -- not needed anymore
                     "--fix=itertools",
@@ -101,7 +101,7 @@ def run2to3(filenames):
                     #"--fix=paren", -- already applied
                     #"--fix=print", -- we avoid the print statement
                     #"--fix=raise", -- we avoid old style raise exception
-                    "--fix=raw_input",
+                    #"--fix=raw_input", -- handled via six.moves.input
                     #"--fix=reduce", -- already using 'from functools import reduce'
                     #"--fix=renames", -- already switched sys.maxint to sys.maxsize
                     #"--fix=repr", -- we avoid the old style back-ticks
