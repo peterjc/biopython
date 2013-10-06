@@ -112,7 +112,7 @@ def run2to3(filenames):
                     #"--fix=tuple_params", -- already applied
                     #"--fix=types",
                     "--fix=unicode",
-                    "--fix=urllib",
+                    #"--fix=urllib", -- handled via six.moves.urllib
                     #"--fix=ws_comma", -- optional fixer
                     "--fix=xrange",
                     #"--fix=xreadlines", -- already applied
