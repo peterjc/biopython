@@ -22,6 +22,7 @@
 
 # ReportLab imports
 from __future__ import print_function
+from Bio._six import string_types as basestring
 
 from reportlab.lib import colors
 

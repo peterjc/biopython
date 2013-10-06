@@ -2,6 +2,7 @@
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
 from Bio._six.moves import range
+from Bio._six import string_types as basestring
 
 from Bio.Seq import UnknownSeq
 from Bio.SeqUtils.CheckSum import seguid

@@ -15,6 +15,8 @@ import copy
 from functools import reduce
 
 from Bio._six.moves import map
+from Bio._six import string_types as basestring
+
 
 class CrystalError(Exception):
     pass

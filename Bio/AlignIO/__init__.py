@@ -122,6 +122,7 @@ same length.
 
 
 from __future__ import print_function
+from Bio._six import string_types as basestring
 
 __docformat__ = "epytext en"  # not just plaintext
 

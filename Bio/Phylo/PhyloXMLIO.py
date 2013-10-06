@@ -20,6 +20,8 @@ __docformat__ = "restructuredtext en"
 
 import sys
 
+from Bio._six import string_types as basestring
+
 from Bio.Phylo import PhyloXML as PX
 
 #For speed try to use cElementTree rather than ElementTree

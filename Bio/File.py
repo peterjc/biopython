@@ -24,6 +24,8 @@ import sys
 import contextlib
 import itertools
 
+from Bio._six import string_types as basestring
+
 try:
     from collections import UserDict as _dict_base
 except ImportError:

@@ -12,6 +12,8 @@ __docformat__ = "restructuredtext en"
 
 from Bio._six.moves import zip
 from Bio._six.moves import filter
+from Bio._six import string_types as basestring
+
 
 import collections
 import copy

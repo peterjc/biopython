@@ -8,6 +8,8 @@
 """Represent a Sequence Record, a sequence with annotation."""
 
 
+from Bio._six import string_types as basestring
+
 __docformat__ = "epytext en"  # Simple markup to show doctests nicely
 
 # NEEDS TO BE SYNCH WITH THE REST OF BIOPYTHON AND BIOPERL

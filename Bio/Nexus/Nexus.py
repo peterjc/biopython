@@ -12,6 +12,8 @@ Maddison, Swofford, Maddison. 1997. Syst. Biol. 46(4):590-621
 from __future__ import print_function
 from Bio._six.moves import zip
 from Bio._six.moves import range
+from Bio._six import string_types as basestring
+
 
 from functools import reduce
 import copy
