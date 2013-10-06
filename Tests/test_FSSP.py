@@ -7,7 +7,8 @@ from Bio import FSSP
 from Bio.FSSP import FSSPTools
 import sys
 import os
-import cPickle
+
+#from Bio._six.moves import cPickle
 
 test_file = os.path.join('FSSP', '1cnv.fssp')
 f = sys.stdout

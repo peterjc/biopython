@@ -10,9 +10,11 @@ except ImportError:
     raise MissingExternalDependencyError(
         "Install NumPy if you want to use Bio.SubsMat.")
 
-import cPickle
 import sys
 import os
+
+from Bio._six.moves import cPickle
+
 from Bio import SubsMat
 from Bio.SubsMat import FreqTable, MatrixInfo
 

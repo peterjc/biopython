@@ -16,8 +16,9 @@ _InMemoryIndex  An in-memory Index class.
 """
 import os
 import array
-import cPickle
 import shelve
+
+from Bio._six.moves import cPickle
 
 
 class _ShelveIndex(dict):
