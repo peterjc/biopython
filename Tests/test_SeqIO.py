@@ -12,7 +12,7 @@ import warnings
 # Can't use cStringIO, quoting the documentation,
 #   "Unlike the StringIO module, this module is not able to accept
 #    Unicode strings that cannot be encoded as plain ASCII strings."
-from StringIO import StringIO
+from Bio._six import StringIO
 from io import BytesIO
 
 from Bio import BiopythonWarning
