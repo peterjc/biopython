@@ -12,6 +12,7 @@ import unittest
 import math
 
 from Bio._six.moves import zip
+from Bio._six.moves import range
 
 # Do we have ReportLab?  Raise error if not present.
 from Bio import MissingPythonDependencyError
