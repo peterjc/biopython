@@ -539,6 +539,27 @@ class StringMethodTests(unittest.TestCase):
         self.assertRaises(TypeError, Seq, (1066))
         self.assertRaises(TypeError, Seq, (Seq("ACGT", generic_dna)))
 
+    def test_roll(self):
+        """Check Seq's roll method."""
+        for s in self._examples:
+            if isinstance(s, MutableSeq):
+                continue
+            for i in set([-10, -1, 0, 1, 10, len(s) - 1, len(s), -len(s)]):
+                index = i
+                #Mimic the expected modulo calculation...
+                while index >= len(s):
+                    index -= len(s)
+                while index <= -len(s):
+                    index += len(s)
+                wanted = str(s)[index:] + str(s)[:index]
+                got = str(s.roll(i))                                                  
+                self.assertEqual(wanted, got,
+                                 "%r.roll(%i) failed, %r not %r" % (s, i, got, wanted))
+                if i > 0:
+                    #Check acts as self-inverse
+                    self.assertEqual(str(s.roll(i).roll(-i)), str(s))
+                    self.assertEqual(str(s.roll(-i).roll(i)), str(s))
+
     #TODO - Addition...
 
 if __name__ == "__main__":

@@ -1053,6 +1053,50 @@ class Seq(object):
             raise ValueError("Unexpected gap character, %s" % repr(gap))
         return Seq(str(self).replace(gap, ""), alpha)
 
+    def roll(self, offset):
+        """Treating the sequence as circular, 'roll' it to shift the origin.
+
+        Returns a Seq object with the same alphabet, essentially a short cut
+        for slicing and adding as follow:
+
+        >>> from Bio.Seq import Seq
+        >>> from Bio.Alphabet import generic_dna
+        >>> my_dna = Seq("ATATGAAATTTGAAAA", generic_dna)
+        >>> print my_dna
+        ATATGAAATTTGAAAA
+        >>> print my_dna[1:] + my_dna[:1]
+        TATGAAATTTGAAAAA
+        >>> print my_dna.roll(1)
+        TATGAAATTTGAAAAA
+ 
+        A reverse roll (negative argument) acts as an inverse and can be seen as
+        also matching Python's slice notation:
+
+        >>> print my_dna[:-1] + my_dna[-1:]
+        AATATGAAATTTGAAA
+        >>> print my_dna.roll(-1)
+        AATATGAAATTTGAAA
+
+        However, when the offset is longer than the sequence length (or if
+        negative, less then minus the sequence length), this is wrapped
+        (and so does not match the slicing interpretation).
+
+        Notice the alphavet is preserved:
+
+        >>> my_dna.roll(1)
+        Seq('TATGAAATTTGAAAAA', DNAAlphabet())
+        >>> my_dna.roll(0)
+        Seq('ATATGAAATTTGAAAA', DNAAlphabet())
+        >>> my_dna.roll(-1)
+        Seq('AATATGAAATTTGAAA', DNAAlphabet())
+
+        """
+        s = str(self)
+        index = offset % len(s)
+        #This creates avoids two extra temp Seq objects in the natural
+        #approach of using self[index:] + self[:index],
+        return Seq(s[index:] + s[:index], self.alphabet)
+
 
 class UnknownSeq(Seq):
     """A read-only sequence object of known length but unknown contents.
@@ -1464,6 +1508,15 @@ class UnknownSeq(Seq):
             return UnknownSeq(self._length, s.alphabet, self._character)
         else:
             return Seq("", s.alphabet)
+
+    def roll(self, offset):
+        """Treating the sequence as circular, 'roll' it to shift the origin.
+
+        For an UnknownSeq this returns the same UnknownSeq unchanged. For a
+        normal Seq object this is a shortcut for slicing and adding a sequence
+        to shift the origin of a circular sequence.
+        """
+        return self
 
 
 class MutableSeq(object):
