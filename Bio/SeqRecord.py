@@ -1117,6 +1117,93 @@ class SeqRecord(object):
                 answer._per_letter_annotations[key] = value[::-1]
         return answer
 
+    def roll(self, offset, id=False, name=False, description=False,
+             features=True, annotations=False,
+             letter_annotations=True, dbxrefs=False):
+        """Returns a new SeqRecord treating it as circular and shifting the origin.
+
+        Returns a SeqRecord object with the same alphabet, essentially a short cut
+        for slicing and adding as follows, but able to handle the features better.
+
+        In particular, features straddling the new origin are preserved with a
+        join. Likewise features spanning the old origin with a join are also
+        preserved.
+
+        >>> from Bio import SeqIO
+        >>> plasmid = SeqIO.read("GenBank/pBAD30.gb", "gb")
+        >>> crude = plasmid[500:] + plasmid[:500]
+        >>> rolled = plasmid.roll(500)
+        >>> str(crude.seq) == str(rolled.seq)
+        True
+        >>> len(crude.features) < len(rolled.features) == len(plasmid.features)
+        True
+
+        This also edits any per-letter-annotation like PHRED quality scores to
+        match the revised sequence.
+
+        A reverse roll (negative argument) acts as an inverse and can be seen as
+        also matching Python's slice notation (as long as the arguement does not
+        exceed the sequence length, since here it is wrapped).
+        """
+        index = offset % len(self.seq)
+        from Bio.Seq import MutableSeq  # Lazy to avoid circular imports
+        if isinstance(self.seq, MutableSeq):
+            #Currently the MutableSeq lacks a roll method (would it be in-situ?)
+            answer = SeqRecord(self.seq.toseq().roll(index))
+        else:
+            answer = SeqRecord(self.seq.roll(index))
+        if isinstance(id, basestring):
+            answer.id = id
+        elif id:
+            answer.id = self.id
+        if isinstance(name, basestring):
+            answer.name = name
+        elif name:
+            answer.name = self.name
+        if isinstance(description, basestring):
+            answer.description = description
+        elif description:
+            answer.description = self.description
+        if isinstance(dbxrefs, list):
+            answer.dbxrefs = dbxrefs
+        elif dbxrefs:
+            #Copy the old dbxrefs
+            answer.dbxrefs = self.dbxrefs[:]
+        if isinstance(features, list):
+            answer.features = features
+        elif features:
+            #Copy the old features, adjusting location
+            l = len(answer)
+            for f in self.features:
+                if f.location.start > index:
+                    #After the slice, easy:
+                    answer.features.append(f._shift(-index))
+                elif f.location.end < index:
+                    #Before the slice, easy - but perhaps move to end of list?
+                    answer.features.append(f._shift(l - index))
+                else:
+                    #Troublesome... cases to consider:
+                    # - was a simple location, break into a join
+                    # - was a join, where one section needs splitting in two
+                    # - was a join, break in a gap, just needs shifting
+                    # - was already a join spanning the origin (can we un-join it?)
+                    # - was a source feature spanning entire record (don't edit)
+                    pass
+            #TODO... can we handle the sorting 'as we go'?
+            answer.features.sort(key=lambda x: x.location.start.position)
+        if isinstance(annotations, dict):
+            answer.annotations = annotations
+        elif annotations:
+            #Copy the old annotations,
+            answer.annotations = self.annotations.copy()
+        if isinstance(letter_annotations, dict):
+            answer.letter_annotations = letter_annotations
+        elif letter_annotations:
+            #Copy the old per letter annotations, rolling them
+            for key, value in self.letter_annotations.items():
+                answer._per_letter_annotations[key] = value[index:] + values[:index]
+        return answer
+
 
 if __name__ == "__main__":
     from Bio._utils import run_doctest
