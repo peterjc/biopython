@@ -288,6 +288,8 @@ class SeqFeature(object):
         Used by the SeqRecord's roll method, which ensures the offset passed
         has 0 <= offset < length.
         """
+        assert 0 <= offset < length, offset
+        #TODO - Special case for source feature for full sequence (no change)
         answer = SeqFeature(location = self.location._roll(offset, length),
                             type = self.type,
                             location_operator = self.location_operator,
@@ -855,18 +857,47 @@ class FeatureLocation(object):
         which ensures the offset passed has 0 <= offset < length.
 
         If called via a CompoundLocation, that will set the operator value.
+
+        >>> f = FeatureLocation(40, 100, strand=+1)
+        >>> print(f)
+        [40:100](+)
+        >>> print(f._roll(10, 1000))
+        [30:90](+)
+        >>> print(f._roll(10, 1000)._roll(990, 1000)) # Test inverse
+        [40:100](+)
+        >>> print(f._roll(990, 1000))
+        [50:110](+)
+        >>> print(f._roll(990, 1000)._roll(10, 1000)) # Test inverse
+        [40:100](+)
+
+        Notice a CompoundLocation is returned if the feature now spans the
+        origin:
+
+        >>> print(f._roll(50, 1000))
+        join{[990:1000](+), [0:50](+)}
+        >>> print(f._roll(50, 1000)._roll(950, 1000)) # Test inverse
+        [40:100](+)
+
+        Also notice modulo wrapping:
+
+        >>> print(f._roll(950, 1000))
+        [90:150](+)
+        >>> print(f._roll(950, 1000)._roll(50, 1000)) # Test inverse
+        [40:100](+)
+
         """
+        assert 0 <= offset < length, offset
         if self.end <= offset:
             #Easy, completely before the break
             return self._shift(length - offset)
-        elif offset <= self.start:
+        elif offset <= self.start and self.end - offset <= length:
             #Easy, completely after the break
             return self._shift(-offset)
         else:
             assert self.start < offset < self.end, "%r and offset %i" % (self, offset)
             #Split this into two parts using a join
-            return CompoundLocation([FeatureLocation(self.start + length - offset, length),
-                                     FeatureLocation(0, self.end - offset)],
+            return CompoundLocation([FeatureLocation(self.start - offset + length, length, self.strand),
+                                     FeatureLocation(0, self.end - offset, self.strand)],
                                     operator)
 
     def _shift(self, offset):
@@ -1187,11 +1218,68 @@ class CompoundLocation(object):
         #Cases to consider:
         #Join where one section needs splitting, easy - handled by FeatureLocation
         #Join where break in gap, easy as FeatureFeature does it
-        #TODO - Was already spanning the origin, can we unjoin it?
-        #TODO - Source feature spanning entire record (don't edit)
         #TODO - Do we care about the part order for all join types?
-        return CompoundLocation([loc._roll(offset, length, self.operator) for loc in self.parts],
-                                self.operator)
+        answer = CompoundLocation([loc._roll(offset, length, self.operator) for loc in self.parts],
+                                  self.operator)
+        if self.operator == "join":
+            #Should be able to merge any pre-existing origin spanning join...
+            return answer._merged()
+        return answer
+
+    def _merged(self):
+        """Combine abutting parts into single FeatureLocation objects (PRIVATE).
+
+        Simple example, merging three into one:
+
+        >>> a = FeatureLocation(100, 200, strand=+1)
+        >>> b = FeatureLocation(200, 300, strand=+1)
+        >>> c = FeatureLocation(300, 400, strand=+1)
+        >>> f = CompoundLocation([a, b, c])
+        >>> print(f)
+        join{[100:200](+), [200:300](+), [300:400](+)}
+        >>> print(f._merged())
+        [100:400](+)
+
+        Reverse strand example,
+
+        >>> a = FeatureLocation(200, 250, strand=-1)
+        >>> b = FeatureLocation(100, 200, strand=-1)
+        >>> f = CompoundLocation([a, b])
+        >>> print(f)
+        join{[200:250](-), [100:200](-)}
+        >>> print(f._merged())
+        [100:250](-)
+
+        More complex example, with two merges:
+
+        >>> a = FeatureLocation(100, 200)
+        >>> b = FeatureLocation(200, 300)
+        >>> c = FeatureLocation(299, 399)
+        >>> d = FeatureLocation(399, 500)
+        >>> f = CompoundLocation([a, b, c, d])
+        >>> print(f)
+        join{[100:200], [200:300], [299:399], [399:500]}
+        >>> print(f._merged())
+        join{[100:300], [299:500]}
+
+        WARNING: This is reasonable for a join operation type, but may not be
+        suitable for all feature locations...
+        """
+        #Do the loop backwards in case have to do multiple merges
+        parts = self.parts[:]
+        for i in reversed(range(len(parts)-1)):
+            if parts[i].strand == -1:
+                index = parts[i].start
+                if index == parts[i+1].end and -1 == parts[i+1].strand:
+                    parts = parts[:i] + [FeatureLocation(parts[i+1].start, parts[i].end, strand=-1)] + parts[i+2:]
+            else:
+                index = parts[i].end
+                if index == parts[i+1].start and parts[i].strand == parts[i+1].strand:
+                    parts = parts[:i] + [FeatureLocation(parts[i].start, parts[i+1].end, strand=parts[i].strand)] + parts[i+2:]
+        if len(parts) == 1:
+            return parts[0]
+        else:
+            return CompoundLocation(parts, self.operator)
 
     def _shift(self, offset):
         """Returns a copy of the location shifted by the offset (PRIVATE)."""
