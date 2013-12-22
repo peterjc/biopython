@@ -282,6 +282,21 @@ class SeqFeature(object):
                 out +="%s\n" % sub_feature
         return out
 
+    def _roll(self, offset, length):
+        """Returns a copy of the feature with its location shifted (PRIVATE).
+
+        Used by the SeqRecord's roll method, which ensures the offset passed
+        has 0 <= offset < length.
+        """
+        answer = SeqFeature(location = self.location._roll(offset, length),
+                            type = self.type,
+                            location_operator = self.location_operator,
+                            id = self.id,
+                            qualifiers = dict(self.qualifiers.items()))
+        #This is to avoid the deprecation warning:
+        answer._sub_features = [f._roll(offset, length) for f in self._sub_features]
+        return answer
+
     def _shift(self, offset):
         """Returns a copy of the feature with its location shifted (PRIVATE).
 
@@ -833,6 +848,27 @@ class FeatureLocation(object):
             for i in range(self._start, self._end):
                 yield i
 
+    def _roll(self, offset, length, operator="join"):
+        """Returns a copy of the location its positions shifted (PRIVATE).
+
+        Used by the SeqRecord's roll method (via the SeqFeature roll method),
+        which ensures the offset passed has 0 <= offset < length.
+
+        If called via a CompoundLocation, that will set the operator value.
+        """
+        if self.end <= offset:
+            #Easy, completely before the break
+            return self._shift(length - offset)
+        elif offset <= self.start:
+            #Easy, completely after the break
+            return self._shift(-offset)
+        else:
+            assert self.start < offset < self.end, "%r and offset %i" % (self, offset)
+            #Split this into two parts using a join
+            return CompoundLocation([FeatureLocation(self.start + length - offset, length),
+                                     FeatureLocation(0, self.end - offset)],
+                                    operator)
+
     def _shift(self, offset):
         """Returns a copy of the location shifted by the offset (PRIVATE)."""
         #TODO - What if offset is a fuzzy position?
@@ -1141,6 +1177,21 @@ class CompoundLocation(object):
         for loc in self.parts:
             for pos in loc:
                 yield pos
+
+    def _roll(self, offset, length):
+        """Returns a copy of the CompoundLocation its positions shifted (PRIVATE).
+
+        Used by the SeqRecord's roll method (via the SeqFeature roll method),
+        which ensures the offset passed has 0 <= offset < length.
+        """
+        #Cases to consider:
+        #Join where one section needs splitting, easy - handled by FeatureLocation
+        #Join where break in gap, easy as FeatureFeature does it
+        #TODO - Was already spanning the origin, can we unjoin it?
+        #TODO - Source feature spanning entire record (don't edit)
+        #TODO - Do we care about the part order for all join types?
+        return CompoundLocation([loc._roll(offset, length, self.operator) for loc in self.parts],
+                                self.operator)
 
     def _shift(self, offset):
         """Returns a copy of the location shifted by the offset (PRIVATE)."""

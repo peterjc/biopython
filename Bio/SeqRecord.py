@@ -1135,8 +1135,12 @@ class SeqRecord(object):
         >>> rolled = plasmid.roll(500)
         >>> str(crude.seq) == str(rolled.seq)
         True
-        >>> len(crude.features) < len(rolled.features) == len(plasmid.features)
-        True
+        >>> len(plasmid.features)
+        13
+        >>> len(crude.features) #Loses one
+        12
+        >>> len(rolled.features)
+        13
 
         This also edits any per-letter-annotation like PHRED quality scores to
         match the revised sequence.
@@ -1174,21 +1178,7 @@ class SeqRecord(object):
         elif features:
             #Copy the old features, adjusting location
             l = len(answer)
-            for f in self.features:
-                if f.location.start > index:
-                    #After the slice, easy:
-                    answer.features.append(f._shift(-index))
-                elif f.location.end < index:
-                    #Before the slice, easy - but perhaps move to end of list?
-                    answer.features.append(f._shift(l - index))
-                else:
-                    #Troublesome... cases to consider:
-                    # - was a simple location, break into a join
-                    # - was a join, where one section needs splitting in two
-                    # - was a join, break in a gap, just needs shifting
-                    # - was already a join spanning the origin (can we un-join it?)
-                    # - was a source feature spanning entire record (don't edit)
-                    pass
+            answer.features = [f._roll(index, l) for f in self.features]
             #TODO... can we handle the sorting 'as we go'?
             answer.features.sort(key=lambda x: x.location.start.position)
         if isinstance(annotations, dict):
