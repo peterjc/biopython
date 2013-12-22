@@ -1122,12 +1122,8 @@ class SeqRecord(object):
              letter_annotations=True, dbxrefs=False):
         """Returns a new SeqRecord treating it as circular and shifting the origin.
 
-        Returns a SeqRecord object with the same alphabet, essentially a short cut
-        for slicing and adding as follows, but able to handle the features better.
-
-        In particular, features straddling the new origin are preserved with a
-        join. Likewise features spanning the old origin with a join are also
-        preserved.
+        Returns a SeqRecord object moving the first bases to the end (and updating
+        the positional annotation like features) like slicing and adding as follows:
 
         >>> from Bio import SeqIO
         >>> plasmid = SeqIO.read("GenBank/pBAD30.gb", "gb")
@@ -1135,6 +1131,11 @@ class SeqRecord(object):
         >>> rolled = plasmid.roll(500)
         >>> str(crude.seq) == str(rolled.seq)
         True
+
+        In particular, features straddling the new origin are preserved with a
+        join. Likewise features spanning the old origin with a join are also
+        preserved.
+
         >>> len(plasmid.features)
         13
         >>> len(crude.features) #Loses one

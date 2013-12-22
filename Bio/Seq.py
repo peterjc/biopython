@@ -1057,7 +1057,7 @@ class Seq(object):
         """Treating the sequence as circular, 'roll' it to shift the origin.
 
         Returns a Seq object with the same alphabet, essentially a short cut
-        for slicing and adding as follow:
+        moving the first bases to the end using slicing and adding as follow:
 
         >>> from Bio.Seq import Seq
         >>> from Bio.Alphabet import generic_dna
