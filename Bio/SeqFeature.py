@@ -292,11 +292,12 @@ class SeqFeature(object):
         #TODO - Special case for source feature for full sequence (no change)
         answer = SeqFeature(location = self.location._roll(offset, length),
                             type = self.type,
-                            location_operator = self.location_operator,
                             id = self.id,
                             qualifiers = dict(self.qualifiers.items()))
         #This is to avoid the deprecation warning:
         answer._sub_features = [f._roll(offset, length) for f in self._sub_features]
+        if self.location_operator and len(answer.location.parts) > 1:
+            answer.location_operator = self.location_operator
         return answer
 
     def _shift(self, offset):
