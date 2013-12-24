@@ -872,7 +872,7 @@ class FeatureLocation(object):
         [40:100](+)
 
         Notice a CompoundLocation is returned if the feature now spans the
-        origin:
+        origin (using the operation given, defaulting to a join):
 
         >>> print(f._roll(50, 1000))
         join{[990:1000](+), [0:50](+)}
@@ -1066,7 +1066,7 @@ class CompoundLocation(object):
         for loc in self.parts:
             if not isinstance(loc, FeatureLocation):
                 raise ValueError("CompoundLocation should be given a list of "
-                                 "FeatureLocation objects, not %s" % loc.__class__)
+                                 "FeatureLocation objects, not %r" % loc)
         if len(parts) < 2:
             raise ValueError("CompoundLocation should have at least 2 parts, not %r" % parts)
 
