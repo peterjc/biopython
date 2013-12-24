@@ -106,6 +106,9 @@ for parser in all_parsers:
                         #Assuming no mixed strand examples...
                         assert feature.strand is not None
                 print("DB cross refs %s" % cur_record.dbxrefs)
+                for i in [1, -1, 100, -100]:
+                    x = cur_record.roll(i)
+                    x = cur_record.roll(i).roll(-i)
             elif isinstance(parser, GenBank.RecordParser):
                 print("***Record from %s with the RecordParser" \
                       % filename.split(os.path.sep)[-1])
