@@ -567,15 +567,14 @@ class BgzfReader(object):
             self._buffers.popitem()
         #Now load the block
         handle = self._handle
-        handle.seek(start_offset)
-        assert start_offset == handle.tell()
-        self._block_start_offset = start_offset
-        self._within_block_offset = 0
+        if start_offset is not None:
+            handle.seek(start_offset)
+        self._block_start_offset = handle.tell()
         try:
-            self._block_raw_length, self._buffer = _load_bgzf_block(handle, self._text)
+            block_size, self._buffer = _load_bgzf_block(handle, self._text)
         except StopIteration:
             #EOF
-            self._block_raw_length = 0
+            block_size = 0
             if self._text:
                 self._buffer = ""
             else:
@@ -583,7 +582,7 @@ class BgzfReader(object):
         self._within_block_offset = 0
         self._block_raw_length = block_size
         #Finally save the block in our cache,
-        self._buffers[self._block_start_offset] = self._buffer, self._block_raw_length
+        self._buffers[self._block_start_offset] = self._buffer, block_size
 
     def tell(self):
         """Returns a 64-bit unsigned BGZF virtual offset."""
