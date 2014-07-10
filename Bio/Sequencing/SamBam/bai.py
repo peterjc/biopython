@@ -10,10 +10,12 @@ under PyPy, Jython, etc) but will attempt to follow the pysam API
 somewhat (which is a wrapper for the samtools C API).
 """
 
+from __future__ import print_function
+
 import struct
 import gzip
 
-from Bio._py3k import _as_bytes
+from Bio._py3k import _as_bytes, range
 
 _BAM_MAX_BIN =  37450 # (8^6-1)/7+1
 _BAI_magic = _as_bytes("BAI\1")
@@ -90,19 +92,19 @@ def _test_bai(handle):
 
     """
     indexes, unmapped_unplaced = _load_bai(handle)
-    print "%i references" % len(indexes)
+    print("%i references" % len(indexes))
     for chunks, linear, mapped, ref_unmapped, u_start, u_end in indexes:
         if mapped is None:
             assert ref_unmapped is None
-            print "%i bins, %i linear baby-bins, ? reads mapped, ? unmapped" \
-                  % (len(chunks), len(linear))
+            print("%i bins, %i linear baby-bins, ? reads mapped, ? unmapped" \
+                  % (len(chunks), len(linear)))
         else:
-            print "%i bins, %i linear baby-bins, %i reads mapped, %i unmapped" \
-                  % (len(chunks), len(linear), mapped, ref_unmapped)
+            print("%i bins, %i linear baby-bins, %i reads mapped, %i unmapped" \
+                  % (len(chunks), len(linear), mapped, ref_unmapped))
     if unmapped_unplaced is None:
-        print "Index missing unmapped unplaced reads count"
+        print("Index missing unmapped unplaced reads count")
     else:
-        print "%i unmapped unplaced reads" % unmapped_unplaced
+        print("%i unmapped unplaced reads" % unmapped_unplaced)
 
 def _load_bai(handle):
     indexes = []
@@ -114,8 +116,8 @@ def _load_bai(handle):
     assert 8 == struct.calcsize("<Q")
     data = handle.read(4)
     n_ref = struct.unpack("<i", data)[0]
-    #print "%i references" % n_ref
-    for n in xrange(n_ref):
+    #print("%i references" % n_ref)
+    for n in range(n_ref):
         indexes.append(_load_ref_index(handle))
     #This is missing on very old samtools index files,
     #and isn't in the SAM/BAM specifiction yet either.
@@ -123,14 +125,14 @@ def _load_bai(handle):
     data = handle.read(8)
     if data:
         unmapped = struct.unpack("<Q", data)[0]
-        #print "%i unmapped reads" % unmapped
+        #print("%i unmapped reads" % unmapped)
     else:
         unmapped = None
-        #print "Index missing unmapped reads count"
+        #print("Index missing unmapped reads count")
     data = handle.read()
     if data:
-        print "%i extra bytes" % len(data)
-        print repr(data)
+        print("%i extra bytes" % len(data))
+        print(repr(data))
     return indexes, unmapped
 
 def _load_ref_index(handle):
@@ -152,7 +154,7 @@ def _load_ref_index(handle):
     #First the chunks for each bin,
     n_bin = struct.unpack("<i", handle.read(4))[0]
     chunks_dict = dict()
-    for b in xrange(n_bin):
+    for b in range(n_bin):
         bin, chunks = struct.unpack("<ii", handle.read(8))
         if bin == _BAM_MAX_BIN:
             #At the time of writing this isn't in the SAM/BAM specification,
@@ -162,7 +164,7 @@ def _load_ref_index(handle):
             mapped, unmapped = struct.unpack("<QQ", handle.read(16))
         else:
             chunks_list = []
-            for chunk in xrange(chunks):
+            for chunk in range(chunks):
                 #Append tuple of (chunk beginning, chunk end)
                 chunks_list.append(struct.unpack("<QQ", handle.read(16)))
             chunks_dict[bin] = chunks_list
@@ -182,7 +184,7 @@ def idxstats(bam_filename, bai_filename):
     unplaced unmapped reads.
 
     >>> for values in idxstats("SamBam/ex1.bam", "SamBam/ex1.bam.bai"):
-    ...     print "%s\t%i\t%i\t%i" % values
+    ...     print("%s\t%i\t%i\t%i" % values)
     chr1   1575      1446      18
     chr2   1584      1789      17
     *   0      0      0
@@ -232,19 +234,19 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..", "..", "..", "Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..", "..", "..", "Tests"))
         doctest.testmod()
-        print "Done"
+        print("Done")
         os.chdir(cur_dir)
         del cur_dir
     elif os.path.isdir(os.path.join("Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("Tests"))
         doctest.testmod()
-        print "Done"
+        print("Done")
         os.chdir(cur_dir)
         del cur_dir
 
