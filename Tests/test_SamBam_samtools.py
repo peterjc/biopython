@@ -8,6 +8,7 @@ import sys
 import subprocess
 import unittest
 
+from Bio._py3k import getoutput
 from Bio import MissingExternalDependencyError
 
 from Bio.Sequencing.SamBam.bai import idxstats
@@ -21,8 +22,7 @@ samtools_exe = None
 if sys.platform=="win32":
     raise MissingExternalDependencyError("This test does not yet run on Windows")
 else:
-    import commands
-    output = commands.getoutput("samtools")
+    output = getoutput("samtools")
     #Since "not found" may be in another language, try and be sure this is
     #really the MUSCLE tool's output
     if "not found" not in output \
@@ -38,8 +38,7 @@ if not samtools_exe:
 class SamtoolsIdxstats(unittest.TestCase):
     def compare(self, bam_filename):
         bai_filename = bam_filename + ".bai"
-        #TODO - Switch to subprocess for testing under Windows
-        old = commands.getoutput("%s idxstats %s" % (samtools_exe, bam_filename)).strip().split("\n")
+        old = getoutput("%s idxstats %s" % (samtools_exe, bam_filename)).strip().split("\n")
         new = ["%s\t%s\t%i\t%i" % values for values in idxstats(bam_filename, bai_filename)]
         self.assertEqual(len(old), len(new))
         for o,n in zip(old, new):

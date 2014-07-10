@@ -26,15 +26,15 @@ Let's look at the FLAG values for the last read, including a couple
 of the helper properties to access the bit values (here bit 0x4 is
 set for unmapped reads):
 
-    >>> print s.flag, hex(s.flag), s.is_mapped, s.is_unmapped
+    >>> print("%i 0x%x %r %r" % (s.flag, s.flag, s.is_mapped, s.is_unmapped))
     83 0x53 True False
     >>> s.is_mapped = False
-    >>> print s.flag, hex(s.flag), s.is_mapped, s.is_unmapped
+    >>> print("%i 0x%x %r %r" % (s.flag, s.flag, s.is_mapped, s.is_unmapped))
     87 0x57 False True
 
 Here's a sneaky trick, you can access the header like so:
 
-    >>> print repr(sam.text)
+    >>> print(repr(sam.text))
     ''
 
 Tricked you - this SAM file has no header! Unsurprisingly, neither does
@@ -42,20 +42,20 @@ the BAM version of the file - but the BAM format does separately list
 all the reference names and their lengths so a minimal SAM style header
 can be inferred automatically:
 
-    >>> print repr(bam.text)
+    >>> bam.text
     '@SQ\tSN:chr1\tLN:1575\n@SQ\tSN:chr2\tLN:1584\n'
 
 That is probably atypical though - you would expect a proper SAM header
 to be present, indeed it is essential if using things like read groups:
 
     >>> sam = SamIterator(open("SamBam/tags.sam"))
-    >>> print repr(sam.text)
+    >>> sam.text
     '@SQ\tSN:chr1\tLN:100\n@SQ\tSN:chr2\tLN:200\n'
 
 Or on the BAM equivalent to this SAM file:
 
     >>> bam = BamIterator(open("SamBam/tags.bam", "rb"))
-    >>> print repr(bam.text)
+    >>> bam.text
     '@SQ\tSN:chr1\tLN:100\n@SQ\tSN:chr2\tLN:200\n'
 
 In addition to the raw header string, you can get the reference names,
@@ -151,22 +151,24 @@ the read's partner is mapped to the reverse strand. We can use these to
 count pairs mapped to the same or different strands. We add the extra
 requirement of 0x2 for properly mapped pairs, and 0x40 for first read:
 
-   >>> print "1--> 2-->", count_sam("SamBam/ex1.sam", required_flag=0x42, excluded_flag=0x4+0x8)
+   >>> print("1--> 2--> %i" % count_sam("SamBam/ex1.sam", required_flag=0x42, excluded_flag=0x4+0x8))
    1--> 2--> 1564
 
-   >>> print "1--> <--2", count_sam("SamBam/ex1.sam", required_flag=0x42+0x8, excluded_flag=0x4)
+   >>> print("1--> <--2 %s" % count_sam("SamBam/ex1.sam", required_flag=0x42+0x8, excluded_flag=0x4))
    1--> <--2 0
 
-   >>> print "<--1 2-->", count_sam("SamBam/ex1.sam", required_flag=0x42+0x4, excluded_flag=0x8)
+   >>> print("<--1 2--> %i" % count_sam("SamBam/ex1.sam", required_flag=0x42+0x4, excluded_flag=0x8))
    <--1 2--> 0
 
-   >>> print "<--1 <--2", count_sam("SamBam/ex1.sam", required_flag=0x42+0x4+0x8)
+   >>> print("<--1 <--2 %i" % count_sam("SamBam/ex1.sam", required_flag=0x42+0x4+0x8))
    <--1 <--2 0
 
 Can you guess what kind of paired reads there were? My guess from that
 would be 454 paired end reads, since they are on the same strand.
 
 """
+
+from __future__ import print_function
 
 import struct
 import sys
@@ -178,9 +180,9 @@ except ImportError:
     from Bio._py3k import OrderedDict
 
 #Biopython imports:
-from bai import _load_bai, reg2bin, reg2bins
+from Bio.Sequencing.SamBam.bai import _load_bai, reg2bin, reg2bins
 from Bio import bgzf
-from Bio._py3k import _as_bytes, _as_string
+from Bio._py3k import _as_bytes, _as_string, basestring
 _empty_bytes_string = _as_bytes("")
 _null_byte = _as_bytes("\0")
 _ff_byte = _as_bytes("\xFF")
@@ -193,26 +195,26 @@ class SamIterator(object):
 
     >>> with open("SamBam/ex1.sam") as handle:
     ...     for read in SamIterator(handle):
-    ...         print read.qname, read.flag, read.pos, read.seq
+    ...         print("%s %i %i %s" % (read.qname, read.flag, read.pos, read.seq))
     ...         if read.qname == "EAS219_FC30151:3:40:1128:1940": break
     EAS56_57:6:190:289:82 69 99 CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
     EAS56_57:6:190:289:82 137 99 AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC
     EAS51_64:3:190:727:308 99 102 GGTGCAGAGCCGAGTCACGGGGTTGCCAGCACAGG
     EAS112_34:7:141:80:875 99 109 AGCCGAGTCACGGGGTTGCCAGCACAGGGGCTTAA
     EAS219_FC30151:3:40:1128:1940 163 111 CCGAGTCACGGGGTTGCCAGCACAGGGGCTTAACC
-    >>> print read.qual
+    >>> print(read.qual)
     <<<<<<<<<<<<<<<<<<<;<<5;;<<<9;;;;7:
-    >>> print read.mapq
+    >>> print(read.mapq)
     99
-    >>> print read.rname, read.pos
+    >>> print("%s %i" % (read.rname, read.pos))
     chr1 111
-    >>> print read.rnext, read.pnext #RNEXT and PNEXT aka MRNM and MPOS
+    >>> print("%s %i" % (read.rnext, read.pnext)) #RNEXT and PNEXT aka MRNM and MPOS
     chr1 290
-    >>> print read.tlen #TLEN aka ISIZE
+    >>> print(read.tlen) #TLEN aka ISIZE
     214
-    >>> print read.cigar
+    >>> print(read.cigar)
     [(0, 35)]
-    >>> print read.cigar_str
+    >>> print(read.cigar_str)
     35M
 
     Optional argument required_flag is used like "samtools view -f FLAG ..."
@@ -321,26 +323,26 @@ class BamIterator(object):
 
     >>> with open("SamBam/ex1.bam", "rb") as handle:
     ...     for read in BamIterator(handle):
-    ...         print read.qname, read.flag, read.pos, read.seq
+    ...         print("%s %i %i %s" % (read.qname, read.flag, read.pos, read.seq))
     ...         if read.qname == "EAS219_FC30151:3:40:1128:1940": break
     EAS56_57:6:190:289:82 69 99 CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
     EAS56_57:6:190:289:82 137 99 AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC
     EAS51_64:3:190:727:308 99 102 GGTGCAGAGCCGAGTCACGGGGTTGCCAGCACAGG
     EAS112_34:7:141:80:875 99 109 AGCCGAGTCACGGGGTTGCCAGCACAGGGGCTTAA
     EAS219_FC30151:3:40:1128:1940 163 111 CCGAGTCACGGGGTTGCCAGCACAGGGGCTTAACC
-    >>> print read.qual
+    >>> print(read.qual)
     <<<<<<<<<<<<<<<<<<<;<<5;;<<<9;;;;7:
-    >>> print read.mapq
+    >>> print(read.mapq)
     99
-    >>> print read.rname, read.pos
+    >>> print("%s %i" % (read.rname, read.pos))
     chr1 111
-    >>> print read.rnext, read.pnext #aka RNEXT and PNEXT
+    >>> print("%s %i" % (read.rnext, read.pnext)) #aka RNEXT and PNEXT
     chr1 290
-    >>> print read.tlen #aka TLEN
+    >>> print(read.tlen) #aka TLEN
     214
-    >>> print read.cigar
+    >>> print(read.cigar)
     [(0, 35)]
-    >>> print read.cigar_str
+    >>> print(read.cigar_str)
     35M
 
 
@@ -449,11 +451,11 @@ class BamIterator(object):
 
         >>> handle = open("SamBam/ex1.bam", "rb")
         >>> bam = BamIterator(handle, bai_filename="SamBam/ex1.bam.bai")
-        >>> print bam.nreferences
+        >>> print(bam.nreferences)
         2
-        >>> print bam.references
+        >>> print(bam.references)
         ('chr1', 'chr2')
-        >>> print bam._unmapped
+        >>> print(bam._unmapped)
         0
         >>> reads = list(bam.fetch("chr1", 120, 150))
         >>> len(reads)
@@ -472,15 +474,15 @@ class BamIterator(object):
         h = self._h
         required_flag = 0
         excluded_flag = 0x4 #Unmapped
-        #print "%s region %i:%i covers bins %r" % (reference, start, end, bins)
-        #print "Baby-bin offsets:", offsets
+        #print("%s region %i:%i covers bins %r" % (reference, start, end, bins))
+        #print("Baby-bin offsets: %r" % offsets)
         all_chunks = []
         for bin in bins:
-            #print "bin %i" % bin
+            #print("bin %i" % bin)
             try:
                 chunks = index[bin]
             except KeyError:
-                #print "No chunks for bin %i" % bin
+                #print("No chunks for bin %i" % bin)
                 continue
             if bin < 4681:
                 min_offset = None
@@ -506,8 +508,8 @@ class BamIterator(object):
                     h.seek(s_offset)
                 while h.tell() < e_offset:
                     #now = h.tell()
-                    #print "Now at %i (%i, %i) and about to load read..." \
-                    #      % (now, split_virtual_offset(now)[0], split_virtual_offset(now)[1])
+                    #print("Now at %i (%i, %i) and about to load read..." \
+                    #      % (now, split_virtual_offset(now)[0], split_virtual_offset(now)[1]))
                     try:
                         read = _load_next_bam_read(h, references,
                                                    required_flag, excluded_flag)
@@ -539,7 +541,7 @@ class BamIterator(object):
                         assert reference == read.rname, "%s vs %s for read %s" % (reference, read.rname, read.qname)
                         #Looks good
                         yield read
-            #print "Done all chunks for bin %i" % bin
+            #print("Done all chunks for bin %i" % bin)
 
 
 def _load_next_bam_read(h, references, required_flag, excluded_flag):
@@ -587,8 +589,8 @@ def _load_next_bam_read(h, references, required_flag, excluded_flag):
                         mapped_len += length
                 expected_bin = reg2bin(ref_pos, ref_pos+mapped_len)
                 if bin != expected_bin:
-                    print "%s mapping to %i:%i, expected bin %i, got %i" \
-                    % (read_name, ref_pos, ref_pos+mapped_len, expected_bin, bin)
+                    print("%s mapping to %i:%i, expected bin %i, got %i"
+                          % (read_name, ref_pos, ref_pos+mapped_len, expected_bin, bin))
             """
             return BamRead(read_name, flag, ref_name, ref_pos, map_qual,
                           raw_cigar, mate_ref_name, mate_ref_pos,
@@ -677,11 +679,11 @@ def _bam_file_header(handle):
                          "with bytes 'BAM\1', not %r" % magic)
     assert 4 == struct.calcsize("<i")
     data = handle.read(4)
-    #raise ValueError("Got %s" % repr(data))
+    #raise ValueError("Got %r" % data)
     header_length = struct.unpack("<i", data)[0]
     header = _as_string(handle.read(header_length).rstrip(_null_byte))
     data = handle.read(4)
-    #raise ValueError("Got %s" % repr(data))
+    #raise ValueError("Got %r" % data)
     num_refs = struct.unpack("<i", data)[0]
     return header, num_refs
 
@@ -695,7 +697,7 @@ def _bam_file_reference(handle):
     >>> handle = gzip.open("SamBam/ex1.bam", "rb")
     >>> header, num_refs = _bam_file_header(handle)
     >>> for i in range(num_refs):
-    ...     print _bam_file_reference(handle)
+    ...     print(_bam_file_reference(handle))
     ('chr1', 1575)
     ('chr2', 1584)
     >>> handle.close()
@@ -713,16 +715,16 @@ def _bam_file_read_header(handle):
     >>> handle = gzip.open("SamBam/ex1.bam", "rb")
     >>> header, num_refs = _bam_file_header(handle)
     >>> for i in range(num_refs):
-    ...     print _bam_file_reference(handle)
+    ...     print(_bam_file_reference(handle))
     ('chr1', 1575)
     ('chr2', 1584)
-    >>> print _bam_file_read_header(handle)[:3]
+    >>> print(_bam_file_read_header(handle)[:3])
     ('EAS56_57:6:190:289:82', 38, 153)
     >>> x = handle.seek(153)
-    >>> print _bam_file_read_header(handle)[:3]
+    >>> print(_bam_file_read_header(handle)[:3])
     ('EAS56_57:6:190:289:82', 153, 292)
     >>> x = handle.seek(153)
-    >>> print _bam_file_read_header(handle)[:3]
+    >>> print(_bam_file_read_header(handle)[:3])
     ('EAS56_57:6:190:289:82', 153, 292)
     >>> handle.close()
 
@@ -819,9 +821,9 @@ def _decode_seq(binary, seq_len):
     r"""Helper function to decode BAM style sequence (PRIVATE).
 
     >>> binary = _as_bytes(chr(16+2) + chr(64+8))
-    >>> print _decode_seq(binary, 4)
+    >>> print(_decode_seq(binary, 4))
     ACGT
-    >>> print _decode_seq(binary, 3)
+    >>> print(_decode_seq(binary, 3))
     ACG
 
     TODO - Check last char is equals sign for odd sequences?
@@ -891,7 +893,7 @@ class SamBamReadTags(OrderedDict):
     string, tab separated:
 
     >>> for tag in sorted(str(tags).split("\t")):
-    ...     print tag
+    ...     print(tag)
     CO:Z:My comment
     xx:B:i,1,2,3
 
@@ -947,7 +949,7 @@ class SamBamReadTags(OrderedDict):
     def __str__(self):
         """Returns the tags tab separated in SAM formatting."""
         tags = []
-        for key, (code, data) in self.iteritems():
+        for key, (code, data) in self.items():
             if code.startswith("B"):
                 tags.append("%s:B:%s,%s" % (key, code[1:], ",".join(str(v) for v in data)))
             else:
@@ -958,7 +960,7 @@ class SamBamReadTags(OrderedDict):
     def _as_bam(self):
         """Returns the tags binary encodes in BAM formatting (bytes string)."""
         data = _empty_bytes_string
-        for key, (code, value) in self.iteritems():
+        for key, (code, value) in self.items():
             assert len(key) ==2, key
             if code in ["Z", "H"]:
                 #Store as null terminated string, easy
@@ -1031,16 +1033,16 @@ class SamBamRead(object):
 
     There are helper methods to access the FLAG bit values, e.g.
 
-    >>> print read.flag, hex(read.flag), read.is_unmapped, read.is_qcfail
+    >>> print("%i 0x%x %r %r" % (read.flag, read.flag, read.is_unmapped, read.is_qcfail))
     4 0x4 True False
     >>> read.is_qcfail = True
-    >>> print read.flag, hex(read.flag), read.is_unmapped, read.is_qcfail
+    >>> print("%i 0x%x %r %r" % (read.flag, read.flag, read.is_unmapped, read.is_qcfail))
     516 0x204 True True
     >>> read.is_qcfail = False
-    >>> print read.flag, hex(read.flag), read.is_unmapped, read.is_qcfail
+    >>> print("%i 0x%x %r %r" % (read.flag, read.flag, read.is_unmapped, read.is_qcfail))
     4 0x4 True False
     >>> read.is_unmapped = False
-    >>> print read.flag, hex(read.flag), read.is_unmapped, read.is_qcfail
+    >>> print("%i 0x%x %r %r" % (read.flag, read.flag, read.is_unmapped, read.is_qcfail))
     0 0x0 False False
 
     Just printing or using str(read) gives the read formatted as a
@@ -1098,7 +1100,7 @@ class SamBamRead(object):
                 parts.append(str(self.tags))
         try:
             return "\t".join(parts) + "\n"
-        except TypeError, e:
+        except TypeError as e:
             raise TypeError("%s from join on %r" % (e, parts))
 
     def _as_bam(self, refs):
@@ -1295,7 +1297,7 @@ class SamBamRead(object):
         >>> with open("SamBam/ex1.sam") as handle:
         ...     for read in SamIterator(handle):
         ...         if read.is_mapped:
-        ...             print read.qname, read.pos, read.alen, read.aend
+        ...             print("%s %i %i %i" % (read.qname, read.pos, read.alen, read.aend))
         ...         if read.qname == "EAS219_FC30151:3:40:1128:1940": break
         EAS56_57:6:190:289:82 99 35 134
         EAS51_64:3:190:727:308 102 35 137
@@ -1325,11 +1327,11 @@ class SamRead(SamBamRead):
 
         >>> data = "frag_5022\t16\tNC_000913_bb\t1\t255\t36M1S\t*\t0\t0\tTCTATTCATTATCTCAATAGCTTTTCATTCTGACTGN\tMMMMMMMMMMMMMMKKKK##%')+.024JMMMMMMM!\tRG:Z:Solexa_test\n"
         >>> read = SamRead(data)
-        >>> print read.qname
+        >>> print(read.qname)
         frag_5022
-        >>> print read.pos
+        >>> print(read.pos)
         0
-        >>> print read.pnext
+        >>> print(read.pnext)
         -1
 
         Getting back to the SAM formatted line is easy, print it or use str(),
@@ -1348,7 +1350,7 @@ class SamRead(SamBamRead):
         to disk later on:
 
         >>> read.qname = "Fred"
-        >>> print read.qname
+        >>> print(read.qname)
         Fred
 
         """
@@ -1416,7 +1418,7 @@ class BamRead(SamBamRead):
         object. The bare minimum parsing is done at this point.
 
         >>> read = BamRead(qname='rd01', flag=1, rname="*", pos=-1, mapq=255, binary_cigar='', rnext="*", pnext=-1, tlen=0, read_len=0, binary_seq='', binary_qual='', binary_tags='')
-        >>> print read.qname
+        >>> print(read.qname)
         rd01
 
         Note that a potentially unexpected side effect of this is that
@@ -1435,7 +1437,7 @@ class BamRead(SamBamRead):
         to disk later on:
 
         >>> read.qname = "Fred"
-        >>> print read.qname
+        >>> print(read.qname)
         Fred
 
         """
@@ -1518,9 +1520,10 @@ class BamRead(SamBamRead):
             else:
                 try:
                     qual = "".join(chr(33+ord(byte)) for byte in self._binary_qual)
-                except ValueError, e:
-                    print "Error in %s qual %r" % (self.qname, self._binary_qual)
-                    for byte in self._binary_qual: print repr(byte), ord(byte)
+                except ValueError as e:
+                    print("Error in %s qual %r" % (self.qname, self._binary_qual))
+                    for byte in self._binary_qual:
+                        print("%r %i" % (byte, ord(byte)))
                     raise
             self._qual = qual
             return qual
@@ -1645,7 +1648,7 @@ def SamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     >>> handle = open("saved.sam", "w")
     >>> count = SamWriter(handle, bam)
     >>> handle.close()
-    >>> print "Saved %i reads to SAM file" % count
+    >>> print("Saved %i reads to SAM file" % count)
     Saved 3270 reads to SAM file
 
     For a more complicated example, to get only the properly mapped paired
@@ -1655,7 +1658,7 @@ def SamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     >>> handle = open("saved.sam", "w")
     >>> count = SamWriter(handle, bam)
     >>> handle.close()
-    >>> print "Saved %i reads to SAM file" % count
+    >>> print("Saved %i reads to SAM file" % count)
     Saved 3124 reads to SAM file
 
     """
@@ -1686,7 +1689,7 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     >>> handle = open("saved_from_sam.bam", "wb")
     >>> count = BamWriter(handle, sam)
     >>> handle.close()
-    >>> print "Saved %i reads to BAM file" % count
+    >>> print("Saved %i reads to BAM file" % count)
     Saved 3270 reads to BAM file
 
     And a (silly) example for testing, BAM to BAM,
@@ -1695,7 +1698,7 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     >>> handle = open("saved_from_bam.bam", "wb")
     >>> count = BamWriter(handle, bam)
     >>> handle.close()
-    >>> print "Saved %i reads to BAM file" % count
+    >>> print("Saved %i reads to BAM file" % count)
     Saved 3270 reads to BAM file
 
     """
@@ -1776,19 +1779,19 @@ def _test():
     import doctest
     import os
     if os.path.isdir(os.path.join("..", "..", "..", "Tests")):
-        #print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("..", "..", "..", "Tests"))
         doctest.testmod()
-        print "Done"
+        print("Done")
         os.chdir(cur_dir)
         del cur_dir
     elif os.path.isdir(os.path.join("Tests")):
-        print "Runing doctests..."
+        print("Runing doctests...")
         cur_dir = os.path.abspath(os.curdir)
         os.chdir(os.path.join("Tests"))
         doctest.testmod()
-        print "Done"
+        print("Done")
         os.chdir(cur_dir)
         del cur_dir
 
