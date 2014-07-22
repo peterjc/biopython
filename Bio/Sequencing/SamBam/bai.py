@@ -1,4 +1,4 @@
-# Copyright 2012 by Peter Cock.
+# Copyright 2012-2014 by Peter Cock.
 # All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
@@ -225,30 +225,6 @@ def idxstats(bam_filename, bai_filename):
     yield "*", 0, 0, unmapped
 
 
-def _test():
-    """Run the module's doctests (PRIVATE).
-
-    This will try and locate the unit tests directory, and run the doctests
-    from there in order that the relative paths used in the examples work.
-    """
-    import doctest
-    import os
-    if os.path.isdir(os.path.join("..", "..", "..", "Tests")):
-        print("Runing doctests...")
-        cur_dir = os.path.abspath(os.curdir)
-        os.chdir(os.path.join("..", "..", "..", "Tests"))
-        doctest.testmod()
-        print("Done")
-        os.chdir(cur_dir)
-        del cur_dir
-    elif os.path.isdir(os.path.join("Tests")):
-        print("Runing doctests...")
-        cur_dir = os.path.abspath(os.curdir)
-        os.chdir(os.path.join("Tests"))
-        doctest.testmod()
-        print("Done")
-        os.chdir(cur_dir)
-        del cur_dir
-
 if __name__ == "__main__":
-    _test()
+    from Bio._utils import run_doctest
+    run_doctest()
