@@ -13,9 +13,25 @@ except ImportError:
         "Install pysam if you want to test against it.")
 
 import unittest
-from itertools import izip_longest
+
+try:
+    #Python 3
+    from itertools import zip_longest
+except ImportError:
+    #Python 2
+    from itertools import izip_longest as zip_longest
+
+from Bio._py3k import _as_string
 
 from Bio.Sequencing.SamBam import SamIterator, BamIterator
+
+
+def force_str(value):
+    if value is None:
+        return None
+    else:
+        return _as_string(value)
+
 
 class CrossCheckParsing(unittest.TestCase):
     """Cross checking our SAM/BAM against pysam."""
@@ -35,9 +51,11 @@ class CrossCheckParsing(unittest.TestCase):
             if a_iter.header and b_iter.header:
                 #pysam doesn't infer a minimal SAM header from BAM header
                 self.assertEqual(a_iter.header, b_iter.header)
-        for a, b in izip_longest(a_iter, b_iter):
-            self.assertFalse(b is None, "Extra read in a:\n%s" % a)
-            self.assertFalse(a is None, "Extra read in b:\n%s" % b)
+        for a, b in zip_longest(a_iter, b_iter):
+            if not a or not b:
+                self.assertTrue(False, "Extra read in one file?")
+            #self.assertFalse(b is None, "Extra read in a:\n%s" % a)
+            #self.assertFalse(a is None, "Extra read in b:\n%s" % b)
             self.assertEqual(a.qname, b.qname)
             self.assertEqual(a.flag, b.flag,
                              "%r vs %r for:\n%s\n%s"  % (a.flag, b.flag, a, b))
@@ -62,9 +80,11 @@ class CrossCheckParsing(unittest.TestCase):
             #self.assertEqual(a.mrnm, b.mrnm)
             self.assertEqual(a.mpos, b.mpos)
             self.assertEqual(a.isize, b.isize) #legacy alias
-            self.assertEqual(a.seq, b.seq,
+            #Under Python 3.3, pysam 0.8 returns byte strings for seq
+            self.assertEqual(force_str(a.seq), force_str(b.seq),
                              "%r vs %r for:\n%s\n%s" % (a.seq, b.seq, a, b))
-            self.assertEqual(a.qual, b.qual)
+            #Under Python 3.3, pysam 0.8 returns byte strings for qual
+            self.assertEqual(force_str(a.qual), force_str(b.qual))
             #TODO - tags (not represented same way at the moment)
 
             #assert str(a) == str(b), "Reads disagree,\n%s\n%s\n" % (a,b)
