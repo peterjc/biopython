@@ -485,7 +485,7 @@ class BamIterator(object):
                 #print("No chunks for bin %i" % bin)
                 continue
             if bin < 4681:
-                min_offset = None
+                min_offset = 0
             else:
                 #The high number bins 4681-37449 are the baby-bins, 19Kbp,
                 #which get a linear index of offsets as well
