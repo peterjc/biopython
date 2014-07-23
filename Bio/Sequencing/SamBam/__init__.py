@@ -196,7 +196,9 @@ class SamIterator(object):
     >>> with open("SamBam/ex1.sam") as handle:
     ...     for read in SamIterator(handle):
     ...         print("%s %i %i %s" % (read.qname, read.flag, read.pos, read.seq))
-    ...         if read.qname == "EAS219_FC30151:3:40:1128:1940": break
+    ...         if read.qname == "EAS219_FC30151:3:40:1128:1940":
+    ...             break
+    ...
     EAS56_57:6:190:289:82 69 99 CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
     EAS56_57:6:190:289:82 137 99 AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC
     EAS51_64:3:190:727:308 99 102 GGTGCAGAGCCGAGTCACGGGGTTGCCAGCACAGG
@@ -212,8 +214,10 @@ class SamIterator(object):
     chr1 290
     >>> print(read.tlen) #TLEN aka ISIZE
     214
-    >>> print(read.cigar)
-    [(0, 35)]
+    >>> for op_code, op_len in read.cigar:
+    ...     print("%i %i" % (op_code, op_len))
+    ...
+    0 35
     >>> print(read.cigar_str)
     35M
 
@@ -340,8 +344,10 @@ class BamIterator(object):
     chr1 290
     >>> print(read.tlen) #aka TLEN
     214
-    >>> print(read.cigar)
-    [(0, 35)]
+    >>> for op_code, op_len in read.cigar:
+    ...     print("%i %i" % (op_code, op_len))
+    ...
+    0 35
     >>> print(read.cigar_str)
     35M
 
@@ -729,14 +735,14 @@ def _bam_file_read_header(handle):
     ...     print(_bam_file_reference(handle))
     ('chr1', 1575)
     ('chr2', 1584)
-    >>> print(_bam_file_read_header(handle)[:3])
-    ('EAS56_57:6:190:289:82', 38, 153)
+    >>> print("%s start %i end %i" % _bam_file_read_header(handle)[:3])
+    EAS56_57:6:190:289:82 start 38 end 153
     >>> x = handle.seek(153)
-    >>> print(_bam_file_read_header(handle)[:3])
-    ('EAS56_57:6:190:289:82', 153, 292)
+    >>> print("%s start %i end %i" % _bam_file_read_header(handle)[:3])
+    EAS56_57:6:190:289:82 start 153 end 292
     >>> x = handle.seek(153)
-    >>> print(_bam_file_read_header(handle)[:3])
-    ('EAS56_57:6:190:289:82', 153, 292)
+    >>> print("%s start %i end %i" % _bam_file_read_header(handle)[:3])
+    EAS56_57:6:190:289:82 start 153 end 292
     >>> handle.close()
 
     Returns a tuple of the read name, start offset, end offset, etc.
