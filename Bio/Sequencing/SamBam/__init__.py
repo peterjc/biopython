@@ -519,17 +519,28 @@ class BamIterator(object):
                             read = None
                             pass
                         else:
-                            #Could happen with a bug in BGZF handling.
+                            #Could happen with a bug in BGZF handling?
+                            was = h.tell()
+                            assert was != e_offset
                             data = h.read(20)
                             now = h.tell()
-                            raise ValueError("Premature end of file? Now %i (%i, %i), %r, "
-                                             " expected to get to %i (%i, %i)" \
-                                  % (now,
-                                     bgzf.split_virtual_offset(now)[0],
-                                     bgzf.split_virtual_offset(now)[1], data,
-                                     e_offset,
-                                     bgzf.split_virtual_offset(e_offset)[0],
-                                     bgzf.split_virtual_offset(e_offset)[1]))
+                            if not data and now == e_offset:
+                                #Appear we just jumped over an empty BGZF block used as EOF
+                                pass
+                            else:
+                                raise ValueError("Premature end of file? Expected offset %i (%i, %i), "
+                                                 "was %i (%i, %i); read %r (%i bytes), now %i (%i, %i)." % (
+                                        e_offset,
+                                        bgzf.split_virtual_offset(e_offset)[0],
+                                        bgzf.split_virtual_offset(e_offset)[1],
+                                        was,
+                                        bgzf.split_virtual_offset(was)[0],
+                                        bgzf.split_virtual_offset(was)[1],
+                                        data,
+                                        len(data),
+                                        now,
+                                        bgzf.split_virtual_offset(now)[0],
+                                        bgzf.split_virtual_offset(now)[1]))
                         break
                     if read is None:
                         #If the read didn't match the required flags will get None
