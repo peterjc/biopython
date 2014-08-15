@@ -43,7 +43,7 @@ distance_converter(PyObject* object, void* pointer)
   { PyErr_SetString(PyExc_ValueError, "distance should be a string");
     return 0;
   }
-  if (strlen(data)!=1)
+  if ((PyUnicode_Check(object) && PyUnicode_GET_SIZE(object)!=1) || strlen(data)!=1)
   { PyErr_SetString(PyExc_ValueError, "distance should be a single character");
     return 0;
   }
@@ -72,7 +72,7 @@ method_treecluster_converter(PyObject* object, void* pointer)
   { PyErr_SetString(PyExc_ValueError, "method should be a string");
     return 0;
   }
-  if (strlen(data)!=1)
+  if ((PyUnicode_Check(object) && PyUnicode_GET_SIZE(object)!=1) || strlen(data)!=1)
   { PyErr_SetString(PyExc_ValueError, "method should be a single character");
     return 0;
   }
@@ -101,7 +101,7 @@ method_kcluster_converter(PyObject* object, void* pointer)
   { PyErr_SetString(PyExc_ValueError, "method should be a string");
     return 0;
   }
-  if (strlen(data)!=1)
+  if ((PyUnicode_Check(object) && PyUnicode_GET_SIZE(object)!=1) || strlen(data)!=1)
   { PyErr_SetString(PyExc_ValueError, "method should be a single character");
     return 0;
   }
@@ -130,7 +130,7 @@ method_clusterdistance_converter(PyObject* object, void* pointer)
   { PyErr_SetString(PyExc_ValueError, "method should be a string");
     return 0;
   }
-  if (strlen(data)!=1)
+  if ((PyUnicode_Check(object) && PyUnicode_GET_SIZE(object)!=1) || strlen(data)!=1)
   { PyErr_SetString(PyExc_ValueError, "method should be a single character");
     return 0;
   }
