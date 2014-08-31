@@ -6,6 +6,9 @@
 """
 This module provides code to work with data from the KEGG database.
 
+This includes functions like kegg_list and kegg_get for using the
+REST-style KEGG API.
+
 References:
 
 Kanehisa, M. and Goto, S.; KEGG: Kyoto Encyclopedia of Genes and Genomes.
@@ -20,6 +23,8 @@ KEGG_DATA_LENGTH = KEGG_LINE_LENGTH - KEGG_ITEM_LENGTH
 # wrap rule = [indent, connect, (splitstr, connect, splitafter, keep), ...]
 _default_wrap = lambda indent: [indent, "", (" ", "", 1, 0)]
 
+from Bio.KEGG._rest import kegg_info, kegg_list_database, kegg_list_dbentries
+from Bio.KEGG._rest import kegg_find, kegg_get, kegg_convert
 
 def _wrap_kegg(line, max_width = KEGG_DATA_LENGTH, wrap_rule = _default_wrap):
     """Wraps the input line  for KEGG output.
