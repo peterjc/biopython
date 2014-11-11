@@ -683,7 +683,7 @@ class FeatureLocation(object):
         the location as well as its positions.
         """
         strand = self.strand
-        if strand == None:
+        if strand is None:
             strand = 0
 
         location_uri = prefix + \
@@ -695,10 +695,10 @@ class FeatureLocation(object):
                        str(strand)
 
         faldo_begin = self._start._rdfize(location_uri + '/',
-                                          offset = 1, 
-                                          identifier = str(self._start))
+                                          offset=1,
+                                          identifier=str(self._start))
         faldo_end = self._end._rdfize(location_uri + '/',
-                                      identifier = str(self._end))
+                                      identifier=str(self._end))
 
         # Reverse begin/end, if feature is located on the reverse strand:
         if self.strand == -1:
@@ -711,8 +711,8 @@ class FeatureLocation(object):
             if self.strand == -1:
                 direction = 'ReverseStrandPosition'
 
-            for position in [ self._start, self._end ]:
-                strandtypes += "<%s/%s> a <%s> .\n"%(
+            for position in [self._start, self._end]:
+                strandtypes += "<%s/%s> a <%s> .\n" % (
                     location_uri,
                     str(position),
                     'http://biohackathon.org/resource/faldo#' + direction
@@ -723,7 +723,7 @@ class FeatureLocation(object):
     <%s> <%s> .
 
 %s
-%s"""%(
+%s""" % (
             strandtypes,
             location_uri,
             'http://biohackathon.org/resource/faldo#Region',
@@ -1360,7 +1360,7 @@ class ExactPosition(int, AbstractPosition):
         # By default perserve any subclass
         return self.__class__(length - int(self))
 
-    def _rdfize(self, prefix, offset = 0, identifier = None):
+    def _rdfize(self, prefix, offset=0, identifier=None):
         """Returns a RDF Turtle representation of the position using FALDO.
 
         The given prefix (a string) will be prepended to URIs that describe
@@ -1370,13 +1370,14 @@ class ExactPosition(int, AbstractPosition):
             identifier = str(self + offset)
 
         return """<%s%s> a <%s> ;
-    <%s> %u ."""%(
+    <%s> %u .""" % (
             prefix,
             identifier,
             'http://biohackathon.org/resource/faldo#ExactPosition',
             'http://biohackathon.org/resource/faldo#position',
             self + offset,
         )
+
 
 class UncertainPosition(ExactPosition):
     """Specify a specific position which is uncertain.
@@ -1539,7 +1540,7 @@ class WithinPosition(int, AbstractPosition):
                               length - self._right,
                               length - self._left)
 
-    def _rdfize(self, prefix, offset = 0, identifier = None):
+    def _rdfize(self, prefix, offset=0, identifier=None):
         """Returns a RDF Turtle representation of the position using FALDO.
 
         The given prefix (a string) will be prepended to URIs that describe
@@ -1558,7 +1559,7 @@ class WithinPosition(int, AbstractPosition):
     <%s> %u .
 
 <%s/end> a <%s> ;
-    <%s> %u ."""%(
+    <%s> %u .""" % (
             position_uri,
             'http://biohackathon.org/resource/faldo#InRangePosition',
             'http://biohackathon.org/resource/faldo#begin',
@@ -1576,6 +1577,7 @@ class WithinPosition(int, AbstractPosition):
             'http://biohackathon.org/resource/faldo#position',
             self._right,
         )
+
 
 class BetweenPosition(int, AbstractPosition):
     """Specify the position of a boundary between two coordinates (OBSOLETE?).
@@ -1678,7 +1680,7 @@ class BetweenPosition(int, AbstractPosition):
                               length - self._right,
                               length - self._left)
 
-    def _rdfize(self, prefix, offset = 0, identifier = None):
+    def _rdfize(self, prefix, offset=0, identifier=None):
         """Returns a RDF Turtle representation of the position using FALDO.
 
         The given prefix (a string) will be prepended to URIs that describe
@@ -1697,7 +1699,7 @@ class BetweenPosition(int, AbstractPosition):
     <%s> %u .
 
 <%s/end> a <%s> ;
-    <%s> %u ."""%(
+    <%s> %u .""" % (
             position_uri,
             'http://biohackathon.org/resource/faldo#InBetweenPosition',
             'http://biohackathon.org/resource/faldo#after',
@@ -1715,6 +1717,7 @@ class BetweenPosition(int, AbstractPosition):
             'http://biohackathon.org/resource/faldo#position',
             self._right,
         )
+
 
 class BeforePosition(int, AbstractPosition):
     """Specify a position where the actual location occurs before it.
@@ -1778,7 +1781,7 @@ class BeforePosition(int, AbstractPosition):
     def _flip(self, length):
         return AfterPosition(length - int(self))
 
-    def _rdfize(self, prefix, offset = 0, identifier = None):
+    def _rdfize(self, prefix, offset=0, identifier=None):
         """Returns a RDF Turtle representation of the position using FALDO.
 
         The given prefix (a string) will be prepended to URIs that describe
@@ -1791,7 +1794,7 @@ class BeforePosition(int, AbstractPosition):
     <%s> <%s%s/end> .
 
 <%s%s/end> a <%s> ;
-    <%s> %u ."""%(
+    <%s> %u .""" % (
             prefix,
             identifier,
             'http://biohackathon.org/resource/faldo#InRangePosition',
@@ -1805,6 +1808,7 @@ class BeforePosition(int, AbstractPosition):
             'http://biohackathon.org/resource/faldo#position',
             self.position + offset,
         )
+
 
 class AfterPosition(int, AbstractPosition):
     """Specify a position where the actual location is found after it.
@@ -1875,7 +1879,7 @@ class AfterPosition(int, AbstractPosition):
     def _flip(self, length):
         return BeforePosition(length - int(self))
 
-    def _rdfize(self, prefix, offset = 0, identifier = None):
+    def _rdfize(self, prefix, offset=0, identifier=None):
         """Returns a RDF Turtle representation of the position using FALDO.
 
         The given prefix (a string) will be prepended to URIs that describe
@@ -1888,7 +1892,7 @@ class AfterPosition(int, AbstractPosition):
     <%s> <%s%s/begin> .
 
 <%s%s/begin> a <%s> ;
-    <%s> %u ."""%(
+    <%s> %u .""" % (
             prefix,
             identifier,
             'http://biohackathon.org/resource/faldo#InRangePosition',
@@ -1902,6 +1906,7 @@ class AfterPosition(int, AbstractPosition):
             'http://biohackathon.org/resource/faldo#position',
             self.position + offset,
         )
+
 
 class OneOfPosition(int, AbstractPosition):
     """Specify a position where the location can be multiple positions.
@@ -1999,7 +2004,7 @@ class OneOfPosition(int, AbstractPosition):
         return self.__class__(length - int(self),
                               [p._flip(length) for p in self.position_choices[::-1]])
 
-    def _rdfize(self, prefix, offset = 0, identifier = None):
+    def _rdfize(self, prefix, offset=0, identifier=None):
         """Returns a RDF Turtle representation of the position using FALDO.
 
         The given prefix (a string) will be prepended to URIs that describe
@@ -2008,7 +2013,7 @@ class OneOfPosition(int, AbstractPosition):
         if not identifier:
             identifier = ':'.join(str(pos) for pos in self.position_choices)
 
-        positions = "<%s%s> a <%s> ."%(
+        positions = "<%s%s> a <%s> ." % (
             prefix,
             identifier,
             'http://biohackathon.org/resource/faldo#OneOfPosition',
@@ -2017,7 +2022,7 @@ class OneOfPosition(int, AbstractPosition):
             positions += "\n" + pos._rdfize(prefix + identifier + '/',
                                      offset,
                                      str(index))
-            positions += "\n<%s%s> <%s> <%s> ."%(
+            positions += "\n<%s%s> <%s> <%s> ." % (
             prefix,
             identifier,
             'http://biohackathon.org/resource/faldo#position',
@@ -2025,6 +2030,7 @@ class OneOfPosition(int, AbstractPosition):
         )
 
         return positions
+
 
 class PositionGap(object):
     """Simple class to hold information about a gap between positions."""

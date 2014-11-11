@@ -4,20 +4,16 @@
 # as part of this package.
 
 """Unittests for RDFization."""
-from __future__ import print_function
 
 import unittest
-import sys
-if sys.version_info[0] == 3:
-    maketrans = str.maketrans
-else:
-    from string import maketrans
 
-from Bio.SeqFeature import FeatureLocation, ExactPosition, WithinPosition, \
-                           BetweenPosition, BeforePosition, AfterPosition, \
-                           OneOfPosition
+from Bio.SeqFeature import FeatureLocation, ExactPosition, WithinPosition
+from Bio.SeqFeature import BetweenPosition, BeforePosition, AfterPosition
+from Bio.SeqFeature import OneOfPosition
 
-class RDFizationMethodTests(unittest.TestCase):
+
+class LocationRDFizationMethodTests(unittest.TestCase):
+    """Location FALDO export tests."""
 
     def test_feature_location(self):
         """Check RDFization of a FeatureLocation object."""
@@ -32,7 +28,7 @@ class RDFizationMethodTests(unittest.TestCase):
 <http://unit-test/Location5-10:0/10> a <http://biohackathon.org/resource/faldo#ExactPosition> ;
     <http://biohackathon.org/resource/faldo#position> 10 .""")
 
-        rdf = FeatureLocation(5, 10, strand = -1)._rdfize('http://unit-test/')
+        rdf = FeatureLocation(5, 10, strand=-1)._rdfize('http://unit-test/')
         self.assertEqual(rdf,
                          """<http://unit-test/Location5-10:-1/5> a <http://biohackathon.org/resource/faldo#ReverseStrandPosition> .
 <http://unit-test/Location5-10:-1/10> a <http://biohackathon.org/resource/faldo#ReverseStrandPosition> .
@@ -103,10 +99,9 @@ class RDFizationMethodTests(unittest.TestCase):
     def test_one_of_position(self):
         """Check RDFization of an OneOfPosition object."""
         rdf = OneOfPosition(10,
-                            [
-                                ExactPosition(9),
-                                ExactPosition(10),
-                                ExactPosition(11)
+                            [ExactPosition(9),
+                             ExactPosition(10),
+                             ExactPosition(11),
                             ])._rdfize('http://unit-test/')
         self.assertEqual(rdf,
                          """<http://unit-test/9:10:11> a <http://biohackathon.org/resource/faldo#OneOfPosition> .
@@ -121,5 +116,5 @@ class RDFizationMethodTests(unittest.TestCase):
 <http://unit-test/9:10:11> <http://biohackathon.org/resource/faldo#position> <http://unit-test/9:10:11/2> .""")
 
 if __name__ == "__main__":
-    runner = unittest.TextTestRunner(verbosity = 2)
+    runner = unittest.TextTestRunner(verbosity=2)
     unittest.main(testRunner=runner)
