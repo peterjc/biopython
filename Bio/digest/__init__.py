@@ -11,8 +11,7 @@ from __future__ import division, print_function
 from collections import namedtuple
 import re
 
-from . import RestrictionDB
-
+from . import rebase
 
 _codes = {"A": "A", "C": "C", "G": "G", "T": "T",
           "R": "GA", "Y": "TC", "K": "GT", "M": "AC", "S": "GC", "W": "AT",
@@ -64,8 +63,8 @@ class Restriction(namedtuple("Restriction",
     def load_all(cls):
         """Populate cls.all and cls.commercial from the database.
         """
-        patterns = RestrictionDB.patterns()
-        information = RestrictionDB.information()
+        patterns = rebase.patterns()
+        information = rebase.information()
         for name, pattern in patterns.items():
             if not pattern.cuts:
                 continue # ignore enzymes with unknown cutting site
