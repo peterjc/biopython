@@ -24,8 +24,7 @@ _complement = {"A": "T", "C": "G", "G": "C", "T": "A",
 
 
 class Seq(str):
-    """A DNA sequence object, including linear/circular information.
-    """
+    """A DNA sequence object, including linear/circular information."""
 
     def __new__(cls, s, circular=False):
         self = super(Seq, cls).__new__(Seq, s)
@@ -61,17 +60,16 @@ class Restriction(namedtuple("Restriction",
 
     @classmethod
     def load_all(cls):
-        """Populate cls.all and cls.commercial from the database.
-        """
+        """Populate cls.all and cls.commercial from the database."""
         patterns = rebase.patterns()
         information = rebase.information()
         for name, pattern in patterns.items():
             if not pattern.cuts:
-                continue # ignore enzymes with unknown cutting site
+                continue  # ignore enzymes with unknown cutting site
             if len(pattern.cuts) == 2:
                 (c1, c2), (c3, c4) = pattern.cuts
                 if c2 - c1 != c4 - c3:
-                    continue # ignore HaeIV (EMBOSS v301)
+                    continue  # ignore HaeIV (EMBOSS v301)
             info = information[name]
             cls.all[name] = cls(name, pattern.site, pattern.cuts,
                                 info.methylation, info.suppliers)
@@ -79,37 +77,31 @@ class Restriction(namedtuple("Restriction",
                 cls.commercial[name] = cls.all[name]
 
     def __len__(self):
-        """Return the length of the recognition site.
-        """
+        """Return the length of the recognition site."""
         return len(self.site)
 
     def isoschizomer(self, other):
-        """Return whether two enzymes have the same site.
-        """
+        """Return whether two enzymes have the same site."""
         return isinstance(other, Restriction) and self.site == other.site
 
     def neoschizomer(self, other):
-        """Return whether two enzymes have the same site but cut differently.
-        """
+        """Return whether two enzymes have the same site but cut differently."""
         return self.isoschizomer(other) and self.cuts != other.cuts
 
     def isoschizomers(self, batch=None):
-        """Lists the isoschizomers of an enzyme from a batch, or all enzymes.
-        """
+        """Lists the isoschizomers of an enzyme from a batch, or all enzymes."""
         if batch is None:
             batch = self.all
         return sorted(x for x in batch if x.isoschizomer(self) and x != self)
 
     def neoschizomers(self, batch=None):
-        """Lists the neoschizomers of an enzyme from a batch, or all enzymes.
-        """
+        """Lists the neoschizomers of an enzyme from a batch, or all enzymes."""
         if batch is None:
             batch = self.all
         return sorted(x for x in batch if x.neoschizomer(self))
 
     def __str__(self):
-        """Return the enzyme name followed by its pattern.
-        """
+        """Return the enzyme name followed by its pattern."""
         cuts_pos, cuts_neg = zip(*self.cuts)
         markers = sorted([(cut, "^") for cut in cuts_pos] +
                          [(cut, "_") for cut in cuts_neg])
@@ -138,21 +130,19 @@ class Restriction(namedtuple("Restriction",
         if cut_neg == cut_pos + 1:
             return None, ""
         if cut_pos > cut_neg:
-            return 3, str_self[cut_neg+1:cut_pos]
+            return 3, str_self[cut_neg + 1:cut_pos]
         else:
-            return 5, str_self[cut_pos+1:cut_neg]
+            return 5, str_self[cut_pos + 1:cut_neg]
 
     def always_compatible(self, other):
-        """Test whether the product of two digests are always compatible.
-        """
+        """Test whether the product of two digests are always compatible."""
         type1, ov1 = self.overhang
         type2, ov2 = other.overhang
         return (type1 == type2 and ov1 == ov2 and
                 "N" not in ov1 and "N" not in ov2)
 
     def perhaps_compatible(self, other):
-        """Test whether the product of two digests may be compatible.
-        """
+        """Test whether the product of two digests may be compatible."""
         type1, ov1 = self.overhang
         type2, ov2 = other.overhang
         return (type1 == type2 and len(ov1) == len(ov2) and
@@ -161,16 +151,14 @@ class Restriction(namedtuple("Restriction",
 
     @property
     def frequency(self):
-        """Return the inverse of the frequency of a site.
-        """
+        """Return the inverse of the frequency of a site."""
         f = 1
         for b in self.site:
             f *= 4 / len(_codes[b])
         return f
 
     def search(self, seq):
-        """List in order the indices after which an enzyme cuts on a + strand.
-        """
+        """List in order the indices after which an enzyme cuts on a + strand."""
         if seq.circular:
             seq += seq[:len(self.site) - 1]
         regexp_pos = "".join("[" + _codes[b] + "]" for b in self.site)
@@ -186,8 +174,7 @@ class Restriction(namedtuple("Restriction",
         return sorted(matches)
 
     def catalyze(self, seq):
-        """List the + strands obtained by a digest.
-        """
+        """List the + strands obtained by a digest."""
         fragments = []
         previdx = 0
         for idx in self.search(seq):
@@ -204,14 +191,12 @@ Restriction.load_all()
 
 
 def analyze(seq, enzymes=Restriction.all.values()):
-    """Maps enzymes (by default, all) to the points they cut in a sequence.
-    """
+    """Maps enzymes (by default, all) to the points they cut in a sequence."""
     return {enzyme.name: enzyme.search(seq) for enzyme in enzymes}
 
 
 def pretty_str(seq, analysis):
-    """Creates a prettified string of a restriction analysis.
-    """
+    """Creates a prettified string of a restriction analysis."""
     width = 80
     start = 0
     pretty = ""
@@ -225,13 +210,13 @@ def pretty_str(seq, analysis):
         for cp in sorted(cps):
             for name in cps[cp]:
                 for s, marker in zip(ss, markers):
-                    if all(c == " " for c in s[cp:cp+len(name)]):
-                        s[cp:cp+len(name)] = name
+                    if all(c == " " for c in s[cp:cp + len(name)]):
+                        s[cp:cp + len(name)] = name
                         marker.add(cp)
                         break
                 else:
                     ss.append([" "] * len(seq))
-                    ss[-1][cp:cp+len(name)] = name
+                    ss[-1][cp:cp + len(name)] = name
                     markers.append({cp})
         ss.insert(0, [" "] * len(seq))
         for i, s in enumerate(ss):

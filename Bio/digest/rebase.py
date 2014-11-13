@@ -13,22 +13,20 @@ from collections import namedtuple
 import os
 import urllib2
 
-
 _dir = os.path.dirname(__file__)
 
 
 def suppliers():
-    """Return a dict of supplier keys to supplier names.
-    """
+    """Return a dict of supplier keys to supplier names."""
     with open(os.path.join(_dir, "emboss_s.txt")) as f:
         return dict(line.strip().split(None, 1)
                     for line in f if not line.startswith("#"))
 
 
 def patterns():
-    """Return a dict of enzyme names to enzyme patterns.
-    """
+    """Return a dict of enzyme names to enzyme patterns."""
     Pattern = namedtuple("Pattern", ("name", "site", "cuts"))
+
     def to_restriction(name, site, length, ncuts, blunt, c1, c2, c3, c4):
         c1, c2, c3, c4 = map(int, (c1, c2, c3, c4))
         if ncuts == "0":
@@ -38,14 +36,14 @@ def patterns():
         elif ncuts == "4":
             cuts = [(c1, c2), (c3, c4)]
         return name, Pattern(name, site.upper(), cuts)
+
     with open(os.path.join(_dir, "emboss_e.txt")) as f:
         return dict(to_restriction(*line.strip().split())
                     for line in f if not line.startswith("#"))
 
 
 def information():
-    """Return a dict of enzyme names to enzyme informations.
-    """
+    """Return a dict of enzyme names to enzyme informations."""
     Information = namedtuple(
         "Information",
         ("name", "organism", "isoschizomers", "methylation", "source",
@@ -71,8 +69,7 @@ def information():
 
 
 def update_db():
-    """Download the EMBOSS files from the NEB server and check their validity.
-    """
+    """Download the EMBOSS files from the NEB server and check their validity."""
     for fname in ["emboss_e.txt", "emboss_r.txt", "emboss_s.txt"]:
         file = urllib2.urlopen("ftp://ftp.neb.com/pub/rebase/" + fname)
         with open(os.path.join(_dir, fname), "w") as out:
@@ -110,8 +107,7 @@ def update_db():
 
 
 def ensure_db():
-    """Download the missing EMBOSS files, if needed.
-    """
+    """Download the missing EMBOSS files, if needed."""
     required = ["emboss_{}.txt".format(c) for c in "ers"]
     if any(fname not in os.listdir(_dir) for fname in required):
         update_db()
