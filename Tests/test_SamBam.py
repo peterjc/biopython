@@ -114,12 +114,16 @@ class MiscTests(unittest.TestCase):
     def test_sam_vs_bam_bins(self):
         self.compare(SamIterator(open("SamBam/bins.sam")),
                      BamIterator(open("SamBam/bins.bam", "rb")))
+
+    def test_sam_vs_bam_bins_unzipped(self):
         self.compare(SamIterator(open("SamBam/bins.sam")),
                      BamIterator(gzip.open("SamBam/bins.bam"), gzipped=False))
 
     def test_sam_vs_bam_tags(self):
         self.compare(SamIterator(open("SamBam/tags.sam")),
                      BamIterator(open("SamBam/tags.bam", "rb")))
+
+    def test_sam_vs_bam_tags_unzipped(self):
         self.compare(SamIterator(open("SamBam/tags.sam")),
                      BamIterator(gzip.open("SamBam/tags.bam"), gzipped=False))
 
