@@ -1,4 +1,4 @@
-# Copyright 2010-2012 by Peter Cock.
+# Copyright 2010-2014 by Peter Cock.
 # All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
@@ -12,12 +12,12 @@ import sys
 try:
     from itertools import izip_longest
 except ImportError:
-    #That was renamed in Python 3, should be fixed by 2to3 but not:
-    #http://bugs.python.org/issue11438
+    # That was renamed in Python 3, should be fixed by 2to3 but not:
+    # http://bugs.python.org/issue11438
     try:
         from itertools import zip_longest as izip_longest
     except ImportError:
-        #Not present at all on Python 2.5 or Jython
+        # Not present at all on Python 2.5 or Jython
         def izip_longest(A, B):
             a_iter = iter(A)
             b_iter = iter(B)
@@ -36,23 +36,25 @@ except ImportError:
                     yield a, b
 
 try:
-    #This is in Python 2.6+, but we need it on Python 3
+    # This is in Python 2.6+, but we need it on Python 3
     from io import BytesIO
 except ImportError:
-    #Must be on Python 2.5 or older
+    # Must be on Python 2.5 or older
     from StringIO import StringIO as BytesIO
 
 from Bio.Sequencing.SamBam import SamIterator, BamIterator
 from Bio.Sequencing.SamBam import SamWriter, BamWriter
 
-def _comp_float(a,b):
-    return repr(a)==repr(b) or a==b or abs(float(a)-float(b))<0.000001,
+
+def _comp_float(a, b):
+    return repr(a) == repr(b) or a == b or abs(float(a) - float(b)) < 0.000001
+
 
 class MiscTests(unittest.TestCase):
     """Misc SAM/BAM tests."""
 
     def compare(self, a_iter, b_iter):
-        #Note considerable overlap with method in test_SamBam_pysam.py
+        # Note considerable overlap with method in test_SamBam_pysam.py
         self.assertEqual(a_iter.nreferences, b_iter.nreferences)
         self.assertEqual(a_iter.references, b_iter.references)
         self.assertEqual(a_iter.lengths, b_iter.lengths)
@@ -63,15 +65,15 @@ class MiscTests(unittest.TestCase):
             self.assertFalse(a is None, "Extra read in b:\n%s" % b)
             self.assertEqual(a.qname, b.qname)
             self.assertEqual(a.flag, b.flag,
-                             "%r vs %r for:\n%s\n%s"  % (a.flag, b.flag, a, b))
+                             "%r vs %r for:\n%s\n%s" % (a.flag, b.flag, a, b))
             self.assertEqual(a.rname, b.rname,
-                             "%r vs %r for:\n%s\n%s"  % (a.rname, b.rname, a, b))
+                             "%r vs %r for:\n%s\n%s" % (a.rname, b.rname, a, b))
             self.assertEqual(a.pos, b.pos,
-                             "%r vs %r for:\n%s\n%s"  % (a.pos, b.pos, a, b))
+                             "%r vs %r for:\n%s\n%s" % (a.pos, b.pos, a, b))
             self.assertEqual(a.alen, b.alen,
-                             "%r vs %r for:\n%s\n%s"  % (a.alen, b.alen, a, b))
+                             "%r vs %r for:\n%s\n%s" % (a.alen, b.alen, a, b))
             self.assertEqual(a.aend, b.aend,
-                             "%r vs %r for:\n%s\n%s"  % (a.aend, b.aend, a, b))
+                             "%r vs %r for:\n%s\n%s" % (a.aend, b.aend, a, b))
             self.assertEqual(a.mapq, b.mapq)
             self.assertEqual(a.cigar, b.cigar,
                              "%r vs %r for:\n%s\n%s" % (a.cigar, b.cigar, a, b))
@@ -85,21 +87,21 @@ class MiscTests(unittest.TestCase):
             self.assertEqual(a.tags.keys(), b.tags.keys())
             for key in a.tags:
                 self.assertEqual(a.tags[key][0], b.tags[key][0],
-                       "%s tag %s has codes %s vs %s" % \
-                       (a.qname, key, a.tags[key][0], b.tags[key][0]))
-                if a.tags[key][0]=="f":
-                    self.assertTrue(str(a.tags[key][1]) == str(b.tags[key][1]) or \
-                                    abs(a.tags[key][1] - b.tags[key][1]) < 0.00001, \
-                                    "%s tag %s have %f vs %f" % \
-                                    (a.qname, key, a.tags[key][1], b.tags[key][1]))
-                elif a.tags[key][0]=="Bf":
+                                 "%s tag %s has codes %s vs %s"
+                                 % (a.qname, key, a.tags[key][0], b.tags[key][0]))
+                if a.tags[key][0] == "f":
+                    self.assertTrue(str(a.tags[key][1]) == str(b.tags[key][1]) or
+                                    abs(a.tags[key][1] - b.tags[key][1]) < 0.00001,
+                                    "%s tag %s have %f vs %f"
+                                    % (a.qname, key, a.tags[key][1], b.tags[key][1]))
+                elif a.tags[key][0] == "Bf":
                     pass
                 else:
                     self.assertEqual(a.tags[key][1], b.tags[key][1],
-                           "%s tag %s:%s has %s vs %s" % \
-                           (a.qname, key, a.tags[key][0], a.tags[key][1], b.tags[key][1]))
-            #Float formating in tags is annoying...
-            #assert str(a) == str(b), "Reads disagree,\n%s\n%s\n" % (a,b)
+                                     "%s tag %s:%s has %s vs %s"
+                                     % (a.qname, key, a.tags[key][0], a.tags[key][1], b.tags[key][1]))
+            # Float formating in tags is annoying...
+            # assert str(a) == str(b), "Reads disagree,\n%s\n%s\n" % (a,b)
 
     def test_bam_vs_bam_ex1(self):
         self.compare(BamIterator(open("SamBam/ex1_header.bam", "rb")),
@@ -129,7 +131,7 @@ class MiscTests(unittest.TestCase):
 
     def test_tags_sam(self):
         for read in SamIterator(open("SamBam/tags.sam")):
-            #TODO - Test API for getting tag values
+            # TODO - Test API for getting tag values
             tag = str(read).rstrip("\n").split("\t")[-1]
             self.assertEqual(read.qname, "tag_" + tag,
                              "%s vs tag of %s" % (read.qname, tag))
@@ -152,13 +154,13 @@ class MiscTests(unittest.TestCase):
                     old = tuple(float(v) for v in read.qname.split(":B:f,")[1].split(","))
                     new = tuple(float(v) for v in tag.split(":")[2][2:].split(","))
                     self.assertEqual(len(old), len(new),
-                                     "Ccount mismatch %i vs %i in %s\n%s\n%s\n" \
+                                     "Ccount mismatch %i vs %i in %s\n%s\n%s\n"
                                      % (len(old), len(new), read.qname, old, new))
-                    for a,b in zip(old, new):
+                    for a, b in zip(old, new):
                         self.assertTrue(_comp_float(a, b),
                                         "Mismatch in %s,\n%s\n%s" % (read.qname, old, new))
                 else:
-                    #Integers
+                    # Integers
                     old = [int(v) for v in read.qname.split(":B:")[1][2:].split(",")]
                     new = [int(v) for v in tag.split(":")[2][2:].split(",")]
                     self.assertEqual(old, new,
@@ -180,12 +182,12 @@ class RecreateTests(unittest.TestCase):
     def check_old_new(self, old, new, name):
         self.assertEqual(old[:100], new[:100])
         self.assertEqual(len(old), len(new))
-        #Idea behind using batches of 16 is for easier cross referencing
-        #with a tools like hexdump -C
+        # Idea behind using batches of 16 is for easier cross referencing
+        # with a tools like hexdump -C
         for i in range(0, len(old), 16):
-            self.assertEqual(old[i:i+16], new[i:i+16],
-                             "Mismatch recreating %s bytes %i to %i (0x%x to 0x%x),\n%r\n%r\n" \
-                             % (name, i, i+16, i, i+16, old[i:i+16], new[i:i+16]))
+            self.assertEqual(old[i:i + 16], new[i:i + 16],
+                             "Mismatch recreating %s bytes %i to %i (0x%x to 0x%x),\n%r\n%r\n"
+                             % (name, i, i + 16, i, i + 16, old[i:i + 16], new[i:i + 16]))
         self.assertEqual(old, new, "Could not recreate %s perfectly" % name)
 
     def check_bam_to_bam(self, bam_filename):
@@ -202,7 +204,7 @@ class RecreateTests(unittest.TestCase):
         self.check_old_new(gzip.open(bam_filename).read(),
                            handle.getvalue(), bam_filename)
 
-    #TODO - check SAM to SAM (floating points make it tricky)
+    # TODO - check SAM to SAM (floating points make it tricky)
 
     def test_tags_b2b(self):
         self.check_bam_to_bam("SamBam/tags.bam")

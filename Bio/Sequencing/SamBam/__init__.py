@@ -1,4 +1,4 @@
-# Copyright 2010-2013 by Peter Cock.
+# Copyright 2010-2014 by Peter Cock.
 # All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
@@ -174,12 +174,12 @@ import struct
 import sys
 
 try:
-    #Python 2.7+
+    # Python 2.7+
     from collections import OrderedDict
 except ImportError:
     from Bio._py3k import OrderedDict
 
-#Biopython imports:
+# Biopython imports:
 from Bio.Sequencing.SamBam.bai import _load_bai, reg2bin, reg2bins
 from Bio import bgzf
 from Bio._py3k import _as_bytes, _as_string, basestring
@@ -188,7 +188,8 @@ _null_byte = _as_bytes("\0")
 _ff_byte = _as_bytes("\xFF")
 _bam_magic = _as_bytes("BAM" + chr(1))
 
-#TODO - Define CIGAR operator constants here?
+# TODO - Define CIGAR operator constants here?
+
 
 class SamIterator(object):
     """Loop over a SAM file returning SamRead objects.
@@ -247,15 +248,15 @@ class SamIterator(object):
         try:
             line = handle.readline()
         except UnicodeDecodeError:
-            #This could be almost any binary file, but I want the same error on python 3
+            # This could be almost any binary file, but I want the same error on python 3
             raise ValueError("Not a SAM file, perhaps it is BAM format or compressed?.")
         if sys.version_info[0] < 3 and line.startswith(_as_bytes("\x1f\x8b")):
-            #This is triggered on Python 2, means BAM or GZIP but want same error as Python 3
-            #raise ValueError("This looks like a BAM file or gzipped file, not a SAM file.")
+            # This is triggered on Python 2, means BAM or GZIP but want same error as Python 3
+            # raise ValueError("This looks like a BAM file or gzipped file, not a SAM file.")
             raise ValueError("Not a SAM file, perhaps it is BAM format or compressed?.")
         if sys.version_info[0] < 3 and line.startswith(_bam_magic):
-            #i.e. a Naked uncompressed BAM file without the gzip/BGZF wrapper
-            #raise ValueError("This looks like an uncompressed BAM file, not a SAM file.")
+            # i.e. a Naked uncompressed BAM file without the gzip/BGZF wrapper
+            # raise ValueError("This looks like an uncompressed BAM file, not a SAM file.")
             raise ValueError("Not a SAM file, perhaps it is BAM format or compressed?.")
         while line:
             if line[0] != "@":
@@ -274,12 +275,12 @@ class SamIterator(object):
     @property
     def references(self):
         """Names of the reference sequences (read only tuple)."""
-        return tuple(r for r,l in self._references)
+        return tuple(r for r, l in self._references)
 
     @property
     def lengths(self):
         """Lengths of the reference sequences (read only tuple)."""
-        return tuple(l for r,l in self._references)
+        return tuple(l for r, l in self._references)
 
     @property
     def header(self):
@@ -288,32 +289,33 @@ class SamIterator(object):
 
     def __iter__(self):
         handle = self._handle
-        #Mess about with the first read as a special case since it was
-        #already taken from the handle during __iter__ header parsing.
+        # Mess about with the first read as a special case since it was
+        # already taken from the handle during __iter__ header parsing.
         if self._saved_line:
             line = self._saved_line
             self._saved_line = None
         else:
             line = handle.readline()
         if self._required_flag or self._excluded_flag:
-            #Filter the reads
+            # Filter the reads
             required_flag = self._required_flag
             excluded_flag = self._excluded_flag
             while line:
                 if line[0] == "@":
                     raise ValueError("SAM header @ lines must be before the reads")
-                flag = int(line.split("\t",2)[1])
+                flag = int(line.split("\t", 2)[1])
                 if (flag & required_flag == required_flag) \
                 and not (flag & excluded_flag):
                     yield SamRead(line)
                 line = handle.readline()
         else:
-            #Take all the reads
+            # Take all the reads
             while line:
                 if line[0] == "@":
                     raise ValueError("SAM header @ lines must be before the reads")
                 yield SamRead(line)
                 line = handle.readline()
+
 
 class BamIterator(object):
     """Loop over a BAM file returning BamRead objects.
@@ -376,26 +378,25 @@ class BamIterator(object):
         if gzipped:
             h = bgzf.BgzfReader(fileobj=handle, mode="rb")
         else:
-            #Uncompressed BAM (useful in testing)
+            # Uncompressed BAM (useful in testing)
             h = handle
         self.text, ref_count = _bam_file_header(h)
-        #Load any reference information
+        # Load any reference information
         self._references = [_bam_file_reference(h) for i in range(ref_count)]
         if self.text:
             alt_refs = _sam_header_to_ref_list(self.text)
             if not alt_refs:
-                #Append minimal SAM @SQ lines (good idea?)
+                # Append minimal SAM @SQ lines (good idea?)
                 self.text += _ref_list_to_sam_header(self._references)
             elif alt_refs != self._references:
-                raise ValueError("BAM reference names & lengths inconsistent with SAM header @SQ lines") 
+                raise ValueError("BAM reference names & lengths inconsistent with SAM header @SQ lines")
         else:
-            #Generate a minimal SAM style header from the BAM header (good idea?)
+            # Generate a minimal SAM style header from the BAM header (good idea?)
             self.text = _ref_list_to_sam_header(self._references)
         self._h = h
         if bai_filename:
-            #TODO - Make this automatics when we have a normal file handle?
+            # TODO - Make this automatics when we have a normal file handle?
             self._load_index(bai_filename)
-
 
     @property
     def nreferences(self):
@@ -405,12 +406,12 @@ class BamIterator(object):
     @property
     def references(self):
         """Names of the reference sequences (read only tuple)."""
-        return tuple(r for r,l in self._references)
+        return tuple(r for r, l in self._references)
 
     @property
     def lengths(self):
         """Lengths of the reference sequences (read only tuple)."""
-        return tuple(l for r,l in self._references)
+        return tuple(l for r, l in self._references)
 
     @property
     def header(self):
@@ -422,11 +423,11 @@ class BamIterator(object):
         references = self._references
         required_flag = self._required_flag
         excluded_flag = self._excluded_flag
-        #Assumes the handle is just after the header!
-        #Loop over the reads
+        # Assumes the handle is just after the header!
+        # Loop over the reads
         while True:
             read = _load_next_bam_read(h, references, required_flag, excluded_flag)
-            #If the read didn't match the required flags will get None
+            # If the read didn't match the required flags will get None
             if read is not None:
                 yield read
 
@@ -435,7 +436,7 @@ class BamIterator(object):
         indexes, unmapped = _load_bai(handle)
         handle.close()
         if len(indexes) != len(self._references):
-            raise ValueError("Have %i references from BAM, but %i from BAI" \
+            raise ValueError("Have %i references from BAM, but %i from BAI"
                              % (len(self._references), len(indexes)))
         self._indexes = indexes
         self._unmapped = unmapped
@@ -463,33 +464,33 @@ class BamIterator(object):
         >>> handle.close()
 
         """
-        #TODO - Nice slice style API using start:end as well/instead?
+        # TODO - Nice slice style API using start:end as well/instead?
         references = self._references
         i = self.references.index(reference)
         if not self._indexes:
             raise ValueError("BAI file not loaded")
         index, offsets, mapped, unmapped, u_start, u_end = self._indexes[i]
-        #Now find the bins for this region, and the offsets for these bins
+        # Now find the bins for this region, and the offsets for these bins
         bins = reg2bins(start, end)
         h = self._h
         required_flag = 0
-        excluded_flag = 0x4 #Unmapped
-        #print("%s region %i:%i covers bins %r" % (reference, start, end, bins))
-        #print("Baby-bin offsets: %r" % offsets)
+        excluded_flag = 0x4  # Unmapped
+        # print("%s region %i:%i covers bins %r" % (reference, start, end, bins))
+        # print("Baby-bin offsets: %r" % offsets)
         all_chunks = []
         for bin in bins:
-            #print("bin %i" % bin)
+            # print("bin %i" % bin)
             try:
                 chunks = index[bin]
             except KeyError:
-                #print("No chunks for bin %i" % bin)
+                # print("No chunks for bin %i" % bin)
                 continue
             if bin < 4681:
                 min_offset = None
             else:
-                #The high number bins 4681-37449 are the baby-bins, 19Kbp,
-                #which get a linear index of offsets as well
-                min_offset = offsets[bin-4681]
+                # The high number bins 4681-37449 are the baby-bins, 19Kbp,
+                # which get a linear index of offsets as well
+                min_offset = offsets[bin - 4681]
             for s_offset, e_offset in chunks:
                 if e_offset < min_offset:
                     assert False
@@ -498,70 +499,70 @@ class BamIterator(object):
                 else:
                     all_chunks.append((s_offset, e_offset))
         all_chunks.sort()
-        #Chunks are now start order sorted, but can overlap.
-        #Must not parse reads more than once!
-        h.seek(all_chunks[0][0]) #Go to the start of the first chunk
+        # Chunks are now start order sorted, but can overlap.
+        # Must not parse reads more than once!
+        h.seek(all_chunks[0][0])  # Go to the start of the first chunk
         for s_offset, e_offset in all_chunks:
-                #Note virtual offsets are ordered (but can't do addition/subtraction)
+                # Note virtual offsets are ordered (but can't do addition/subtraction)
                 if h.tell() < s_offset:
-                    #We can skip a bit of data between chunks
+                    # We can skip a bit of data between chunks
                     h.seek(s_offset)
                 while h.tell() < e_offset:
-                    #now = h.tell()
-                    #print("Now at %i (%i, %i) and about to load read..." \
-                    #      % (now, split_virtual_offset(now)[0], split_virtual_offset(now)[1]))
+                    # now = h.tell()
+                    # print("Now at %i (%i, %i) and about to load read..."
+                    #       % (now, split_virtual_offset(now)[0], split_virtual_offset(now)[1]))
                     try:
                         read = _load_next_bam_read(h, references,
                                                    required_flag, excluded_flag)
                     except StopIteration:
                         if h.tell() == e_offset:
-                            #The chunk end was the end of the file
+                            # The chunk end was the end of the file
                             read = None
                             pass
                         else:
-                            #Could happen with a bug in BGZF handling.
+                            # Could happen with a bug in BGZF handling.
                             data = h.read(20)
                             now = h.tell()
                             raise ValueError("Premature end of file? Now %i (%i, %i), %r, "
-                                             " expected to get to %i (%i, %i)" \
-                                  % (now,
-                                     bgzf.split_virtual_offset(now)[0],
-                                     bgzf.split_virtual_offset(now)[1], data,
-                                     e_offset,
-                                     bgzf.split_virtual_offset(e_offset)[0],
-                                     bgzf.split_virtual_offset(e_offset)[1]))
+                                             " expected to get to %i (%i, %i)"
+                                             % (now,
+                                                bgzf.split_virtual_offset(now)[0],
+                                                bgzf.split_virtual_offset(now)[1], data,
+                                                e_offset,
+                                                bgzf.split_virtual_offset(e_offset)[0],
+                                                bgzf.split_virtual_offset(e_offset)[1]))
                         break
                     if read is None:
-                        #If the read didn't match the required flags will get None
+                        # If the read didn't match the required flags will get None
                         pass
                     elif end <= read.pos or read.aend <= start:
-                        #Doesn't overlap
+                        # Doesn't overlap
                         pass
                     else:
                         assert reference == read.rname, "%s vs %s for read %s" % (reference, read.rname, read.qname)
-                        #Looks good
+                        # Looks good
                         yield read
-            #print("Done all chunks for bin %i" % bin)
+            # print("Done all chunks for bin %i" % bin)
 
 
 def _load_next_bam_read(h, references, required_flag, excluded_flag):
             """Load next BAM read/fragement from handle or raise StopIteration."""
-            #TODO - Remove indent (left in for a small diff)
-            #TODO - Skip unwanted reads within this function?
+            # TODO - Remove indent (left in for a small diff)
+            # TODO - Skip unwanted reads within this function?
             read_name, start_offset, end_offset, ref_id, ref_pos, \
                 bin, map_qual, cigar_len, flag, read_len, mate_ref_id, \
                 mate_ref_pos, inferred_insert_size, tag_len \
                 = _bam_file_read_header(h)
             raw_cigar = h.read(cigar_len * 4)
-            raw_seq = h.read((read_len+1)//2) # round up to make it even
+            raw_seq = h.read((read_len + 1) // 2)  # round up to make it even
             raw_qual = h.read(read_len)
             if raw_qual == _ff_byte * read_len:
-                #If all 0xFF, treat like QUAL * in SAM
+                # If all 0xFF, treat like QUAL * in SAM
                 raw_qual = _empty_bytes_string
             raw_tags = h.read(tag_len)
-            #Can't do offset arithmatic with BGZF
-            #assert h.tell() == end_offset, \
-            #    "%i vs %i diff %i\n" % (h.tell(), end_offset, h.tell()-end_offset)
+            # Can't do offset arithmatic with BGZF
+            # assert h.tell() == end_offset, \
+            #     "%i vs %i diff %i\n" % (h.tell(), end_offset, h.tell()-end_offset)
             if required_flag and flag & required_flag != required_flag:
                 return None
             if flag & excluded_flag:
@@ -570,17 +571,17 @@ def _load_next_bam_read(h, references, required_flag, excluded_flag):
                 ref_name = "*"
             else:
                 ref_name = references[ref_id][0]
-            #Note SAM files can use '=' when RNAME and RNEXT match,
-            #for consistency can either expand the '=' on loading SAM,
-            #or use the '=' when loading BAM.
+            # Note SAM files can use '=' when RNAME and RNEXT match,
+            # for consistency can either expand the '=' on loading SAM,
+            # or use the '=' when loading BAM.
             if mate_ref_id == -1:
                 mate_ref_name = "*"
             else:
                 mate_ref_name = references[mate_ref_id][0]
             """
-            #Debug code for testing BIN
+            # Debug code for testing BIN
             if cigar_len:
-                #Must decode cigar...
+                # Must decode cigar...
                 mapped_len = 0
                 for value in struct.unpack("<%iI" % cigar_len, raw_cigar):
                     length = value >> 4
@@ -597,6 +598,7 @@ def _load_next_bam_read(h, references, required_flag, excluded_flag):
                           inferred_insert_size, read_len,
                           raw_seq, raw_qual, raw_tags)
 
+
 def ParseSamHeader(text):
     """Parse the SAM plain text header into a two-level dictionary.
 
@@ -610,8 +612,8 @@ def ParseSamHeader(text):
         assert line[3] == "\t"
         k1 = line[1:3]
         if k1 == "CO":
-            #Comments are not tab separated key:value entries
-            #TODO - Compare how pysam stores the comment lines
+            # Comments are not tab separated key:value entries
+            # TODO - Compare how pysam stores the comment lines
             try:
                 d1["CO"].append(line[4:].rstrip())
             except KeyError:
@@ -620,13 +622,13 @@ def ParseSamHeader(text):
         d2 = dict()
         for part in line[4:].rstrip().split("\t"):
             assert part[2] == ":", "Bad header line: %r" % line
-            k, v = part.split(":",1)
-            assert len(k)==2, "Bad header line: %r" % line
-            if k1=="SQ" and k=="LN":
-                #Currently the only case need to cast
+            k, v = part.split(":", 1)
+            assert len(k) == 2, "Bad header line: %r" % line
+            if k1 == "SQ" and k == "LN":
+                # Currently the only case need to cast
                 v = int(v)
             d2[k] = v
-        #Need to understand when pysam uses a list if want to match...
+        # Need to understand when pysam uses a list if want to match...
         if k1 in ["HD"]:
             assert k1 not in d1
             d1[k1] = d2
@@ -637,9 +639,11 @@ def ParseSamHeader(text):
                 d1[k1] = [d2]
     return d1
 
+
 def _ref_list_to_sam_header(references):
-    return "".join(["@SQ\tSN:%s\tLN:%i\n" % (name, length) \
+    return "".join(["@SQ\tSN:%s\tLN:%i\n" % (name, length)
                     for name, length in references])
+
 
 def _sam_header_to_ref_list(header):
     references = []
@@ -654,8 +658,9 @@ def _sam_header_to_ref_list(header):
                     l = int(part[3:])
             if r is None or l is None:
                 raise ValueError("Malformed @SQ header (SN and LN required):\n%r" % line)
-            references.append((r,l))
+            references.append((r, l))
     return references
+
 
 def _bam_file_header(handle):
     """Read in a BAM file header (PRIVATE).
@@ -679,18 +684,19 @@ def _bam_file_header(handle):
                          "with bytes 'BAM\1', not %r" % magic)
     assert 4 == struct.calcsize("<i")
     data = handle.read(4)
-    #raise ValueError("Got %r" % data)
+    # raise ValueError("Got %r" % data)
     header_length = struct.unpack("<i", data)[0]
     header = _as_string(handle.read(header_length).rstrip(_null_byte))
     data = handle.read(4)
-    #raise ValueError("Got %r" % data)
+    # raise ValueError("Got %r" % data)
     num_refs = struct.unpack("<i", data)[0]
     return header, num_refs
+
 
 def _bam_file_reference(handle):
     """Parse next reference in a BAM file (PRIVATE).
 
-    Assumings the handle is just after the header and has already been                                             
+    Assumings the handle is just after the header and has already been
     decompressed (e.g. with the gzip module)
 
     >>> import gzip
@@ -707,6 +713,7 @@ def _bam_file_reference(handle):
     ref_name = _as_string(handle.read(ref_name_len).rstrip(_null_byte))
     ref_len = struct.unpack("<i", handle.read(4))[0]
     return ref_name, ref_len
+
 
 def _bam_file_read_header(handle):
     """Parse the header of the next read in a BAM file (PRIVATE).
@@ -733,7 +740,7 @@ def _bam_file_read_header(handle):
     The offset information is used for indexing - the start offset is to find
     the record on demand, the end offset is used when building the index to
     skip over the rest of the read.
-    
+
     The end offset is also used to determine the end of the tags section.
     """
     start_offset = handle.tell()
@@ -745,7 +752,7 @@ def _bam_file_read_header(handle):
         raise StopIteration
     if len(data) < 36:
         raise ValueError("Premature end of file")
-    #raise ValueError("Data %s = %s" % (repr(data), repr(struct.unpack(fmt, data))))
+    # raise ValueError("Data %s = %s" % (repr(data), repr(struct.unpack(fmt, data))))
 
     block_size, ref_id, ref_pos, read_name_len, map_qual, bin, \
     cigar_len, flag, read_len, mate_ref_id, mate_ref_pos, \
@@ -754,42 +761,43 @@ def _bam_file_read_header(handle):
     if read_name_len > 200 or read_name_len <= 0:
         raise ValueError("A read name length of %i probably means the "
                          "parser is out of sync somehow. Read starts:\n%s"
-                         "\nand the read name would be %s... with flag %i" \
+                         "\nand the read name would be %s... with flag %i"
                          % (read_name_len, repr(data),
                             repr(handle.read(25)), flag))
-    #FLAG 516 is for embedding a reference sequence in SAM/BAM
-    #FLAG 768 is for a dummy read (usually SEQ is * though)
-    if (read_len > 5000 and flag!=516 and flag&768!=768) or read_len < 0:
+    # FLAG 516 is for embedding a reference sequence in SAM/BAM
+    # FLAG 768 is for a dummy read (usually SEQ is * though)
+    if (read_len > 5000 and flag != 516 and flag & 768 != 768) or read_len < 0:
         raise ValueError("A sequence length of %i probably means the parser is out "
                          "of sync somehow. Read starts:\n%s\nand the read name "
-                         "would be %s with flag %i" \
+                         "would be %s with flag %i"
                          % (read_len, repr(data),
                             repr(handle.read(read_name_len)), flag))
 
     read_name = _as_string(handle.read(read_name_len).rstrip(_null_byte))
     end_offset = start_offset + block_size + 4
-    #Block size includes misc fields, read name, seq len, qual len and cigar len
-    tag_len = block_size - 32 - read_name_len - ((read_len+1)//2) - read_len - cigar_len * 4
+    # Block size includes misc fields, read name, seq len, qual len and cigar len
+    tag_len = block_size - 32 - read_name_len - ((read_len + 1) // 2) - read_len - cigar_len * 4
     return read_name, start_offset, end_offset, ref_id, ref_pos, bin, \
            map_qual, cigar_len, flag, read_len, mate_ref_id, mate_ref_pos, \
            inferred_insert_size, tag_len
 
+
 def _build_decoder():
     decode = {}
     encode = {}
-    for i,first in enumerate("=ACMGRSVTWYHKDBN"):
-        b = _as_bytes(chr(i*16))
+    for i, first in enumerate("=ACMGRSVTWYHKDBN"):
+        b = _as_bytes(chr(i * 16))
         encode[first] = b
         encode[first.lower()] = b
-        for j,second in enumerate("=ACMGRSVTWYHKDBN"):
-            b = chr(i*16 + j)
-            decode[b] = first+second #For Python 2
+        for j, second in enumerate("=ACMGRSVTWYHKDBN"):
+            b = chr(i * 16 + j)
+            decode[b] = first + second  # For Python 2
             b = _as_bytes(b)
-            decode[i*16+j] = first+second #For Python 3
-            encode[first+second] = b
-            encode[first.lower()+second] = b
-            encode[first.lower()+second.lower()] = b
-            encode[first+second.lower()] = b
+            decode[i * 16 + j] = first + second  # For Python 3
+            encode[first + second] = b
+            encode[first.lower() + second] = b
+            encode[first.lower() + second.lower()] = b
+            encode[first + second.lower()] = b
 
     assert decode[chr(0)] == "=="
     assert decode[chr(1)] == "=A"
@@ -804,10 +812,10 @@ def _build_decoder():
     assert decode[chr(128)] == "T="
     assert decode[chr(240)] == "N="
 
-    assert decode[chr(16+2)] == "AC", decode[chr(16+2)]
-    assert decode[chr(128+8)] == "TT", decode[chr(128+8)]
-    assert decode[chr(64+4)] == "GG", decode[chr(64+4)]
-    assert decode[chr(64+15)] == "GN", decode[chr(64+15)]
+    assert decode[chr(16 + 2)] == "AC", decode[chr(16 + 2)]
+    assert decode[chr(128 + 8)] == "TT", decode[chr(128 + 8)]
+    assert decode[chr(64 + 4)] == "GG", decode[chr(64 + 4)]
+    assert decode[chr(64 + 15)] == "GN", decode[chr(64 + 15)]
 
     assert encode["gn"] == _as_bytes(chr(79))
     assert encode["Gn"] == _as_bytes(chr(79))
@@ -816,6 +824,7 @@ def _build_decoder():
 
     return decode, encode
 _decode_dibase_byte, _encode_dibase_byte = _build_decoder()
+
 
 def _decode_seq(binary, seq_len):
     r"""Helper function to decode BAM style sequence (PRIVATE).
@@ -833,6 +842,7 @@ def _decode_seq(binary, seq_len):
 assert _decode_seq(_as_bytes('\x12H'), 4) == 'ACGT'
 assert _decode_seq(_as_bytes('\x12H'), 3) == 'ACG'
 
+
 def _encode_seq(seq):
     r"""Helper function to encode BAM style sequence (PRIVATE).
 
@@ -844,11 +854,12 @@ def _encode_seq(seq):
     """
     answer = []
     for i in range(0, len(seq), 2):
-        answer.append(_encode_dibase_byte[seq[i:i+2]])
+        answer.append(_encode_dibase_byte[seq[i:i + 2]])
     return _empty_bytes_string.join(answer)
 assert _encode_seq("ACGT") == _as_bytes('\x12H'), _encode_seq("ACGT")
 assert _encode_seq("ACG=") == _as_bytes('\x12@'), _encode_seq("ACG=")
 assert _encode_seq("ACG") == _as_bytes('\x12@')
+
 
 class SamBamReadTags(OrderedDict):
     r"""Represents the tags for a SAM/BAM read.
@@ -910,7 +921,7 @@ class SamBamReadTags(OrderedDict):
             if not isinstance(data, basestring):
                 raise TypeError("Z type SAM/BAM tag values must be strings, not:\n%r" % data)
         elif code == "A":
-            if not isinstance(data, basestring) or len(data)!=1:
+            if not isinstance(data, basestring) or len(data) != 1:
                 raise TypeError("Z type SAM/BAM tag values must be single character strings, not:\n%r" % data)
         elif code == "i":
             try:
@@ -930,14 +941,14 @@ class SamBamReadTags(OrderedDict):
             except AttributeError:
                 raise TypeError("B arrays require a list/tuple/sequence of numbers, not:\n%r" % data)
         elif code.startswith("B"):
-            #TODO - bounds checking
+            # TODO - bounds checking
             try:
                 data = [int(v) for v in data]
             except ValueError:
                 raise TypeError("B integer arrays require integer values, not:\n%r" % data)
             except AttributeError:
                 raise TypeError("B arrays require a list/tuple/sequence of numbers, not:\n%r" % data)
-        elif code=="H":
+        elif code == "H":
             try:
                 int(data, 16)
             except ValueError:
@@ -954,58 +965,58 @@ class SamBamReadTags(OrderedDict):
                 tags.append("%s:B:%s,%s" % (key, code[1:], ",".join(str(v) for v in data)))
             else:
                 tags.append("%s:%s:%s" % (key, code, data))
-        #tags.sort() #Want this consistent regardless of Python implementation
+        # tags.sort()  # Want this consistent regardless of Python implementation
         return "\t".join(tags)
 
     def _as_bam(self):
         """Returns the tags binary encodes in BAM formatting (bytes string)."""
         data = _empty_bytes_string
         for key, (code, value) in self.items():
-            assert len(key) ==2, key
+            assert len(key) == 2, key
             if code in ["Z", "H"]:
-                #Store as null terminated string, easy
+                # Store as null terminated string, easy
                 assert isinstance(value, basestring), "%s %s %r" % (key, code, value)
                 data += _as_bytes(key + code + value) + _null_byte
             elif code == "i":
-                #TODO - Time this with try/except letting struct do bounds checking
-                #Integer, but how much space will we need in BAM?
+                # TODO - Time this with try/except letting struct do bounds checking
+                # Integer, but how much space will we need in BAM?
                 if value >= 0:
-                    #Use an unsigned int
-                    if value < 2**8:
+                    # Use an unsigned int
+                    if value < 2 ** 8:
                         data += _as_bytes(key + "C") + struct.pack("<B", value)
-                    elif value < 2**16:
+                    elif value < 2 ** 16:
                         data += _as_bytes(key + "S") + struct.pack("<H", value)
-                    elif value < 2**32:
+                    elif value < 2 ** 32:
                         data += _as_bytes(key + "I") + struct.pack("<I", value)
                     else:
                         raise ValueError("%s:%s:%i too big for BAM unsigned 32bit int" % (key, code, value))
                 else:
-                    #Use a signed int
-                    if -2**7 < value:
+                    # Use a signed int
+                    if -2 ** 7 < value:
                         data += _as_bytes(key + "c") + struct.pack("<b", value)
-                    elif -2**15 < value:
+                    elif -2 ** 15 < value:
                         data += _as_bytes(key + "s") + struct.pack("<h", value)
-                    elif -2**31 < value:
+                    elif -2 ** 31 < value:
                         data += _as_bytes(key + "i") + struct.pack("<i", value)
                     else:
                         raise ValueError("%s:%s:%i too big for BAM signed 32bit int" % (key, code, value))
-            elif code=="f":
-                #Float
+            elif code == "f":
+                # Float
                 data += _as_bytes(key + code) + struct.pack("<f", value)
-            elif code[0]=="B":
-                #Array of ints/floats etc
-                assert len(code)==2
-                bam2struct = {"c":"b", "C":"B",
-                              "s":"h", "S":"H",
-                              "i":"i", "I":"I",
-                              "f":"f"}
+            elif code[0] == "B":
+                # Array of ints/floats etc
+                assert len(code) == 2
+                bam2struct = {"c": "b", "C": "B",
+                              "s": "h", "S": "H",
+                              "i": "i", "I": "I",
+                              "f": "f"}
                 data += _as_bytes(key + code) + struct.pack("<I%i%s" % (len(value), bam2struct[code[1]]),
                                                  len(value), *value)
-            elif code=="A":
-                assert len(value)==1 and isinstance(value, basestring)
+            elif code == "A":
+                assert len(value) == 1 and isinstance(value, basestring)
                 data += _as_bytes(key + code + value)
             else:
-                #TODO - BAM encoding of other tag types
+                # TODO - BAM encoding of other tag types
                 raise NotImplementedError("TODO - Storing %s tags in BAM (here for tag %s)" % (code, key))
         return data
 
@@ -1051,8 +1062,8 @@ class SamBamRead(object):
     def __init__(self, qname="*", flag=0, rname="*", pos=-1,
                  mapq=255, cigar_str="*", rnext="*", pnext=-1,
                  tlen=0, seq=None, qual=None, tags=None):
-        #TODO - Store qname, rname, rnext as None rather than *
-        #TODO - Type checking
+        # TODO - Store qname, rname, rnext as None rather than *
+        # TODO - Type checking
         self.qname = qname
         self.flag = flag
         self.rname = rname
@@ -1060,7 +1071,7 @@ class SamBamRead(object):
         self.mapq = mapq
         self.cigar_str = cigar_str
         if rnext == "=":
-            #Want the full name to be consistent with BAM
+            # Want the full name to be consistent with BAM
             self.rnext = rname
         else:
             self.rnext = rnext
@@ -1070,7 +1081,7 @@ class SamBamRead(object):
         self.qual = qual
         if tags is not None and not isinstance(tags, SamBamReadTags):
             raise TypeError("Bad tags argument")
-        self._tags = tags #Only create object on demand
+        self._tags = tags  # Only create object on demand
 
     def __repr__(self):
         """Returns simple representation of the read for debugging."""
@@ -1088,12 +1099,12 @@ class SamBamRead(object):
         rnext = self.rnext
         if rnext != "*" and rnext == self.rname:
             rnext = "="
-            #Use '=' for RNEXT if not * and matches RNAME, gives smaller file
-        parts = [self.qname, str(self.flag), self.rname, str(self.pos+1),
-                 str(self.mapq), self.cigar_str, rnext, str(self.pnext+1),
+            # Use '=' for RNEXT if not * and matches RNAME, gives smaller file
+        parts = [self.qname, str(self.flag), self.rname, str(self.pos + 1),
+                 str(self.mapq), self.cigar_str, rnext, str(self.pnext + 1),
                  str(self.tlen), seq, qual]
         try:
-            #See if this is a SAM record where we never un-parsed the tags
+            # See if this is a SAM record where we never un-parsed the tags
             parts.extend(self._raw_tags)
         except AttributeError:
             if self.tags:
@@ -1118,36 +1129,36 @@ class SamBamRead(object):
             l_seq = len(self.seq)
         else:
             assert not self.qual
-            #Encoding is MIDNSHP=X
-            #Want 'M' = 0, 'I' = 1, 'S' = 4, '=' = 7, 'X' = 8
-            #l_seq = sum(op_len for op, op_len in self.cigar if op in [0,1,4,7,8])
-            #But for BAM we just want the length for the SEQ and QUAL entries
+            # Encoding is MIDNSHP=X
+            # Want 'M' = 0, 'I' = 1, 'S' = 4, '=' = 7, 'X' = 8
+            # l_seq = sum(op_len for op, op_len in self.cigar if op in [0,1,4,7,8])
+            # But for BAM we just want the length for the SEQ and QUAL entries
             l_seq = 0
         if self.pos == -1 and not self.cigar:
-            #Hack to match samtools 0.1.18, seems bam_reg2bin(-1, 0) gives 4680
+            # Hack to match samtools 0.1.18, seems bam_reg2bin(-1, 0) gives 4680
             bin = 4680
         elif self.pos < 0:
             bin = 0
         elif self.cigar:
             bin = reg2bin(self.pos, self.aend)
         else:
-            #Have no CIGAR for unmapped reads (given their partner's position)
-            #Do what samtools does:
+            # Have no CIGAR for unmapped reads (given their partner's position)
+            # Do what samtools does:
             bin = reg2bin(self.pos, self.pos + 1)
-        bin_mq_nl = int(bin)<<16 | int(self.mapq)<<8 | (len(self.qname)+1)
+        bin_mq_nl = int(bin) << 16 | int(self.mapq) << 8 | (len(self.qname) + 1)
         try:
-            cigar = self._binary_cigar #See BamRead subclass
+            cigar = self._binary_cigar  # See BamRead subclass
         except AttributeError:
             if self.cigar:
                 ops = len(self.cigar)
                 if ops > 65535:
                     raise ValueError("CIGAR overflow, read %r has %i CIGAR operators, but "
                                      "BAM only allows 2**16 - 1 = 65535." % (self.rname, ops))
-                cigar = [op_len<<4|op for op, op_len in self.cigar]
+                cigar = [op_len << 4 | op for op, op_len in self.cigar]
                 cigar = struct.pack("<%iI" % ops, *cigar)
             else:
                 cigar = _empty_bytes_string
-        flag_nc = self.flag << 16 | (len(cigar)//4)
+        flag_nc = self.flag << 16 | (len(cigar) // 4)
         if self.rnext == "=":
             next_index = ref_index
         elif self.rnext != "*":
@@ -1155,7 +1166,7 @@ class SamBamRead(object):
         else:
             next_index = -1
         try:
-            seq = self._binary_seq #See BamRead subclass
+            seq = self._binary_seq  # See BamRead subclass
         except AttributeError:
             if self.seq:
                 seq = _encode_seq(self.seq)
@@ -1163,28 +1174,28 @@ class SamBamRead(object):
                 assert l_seq == 0
                 assert not self.qual
                 seq = _empty_bytes_string
-        assert len(seq) == (l_seq+1) // 2, "%r (len %i) for %s (len %i = %i)" \
+        assert len(seq) == (l_seq + 1) // 2, "%r (len %i) for %s (len %i = %i)" \
                % (seq, len(seq), self.seq, len(self.seq), l_seq)
         try:
             if self._binary_qual:
-                qual = self._binary_qual #See BamRead subclass
+                qual = self._binary_qual  # See BamRead subclass
             else:
                 qual = _ff_byte * l_seq
         except AttributeError:
             if self.qual:
-                #TODO - Store this as ints? Currently FASTQ encoded...
-                #TODO - Reuse the dict in Bio.SeqIO.QualityIO for this
+                # TODO - Store this as ints? Currently FASTQ encoded...
+                # TODO - Reuse the dict in Bio.SeqIO.QualityIO for this
                 if self.qual and isinstance(self.qual[0], int):
-                    #Iteration over a bytes string gives integers
-                    qual = _empty_bytes_string.join(chr(q-33) for q in self.qual)
+                    # Iteration over a bytes string gives integers
+                    qual = _empty_bytes_string.join(chr(q - 33) for q in self.qual)
                 else:
-                    qual = _as_bytes("".join(chr(ord(q)-33) for q in self.qual))
+                    qual = _as_bytes("".join(chr(ord(q) - 33) for q in self.qual))
             else:
                 qual = _ff_byte * l_seq
         assert len(qual) == l_seq, "%r (len %i) for %r (len %i)" \
                % (qual, len(qual), self.qual, l_seq)
         try:
-            tags = self._binary_tags #See BamRead subclass
+            tags = self._binary_tags  # See BamRead subclass
         except AttributeError:
             tags = self.tags._as_bam()
         data = struct.pack("<iiIIiiii",
@@ -1192,21 +1203,23 @@ class SamBamRead(object):
                            bin_mq_nl, flag_nc, l_seq,
                            next_index, self.pnext, self.tlen)
         data += _as_bytes(self.qname) + _null_byte + cigar + seq + qual + tags
-        #First byte is the length of the REST of the record,
+        # First byte is the length of the REST of the record,
         return struct.pack("<I", len(data)) + data
 
-    #For other FLAG methods, see "magic" after class
-    #This one is difference because it flips the bit value,
-    #0x4 set means unmapped!
+    # For other FLAG methods, see "magic" after class
+    # This one is difference because it flips the bit value,
+    # 0x4 set means unmapped!
     def _get_mapped(self):
         return not bool(self.flag & 0x4)
+
     def _set_mapped(self, value):
         if value:
             self.flag = self.flag & ~0x4
         else:
             self.flag = self.flag | 0x4
-    is_mapped = property(fget = _get_mapped, fset = _set_mapped,
-                         doc = "FLAG 0x200, was this read mapped (bit not set)?")
+
+    is_mapped = property(fget=_get_mapped, fset=_set_mapped,
+                         doc="FLAG 0x200, was this read mapped (bit not set)?")
 
     @property
     def cigar(self):
@@ -1224,17 +1237,17 @@ class SamBamRead(object):
         count = ""
         for letter in cigar:
             if letter.isdigit():
-                count += letter #string addition
+                count += letter  # string addition
             else:
                 operator = "MIDNSHP=X".find(letter)
                 if operator == -1:
-                    raise ValueError("Invalid character %s in CIGAR %s" \
+                    raise ValueError("Invalid character %s in CIGAR %s"
                                      % (letter, cigar))
                 answer.append((operator, int(count)))
                 count = ""
         return answer
 
-    #TODO - Expose RNEXT as a property so can control '=' behaviour?
+    # TODO - Expose RNEXT as a property so can control '=' behaviour?
     @property
     def mrnm(self):
         """Use RNEXT instead, replaced mate's reference name (MRNM).
@@ -1283,7 +1296,7 @@ class SamBamRead(object):
             return None
         length = 0
         for op, op_len in self.cigar:
-            #The CIGAR operators MIDNSHP=X are represented using 0 to 8 (as in BAM)
+            # The CIGAR operators MIDNSHP=X are represented using 0 to 8 (as in BAM)
             if op in [0, 2, 3, 7, 8]:
                 length += op_len
         return length
@@ -1310,6 +1323,7 @@ class SamBamRead(object):
             return None
         else:
             return start + length
+
 
 class SamRead(SamBamRead):
     """Represents a SAM/BAM entry created from a SAM file entry.
@@ -1357,18 +1371,18 @@ class SamRead(SamBamRead):
         parts = data.rstrip("\n").split("\t")
         self.qname = parts[0]
         self.flag = int(parts[1])
-        self.rname = parts[2] #RNAME, the actual name, not an integer!
+        self.rname = parts[2]  # RNAME, the actual name, not an integer!
         self.pos = int(parts[3]) - 1
         self.mapq = int(parts[4])
         self.cigar_str = parts[5]
-        rnext = parts[6] #RNEXT aka MRNM, not an integer!
+        rnext = parts[6]  # RNEXT aka MRNM, not an integer!
         if rnext != "*" and rnext == "=":
-            #Expand RNEXT '=' into the full name from RNAME
+            # Expand RNEXT '=' into the full name from RNAME
             self.rnext = self.rname
         else:
             self.rnext = rnext
-        self.pnext = int(parts[7]) - 1 #PNEXT aka MPOS
-        self.tlen = int(parts[8]) #TLEN aka ISAIZE
+        self.pnext = int(parts[7]) - 1  # PNEXT aka MPOS
+        self.tlen = int(parts[8])  # TLEN aka ISAIZE
         if parts[9] == "*":
             self.seq = None
         else:
@@ -1384,16 +1398,16 @@ class SamRead(SamBamRead):
         try:
             return self._tags
         except AttributeError:
-            #This has not been decoded from the raw string yet
+            # This has not been decoded from the raw string yet
             pass
         tags = SamBamReadTags()
         for tag in self._raw_tags:
-            key, code, data = tag.split(":",2)
-            if code=="B":
-                assert data[1]==","
+            key, code, data = tag.split(":", 2)
+            if code == "B":
+                assert data[1] == ","
                 code = code + data[0]
                 data = data[2:].split(",")
-            #The tags object should do any casting for us
+            # The tags object should do any casting for us
             tags[key] = (code, data)
         self._tags = tags
         del self._raw_tags
@@ -1431,7 +1445,7 @@ class BamRead(SamBamRead):
 
         >>> str(read)
         'rd01\t1\t*\t0\t255\t*\t*\t0\t0\t*\t*\n'
-    
+
         You can modify values too, this overrides any values parsed
         from the raw data and will be used if saving the record back
         to disk later on:
@@ -1443,14 +1457,14 @@ class BamRead(SamBamRead):
         """
         self.qname = qname
         self.flag = flag
-        self.rname = rname #RNAME, the actual name, not the integer!
+        self.rname = rname  # RNAME, the actual name, not the integer!
         self.pos = pos
         self.mapq = mapq
         self._binary_cigar = binary_cigar
         assert rnext != "="
-        self.rnext = rnext #RNEXT aka MRNM, the actual name, not the integer!
-        self.pnext = pnext #PNEXT aka MPOS
-        self.tlen = tlen #TLEN aka ISIZE
+        self.rnext = rnext  # RNEXT aka MRNM, the actual name, not the integer!
+        self.pnext = pnext  # PNEXT aka MPOS
+        self.tlen = tlen  # TLEN aka ISIZE
         self._read_len = read_len
         self._binary_seq = binary_seq
         self._binary_qual = binary_qual
@@ -1459,7 +1473,7 @@ class BamRead(SamBamRead):
     @property
     def cigar(self):
         """CIGAR string parsed into a list of tuples (operator code, count).
-        
+
         The CIGAR operators MIDNSHP=X are represented using 0 to 8 (as in BAM).
 
         Any empty CIGAR string (represented as * in SAM) is given as None.
@@ -1494,32 +1508,34 @@ class BamRead(SamBamRead):
             return self._seq
         except AttributeError:
             if self._read_len == 0:
-                #This would be * in SAM format
+                # This would be * in SAM format
                 seq = None
             else:
                 seq = _decode_seq(self._binary_seq, self._read_len)
             self._seq = seq
             return seq
+
     def _set_seq(self, value):
         del self._binary_seq
         self._seq = value
-    seq = property(fget = _get_seq, fset = _set_seq,
-                   doc = "SEQ - read sequence bases as string, including soft clipped bases")
+
+    seq = property(fget=_get_seq, fset=_set_seq,
+                   doc="SEQ - read sequence bases as string, including soft clipped bases")
 
     def _get_qual(self):
         try:
             return self._qual
         except AttributeError:
-            #TODO - Reuse dict mapping from FASTQ parser, will be faster
+            # TODO - Reuse dict mapping from FASTQ parser, will be faster
             if not self._binary_qual:
-                #This would be * in SAM
+                # This would be * in SAM
                 qual = None
             elif sys.version_info[0] >= 3:
-                #Iteration over a bytes string gives integers
-                qual = "".join(chr(33+byte) for byte in self._binary_qual)
+                # Iteration over a bytes string gives integers
+                qual = "".join(chr(33 + byte) for byte in self._binary_qual)
             else:
                 try:
-                    qual = "".join(chr(33+ord(byte)) for byte in self._binary_qual)
+                    qual = "".join(chr(33 + ord(byte)) for byte in self._binary_qual)
                 except ValueError as e:
                     print("Error in %s qual %r" % (self.qname, self._binary_qual))
                     for byte in self._binary_qual:
@@ -1527,18 +1543,20 @@ class BamRead(SamBamRead):
                     raise
             self._qual = qual
             return qual
+
     def _set_qual(self, value):
         del self._binary_qual
         self._qual = value
-    qual = property(fget = _get_qual, fset = _set_qual,
-                    doc = "QUAL - read quality as FASTQ encoded string, including soft clipped bases")
+
+    qual = property(fget=_get_qual, fset=_set_qual,
+                    doc="QUAL - read quality as FASTQ encoded string, including soft clipped bases")
 
     @property
     def tags(self):
         try:
             return self._tags
         except AttributeError:
-            #This hasn't been decoded from the binary verion yet
+            # This hasn't been decoded from the binary verion yet
             pass
         raw = self._binary_tags
         tags = SamBamReadTags()
@@ -1549,19 +1567,24 @@ class BamRead(SamBamRead):
         del self._binary_tags
         return tags
 
-#Magic to define lots of very similar properties at once:
-#(can we do this to the base class in a way that covers the subclasses?)
+
+# Magic to define lots of very similar properties at once:
+# (can we do this to the base class in a way that covers the subclasses?)
 def _make_prop(bit, prop, help):
-    #import sys
-    #sys.stderr.write("Making %s property\n" % prop)
+    # import sys
+    # sys.stderr.write("Making %s property\n" % prop)
+
     def _get_flag_bit(self):
         return bool(self.flag & bit)
-    def _set_flag_bit(self,value):
+
+    def _set_flag_bit(self, value):
             if value:
-                self.flag = self.flag |bit
+                self.flag = self.flag | bit
             else:
-                self.flag = self.flag &~bit
+                self.flag = self.flag & ~bit
+
     return property(fget=_get_flag_bit, fset=_set_flag_bit, doc=help)
+
 for bit, prop, help in [
     (0x4, "unmapped", "FLAG 0x4, is this read unmapped?"),
     (0x10, "reverse", "FLAG 0x10, is this read mapped to the reverse strand?"),
@@ -1581,62 +1604,64 @@ def _next_tag_raw(raw):
     if code == "B":
         sub_code = _as_string(raw[3:4])
         length = struct.unpack("<I", raw[4:8])[0]
-        if sub_code == "f": #float
-            values = struct.unpack(("<%if" % length), raw[8:8+length*4])
-            return tag, "Bf", values, raw[8+length*4:]
-        elif sub_code == "i": #int32
-            values = struct.unpack(("<%ii" % length), raw[8:8+length*4])
-            return tag, "Bi", values, raw[8+length*4:]
-        elif sub_code == "I": #int32
-            values = struct.unpack(("<%iI" % length), raw[8:8+length*4])
-            return tag, "BI", values, raw[8+length*4:]
-        elif sub_code == "s": #int16
-            values = struct.unpack(("<%ih" % length), raw[8:8+length*2])
-            return tag, "Bs", values, raw[8+length*2:]
-        elif sub_code == "S": #int16
-            values = struct.unpack(("<%iH" % length), raw[8:8+length*2])
-            return tag, "BS", values, raw[8+length*2:]
-        elif sub_code == "c": #int8
-            values = struct.unpack(("<%ib" % length), raw[8:8+length])
-            return tag, "Bc", values, raw[8+length:]
-        elif sub_code == "C": #int8
-            values = struct.unpack(("<%iB" % length), raw[8:8+length])
-            return tag, "BC", values, raw[8+length:]
+        if sub_code == "f":  # float
+            values = struct.unpack(("<%if" % length), raw[8:8 + length * 4])
+            return tag, "Bf", values, raw[8 + length * 4:]
+        elif sub_code == "i":  # int32
+            values = struct.unpack(("<%ii" % length), raw[8:8 + length * 4])
+            return tag, "Bi", values, raw[8 + length * 4:]
+        elif sub_code == "I":  # int32
+            values = struct.unpack(("<%iI" % length), raw[8:8 + length * 4])
+            return tag, "BI", values, raw[8 + length * 4:]
+        elif sub_code == "s":  # int16
+            values = struct.unpack(("<%ih" % length), raw[8:8 + length * 2])
+            return tag, "Bs", values, raw[8 + length * 2:]
+        elif sub_code == "S":  # int16
+            values = struct.unpack(("<%iH" % length), raw[8:8 + length * 2])
+            return tag, "BS", values, raw[8 + length * 2:]
+        elif sub_code == "c":  # int8
+            values = struct.unpack(("<%ib" % length), raw[8:8 + length])
+            return tag, "Bc", values, raw[8 + length:]
+        elif sub_code == "C":  # int8
+            values = struct.unpack(("<%iB" % length), raw[8:8 + length])
+            return tag, "BC", values, raw[8 + length:]
         else:
             raise ValueError("Unknown BAM tag B sub-element type %r (for %r tag)" % (sub_code, tag))
-    elif code == "C": #u_int8
+    elif code == "C":  # u_int8
         return tag, "i", ord(raw[3:4]), raw[4:]
-    elif code == "S": #u_int16
+    elif code == "S":  # u_int16
         return tag, "i", struct.unpack("<H", raw[3:5])[0], raw[5:]
-    elif code == "I": #u_int32
+    elif code == "I":  # u_int32
         return tag, "i", struct.unpack("<I", raw[3:7])[0], raw[7:]
-    elif code == "s": #int16
+    elif code == "s":  # int16
         return tag, "i", struct.unpack("<h", raw[3:5])[0], raw[5:]
-    elif code == "i": #int32
+    elif code == "i":  # int32
         return tag, "i", struct.unpack("<i", raw[3:7])[0], raw[7:]
-    elif code == "c": #int8
+    elif code == "c":  # int8
         value = ord(raw[3:4])
         if value >= 128:
-            #Negative bit set
+            # Negative bit set
             value -= 256
         return tag, "i", value, raw[4:]
-    elif code == "A": #Single char
+    elif code == "A":  # Single char
         return tag, "A", _as_string(raw[3:4]), raw[4:]
-    elif code == "Z": #Null terminated string
+    elif code == "Z":  # Null terminated string
         i = 3
-        while ord(raw[i:i+1]) != 0: i+= 1
-        return tag, "Z", _as_string(raw[3:i]), raw[i+1:]
-    elif code == "H": #Hex, null terminated string
+        while ord(raw[i:i + 1]) != 0:
+            i += 1
+        return tag, "Z", _as_string(raw[3:i]), raw[i + 1:]
+    elif code == "H":  # Hex, null terminated string
         i = 3
-        while ord(raw[i:i+1]) != 0: i+= 1
-        if (i-3) % 2 == 1:
-            #Warning only?
+        while ord(raw[i:i + 1]) != 0:
+            i += 1
+        if (i - 3) % 2 == 1:
+            # Warning only?
             raise ValueError("Odd number of bytes for hex string? %r" % raw)
-        return tag, "H", _as_string(raw[3:i]), raw[i+1:]
-    elif code == "f": #Single precision float
-        #TODO, leave it as a float rather than turning it into a string
-        #which is a short term solution during testing
-        return tag, "f", str(struct.unpack("<f",raw[3:7])[0]), raw[7:]
+        return tag, "H", _as_string(raw[3:i]), raw[i + 1:]
+    elif code == "f":  # Single precision float
+        # TODO, leave it as a float rather than turning it into a string
+        # which is a short term solution during testing
+        return tag, "f", str(struct.unpack("<f", raw[3:7])[0]), raw[7:]
     else:
         raise ValueError("Unknown BAM tag element type %r (for %r tag)" % (code, tag))
 
@@ -1662,18 +1687,19 @@ def SamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     Saved 3124 reads to SAM file
 
     """
-    #Consistency check:
+    # Consistency check:
     header, references = _cross_check_header_refs(reads, header,
                                                   referencenames,
                                                   referencelengths)
-    #Write SAM header, perform some basic sanity testing:
+    # Write SAM header, perform some basic sanity testing:
     handle.write(_check_header_text(header))
-    #Write SAM reads:
+    # Write SAM reads:
     count = 0
     for read in reads:
         handle.write(str(read))
         count += 1
     return count
+
 
 def BamWriter(handle, reads, header="", referencenames=None, referencelengths=None, gzipped=True):
     """Writes a complete BAM file including any header, returns read count.
@@ -1704,39 +1730,40 @@ def BamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     """
     if gzipped:
         handle = bgzf.BgzfWriter(fileobj=handle)
-    #Consistency check:
+    # Consistency check:
     header, references = _cross_check_header_refs(reads, header,
                                                   referencenames,
                                                   referencelengths)
     header = _as_bytes(_check_header_text(header))
-    #Write BAM header:
+    # Write BAM header:
     handle.write(_bam_magic)
     handle.write(struct.pack("<I", len(header)))
     handle.write(header)
     handle.write(struct.pack("<I", len(references)))
     for r, l in references:
         try:
-            handle.write(struct.pack("<I", len(r)+1))
+            handle.write(struct.pack("<I", len(r) + 1))
             handle.write(_as_bytes(r) + _null_byte)
             handle.write(struct.pack("<I", l))
         except Exception:
-            raise ValueError("Problem with reference %r, %r" % (r,l))
-    #Want to give it its own BGZF block, even if there is no SAM header:
+            raise ValueError("Problem with reference %r, %r" % (r, l))
+    # Want to give it its own BGZF block, even if there is no SAM header:
     handle.flush()
-    #Write reads:
+    # Write reads:
     count = 0
-    refs = [r for (r,l) in references]
+    refs = [r for (r, l) in references]
     for read in reads:
         handle.write(read._as_bam(refs))
         count += 1
-    handle.flush() #Important with BGZF as it buffers data
+    handle.flush()  # Important with BGZF as it buffers data
     if gzipped:
-        #BgzfWriter would write empty BGZF EOF marker on close, but that
-        #doesn't get called (since the caller has only got the raw handle).
-        #Since we didn't open the handle, seems wrong to close it. So:
+        # BgzfWriter would write empty BGZF EOF marker on close, but that
+        # doesn't get called (since the caller has only got the raw handle).
+        # Since we didn't open the handle, seems wrong to close it. So:
         handle._handle.write(bgzf._bgzf_eof)
         handle._handle.flush()
     return count
+
 
 def _check_header_text(text):
     """Removes blank lines, ensures trailing newlines, spots some errors."""
@@ -1744,15 +1771,16 @@ def _check_header_text(text):
     for line in text.split("\n"):
         if not line:
             continue
-            #raise ValueError("Blank line in header")
+            # raise ValueError("Blank line in header")
         elif line[0] != "@":
             raise ValueError("SAM header lines must start with @, not %s" % line)
         lines.append(line + "\n")
     return "".join(lines)
 
+
 def _cross_check_header_refs(reads, header="", referencenames=None, referencelengths=None):
     if not header:
-        #If the reads argument is a SamIterator or BamIterator this works:
+        # If the reads argument is a SamIterator or BamIterator this works:
         try:
             header = reads.text
         except AttributeError:
@@ -1762,13 +1790,14 @@ def _cross_check_header_refs(reads, header="", referencenames=None, referencelen
         references = zip(referencenames, referencelengths)
         alt_refs = _sam_header_to_ref_list(header)
         if not alt_refs:
-            #Append minimal @SQ lines to the header
+            # Append minimal @SQ lines to the header
             header += _ref_list_to_sam_header(references)
-        elif alt_refs!=references:
+        elif alt_refs != references:
             raise ValueError("Reference names and lengths inconsistent with header @SQ lines")
     else:
         references = _sam_header_to_ref_list(header)
     return header, references
+
 
 def _test():
     """Run the module's doctests (PRIVATE).
