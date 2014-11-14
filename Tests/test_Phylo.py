@@ -5,10 +5,13 @@
 
 """Unit tests for the Bio.Phylo module."""
 
+import os
 import sys
 import unittest
-from Bio._py3k import StringIO
+import tempfile
+
 from io import BytesIO
+from Bio._py3k import StringIO
 
 from Bio import Phylo
 from Bio.Phylo import PhyloXML, NewickIO
@@ -103,7 +106,7 @@ class IOTests(unittest.TestCase):
     def test_convert(self):
         """Convert a tree between all supported formats."""
         mem_file_1 = StringIO()
-        mem_file_2 = BytesIO()
+        mem_file_2 = BytesIO()  # Using binary for phyloxml
         mem_file_3 = StringIO()
         Phylo.convert(EX_NEWICK, 'newick', mem_file_1, 'nexus')
         mem_file_1.seek(0)
@@ -113,6 +116,29 @@ class IOTests(unittest.TestCase):
         mem_file_3.seek(0)
         tree = Phylo.read(mem_file_3, 'newick')
         self.assertEqual(len(tree.get_terminals()), 28)
+
+    def test_convert_phyloxml_binary(self):
+        trees = Phylo.parse("PhyloXML/phyloxml_examples.xml", "phyloxml")
+        with tempfile.NamedTemporaryFile(mode="wb") as out_handle:
+            count = Phylo.write(trees, out_handle, "phyloxml")
+            self.assertEqual(13, count)
+
+    def test_convert_phyloxml_text(self):
+        trees = Phylo.parse("PhyloXML/phyloxml_examples.xml", "phyloxml")
+        with tempfile.NamedTemporaryFile(mode="w") as out_handle:
+            if sys.version_info[0] < 3:
+                count = Phylo.write(trees, out_handle, "phyloxml")
+                self.assertEqual(13, count)
+            else:
+                self.assertRaises(TypeError, Phylo.write,
+                                  trees, out_handle, "phyloxml")
+
+    def test_convert_phyloxml_filename(self):
+        trees = Phylo.parse("PhyloXML/phyloxml_examples.xml", "phyloxml")
+        tmp_filename = tempfile.mktemp()
+        count = Phylo.write(trees, tmp_filename, "phyloxml")
+        os.remove(tmp_filename)
+        self.assertEqual(13, count)
 
     def test_int_labels(self):
         """Read newick formatted tree with numeric labels."""

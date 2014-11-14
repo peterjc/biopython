@@ -79,7 +79,13 @@ def write(trees, file, format, **kwargs):
     if isinstance(trees, BaseTree.Tree) or isinstance(trees, BaseTree.Clade):
         # Passed a single tree instead of an iterable -- that's OK
         trees = [trees]
-    with File.as_handle(file, 'w+') as fp:
+    # For PhyoXML we use ElementTree, which can in theory parse and write
+    # using either a text or binary handle, but the encoding is fiddly...
+    if format in ["phyloxml"]:
+        mode = "wb"
+    else:
+        mode = "w"
+    with File.as_handle(file, mode) as fp:
         n = getattr(supported_formats[format], 'write')(trees, fp, **kwargs)
     return n
 
