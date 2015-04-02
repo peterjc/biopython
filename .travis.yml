@@ -17,6 +17,21 @@ python:
 #(faster startup, caches public repos, but cannot use sudo):
 sudo: false
 
+#Install apt packages under container-based Travis CI infrastructure
+#avoiding "sudo apt-get install ..." - see http://docs.travis-ci.com/user/apt/
+addons:
+  apt:
+    packages:
+    - clustalw
+    - clustalo
+    - muscle
+    - mafft
+    - probcons
+    - wise
+    - emboss
+    - samtools
+    - bwa
+
 before_install:
   - "export PY3=yes"
   - "if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then export PY3=no; fi"
@@ -25,12 +40,8 @@ before_install:
   - "export PYPY=no"
   - "if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then export PYPY=yes; fi"
   - "if [[ $TRAVIS_PYTHON_VERSION == 'pypy3' ]]; then export PYPY=yes; fi"
-#Misc command line tools we can call
-#  - "apt-get install clustalw clustalo"
-#  - "apt-get install muscle mafft probcons wise emboss"
 ##Suspect an update of t-coffee is causing the test run to stall...
 ##  - "apt-get install --no-install-recommends t-coffee"
-#  - "apt-get install samtools bwa"
 #Misc python modules we can use as soft dependencies
   - "if [[ $PYPY != 'yes' ]]; then pip install reportlab; fi"
   - "pip install rdflib"
