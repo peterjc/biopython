@@ -26,8 +26,11 @@ temp lookup file might be one idea (e.g. using SQLite or an OBDA style index).
 from __future__ import print_function
 
 import re
+import xml.parsers.expat
+
 from Bio._py3k import StringIO
 from Bio._py3k import _bytes_to_string, _as_bytes
+from io import BytesIO
 
 from Bio import SeqIO
 from Bio import Alphabet
@@ -364,6 +367,92 @@ class SwissRandomAccess(SequentialSeqFileRandomAccess):
                 length += len(line)
         assert not line, repr(line)
 
+class _FileChain(object):
+    """Allows multiple files to be read as one seamless file."""
+    def __init__(self, *files):
+        self.files = list(files)
+
+    def read(self, size=None):
+        buf = BytesIO()
+        size_remaining = size
+        while len(self.files) > 0 and (size_remaining is None or size_remaining > 0):
+            chunk = self.files[0].read(size_remaining)
+            buf.write(chunk)
+
+            if size:
+                size_remaining -= len(chunk)
+
+            if size_remaining is None or size_remaining > 0:
+                self.files.pop(0)
+
+        return buf.getvalue()
+
+class SeqXMLRandomAccess(SeqFileRandomAccess):
+    """Random access indexer for seqXML file"""
+    def __init__(self, filename, format, alphabet):
+        SeqFileRandomAccess.__init__(self, filename, format, alphabet)
+
+    def __iter__(self):
+        records = []
+        record = [None] * 3
+
+        p = xml.parsers.expat.ParserCreate()
+        def start_element(name, attrs):
+            if name == 'entry':
+                entry_name = attrs.get('id')
+                if entry_name is None:
+                    raise ValueError("Malformed entry! Identifier is missing.")
+
+                record[0] = entry_name
+                record[1] = p.CurrentByteIndex
+
+        p.StartElementHandler = start_element
+
+        def end_element(name):
+            if name == 'entry':
+                record[2] = p.CurrentByteIndex
+                records.append(tuple(record))
+
+        p.EndElementHandler = end_element
+
+        handle = self._handle
+        handle.seek(0)
+        p.ParseFile(handle)
+
+        return iter(records)
+
+    def get(self, offset):
+        handle = self._handle
+        handle.seek(offset)
+        return next(iter(
+            SeqIO.SeqXmlIO.SeqXmlIterator(
+                _FileChain(
+                    BytesIO(_as_bytes("""<?xml version="1.0" encoding="utf-8"?>
+                        <seqXML
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        seqXMLversion="0.4"
+                        xsi:noNamespaceSchemaLocation="http://www.seqxml.org/0.4/seqxml.xsd">
+                    """)),
+                handle))))
+
+    def get_raw(self, offset):
+        end_entry_marker = _as_bytes("</entry>")
+        buf = BytesIO()
+
+        handle = self._handle
+        handle.seek(offset)
+
+        done = False
+        while not done:
+            chunk = handle.read(512)
+            if end_entry_marker in chunk:
+                chunk, rest = chunk.split(end_entry_marker, 1)
+                done = True
+
+            buf.write(chunk)
+
+        buf.write(end_entry_marker)
+        return buf.getvalue()
 
 class UniprotRandomAccess(SequentialSeqFileRandomAccess):
     """Random access to a UniProt XML file."""
@@ -656,4 +745,5 @@ _FormatToRandomAccess = {"ace": SequentialSeqFileRandomAccess,
                          "tab": TabRandomAccess,
                          "qual": SequentialSeqFileRandomAccess,
                          "uniprot-xml": UniprotRandomAccess,
+                         "seqxml": SeqXMLRandomAccess
                          }

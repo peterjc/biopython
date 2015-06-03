@@ -565,6 +565,25 @@ class IndexDictTests(unittest.TestCase):
                 """ % _bytes_to_string(raw)
                 handle = StringIO(raw)
                 rec2 = SeqIO.read(handle, format, alphabet)
+            elif format == "seqxml":
+                self.assertTrue(raw.startswith(_as_bytes("<entry ")))
+                self.assertTrue(raw.endswith(_as_bytes("</entry>")))
+
+                # Currently the __getitem__ method uses this
+                # trick too, but we hope to fix that later
+                handle = BytesIO()
+                handle.write(
+                    _as_bytes("""<?xml version="1.0" encoding="utf-8"?>
+                        <seqXML
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        seqXMLversion="0.4"
+                        xsi:noNamespaceSchemaLocation="http://www.seqxml.org/0.4/seqxml.xsd">
+                    """))
+                handle.write(raw)
+                handle.write(_as_bytes("</seqXML>"))
+
+                handle.seek(0)
+                rec2 = SeqIO.read(handle, format, alphabet)
             else:
                 rec2 = SeqIO.read(handle, format, alphabet)
             self.assertEqual(True, compare_record(rec1, rec2))
@@ -643,6 +662,9 @@ tests = [
     ("Roche/greek.sff", "sff-trim", generic_nucleotide),
     ("Roche/paired.sff", "sff", None),
     ("Roche/paired.sff", "sff-trim", None),
+    ("SeqXML/dna_example.xml", "seqxml", generic_dna),
+    ("SeqXML/protein_example.xml", "seqxml", generic_protein),
+    ("SeqXML/rna_example.xml", "seqxml", generic_nucleotide),
     ]
 for filename1, format, alphabet in tests:
     assert format in _FormatToRandomAccess
