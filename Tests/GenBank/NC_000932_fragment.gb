@@ -1,0 +1,69 @@
+LOCUS       NC_000932               2000 bp    DNA              UNK 01-JAN-1980
+DEFINITION  Excerpt from Arabidopsis thaliana chloroplast with edited features
+ACCESSION   NC_000932
+VERSION     NC_000932.1
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     gene            complement(84..1188)
+                     /db_xref="GeneID:844798"
+                     /gene="rps16"
+                     /locus_tag="ArthCp004"
+     CDS             complement(join(84..283,1149..1188))
+                     /codon_start=1
+                     /db_xref="GI:7525015"
+                     /db_xref="GeneID:844798"
+                     /gene="rps16"
+                     /locus_tag="ArthCp004"
+                     /product="ribosomal protein S16"
+                     /protein_id="NP_051041.1"
+                     /transl_table=11
+                     /translation="MVKLRLKRCGRKQRAVYRILAIDVRYRREGRDLSKVGFYDPITNQ
+                     TFLNLSAILDFLKKGAQPTRTAHDISKKAGIFTE"
+     gene            complement(1616..1687)
+                     /db_xref="GeneID:1466271"
+                     /gene="trnQ"
+                     /locus_tag="ArthCt090"
+     tRNA            complement(1616..1687)
+                     /db_xref="GeneID:1466271"
+                     /gene="trnQ"
+                     /locus_tag="ArthCt090"
+                     /product="tRNA-Gln"
+ORIGIN
+        1 taaaatttta tatcacgtta tatacgagtc tttcacatcc tcttttttat atttcattaa
+       61 tttcatttcg ttttagtaag acttcattcc gtaaaaatcc cagccttctt tgaaatatca
+      121 tgagctgttc ttgttggttg agctcctttt ttaagaaaat cgagaatagc agaaaggttt
+      181 aaaaaagttt gattagttat gggatcataa aaacccacct tactaagatc tcttccttct
+      241 cttcggtatc gaacatcaat tgcaaggatt cgataaacgg ctcgttggga tagatgtata
+      301 tgaataatac cccccctaga aacgtataag aggttttggc ctcgtacggc tcgagaaaaa
+      361 aaattcaaat agtaaattca aatattaaat agagaaataa aaacattaaa tcaattagcc
+      421 agtattaaaa ccctaaatat tttttccata aaaagcattc ataacattcg tactctcgta
+      481 actcaagtta aacaactctc aaatatctca ccggagaatc cttaagtact ttttttattg
+      541 agtagtctct agcccttttt ttgtttgtct cattgcaaat tttagaatca attttgattc
+      601 ttcagtttga tctagttttt caaacaattg aaaacaggat ttcctttttt caagattctt
+      661 tatccttact ttgaatcttt aggtttagac atgacttcgg tgatattgaa tcgttttatt
+      721 aaaaaagggc agcaacaagc cccttatttt gtttatgatt tctgttcttt ctatacaaag
+      781 aatcatacaa acgcttgatt cacgcatgat agacttttga ttcaaagaat tttacaattt
+      841 taagaaaatt tccttttcca ttgtaaaatt gcttgaaagg acttttttca atataaaaag
+      901 acttacgaag ttgttccaac ttattaattc gcactaaccc taaatcctta ctcctgcgaa
+      961 aggactaaaa actttctatt ctcctcgagc tccatcctgt actctttttt atattacaaa
+     1021 aaagtgtagg actcttgtaa aatagaatac aaaatgtcga gccaagagca cctatattcc
+     1081 taatataaaa ataaaagtgg cggatgaaaa aatccacagc agataatgtc cttcaattca
+     1141 agtcgtacgt tgctttctac cacatcgttt taaacgaagt tttaccataa cattcctcta
+     1201 gtttgtgtaa ttgattcaat gatggaatca tgaatagtca tagttcagtc agtatataat
+     1261 aatctatacc ttttctttct ctatgaatgg aatagtttat ttacgcgtaa aggttcggtc
+     1321 agaatgaaaa tgaattccat attagtttga atagaaatct atatttatat ataaataaat
+     1381 aaatatagat ttttttatta aaactcttag aatctgcggt tctaccttac ttacccgcat
+     1441 cacacaaatt aaaaaagcaa atagattttt tttgaattcg gttgaaataa tgaaaaatta
+     1501 agtttattct tcttttcatt tcaatatttt attcttaaaa aatttggatt tttaaacaga
+     1561 aagagaaaga tggtgtacaa aggcaataga agattgattc tgtaatgact gtactctggg
+     1621 acggaaggat tcgaacctcc gaatagcggg accaaaaccc gttgccttac cgcttggcta
+     1681 cgccccattt cgctttttat tcaagactac taaaagagta atattcctat tggttgttcg
+     1741 tcaattcaaa atgaaatata gattacattg gtgctaaagt tttaacacgt gtagatagca
+     1801 aataaaactt actttattga tcattacata gaattcaatt aagatattgt atgaaaatat
+     1861 tatttctttc attctcataa gagaataaaa ggatttttga ttgagtaagt tcaacaaagt
+     1921 ctttttagac tatctttctt tattttttcc ttatataaaa aatatattaa aaactcaatc
+     1981 aaaattaaat tatccacaag
+//
