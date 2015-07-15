@@ -24,7 +24,10 @@ from Bio.SeqFeature import SeqFeature, FeatureLocation, CompoundLocation
 from Bio.SeqFeature import ExactPosition, BeforePosition, AfterPosition, \
                            OneOfPosition, WithinPosition
 from Bio.SeqIO.InsdcIO import _insdc_location_string
-from Bio.SeqIO.InsdcIO import _insdc_feature_location_string
+
+
+def _insdc_feature_location_string(feature, rec_len):
+    return _insdc_location_string(feature.location, rec_len)
 
 
 def _get_location_string(feature, record_length):
