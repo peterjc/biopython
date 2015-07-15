@@ -60,6 +60,23 @@ class GenBankTests(unittest.TestCase):
                 loc = record.features[0].location
                 self.assertEqual(loc, "join(3462..3615,3698..3978,4077..4307,4408..4797,4876..5028,5141..5332)")
 
+    def test_multi_exon_rev_strand(self):
+        record = SeqIO.read("GenBank/NC_000932_fragment.gb", "gb")
+        # Two versions of same CDS, using join(complement(...),complement(...))
+        # versus complement(join(...,...))
+        self.assertEqual(record.features[1].qualifiers["gene"], ["rps16"])
+        self.assertEqual(record.features[2].qualifiers["gene"], ["rps16_alt"])
+        self.assertEqual(str(record.features[1].location), str(record.features[2].location))
+        for feature in record.features:
+            if feature.type == "CDS":
+                gene = feature.qualifiers['gene'][0]
+                expected = feature.qualifiers['translation'][0]
+                table = feature.qualifiers['transl_table'][0]
+                trans = str(feature.extract(record.seq).translate(table, cds=True))
+                self.assertTrue(trans == expected or trans == expected + "*",
+                                "Translation problem for %s, have %r not %r"
+                                % (gene, trans, expected))
+
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner(verbosity=2)
