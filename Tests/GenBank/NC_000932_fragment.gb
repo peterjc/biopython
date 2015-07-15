@@ -22,6 +22,14 @@ FEATURES             Location/Qualifiers
                      /transl_table=11
                      /translation="MVKLRLKRCGRKQRAVYRILAIDVRYRREGRDLSKVGFYDPITNQ
                      TFLNLSAILDFLKKGAQPTRTAHDISKKAGIFTE"
+     CDS             join(complement(1149..1188),complement(84..283))
+                     /codon_start=1
+                     /gene="rps16_alt"
+                     /locus_tag="ArthCp004_alt"
+                     /product="ribosomal protein S16 (alternative location string)"
+                     /transl_table=11
+                     /translation="MVKLRLKRCGRKQRAVYRILAIDVRYRREGRDLSKVGFYDPITNQ
+                     TFLNLSAILDFLKKGAQPTRTAHDISKKAGIFTE"
      gene            complement(1616..1687)
                      /db_xref="GeneID:1466271"
                      /gene="trnQ"
