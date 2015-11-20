@@ -1,4 +1,4 @@
-# Copyright 2010-2014 by Peter Cock.
+# Copyright 2010-2015 by Peter Cock.
 # All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
@@ -371,7 +371,8 @@ class BamIterator(object):
     3270
 
     """
-    def __init__(self, handle, required_flag=0, excluded_flag=0, gzipped=True, bai_filename=None):
+    def __init__(self, handle, required_flag=0, excluded_flag=0,
+                 gzipped=True, bai_filename=None):
         self._handle = handle
         self._required_flag = required_flag
         self._excluded_flag = excluded_flag
@@ -539,7 +540,8 @@ class BamIterator(object):
                         # Doesn't overlap
                         pass
                     else:
-                        assert reference == read.rname, "%s vs %s for read %s" % (reference, read.rname, read.qname)
+                        assert reference == read.rname, \
+                            "%s vs %s for read %s" % (reference, read.rname, read.qname)
                         # Looks good
                         yield read
             # print("Done all chunks for bin %i" % bin)
@@ -657,7 +659,8 @@ def _sam_header_to_ref_list(header):
                 elif part.startswith("LN:"):
                     l = int(part[3:])
             if r is None or l is None:
-                raise ValueError("Malformed @SQ header (SN and LN required):\n%r" % line)
+                raise ValueError("Malformed @SQ header (SN and LN required):\n%r"
+                                 % line)
             references.append((r, l))
     return references
 
@@ -755,8 +758,8 @@ def _bam_file_read_header(handle):
     # raise ValueError("Data %s = %s" % (repr(data), repr(struct.unpack(fmt, data))))
 
     block_size, ref_id, ref_pos, read_name_len, map_qual, bin, \
-    cigar_len, flag, read_len, mate_ref_id, mate_ref_pos, \
-    inferred_insert_size = struct.unpack(fmt, data)
+        cigar_len, flag, read_len, mate_ref_id, mate_ref_pos, \
+        inferred_insert_size = struct.unpack(fmt, data)
 
     if read_name_len > 200 or read_name_len <= 0:
         raise ValueError("A read name length of %i probably means the "
@@ -989,7 +992,8 @@ class SamBamReadTags(OrderedDict):
                     elif value < 2 ** 32:
                         data += _as_bytes(key + "I") + struct.pack("<I", value)
                     else:
-                        raise ValueError("%s:%s:%i too big for BAM unsigned 32bit int" % (key, code, value))
+                        raise ValueError("%s:%s:%i too big for BAM unsigned 32bit int"
+                                         % (key, code, value))
                 else:
                     # Use a signed int
                     if -2 ** 7 < value:
@@ -999,7 +1003,8 @@ class SamBamReadTags(OrderedDict):
                     elif -2 ** 31 < value:
                         data += _as_bytes(key + "i") + struct.pack("<i", value)
                     else:
-                        raise ValueError("%s:%s:%i too big for BAM signed 32bit int" % (key, code, value))
+                        raise ValueError("%s:%s:%i too big for BAM signed 32bit int"
+                                         % (key, code, value))
             elif code == "f":
                 # Float
                 data += _as_bytes(key + code) + struct.pack("<f", value)
@@ -1010,14 +1015,16 @@ class SamBamReadTags(OrderedDict):
                               "s": "h", "S": "H",
                               "i": "i", "I": "I",
                               "f": "f"}
-                data += _as_bytes(key + code) + struct.pack("<I%i%s" % (len(value), bam2struct[code[1]]),
-                                                 len(value), *value)
+                data += _as_bytes(key + code) + struct.pack("<I%i%s" %
+                                                            (len(value), bam2struct[code[1]]),
+                                                            len(value), *value)
             elif code == "A":
                 assert len(value) == 1 and isinstance(value, basestring)
                 data += _as_bytes(key + code + value)
             else:
                 # TODO - BAM encoding of other tag types
-                raise NotImplementedError("TODO - Storing %s tags in BAM (here for tag %s)" % (code, key))
+                raise NotImplementedError("TODO - Storing %s tags in BAM (here for tag %s)"
+                                          % (code, key))
         return data
 
 
@@ -1086,7 +1093,7 @@ class SamBamRead(object):
     def __repr__(self):
         """Returns simple representation of the read for debugging."""
         return "%s(qname=%r, flag=%i, ...)" \
-                         % (self.__class__.__name__, self.qname, self.flag)
+            % (self.__class__.__name__, self.qname, self.flag)
 
     def __str__(self):
         """Returns the read as a SAM line (including trailing new line)."""
@@ -1117,7 +1124,8 @@ class SamBamRead(object):
     def _as_bam(self, refs):
         """Returns BAM formatted entry as a bytes string (PRIVATE).
 
-        Required argument 'refs' are the list of reference names in the BAM header.
+        Required argument 'refs' are the list of reference names in the
+        BAM header.
 
         TODO? Take lengths argument too and validate mapping positions?
         """
@@ -1175,7 +1183,7 @@ class SamBamRead(object):
                 assert not self.qual
                 seq = _empty_bytes_string
         assert len(seq) == (l_seq + 1) // 2, "%r (len %i) for %s (len %i = %i)" \
-               % (seq, len(seq), self.seq, len(self.seq), l_seq)
+            % (seq, len(seq), self.seq, len(self.seq), l_seq)
         try:
             if self._binary_qual:
                 qual = self._binary_qual  # See BamRead subclass
@@ -1193,7 +1201,7 @@ class SamBamRead(object):
             else:
                 qual = _ff_byte * l_seq
         assert len(qual) == l_seq, "%r (len %i) for %r (len %i)" \
-               % (qual, len(qual), self.qual, l_seq)
+            % (qual, len(qual), self.qual, l_seq)
         try:
             tags = self._binary_tags  # See BamRead subclass
         except AttributeError:
@@ -1536,7 +1544,7 @@ class BamRead(SamBamRead):
             else:
                 try:
                     qual = "".join(chr(33 + ord(byte)) for byte in self._binary_qual)
-                except ValueError as e:
+                except ValueError:
                     print("Error in %s qual %r" % (self.qname, self._binary_qual))
                     for byte in self._binary_qual:
                         print("%r %i" % (byte, ord(byte)))
@@ -1586,10 +1594,10 @@ def _make_prop(bit, prop, help):
     return property(fget=_get_flag_bit, fset=_set_flag_bit, doc=help)
 
 for bit, prop, help in [
-    (0x4, "unmapped", "FLAG 0x4, is this read unmapped?"),
-    (0x10, "reverse", "FLAG 0x10, is this read mapped to the reverse strand?"),
-    (0x200, "qcfail", "FLAG 0x200, did the read fail quality control (QC)?"),
-    (0x400, "duplicate", "FLAG 0x400, is this read a PCR or optical duplicate?"),
+        (0x4, "unmapped", "FLAG 0x4, is this read unmapped?"),
+        (0x10, "reverse", "FLAG 0x10, is this read mapped to the reverse strand?"),
+        (0x200, "qcfail", "FLAG 0x200, did the read fail quality control (QC)?"),
+        (0x400, "duplicate", "FLAG 0x400, is this read a PCR or optical duplicate?"),
     ]:
     p = _make_prop(bit, prop, help)
     setattr(SamBamRead, "is_%s" % prop, p)
@@ -1626,7 +1634,8 @@ def _next_tag_raw(raw):
             values = struct.unpack(("<%iB" % length), raw[8:8 + length])
             return tag, "BC", values, raw[8 + length:]
         else:
-            raise ValueError("Unknown BAM tag B sub-element type %r (for %r tag)" % (sub_code, tag))
+            raise ValueError("Unknown BAM tag B sub-element type %r (for %r tag)"
+                             % (sub_code, tag))
     elif code == "C":  # u_int8
         return tag, "i", ord(raw[3:4]), raw[4:]
     elif code == "S":  # u_int16
@@ -1663,7 +1672,8 @@ def _next_tag_raw(raw):
         # which is a short term solution during testing
         return tag, "f", str(struct.unpack("<f", raw[3:7])[0]), raw[7:]
     else:
-        raise ValueError("Unknown BAM tag element type %r (for %r tag)" % (code, tag))
+        raise ValueError("Unknown BAM tag element type %r (for %r tag)"
+                         % (code, tag))
 
 
 def SamWriter(handle, reads, header="", referencenames=None, referencelengths=None):
@@ -1701,7 +1711,8 @@ def SamWriter(handle, reads, header="", referencenames=None, referencelengths=No
     return count
 
 
-def BamWriter(handle, reads, header="", referencenames=None, referencelengths=None, gzipped=True):
+def BamWriter(handle, reads, header="", referencenames=None,
+              referencelengths=None, gzipped=True):
     """Writes a complete BAM file including any header, returns read count.
 
     Note that if you do not supply any header information, it will be copied
@@ -1778,7 +1789,8 @@ def _check_header_text(text):
     return "".join(lines)
 
 
-def _cross_check_header_refs(reads, header="", referencenames=None, referencelengths=None):
+def _cross_check_header_refs(reads, header="",
+                             referencenames=None, referencelengths=None):
     if not header:
         # If the reads argument is a SamIterator or BamIterator this works:
         try:

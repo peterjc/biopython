@@ -1,4 +1,4 @@
-# Copyright 2012-2014 by Peter Cock.
+# Copyright 2012-2015 by Peter Cock.
 # All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
@@ -177,8 +177,8 @@ def _load_ref_index(handle):
             chunks_dict[bin] = chunks_list
     # Now the linear index (for the smallest bins)
     n_intv = struct.unpack("<i", handle.read(4))[0]
-    return chunks_dict, struct.unpack("<%iQ" % n_intv, handle.read(8 * n_intv)), \
-           mapped, unmapped, unmapped_start, unmapped_end
+    return (chunks_dict, struct.unpack("<%iQ" % n_intv, handle.read(8 * n_intv)),
+            mapped, unmapped, unmapped_start, unmapped_end)
 
 
 def idxstats(bam_filename, bai_filename):
