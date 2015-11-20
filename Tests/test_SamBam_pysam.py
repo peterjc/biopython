@@ -13,7 +13,13 @@ except ImportError:
         "Install pysam if you want to test against it.")
 
 import unittest
-from itertools import izip_longest
+
+try:
+    # Python 2
+    from itertools import izip_longest as zip_longest
+except ImportError:
+    # Python 3
+    from itertools import zip_longest
 
 from Bio.Sequencing.SamBam import SamIterator, BamIterator
 
@@ -36,7 +42,7 @@ class CrossCheckParsing(unittest.TestCase):
             if a_iter.header and b_iter.header:
                 # pysam doesn't infer a minimal SAM header from BAM header
                 self.assertEqual(a_iter.header, b_iter.header)
-        for a, b in izip_longest(a_iter, b_iter):
+        for a, b in zip_longest(a_iter, b_iter):
             self.assertFalse(b is None, "Extra read in a:\n%s" % a)
             self.assertFalse(a is None, "Extra read in b:\n%s" % b)
             self.assertEqual(a.qname, b.qname)
