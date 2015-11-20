@@ -59,8 +59,14 @@ class CrossCheckParsing(unittest.TestCase):
             # self.assertEqual(a.aend, b.aend,
             #                  "%r vs %r for:\n%s\n%s" % (a.aend, b.aend, a, b))
             self.assertEqual(a.mapq, b.mapq)
-            self.assertEqual(a.cigar, b.cigar,
-                             "%r vs %r for:\n%s\n%s" % (a.cigar, b.cigar, a, b))
+            if (a.cigar is None or a.cigar == []):
+                self.assertTrue(b.cigar is None or b.cigar == [],
+                                "Only one CIGAR missing, %r vs %r for:\n%s\n%s" % (a.cigar, b.cigar, a, b))
+            else:
+                self.assertFalse(b.cigar is None or b.cigar == [],
+                                 "Only one CIGAR missing, %r vs %r for:\n%s\n%s" % (a.cigar, b.cigar, a, b))
+                self.assertEqual(a.cigar, b.cigar,
+                                 "%r vs %r for:\n%s\n%s" % (a.cigar, b.cigar, a, b))
             # See http://code.google.com/p/pysam/issues/detail?id=25
             # self.assertEqual(a.mrnm, b.mrnm)
             self.assertEqual(a.mpos, b.mpos)
