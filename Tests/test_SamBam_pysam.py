@@ -1,4 +1,4 @@
-# Copyright 2010-2014 by Peter Cock.
+# Copyright 2010-2015 by Peter Cock.
 # All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
@@ -22,6 +22,7 @@ except ImportError:
     from itertools import zip_longest
 
 from Bio.Sequencing.SamBam import SamIterator, BamIterator
+from Bio._py3k import _as_string
 
 
 class CrossCheckParsing(unittest.TestCase):
@@ -66,7 +67,7 @@ class CrossCheckParsing(unittest.TestCase):
             self.assertEqual(a.isize, b.isize)  # legacy alias
             self.assertEqual(a.seq, b.seq,
                              "%r vs %r for:\n%s\n%s" % (a.seq, b.seq, a, b))
-            self.assertEqual(a.qual, b.qual)
+            self.compare_qual(a.qual, b.qual)
             # TODO - tags (not represented same way at the moment)
 
             # assert str(a) == str(b), "Reads disagree,\n%s\n%s\n" % (a,b)
@@ -74,6 +75,12 @@ class CrossCheckParsing(unittest.TestCase):
             # to return a valid SAM record like this.
             # See http://code.google.com/p/pysam/issues/detail?id=74
             # and http://code.google.com/p/pysam/issues/detail?id=75
+
+    def compare_qual(self, a_qual, b_qual):
+        if a_qual is None and b_qual is None:
+            return
+        self.assertFalse(a_qual is None or b_qual is None, "Only one qual is None")
+        self.assertEqual(_as_string(a_qual), _as_string(b_qual))
 
     # TODO, use pysam on the SAM file
     # http://code.google.com/p/pysam/issues/detail?id=73
