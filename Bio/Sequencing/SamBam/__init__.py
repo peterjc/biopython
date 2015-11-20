@@ -493,8 +493,8 @@ class BamIterator(object):
                 # which get a linear index of offsets as well
                 min_offset = offsets[bin - 4681]
             for s_offset, e_offset in chunks:
-                if e_offset < min_offset:
-                    assert False
+                if min_offset is None or e_offset < min_offset:
+                    assert False, "Problem with offets for BAI bin %i" % bin
                 elif s_offset < min_offset:
                     all_chunks.append((min_offset, e_offset))
                 else:
