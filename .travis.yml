@@ -59,7 +59,7 @@ before_script:
 
 script:
 #Using just coverage should match up to the current Python version:
-  - coverage run run_tests.py --offline
+  - coverage run --source=Bio,BioSQL run_tests.py --offline
 
 after_success:
 #See https://codecov.io/ and https://github.com/codecov/example-python
