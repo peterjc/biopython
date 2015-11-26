@@ -2,7 +2,7 @@
 #See http://travis-ci.org/ for details
 #
 #The tests are run via the coverage script, and if the tests pass the coverage
-#information is pushed to http://codecov.io/ which also has GitHub integration.
+#information is pushed to http://codecov.io/ and http://coveralls.io
 #
 #Note when testing Python 3, the 'python' command will invoke Python 3
 #and similarly for PyPy too.
@@ -65,6 +65,9 @@ after_success:
 #See https://codecov.io/ and https://github.com/codecov/example-python
   - pip install codecov
   - codecov
+#See https://github.com/coagulant/coveralls-python#usage-travis-ci
+  - pip install coveralls
+  - coveralls
 
 #The email defaults are too talkative while we're getting Travis working nicely.
 notifications:
