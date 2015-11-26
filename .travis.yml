@@ -1,6 +1,9 @@
 #Special configuration file to run tests on Travis-CI via GitHub notifications
 #See http://travis-ci.org/ for details
 #
+#If the test pass, this will also run a coverage script and push the results
+#to http://codecov.io/ which also has GitHub integration.
+#
 #Note when testing Python 3, the 'python' command will invoke Python 3
 #and similarly for PyPy too.
 
@@ -54,6 +57,11 @@ before_script:
 
 script:
   - python run_tests.py --offline
+
+after_success:
+#See https://codecov.io/ and https://github.com/codecov/example-python
+  - pip install codecov
+  - codecov
 
 #The email defaults are too talkative while we're getting Travis working nicely.
 notifications:
