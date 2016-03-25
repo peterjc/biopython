@@ -40,6 +40,8 @@ before_install:
   - "export PYPY=no"
   - "if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then export PYPY=yes; fi"
   - "if [[ $TRAVIS_PYTHON_VERSION == 'pypy3' ]]; then export PYPY=yes; fi"
+#Only want to use pre-compiled wheels as doing NumPy from source is too slow:
+  - "if [[ $PYPY == 'no' ]]; then pip install numpy --timeout 60 --trusted-host travis-wheels.scikit-image.org -f http://travis-wheels.scikit-image.org/ ; fi"
 #Misc python modules we can use as soft dependencies
   - "if [[ $PYPY != 'yes' ]]; then pip install reportlab; fi"
   - "pip install rdflib"
