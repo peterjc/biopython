@@ -87,7 +87,8 @@ def check_config(dbdriver, dbtype, dbhost, dbuser, dbpasswd, testdb):
         if DBDRIVER in ["sqlite3"]:
             server = BioSeqDatabase.open_database(driver=DBDRIVER, db=TESTDB)
         else:
-            server = BioSeqDatabase.open_database(driver=DBDRIVER, host=DBHOST,
+            server = BioSeqDatabase.open_database(driver=DBDRIVER, db=TESTDB,
+                                                  host=DBHOST,
                                                   user=DBUSER, passwd=DBPASSWD)
         server.close()
         del server
