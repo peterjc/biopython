@@ -51,13 +51,18 @@ before_install:
 #Installing psycopg2 does not work under PyPy or Jython
   - "export PG=yes"
   - "if [[ $PYPY == 'yes' ]]; then export PG=no; fi"
-  - "if [[ $PG == 'yes' ]]; then pip install psycopg2; psql -U postgres -c 'CREATE DATABASE biosql_test;'; fi"
+  - if [[ $PG == 'yes' ]]; then pip install psycopg2; fi
+  - if [[ $PG == 'yes' ]]; then psql -U postgres -c "CREATE USER biosql WITH PASSWORD 'testing'"; fi
+  - if [[ $PG == 'yes' ]]; then psql -U postgres -c "CREATE DATABASE biosql_test;"; fi
+  - if [[ $PG == 'yes' ]]; then psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE biosql_test TO biosql"; fi
 #Installing mysql-python does not work under Python 3
   - "export MSQLDB=$PG"
   - "if [[ $PY3 == 'yes' ]]; then export MSQLDB=no; fi"
   - "if [[ $MSQLDB == 'yes' ]]; then pip install mysql-python; export MYSQL=yes; fi"
 #If either mysql-connector or mysqldb (mysql-python) was installed, create DB:
-  - "if [[ $MYSQL == 'yes' ]]; then mysql -e 'CREATE DATABASE biosql_test;'; fi"
+  - if [[ $MYSQL == 'yes' ]]; then mysql -e "CREATE USER biosql IDENTIFIED BY 'testing'"; fi
+  - if [[ $MYSQL == 'yes' ]]; then mysql -e "CREATE DATABASE biosql_test;"; fi
+  - if [[ $MYSQL == 'yes' ]]; then mysql -e "GRANT ALL ON biosql_test.* TO 'biosql'@'localhost';"; fi
 #Lib unittest2 is needed for some assertRaises tests under Python 2.6
   - "if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install unittest2; fi"
 #Used to record test coverage information; running PyPy3 via coverage is very slow

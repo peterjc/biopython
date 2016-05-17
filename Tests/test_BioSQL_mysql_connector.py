@@ -15,8 +15,8 @@ from common_BioSQL import *
 
 # Constants for the database driver
 DBHOST = 'localhost'
-DBUSER = 'root'
-DBPASSWD = ''
+DBUSER = 'biosql'  # not just 'root'
+DBPASSWD = 'testing'  # not just ''
 TESTDB = 'biosql_test'
 
 ################################

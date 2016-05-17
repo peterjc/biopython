@@ -13,10 +13,30 @@ from common_BioSQL import *
 # Start of user-editable section #
 ##################################
 
+# I ran this by hand on a buildbot machine. Note it is an unfortunate
+# limitation of _do_db_create() that currently we need permission to
+# create a database (the code uses DROP DATABASE; CREATE DATABASE)
+# and I don't see an easy portable way to do "DROP TABLE *;" instead.
+#
+# $ psql -U postgres -c "CREATE USER biosql WITH PASSWORD 'testing' CREATEDB"
+# CREATE ROLE
+# $ psql -U postgres -c "CREATE DATABASE biosql_test"
+# CREATE DATABASE
+# $ psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE biosql_test TO biosql"
+# GRANT
+# $ psql -U postgres -c ""
+#
+# And added this to the pg_hba.conf file:
+#
+# # Access from local host for running BioSQL tests
+# local   "biosql_testing" biosql                            md5
+# host    "biosql_testing" biosql      127.0.0.1/32          md5
+# host    "biosql_testing" biosql      ::1/128               md5
+
 # Constants for the database driver
 DBHOST = 'localhost'
-DBUSER = 'postgres'
-DBPASSWD = ''
+DBUSER = 'biosql'  # not just 'postgres'
+DBPASSWD = 'testing'  # not just ''
 TESTDB = 'biosql_test'
 
 ################################
