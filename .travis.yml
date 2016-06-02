@@ -43,7 +43,7 @@ before_install:
 #Misc python modules we can use as soft dependencies
   - "if [[ $PYPY != 'yes' ]]; then pip install reportlab; fi"
   - "pip install rdflib"
-  - "if [[ $PYPY != 'yes' ]]; then pip install scipy; fi"
+  - "if [[ $PYPY != 'yes' ]]; then pip install scipy --only-binary; fi"
 #Not hosted on PyPI so this need allow external switch:
 #Currently pypy3-2.4.0 self reports as Python 3.2,
 #which is not supported by mysql-connector-python
