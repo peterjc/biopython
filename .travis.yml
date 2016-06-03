@@ -33,6 +33,11 @@ addons:
 
 before_install:
   - pip install --upgrade pip
+  - pip install pep8
+  - pep8 --ignore E123,E126,E128,E501 BioSQL/
+  - pep8 --ignore E123,E126,E127,E128,E402,E501 Scripts/
+  - pep8 --ignore E127,E128,E501 Doc/examples/
+  - pep8 --ignore E121,E122,E123,E124,E125,E126,E127,E128,E129,E131,E201,E202,E231,E241,E302,E402,E501,E731,W291,W293,W391,W503 Bio/
   - "export PY3=yes"
   - "if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then export PY3=no; fi"
   - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then export PY3=no; fi"
