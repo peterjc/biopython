@@ -7,7 +7,7 @@ from __future__ import print_function
 
 import os
 import platform
-import unittest
+# import unittest
 import tempfile
 import time
 try:
@@ -36,6 +36,18 @@ from BioSQL import BioSeqDatabase
 from BioSQL import BioSeq
 
 from seq_tests_common import compare_record, compare_records
+
+import sys
+# Remove unittest2 import after dropping support for Python2.6
+if sys.version_info < (2, 7):
+    try:
+        import unittest2 as unittest
+    except ImportError:
+        from Bio import MissingPythonDependencyError
+        raise MissingPythonDependencyError("Under Python 2.6 this test needs the unittest2 library")
+else:
+    import unittest
+
 
 if __name__ == "__main__":
     raise RuntimeError("Call this via test_BioSQL_*.py not directly")
@@ -799,6 +811,14 @@ class ClosedLoopTest(unittest.TestCase):
 
     # NOTE - For speed I don't bother to create a new database each time,
     # simply a new unique namespace is used for each test.
+
+    @classmethod
+    def setUpClass(cls):
+        create_database()
+
+    @classmethod
+    def tearDownClass(cls):
+        destroy_database()
 
     def test_NC_005816(self):
         """GenBank file to BioSQL and back to a GenBank file, NC_005816."""
