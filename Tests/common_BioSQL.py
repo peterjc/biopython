@@ -86,6 +86,8 @@ def temp_db_filename():
         # We can't use /dev/shm
         h, test_db_fname = tempfile.mkstemp("_BioSQL.db")
     os.close(h)
+    # Make sure Windows is ready to re-use this filename...
+    time.sleep(1)
     return test_db_fname
 
 
