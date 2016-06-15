@@ -43,6 +43,7 @@ addons:
     - wise
 
 install:
+  - "cp Tests/biosql.ini.sample Tests/biosql.ini"
   - "pip install --upgrade pip"
   - "pip install tox"
   - "tox -c .travis-tox.ini -e $TOXENV --notest"
