@@ -14,20 +14,30 @@
 language: python
 matrix:
   include:
-    - python: "2.6"
+    - os: linux
+      python: "2.6"
       env: DEP="rdflib reportlab psycopg2 mysql-python mysql-connector-python-rf unittest2 scipy" COV="yes" OPT="--offline"
-    - python: "2.7"
+    - os:linux:
+      python: "2.7"
       env: DEP="rdflib reportlab psycopg2 mysql-python mysql-connector-python-rf networkx" COV="yes" OPT="--offline"
-    - python: "3.3"
+    - os: linux
+      python: "3.3"
       env: DEP="psycopg2 mysql-connector-python-rf" COV="yes" OPT=""
-    - python: "3.4"
+    - os: linux
+      python: "3.4"
       env: DEP="" COV="yes" OPT="--offline"
-    - python: "3.5"
+    - os linux:
+      python: "3.5"
       env: DEP="rdflib reportlab psycopg2 mysql-connector-python-rf scipy matplotlib" COV="yes" OPT="--offline"
-    - python: "pypy"
+    - os: linux
+      python: "pypy"
       env: DEP="rdflib mysql-connector-python-rf" COV="yes" OPT="--offline"
-    - python: "pypy3"
+    - os: linux
+      python: "pypy3"
       env: COV="no" OPT="--offline"
+    - os: osx
+      python: "3.5"
+      env: DEP="rdflib reportlab psycopg2 mysql-connector-python-rf scipy matplotlib" COV="yes" OPT="--offline"
 
 sudo: false
 addons:
