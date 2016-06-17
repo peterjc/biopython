@@ -60,7 +60,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv -p python3; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate; fi
 #Following for Linux and Mac OX X:
-  - "pip install --upgrade pip"
+  - "pip install --upgrade pip wheel"
   - "pip install --only-binary=numpy,scipy $DEP"
   - "if [[ $COV == 'yes' ]]; then pip install coverage; fi"
 
