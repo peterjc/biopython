@@ -525,6 +525,37 @@ class DBSeqRecord(SeqRecord):
         length = _retrieve_seq_len(adaptor, primary_id)
         self._per_letter_annotations = _RestrictedDict(length=length)
 
+    def __getitem__(self, index):
+        """Returns a sub-sequence (as SeqRecord) or an individual letter."""
+        # Cannot pass to the SeqRecord implementation as different __init__
+        if isinstance(index, int):
+            # Follow SeqRecord and return letter by slicing seq
+            return self.seq[index]
+        elif isinstance(index, slice):
+            answer = SeqRecord(self.seq[index],
+                               id=self.id,
+                               name=self.name,
+                               description=self.description)
+            # Must also duplicate the feature slicing...
+            start, stop, step = index.indices(len(self))
+            if step == 1:
+                for f in self.features:
+                    if f.ref or f.ref_db:
+                         # TODO - Implement this (with lots of tests)?
+                         import warnings
+                         warnings.warn("When slicing (DB)SeqRecord objects, any "
+                                       "SeqFeature referencing other sequences (e.g. "
+                                       "from segmented GenBank records) are ignored.")
+                         continue
+                    if start <= f.location.nofuzzy_start \
+                            and f.location.nofuzzy_end <= stop:
+                        answer.features.append(f._shift(-start))
+            # Slice any per-letter-annotations added in memory
+            for key, value in self.letter_annotations.items():
+                answer._per_letter_annotations[key] = value[index]
+            return answer
+        raise ValueError("Invalid index")
+
     def __get_seq(self):
         if not hasattr(self, "_seq"):
             self._seq = _retrieve_seq(self._adaptor, self._primary_id)

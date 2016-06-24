@@ -418,6 +418,7 @@ class SeqRecord(object):
         >>> rec.seq[5]
         'K'
         """
+        # WARNING - Changes here may need to be duplicated in BioSQL subclass!
         if isinstance(index, int):
             # NOTE - The sequence level annotation like the id, name, etc
             # do not really apply to a single character.  However, should
