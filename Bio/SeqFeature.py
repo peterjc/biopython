@@ -641,7 +641,6 @@ class FeatureLocation(object):
         AL391218.9
 
         """
-        # TODO - Check 0 <= start <= end (<= length of reference)
         if isinstance(start, AbstractPosition):
             self._start = start
         elif _is_int_or_long(start):
@@ -654,6 +653,17 @@ class FeatureLocation(object):
             self._end = ExactPosition(end)
         else:
             raise TypeError("end=%r %s" % (end, type(end)))
+        # Can't compare None or UnknownPosition,
+        # other locations would subclass integer
+        if _is_int_or_long(start) and start < 0:
+            raise ValueError("Location start is negative: %r" % start)
+        if _is_int_or_long(end):
+            if end < 0:
+                raise ValueError("Location end is negative: %r" % end)
+            if _is_int_or_long(start) and start > end:
+                raise ValueError("Require 0 <= start <= end (regardless of "
+                                 "strand (and end should be less than the "
+                                 "reference length)")
         self.strand = strand
         self.ref = ref
         self.ref_db = ref_db
