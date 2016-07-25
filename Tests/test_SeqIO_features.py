@@ -1,4 +1,4 @@
-# Copyright 2009-2013 by Peter Cock.  All rights reserved.
+# Copyright 2009-2016 by Peter Cock.  All rights reserved.
 # This code is part of the Biopython distribution and governed by its
 # license.  Please see the LICENSE file that should have been included
 # as part of this package.
@@ -645,9 +645,10 @@ class FeatureWriting(unittest.TestCase):
                          "join(111..120,126..140,146..150)")
         self.assertEqual(_get_location_string(f._flip(150), 150),
                          "complement(join(1..5,11..25,31..40))")
-        self.assertEqual(f._flip(100).strand, -1)
-        self.assertEqual(f._flip(100).location.strand, -1)
-        for sub_loc in f._flip(100).location.parts:
+        tmp = f._flip(1000)
+        self.assertEqual(tmp.strand, -1)
+        self.assertEqual(tmp.location.strand, -1)
+        for sub_loc in tmp.location.parts:
             self.assertEqual(sub_loc.strand, -1)
         self.record.features.append(f)
         f1 = SeqFeature(FeatureLocation(210, 220), strand=-1)
@@ -657,9 +658,10 @@ class FeatureWriting(unittest.TestCase):
                          "complement(join(211..220,226..240))")
         self.assertEqual(_get_location_string(f._flip(300), 300),
                          "join(61..75,81..90)")
-        self.assertEqual(f._flip(100).strand, +1)
-        self.assertEqual(f._flip(100).location.strand, +1)
-        for sub_loc in f._flip(100).location.parts:
+        tmp = f._flip(1000)
+        self.assertEqual(tmp.strand, +1)
+        self.assertEqual(tmp.location.strand, +1)
+        for sub_loc in tmp.location.parts:
             self.assertEqual(sub_loc.strand, +1)
         self.record.features.append(f)
         f1 = SeqFeature(FeatureLocation(310, 320), strand=-1)
@@ -670,8 +672,9 @@ class FeatureWriting(unittest.TestCase):
                          "complement(join(311..320,326..340,346..350))")
         self.assertEqual(_get_location_string(f._flip(350), 350),
                          "join(1..5,11..25,31..40)")
-        self.assertEqual(f._flip(100).strand, +1)
-        for sub_loc in f._flip(100).location.parts:
+        tmp = f._flip(1000)
+        self.assertEqual(tmp.strand, +1)
+        for sub_loc in tmp.location.parts:
             self.assertEqual(sub_loc.strand, +1)
         self.record.features.append(f)
         self.write_read_checks()
@@ -710,7 +713,7 @@ class FeatureWriting(unittest.TestCase):
         self.assertEqual(f.strand, +1)
         for sub_loc in f.location.parts:
             self.assertEqual(sub_loc.strand, +1)
-        tmp = f._flip(100)
+        tmp = f._flip(1000)
         self.assertEqual(tmp.strand, -1)
         for sub_loc in tmp.location.parts:
             self.assertEqual(sub_loc.strand, -1)
@@ -727,7 +730,7 @@ class FeatureWriting(unittest.TestCase):
         self.assertEqual(f.strand, -1)
         for sub_loc in f.location.parts:
             self.assertEqual(sub_loc.strand, -1)
-        tmp = f._flip(100)
+        tmp = f._flip(1000)
         self.assertEqual(tmp.strand, +1)
         for sub_loc in tmp.location.parts:
             self.assertEqual(sub_loc.strand, +1)
@@ -746,7 +749,7 @@ class FeatureWriting(unittest.TestCase):
         self.assertEqual(_get_location_string(f._flip(400), 400),
                          "join((46.51)..55,one-of(64,61)..75,81..<90)")
         self.assertEqual(f.strand, -1)
-        tmp = f._flip(100)
+        tmp = f._flip(1000)
         self.assertEqual(tmp.strand, +1)
         for sub_loc in tmp.location.parts:
             self.assertEqual(sub_loc.strand, +1)
