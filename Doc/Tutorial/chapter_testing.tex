@@ -491,27 +491,13 @@ Tutorial source to be run as Python doctests. This works by adding
 special \verb|%doctest| comment lines before each verbatim block,
 e.g.
 
-\begin{lstlisting}
-%doctest
-\begin{verbatim}
->>> from Bio.Alphabet import generic_dna
->>> from Bio.Seq import Seq
->>> len("ACGT")
-4
-\end{verbatim}
-\end{lstlisting}
+\textit{TODO}
 
 \noindent Often code examples are not self-contained, but
 continue from the previous verbatim block. Here we use the
 magic comment \verb|%cont-doctest| as shown here:
 
-\begin{lstlisting}
-%cont-doctest
-\begin{verbatim}
->>> Seq("ACGT") == Seq("ACGT", generic_dna)
-True
-\end{verbatim}
-\end{lstlisting}
+\textit{TODO}
 
 The special \verb|%doctest| comment line can take a working directory
 (relative to the \verb|Doc/| folder) to use if you have any example
