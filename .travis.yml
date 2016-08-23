@@ -45,7 +45,6 @@ addons:
     - probcons
     - samtools
     - wise
-    - python-epydoc
 
 install:
   - "cp Tests/biosql.ini.sample Tests/biosql.ini"
