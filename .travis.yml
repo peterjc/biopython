@@ -45,6 +45,7 @@ addons:
     - probcons
     - samtools
     - wise
+    - texlive-latex-extra
     - texlive-latex-full
     - hevea
 
