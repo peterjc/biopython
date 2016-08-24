@@ -14,6 +14,7 @@ language: python
 matrix:
   include:
     - env: TOXENV=pep8
+    - env: TOXENV=epydoc
     - env: TOXENV=sdist
     - env: TOXENV=bdist_wheel
     - python: 2.6
