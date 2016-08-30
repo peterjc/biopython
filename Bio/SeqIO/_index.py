@@ -368,27 +368,6 @@ class SwissRandomAccess(SequentialSeqFileRandomAccess):
         assert not line, repr(line)
 
 
-class _FileChain(object):
-    """Allows multiple files to be read as one seamless file."""
-    def __init__(self, *files):
-        self.files = list(files)
-
-    def read(self, size=None):
-        buf = BytesIO()
-        size_remaining = size
-        while len(self.files) > 0 and (size_remaining is None or size_remaining > 0):
-            chunk = self.files[0].read(size_remaining)
-            buf.write(chunk)
-
-            if size:
-                size_remaining -= len(chunk)
-
-            if size_remaining is None or size_remaining > 0:
-                self.files.pop(0)
-
-        return buf.getvalue()
-
-
 class SeqXMLRandomAccess(SeqFileRandomAccess):
     """Random access indexer for seqXML file"""
     def __init__(self, filename, format, alphabet):
@@ -429,18 +408,17 @@ class SeqXMLRandomAccess(SeqFileRandomAccess):
             yield name, start, end + 8 - start
 
     def get(self, offset):
-        handle = self._handle
-        handle.seek(offset)
-        return next(iter(
-            SeqIO.SeqXmlIO.SeqXmlIterator(
-                _FileChain(
-                    BytesIO(_as_bytes("""<?xml version="1.0" encoding="utf-8"?>
-                        <seqXML
-                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                        seqXMLversion="0.4"
-                        xsi:noNamespaceSchemaLocation="http://www.seqxml.org/0.4/seqxml.xsd">
-                    """)),
-                handle))))
+        # TODO - Can we handle this directly in the parser?
+        # This is a hack - use get_raw for <entry>...</entry> and wrap it with
+        # the apparently required XML header and footer.
+        data = b"""<?xml version='1.0' encoding='UTF-8'?>
+        <seqXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" seqXMLversion="0.4"
+        xsi:noNamespaceSchemaLocation="http://www.seqxml.org/0.4/seqxml.xsd">
+        %s
+        </seqXML>
+        """ % self.get_raw(offset)
+        # TODO - Remove the iter call, SeqXmlIterator should define __next__
+        return next(iter(SeqIO.SeqXmlIO.SeqXmlIterator(BytesIO(data))))
 
     def get_raw(self, offset):
         end_entry_marker = _as_bytes("</entry>")
