@@ -367,6 +367,7 @@ class SwissRandomAccess(SequentialSeqFileRandomAccess):
                 length += len(line)
         assert not line, repr(line)
 
+
 class _FileChain(object):
     """Allows multiple files to be read as one seamless file."""
     def __init__(self, *files):
@@ -387,6 +388,7 @@ class _FileChain(object):
 
         return buf.getvalue()
 
+
 class SeqXMLRandomAccess(SeqFileRandomAccess):
     """Random access indexer for seqXML file"""
     def __init__(self, filename, format, alphabet):
@@ -397,6 +399,7 @@ class SeqXMLRandomAccess(SeqFileRandomAccess):
         record = [None] * 3
 
         p = xml.parsers.expat.ParserCreate()
+
         def start_element(name, attrs):
             if name == 'entry':
                 entry_name = attrs.get('id')
@@ -412,6 +415,7 @@ class SeqXMLRandomAccess(SeqFileRandomAccess):
             if name == 'entry':
                 record[2] = p.CurrentByteIndex
                 records.append(tuple(record))
+                assert p.GetInputContext().startswith(b"</entry>")
 
         p.EndElementHandler = end_element
 
@@ -419,7 +423,10 @@ class SeqXMLRandomAccess(SeqFileRandomAccess):
         handle.seek(0)
         p.ParseFile(handle)
 
-        return iter(records)
+        for name, start, end in records:
+            # Turn the start and end offsets into raw length in bytes
+            # end offset is for </entry> which is length 8
+            yield name, start, end + 8 - start
 
     def get(self, offset):
         handle = self._handle
@@ -453,6 +460,7 @@ class SeqXMLRandomAccess(SeqFileRandomAccess):
 
         buf.write(end_entry_marker)
         return buf.getvalue()
+
 
 class UniprotRandomAccess(SequentialSeqFileRandomAccess):
     """Random access to a UniProt XML file."""
