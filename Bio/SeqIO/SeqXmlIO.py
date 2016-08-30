@@ -26,10 +26,11 @@ from Bio import Alphabet
 from Bio.Seq import Seq
 from Bio.Seq import UnknownSeq
 from Bio.SeqRecord import SeqRecord
+from .Interfaces import SequenceIterator
 from .Interfaces import SequentialSequenceWriter
 
 
-class XMLRecordIterator(object):
+class XMLRecordIterator(SequenceIterator):
     """Base class for building iterators for record style XML formats.
 
     It is assumed that all information for one record can be found within a
