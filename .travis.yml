@@ -58,6 +58,7 @@ before_install:
 install:
   - "cp Tests/biosql.ini.sample Tests/biosql.ini"
   - "pip install --upgrade pip setuptools"
+  - "if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install git+https://bitbucket.org/pypy/numpy.git; fi"
   - "pip install tox"
   - "tox -c .travis-tox.ini -e $TOXENV --notest"
 
