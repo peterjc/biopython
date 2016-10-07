@@ -58,6 +58,7 @@ before_install:
   - export JYTHON_URL='http://search.maven.org/remotecontent?filepath=org/python/jython-installer/2.7.0/jython-installer-2.7.0.jar'
   - if [[ $TOXENV == jython* ]]; then wget $JYTHON_URL -O jython_installer.jar; java -jar jython_installer.jar -s -d $HOME/jython; fi
   - if [[ $TOXENV == jython* ]]; then export PATH=$HOME/jython/bin:$PATH; jython -c 'import sys; print(sys.version)'; fi
+  - if [[ $TOXENV == jython* ]]; then mkdir -p "TRAVIS_BUILD_DIR/.tox/jython-nocov/log; fi
   - cd $TRAVIS_BUILD_DIR
 
 install:
