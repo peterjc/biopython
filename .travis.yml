@@ -28,6 +28,7 @@ matrix:
       env: TOXENV=pypy-nocov
     - python: pypy3
       env: TOXENV=pypy3-nocov
+    - env: TOXENV=jython-nocov
 
 sudo: false
 addons:
@@ -53,6 +54,10 @@ before_install:
   - curl -L -O http://www.atgc-montpellier.fr/download/binaries/phyml/PhyML-3.1.zip
   - unzip PhyML-3.1.zip
   - mv PhyML-3.1/PhyML-3.1_linux64 bin/phyml
+  - cd $HOME
+  - export JYTHON_URL='http://search.maven.org/remotecontent?filepath=org/python/jython-installer/2.7.0/jython-installer-2.7.0.jar'
+  - if [[ $TOXENV == 'jython*' ]]; then wget $JYTHON_URL -O jython_installer.jar; java -jar jython_installer.jar -s -d $HOME/jython; fi
+  - if [[ $TOXENV == 'jython*' ]]; then ln -s $HOME/jython/jython $HOME/bin/python; python -c 'import sys; print(sys.version)'; fi
   - cd $TRAVIS_BUILD_DIR
 
 install:
