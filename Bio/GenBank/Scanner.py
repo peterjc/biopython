@@ -644,7 +644,8 @@ class EmblScanner(InsdcScanner):
         assert len(fields) == 4
         consumer.locus(fields[0])
         consumer.residue_type(fields[1])  # semi-redundant
-        consumer.molecule_type(fields[1])
+        if fields[1] == "PRT":
+            consumer.molecule_type("PRO")
         consumer.data_file_division(fields[2])
         # TODO - Record cluster size?
 
