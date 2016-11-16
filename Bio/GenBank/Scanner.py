@@ -643,7 +643,8 @@ class EmblScanner(InsdcScanner):
         fields = line[self.HEADER_WIDTH:].rstrip()[:-3].split(";")
         assert len(fields) == 4
         consumer.locus(fields[0])
-        consumer.residue_type(fields[1])
+        consumer.residue_type(fields[1])  # semi-redundant
+        consumer.molecule_type(fields[1])
         consumer.data_file_division(fields[2])
         # TODO - Record cluster size?
 
@@ -668,6 +669,14 @@ class EmblScanner(InsdcScanner):
         """
         consumer.locus(fields[0])  # Should we also call the accession consumer?
         consumer.residue_type(fields[2])
+        if "circular" in fields[2]:
+            consumer.topology("circular")
+            consumer.molecule_type(fields[2].replace("circular", "").strip())
+        elif "linear" in fields[2]:
+            consumer.topology("linear")
+            consumer.molecule_type(fields[2].replace("linear", "").strip())
+        else:
+            consumer.molecule_type(fields[2])
         consumer.data_file_division(fields[3])
         self._feed_seq_length(consumer, fields[4])
 
@@ -705,7 +714,10 @@ class EmblScanner(InsdcScanner):
             consumer.version_suffix(version_parts[1])
 
         # Based on how the old GenBank parser worked, merge these two:
-        consumer.residue_type(" ".join(fields[2:4]))  # TODO - Store as two fields?
+        consumer.residue_type(" ".join(fields[2:4]))  # Semi-obsolete
+
+        consumer.topology(fields[2])
+        consumer.molecule_type(fields[3])
 
         # consumer.xxx(fields[4]) # TODO - What should we do with the data class?
 
@@ -1120,6 +1132,8 @@ class GenBankScanner(InsdcScanner):
             else:
                 consumer.residue_type(line[33:51].strip())
 
+            consumer.topology(line[42:51].strip())
+
             consumer.data_file_division(line[52:55])
             if line[62:73].strip():
                 consumer.date(line[62:73])
@@ -1189,6 +1203,8 @@ class GenBankScanner(InsdcScanner):
                 consumer.residue_type(("PROTEIN " + line[54:63]).strip())
             else:
                 consumer.residue_type(line[44:63].strip())
+
+            consumer.topology(line[55:63].strip())
 
             consumer.data_file_division(line[64:67])
             if line[68:79].strip():
