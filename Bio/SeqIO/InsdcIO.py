@@ -608,8 +608,16 @@ class GenBankWriter(_InsdcWriter):
             raise ValueError("Need a Nucleotide or Protein alphabet")
 
         # Get the molecule type
-        # TODO - record this explicitly in the parser?
-        if isinstance(a, Alphabet.ProteinAlphabet):
+        mol_type = self._get_annotation_str(record, "molecule_type", default=None)
+        if mol_type and len(mol_type) > 7:
+            warnings.warn("Molecule type %r too long" % mol_type)
+            mol_type = None
+        if mol_type == "protein":
+            mol_type = ""
+
+        if mol_type:
+            pass
+        elif isinstance(a, Alphabet.ProteinAlphabet):
             mol_type = ""
         elif isinstance(a, Alphabet.DNAAlphabet):
             mol_type = "DNA"
@@ -992,6 +1000,17 @@ class EmblWriter(_InsdcWriter):
         else:
             # Must be something like NucleotideAlphabet
             raise ValueError("Need a DNA, RNA or Protein alphabet")
+
+        if record.annotations.get("molecule_type", None):
+            if mol_type not in record.annotations["molecule_type"].upper():
+                if mol_type == "DNA" and record.annotations["molecule_type"] == "mRNA":
+                    pass
+                else:
+                    raise ValueError("Mismatch between molecule type %r and .seq.alphabet %r" %
+                                     (record.annotations["molecule_type"], record.seq.alphabet))
+            mol_type = record.annotations["molecule_type"]
+            if mol_type == "protein":
+                mol_type = "PROTEIN"
 
         # Get the taxonomy division
         division = self._get_data_division(record)
