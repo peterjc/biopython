@@ -376,7 +376,7 @@ def check_simple_write_read(records, indent=" "):
                 print(indent + "Failed: %s" % str(e))
             if records[0].seq.alphabet.letters is not None:
                 assert format != t_format, \
-                    "Should be able to re-write in the original format!"
+                    "Should be able to re-write %s in the original format!" % format
             # Carry on to the next format:
             continue
 
