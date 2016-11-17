@@ -1002,14 +1002,9 @@ class EmblWriter(_InsdcWriter):
             raise ValueError("Need a DNA, RNA or Protein alphabet")
 
         if record.annotations.get("molecule_type", None):
-            if mol_type not in record.annotations["molecule_type"].upper():
-                if mol_type == "DNA" and record.annotations["molecule_type"] == "mRNA":
-                    pass
-                else:
-                    raise ValueError("Mismatch between molecule type %r and .seq.alphabet %r" %
-                                     (record.annotations["molecule_type"], record.seq.alphabet))
+            # Note often get RNA vs DNA discrepancy in real EMBL/NCBI files
             mol_type = record.annotations["molecule_type"]
-            if mol_type == "protein":
+            if mol_type in ["protein", "PRO"]:
                 mol_type = "PROTEIN"
 
         # Get the taxonomy division
