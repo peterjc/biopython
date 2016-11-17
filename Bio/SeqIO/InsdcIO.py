@@ -610,8 +610,12 @@ class GenBankWriter(_InsdcWriter):
         # Get the molecule type
         mol_type = self._get_annotation_str(record, "molecule_type", default=None)
         if mol_type and len(mol_type) > 7:
-            warnings.warn("Molecule type %r too long" % mol_type)
-            mol_type = None
+            # Deal with common cases from EMBL to GenBank
+            mol_type = mol_type.replace("unassigned ", "").replace("genomic ", "")
+            if len(mol_type) > 7:
+                warnings.warn("Molecule type %r too long" % mol_type,
+                              BiopythonWarning)
+                mol_type = None
         if mol_type == "protein":
             mol_type = ""
 
