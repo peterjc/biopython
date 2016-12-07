@@ -14,6 +14,25 @@ from Bio.Alphabet import IUPAC
 from Bio import motifs
 from Bio.Seq import Seq
 
+# We require NumPy as a build dependency and runtime dependency,
+# so check this first:
+try:
+    import numpy
+except ImportError:
+    from Bio import MissingPythonDependencyError
+    raise MissingPythonDependencyError(
+        "Install NumPy if you want to use Bio.Cluster")
+
+# Given NumPy is installed, if we can't import _pwm this is
+# most likely due to Biopython being installed without NumPy
+try:
+    from Bio.motifs import _pwm
+except ImportError:
+    from Bio import MissingPythonDependencyError
+    raise MissingPythonDependencyError("If you want to use PWM in Bio.motifs, "
+                                       "install NumPy first and then "
+                                       "reinstall Biopython")
+
 
 class MotifTestsBasic(unittest.TestCase):
     def setUp(self):
