@@ -333,7 +333,10 @@ class PositionSpecificScoringMatrix(GenericPositionMatrix):
             return self._pwm.calculate(sequence, logodds)
     except ImportError:
         if platform.python_implementation() == 'CPython':
-            raise
+            from Bio import MissingPythonDependencyError
+            raise MissingPythonDependencyError(
+                "Our C code Bio.motifs._pwm is missing. This can happen if "
+                "Biopython was installed without first installing NumPy.")
         else:
             def _calculate(self, sequence, m, n):
                 # The C code handles mixed case so Python version must too:
