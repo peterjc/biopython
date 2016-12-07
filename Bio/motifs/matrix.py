@@ -27,26 +27,27 @@ try:
 
 except ImportError:
     if platform.python_implementation() == 'CPython':
-        from Bio import MissingPythonDependencyError
-        raise MissingPythonDependencyError(
-            "Missing Biopython's C code for PWM. This can happen if "
-            "Biopython was installed without NumPy. Try re-installing.")
-    else:
-        def _calculate(score_dict, sequence, m, n):
-            # The C code handles mixed case so Python version must too:
-            sequence = sequence.upper()
-            scores = []
-            for i in range(n - m + 1):
-                score = 0.0
-                for position in range(m):
-                    letter = sequence[i + position]
-                    try:
-                        score += score_dict[letter][position]
-                    except KeyError:
-                        score = float("nan")
-                        break
-                scores.append(score)
-            return scores
+        import warnings
+        from Bio import BiopythonWarning
+        warnings.warn("Using pure-Python as Missing Biopython's C code for PWM. "
+                      "This can happen if Biopython was installed without NumPy. "
+                      "Try re-installing NumPy and then Biopython.")
+
+    def _calculate(score_dict, sequence, m, n):
+        # The C code handles mixed case so Python version must too:
+        sequence = sequence.upper()
+        scores = []
+        for i in range(n - m + 1):
+            score = 0.0
+            for position in range(m):
+                letter = sequence[i + position]
+                try:
+                    score += score_dict[letter][position]
+                except KeyError:
+                    score = float("nan")
+                    break
+            scores.append(score)
+        return scores
 
 
 class GenericPositionMatrix(dict):
