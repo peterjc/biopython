@@ -14,7 +14,7 @@ from Bio.Alphabet import single_letter_alphabet
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
-from Interfaces import SequentialAlignmentWriter
+from .Interfaces import SequentialAlignmentWriter
 
 
 class MafWriter(SequentialAlignmentWriter):
