@@ -13,7 +13,6 @@ Bio.SeqIO functions if you want to work directly with the gapped sequences).
 from Bio.Alphabet import single_letter_alphabet
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
-from Bio.Align.Generic import Alignment
 from Bio.Align import MultipleSeqAlignment
 from Interfaces import SequentialAlignmentWriter
 
@@ -40,7 +39,7 @@ class MafWriter(SequentialAlignmentWriter):
         self.handle.write(" ".join(fields) + "\n")
 
     def write_alignment(self, alignment):
-        if not isinstance(alignment, Alignment):
+        if not isinstance(alignment, MultipleSeqAlignment):
             raise TypeError("Expected an alignment object")
 
         if len(set([len(x) for x in alignment])) > 1:
