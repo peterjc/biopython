@@ -68,8 +68,8 @@ test_files = [
     ("ig", 16, 1, 'IntelliGenetics/VIF_mase-pro.txt'),
     ("pir", 2, 1, 'NBRF/clustalw.pir'),
     ("maf", 3, 2, 'MAF/humor.maf'),
-    ("maf", None, 3, "MAF/bug2453.maf"), #Have 5, 5, 4 sequences
-    ("maf", None, 3, "MAF/ucsc_test.maf"), #Have 5, 5, 4 sequences
+    ("maf", None, 3, "MAF/bug2453.maf"),  # Have 5, 5, 4 sequences
+    ("maf", None, 3, "MAF/ucsc_test.maf"),  # Have 5, 5, 4 sequences
     ("maf", None, 48, "MAF/ucsc_mm9_chr10.maf")
     ]
 
@@ -202,11 +202,11 @@ def simple_alignment_comparison(alignments, alignments2, format):
                 assert r1.id == r2.id, \
                        "'%s' vs '%s'" % (r1.id, r2.id)
 
-            #Check the sequence
+            # Check the sequence
             if format == "stockholm":
-                #We map dot to dash in the stockholm parser, since
-                #both are gaps (but technically different kinds in HMM)
-                assert r1.seq.tostring().replace(".","-") == r2.seq.tostring(), \
+                # We map dot to dash in the stockholm parser, since
+                # both are gaps (but technically different kinds in HMM)
+                assert r1.seq.tostring().replace(".", "-") == r2.seq.tostring(), \
                     "Seq does not match %s vs %s (%s vs %s)" \
                     % (r1.seq, r2.seq, r1.id, r2.id)
             else:
