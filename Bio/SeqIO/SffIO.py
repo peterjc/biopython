@@ -36,8 +36,8 @@ including the PHRED quality scores.
     E3MFGYR02F7Z7G 219
     >>> print("%s..." % record.seq[:10])
     tcagAATCAT...
-    >>> print("%r..." % (record.letter_annotations["phred_quality"][:10]))
-    [22, 21, 23, 28, 26, 15, 12, 21, 28, 21]...
+    >>> print("%r ..." % (record.letter_annotations["phred_quality"][:10]))
+    array('b', [22, 21, 23, 28, 26, 15, 12, 21, 28, 21]) ...
 
 Notice that the sequence is given in mixed case, the central upper case region
 corresponds to the trimmed sequence. This matches the output of the Roche
@@ -118,8 +118,8 @@ example above:
     E3MFGYR02F7Z7G 130
     >>> print("%s..." % record.seq[:10])
     AATCATCCAC...
-    >>> print("%r..." % record.letter_annotations["phred_quality"][:10])
-    [26, 15, 12, 21, 28, 21, 36, 28, 27, 27]...
+    >>> print("%r ..." % record.letter_annotations["phred_quality"][:10])
+    array('b', [26, 15, 12, 21, 28, 21, 36, 28, 27, 27]) ...
     >>> len(record.annotations)
     3
     >>> print(record.annotations["region"])
@@ -235,13 +235,15 @@ http://www.ncbi.nlm.nih.gov/Traces/trace.cgi?cmd=show&f=formats&m=doc&s=formats
 
 from __future__ import print_function
 
+import array
+import re
+import struct
+import sys
+
 from Bio.SeqIO.Interfaces import SequenceWriter
 from Bio import Alphabet
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
-import struct
-import sys
-import re
 
 from Bio._py3k import _bytes_to_string, _as_bytes
 
@@ -625,7 +627,7 @@ def _sff_read_seq_record(handle, number_of_flows_per_read, flow_chars,
     temp_fmt = ">%iB" % seq_len  # used for flow index and quals
     flow_index = handle.read(seq_len)  # unpack later if needed
     seq = _bytes_to_string(handle.read(seq_len))  # TODO - Use bytes in Seq?
-    quals = list(struct.unpack(temp_fmt, handle.read(seq_len)))
+    quals = array.array('b', (struct.unpack(temp_fmt, handle.read(seq_len))))
     # now any padding...
     padding = (read_flow_size + seq_len * 3) % 8
     if padding:

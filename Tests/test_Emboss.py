@@ -306,11 +306,11 @@ class SeqRetSeqIOTests(unittest.TestCase):
             else:
                 self.assertEqual(old.id, new.id)
             self.assertEqual(str(old.seq), str(new.seq))
-            if emboss_version < (6, 3, 0) and new.letter_annotations["phred_quality"] == [1] * len(old):
+            if emboss_version < (6, 3, 0) and list(new.letter_annotations["phred_quality"]) == [1] * len(old):
                 # Apparent bug in EMBOSS 6.2.0.1 on Windows
                 pass
             else:
-                self.assertEqual(old.letter_annotations, new.letter_annotations)
+                self.assertEqual(list(old.letter_annotations), list(new.letter_annotations))
 
     def test_genbank(self):
         """SeqIO & EMBOSS reading each other's conversions of a GenBank file."""

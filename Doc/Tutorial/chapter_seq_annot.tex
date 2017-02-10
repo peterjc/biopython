@@ -866,8 +866,8 @@ CCCTTCTTGTCTTCAGCGTTTCTCC
 %TODO - doctest wrapping
 \begin{verbatim}
 >>> print(record.letter_annotations["phred_quality"])
-[26, 26, 18, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 22, 26, 26, 26, 26,
-26, 26, 26, 23, 23]
+array('b', [26, 26, 18, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 22, 26, 26, 26, 26,
+26, 26, 26, 23, 23])
 \end{verbatim}
 
 \noindent Let's suppose this was Roche 454 data, and that from other information
@@ -881,12 +881,12 @@ third \texttt{T}:
 >>> print(left.seq)
 CCCTTCTTGTCTTCAGCGTT
 >>> print(left.letter_annotations["phred_quality"])
-[26, 26, 18, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 22, 26, 26, 26, 26]
+array('b', [26, 26, 18, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 22, 26, 26, 26, 26])
 >>> right = record[21:]
 >>> print(right.seq)
 CTCC
 >>> print(right.letter_annotations["phred_quality"])
-[26, 26, 23, 23]
+array('b', [26, 26, 23, 23])
 \end{verbatim}
 
 \noindent Now add the two parts together:
@@ -901,8 +901,8 @@ CCCTTCTTGTCTTCAGCGTTCTCC
 \end{verbatim}
 \begin{verbatim}
 >>> print(edited.letter_annotations["phred_quality"])
-[26, 26, 18, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 22, 26, 26, 26, 26,
-26, 26, 23, 23]
+array('b', [26, 26, 18, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 22, 26, 26, 26, 26,
+26, 26, 23, 23])
 \end{verbatim}
 
 \noindent Easy and intuitive? We hope so! You can make this shorter with just:

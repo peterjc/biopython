@@ -390,10 +390,12 @@ class TestSelf(unittest.TestCase):
         for s, sT, f, q, fT, qT in zip(sff, sff_trim, fasta_no_trim, qual_no_trim, fasta_trim, qual_trim):
             self.assertEqual(len({s.id, f.id, q.id}), 1)  # All values are the same
             self.assertEqual(str(s.seq), str(f.seq))
-            self.assertEqual(s.letter_annotations["phred_quality"], q.letter_annotations["phred_quality"])
+            self.assertEqual(list(s.letter_annotations["phred_quality"]),
+                             list(q.letter_annotations["phred_quality"]))
             self.assertEqual(len({s.id, sT.id, fT.id, qT.id}), 1)  # All values are the same
             self.assertEqual(str(sT.seq), str(fT.seq))
-            self.assertEqual(sT.letter_annotations["phred_quality"], qT.letter_annotations["phred_quality"])
+            self.assertEqual(list(sT.letter_annotations["phred_quality"]),
+                             list(qT.letter_annotations["phred_quality"]))
 
     def test_write(self):
         filename = "Roche/E3MFGYR02_random_10_reads.sff"

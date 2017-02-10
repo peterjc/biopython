@@ -8,6 +8,7 @@ from __future__ import print_function
 
 import unittest
 import warnings
+
 from Bio import BiopythonWarning
 from Bio.Seq import UnknownSeq
 from Bio import SeqIO
@@ -105,7 +106,7 @@ def compare_record(old, new, truncate=None):
             raise ValueError("'%s...' vs '%s...'" % (old.seq[:100], new.seq[:100]))
     if "phred_quality" in old.letter_annotations \
     and "phred_quality" in new.letter_annotations \
-    and old.letter_annotations["phred_quality"] != new.letter_annotations["phred_quality"]:
+    and list(old.letter_annotations["phred_quality"]) != list(new.letter_annotations["phred_quality"]):
         if truncate and [min(q, truncate) for q in old.letter_annotations["phred_quality"]] == \
                         [min(q, truncate) for q in new.letter_annotations["phred_quality"]]:
             pass
@@ -113,7 +114,7 @@ def compare_record(old, new, truncate=None):
             raise ValueError("Mismatch in phred_quality")
     if "solexa_quality" in old.letter_annotations \
     and "solexa_quality" in new.letter_annotations \
-    and old.letter_annotations["solexa_quality"] != new.letter_annotations["solexa_quality"]:
+    and list(old.letter_annotations["solexa_quality"]) != list(new.letter_annotations["solexa_quality"]):
         if truncate and [min(q, truncate) for q in old.letter_annotations["solexa_quality"]] == \
                         [min(q, truncate) for q in new.letter_annotations["solexa_quality"]]:
             pass
@@ -127,7 +128,7 @@ def compare_record(old, new, truncate=None):
                      for q in old.letter_annotations["phred_quality"]]
         if truncate:
             converted = [min(q, truncate) for q in converted]
-        if converted != new.letter_annotations["solexa_quality"]:
+        if converted != list(new.letter_annotations["solexa_quality"]):
             print("")
             print(old.letter_annotations["phred_quality"])
             print(converted)
@@ -141,7 +142,7 @@ def compare_record(old, new, truncate=None):
                      for q in old.letter_annotations["solexa_quality"]]
         if truncate:
             converted = [min(q, truncate) for q in converted]
-        if converted != new.letter_annotations["phred_quality"]:
+        if converted != list(new.letter_annotations["phred_quality"]):
             print(old.letter_annotations["solexa_quality"])
             print(converted)
             print(new.letter_annotations["phred_quality"])
