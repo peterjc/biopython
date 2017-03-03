@@ -603,7 +603,7 @@ The first case occurs if, for example, you try to parse a Fasta file as if it we
 >>> record = Entrez.read(handle)
 Traceback (most recent call last):
   ...
-Bio.Entrez.Parser.NotXMLError: Failed to parse the XML data (syntax error: line 1, column 0). Please make sure that the input data are in XML format.
+NotXMLError: Failed to parse the XML data (syntax error: line 1, column 0). Please make sure that the input data are in XML format.
 \end{verbatim}
 Here, the parser didn't find the \verb|<?xml ...| tag with which an XML file is supposed to start, and therefore decides (correctly) that the file is not an XML file.
 
@@ -674,7 +674,7 @@ In this file, for some reason the tag \verb|<DocsumList>| (and several others) a
 >>> record = Entrez.read(handle)
 Traceback (most recent call last):
   ...
-Bio.Entrez.Parser.ValidationError: Failed to find tag 'DocsumList' in the DTD. To skip all tags that are not represented in the DTD, please call Bio.Entrez.read or Bio.Entrez.parse with validate=False.
+ValidationError: Failed to find tag 'DocsumList' in the DTD. To skip all tags that are not represented in the DTD, please call Bio.Entrez.read or Bio.Entrez.parse with validate=False.
 \end{verbatim}
 Optionally, you can instruct the parser to skip such tags instead of raising a ValidationError. This is done by calling \verb|Entrez.read| or \verb|Entrez.parse| with the argument \verb|validate| equal to False:
 %doctest ../Tests/Entrez/
