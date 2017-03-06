@@ -939,7 +939,7 @@ dbxrefs=['Project:10638'])
 \end{verbatim}
 %TODO - doctest wrapping
 \begin{verbatim}
->>> record.annotations.keys()
+>>> list(record.annotations.keys())
 ['comment', 'sequence_version', 'source', 'taxonomy', 'keywords', 'references',
 'accessions', 'data_file_division', 'date', 'organism', 'gi']
 \end{verbatim}
@@ -973,7 +973,7 @@ and one of the features (the source feature) have been lost:
 40
 >>> shifted.dbxrefs
 []
->>> shifted.annotations.keys()
+>>> list(shifted.annotations.keys())
 []
 \end{verbatim}
 
