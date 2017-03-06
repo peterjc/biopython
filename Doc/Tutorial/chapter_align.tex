@@ -618,8 +618,11 @@ Internally the \verb|format()| method is using the \verb|StringIO| string based 
 older version of Biopython:
 
 \begin{verbatim}
+try:
+    from StringIO import StringIO  # Python 2
+except ImportError:
+    from io import StringIO  # Python 3
 from Bio import AlignIO
-from StringIO import StringIO
 
 alignments = AlignIO.parse("PF05371_seed.sth", "stockholm")
 
@@ -1109,10 +1112,14 @@ to parse this we can use \verb|StringIO| to turn it into a handle.
 Remember that MUSCLE defaults to using FASTA as the output format:
 
 \begin{verbatim}
+>>> try:
+...     from StringIO import StringIO  # Python 2
+... except ImportError:
+...     from io import StringIO  # Python 3
+...
 >>> from Bio.Align.Applications import MuscleCommandline
 >>> muscle_cline = MuscleCommandline(input="opuntia.fasta")
 >>> stdout, stderr = muscle_cline()
->>> from StringIO import StringIO
 >>> from Bio import AlignIO
 >>> align = AlignIO.read(StringIO(stdout), "fasta")
 >>> print(align)
@@ -1242,9 +1249,13 @@ a string using \texttt{StringIO} (see Section~\ref{sec:appendix-handles}):
 
 %doctest
 \begin{verbatim}
+>>> try:
+...     from StringIO import StringIO  # Python 2
+... except ImportError:
+...     from io import StringIO  # Python 3
+...
 >>> from Bio import SeqIO
 >>> records = (r for r in SeqIO.parse("opuntia.fasta", "fasta") if len(r) < 900)
->>> from StringIO import StringIO
 >>> handle = StringIO()
 >>> SeqIO.write(records, handle, "fasta")
 6

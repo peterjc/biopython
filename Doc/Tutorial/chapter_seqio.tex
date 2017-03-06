@@ -1211,8 +1211,12 @@ Suppose that you don't really want to write your records to a file or handle -- 
 For an example of how you might use this, let's load in a bunch of \verb|SeqRecord| objects from our orchids GenBank file, and create a string containing the records in FASTA format:
 
 \begin{verbatim}
+try:
+    from StringIO import StringIO  # Python 2
+except ImportError:
+    from io import StringIO  # Python 3
+
 from Bio import SeqIO
-from StringIO import StringIO
 records = SeqIO.parse("ls_orchid.gbk", "genbank")
 out_handle = StringIO()
 SeqIO.write(records, out_handle, "fasta")

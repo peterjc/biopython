@@ -301,8 +301,12 @@ with SeqIO and AlignIO:
 
 %doctest
 \begin{verbatim}
+>>> try:
+...     from StringIO import StringIO  # Python 2
+... except ImportError:
+...     from io import StringIO  # Python 3
+...
 >>> from Bio import Phylo
->>> from StringIO import StringIO
 >>> handle = StringIO("(((A,B),(C,D)),(E,F,G));")
 >>> tree = Phylo.read(handle, "newick")
 \end{verbatim}

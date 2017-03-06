@@ -100,7 +100,11 @@ string into a handle. The following example shows how to do this using
 >>> print(my_info)
 A string
  with multiple lines.
->>> from StringIO import StringIO
+>>> try:
+...     from StringIO import StringIO   # Python 2
+... except ImportError:
+...     from io import StringIO  # Python 3
+...
 >>> my_info_handle = StringIO(my_info)
 >>> first_line = my_info_handle.readline()
 >>> print(first_line)
