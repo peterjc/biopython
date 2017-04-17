@@ -31,6 +31,7 @@ matrix:
     - python: pypy3
       env: TOXENV=pypy3-nocov
     - os: osx
+      language: generic
       osx_image: xcode8.3
       env: TOXENV=py27-cover
 
