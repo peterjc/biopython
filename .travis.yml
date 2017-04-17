@@ -78,6 +78,8 @@ before_install:
 #  - mv dssp-2.0.4-linux-amd64 bin/dssp
 #  - chmod a+x bin/dssp
   - cd $TRAVIS_BUILD_DIR
+  - which python
+  - python --version
 
 install:
   - "cp Tests/biosql.ini.sample Tests/biosql.ini"
