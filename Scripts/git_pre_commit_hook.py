@@ -2,7 +2,7 @@
 """Biopython's pre-commit git hook.
 
 This is intended to be installed as part of setting up a development
-copy of Biopyton, e.g.::
+copy of Biopython, e.g.::
 
     $ git clone git@github.com:biopython/biopython.git
     $ cd biopython
