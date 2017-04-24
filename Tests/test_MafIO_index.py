@@ -287,7 +287,7 @@ if sqlite3:
 
         def test_correct_retrieval_1(self):
             search = self.idx.search((3014742, 3018161), (3015028, 3018644))
-            results = [x for x in search]
+            results = list(search)
 
             self.assertEqual(len(results), 12)
 
@@ -310,7 +310,7 @@ if sqlite3:
 
         def test_correct_retrieval_2(self):
             search = self.idx.search((3009319, 3021421), (3012566, 3021536))
-            results = [x for x in search]
+            results = list(search)
 
             self.assertEqual(len(results), 8)
 
@@ -334,7 +334,7 @@ if sqlite3:
 
         def test_correct_retrieval_3(self):
             search = self.idx.search((3012076, 3012076 + 300), (3012076 + 100, 3012076 + 400))
-            results = [x for x in search]
+            results = list(search)
 
             self.assertEqual(len(results), 2)
 
