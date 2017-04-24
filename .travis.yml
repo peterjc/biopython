@@ -13,7 +13,10 @@
 language: python
 matrix:
   include:
-    - env: TOXENV=style
+    - python: 2.7
+      env: TOXENV=style
+    - python: 3.6
+      env: TOXENV=style
     - env: TOXENV=sdist
     - env: TOXENV=bdist_wheel
     - python: 2.7
