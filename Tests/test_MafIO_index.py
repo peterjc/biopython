@@ -382,12 +382,11 @@ if sqlite3:
             self.assertEqual(str(result[0].seq), "N" * 1000)
 
         def test_correct_retrieval_1(self):
-            """
-            This is the real thing. We're pulling the spliced alignment of
-            an actual gene (Cnksr3) in mouse. It should perfectly match the
-            spliced transcript pulled independently from UCSC.
-            """
+            """Pull spliced alignment of mouse gene Cnksr3.
 
+            It should perfectly match the spliced transcript pulled
+            independently from UCSC.
+            """
             result = self.idx.get_spliced((3134303, 3185733, 3192055, 3193589,
                                            3203538, 3206102, 3208126, 3211424,
                                            3211872, 3217393, 3219697, 3220356,
@@ -404,7 +403,7 @@ if sqlite3:
             self.assertEqual(mm9_seq, cnksr3)
 
     class TestSpliceBadMAF(unittest.TestCase):
-        """Test in silico splicing on an incorrectly-formatted MAF"""
+        """Test in silico splicing on an incorrectly-formatted MAF."""
 
         def setUp(self):
             self.idx = MafIndex("MAF/ucsc_mm9_chr10_bad.mafindex",
