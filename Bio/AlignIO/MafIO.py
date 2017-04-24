@@ -32,7 +32,11 @@ For an inclusive end coordinate, we need to use ``end = start + size - 1``.
 A 1-column wide alignment would have ``start == end``.
 """
 import os
+import sys
 from itertools import islice
+
+from Bio._py3k import _bytes_to_string, _binary_to_string_handle
+from Bio._py3k import StringIO
 
 try:
     from sqlite3 import dbapi2 as _sqlite
@@ -80,7 +84,8 @@ class MafWriter(SequentialAlignmentWriter):
         self.handle.write("%s\n" % " ".join(fields))
 
     def write_alignment(self, alignment):
-        """
+        """Write a single MSA to MAF format.
+
         Writes every SeqRecord in a MultipleSeqAlignment object to its own
         MAF block (beginning with an 'a' line, containing 's' lines)
         """
@@ -119,7 +124,8 @@ class MafWriter(SequentialAlignmentWriter):
 # Invalid function name according to pylint, but kept for compatibility
 # with Bio* conventions.
 def MafIterator(handle, seq_count=None, alphabet=single_letter_alphabet):
-    """
+    """Parse MAF handle as MultipleSeqAlignment objects.
+
     Iterates over lines in a MAF file-like object (handle), yielding
     MultipleSeqAlignment objects. SeqRecord IDs generally correspond to
     species names
@@ -248,7 +254,9 @@ class MafIndex(object):
         # example: Tests/MAF/ucsc_mm9_chr10.maf
         self._maf_file = maf_file
 
-        self._maf_fp = open(self._maf_file, "r")
+        # Opening in bytes mode as want real offsets, not where
+        # Python attempts to hide cross-platform newline differences etc
+        self._maf_fp = open(self._maf_file, "rb")
 
         # if sqlite_file exists, use the existing db, otherwise index the file
         if os.path.isfile(sqlite_file):
@@ -257,9 +265,6 @@ class MafIndex(object):
         else:
             self._con = _sqlite.connect(sqlite_file)
             self._record_count = self.__make_new_index()
-
-        # lastly, setup a MafIterator pointing at the open maf_file
-        self._mafiter = MafIterator(self._maf_fp)
 
     def __check_existing_db(self):
         """Basic sanity checks upon loading an existing index"""
@@ -379,7 +384,7 @@ class MafIndex(object):
         line = self._maf_fp.readline()
 
         while line:
-            if line.startswith("a"):
+            if line.startswith(b"a"):
                 # note the offset
                 offset = self._maf_fp.tell() - len(line)
 
@@ -387,11 +392,11 @@ class MafIndex(object):
                 while True:
                     line = self._maf_fp.readline()
 
-                    if not line.strip() or line.startswith("a"):
+                    if not line.strip() or line.startswith(b"a"):
                         # Empty line or new alignment record
                         raise ValueError("Target for indexing (%s) not found in this bundle"
                                          % (self._target_seqname,))
-                    elif line.startswith("s"):
+                    elif line.startswith(b"s"):
                         # s (literal), src (ID), start, size, strand, srcSize, text (sequence)
                         line_split = line.strip().split()
 
@@ -399,9 +404,9 @@ class MafIndex(object):
                             start = int(line_split[2])
                             end = int(line_split[2]) + int(line_split[3])
 
-                            if end - start != len(line_split[6].replace("-", "")):
+                            if end - start != len(line_split[6].replace(b"-", b"")):
                                 raise ValueError("Invalid length for target coordinates (expected %s, found %s)" %
-                                                 (end - start, len(line_split[6].replace("-", ""))))
+                                                 (end - start, len(line_split[6].replace(b"-", b""))))
 
                             yield (self._ucscbin(start, end), start, end, offset)
 
@@ -455,7 +460,7 @@ class MafIndex(object):
     def _get_record(self, offset):
         """Retrieves a single MAF record located at the offset provided."""
         self._maf_fp.seek(offset)
-        return next(self._mafiter)
+        return next(MafIterator(_binary_to_string_handle(self._maf_fp)))
 
     def search(self, starts, ends):
         """Searches index database for MAF records overlapping ranges provided.
