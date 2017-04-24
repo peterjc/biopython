@@ -32,11 +32,9 @@ For an inclusive end coordinate, we need to use ``end = start + size - 1``.
 A 1-column wide alignment would have ``start == end``.
 """
 import os
-import sys
 from itertools import islice
 
-from Bio._py3k import _bytes_to_string, _binary_to_string_handle
-from Bio._py3k import StringIO
+from Bio._py3k import _binary_to_string_handle
 
 try:
     from sqlite3 import dbapi2 as _sqlite
