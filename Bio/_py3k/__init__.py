@@ -138,6 +138,9 @@ if sys.version_info[0] >= 3:
                     for line in self._handle:
                         yield _as_string(line)
 
+                def __next__(self):
+                    return _as_string(next(self._handle))
+
                 def close(self):
                     return self._handle.close()
 
