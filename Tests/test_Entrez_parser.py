@@ -107,7 +107,7 @@ class EInfoTest(unittest.TestCase):
                                             'taxonomy',
                                             'toolkit',
                                             'unigene',
-                                            'unists'
+                                            'unists',
                                             ])
 
     def test_pubmed1(self):

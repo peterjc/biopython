@@ -421,7 +421,7 @@ class CrystalTestCase(unittest.TestCase):
         self.crystal = Crystal({'a': 'T T G A C T C T C T T A A',
                                 'b': Chain('G A G A G T C A'),
                                 'c': 'T T G A C T C T C T T A A',
-                                'd': Chain('G A G A G T C A')
+                                'd': Chain('G A G A G T C A'),
                                 })
 
     def testLen(self):

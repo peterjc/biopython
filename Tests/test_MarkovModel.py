@@ -118,9 +118,7 @@ class TestMarkovModel(unittest.TestCase):
     def test_baum_welch(self):
         states = ["CP", "IP"]
         alphabet = ["cola", "ice_t", "lem"]
-        outputs = [
-            (2, 1, 0)
-            ]
+        outputs = [(2, 1, 0)]
         p_initial = [1.0, 0.0000001]
         p_transition = [[0.7, 0.3],
                         [0.5, 0.5]]
@@ -130,8 +128,7 @@ class TestMarkovModel(unittest.TestCase):
         x = MarkovModel._baum_welch(N, M, outputs,
                                     p_initial=p_initial,
                                     p_transition=p_transition,
-                                    p_emission=p_emission
-                                    )
+                                    p_emission=p_emission)
         p_initial, p_transition, p_emission = x
         markov_model = MarkovModel.MarkovModel(states, alphabet,
                                      p_initial, p_transition, p_emission)

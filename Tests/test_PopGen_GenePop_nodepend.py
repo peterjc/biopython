@@ -36,7 +36,7 @@ class ParserTest(unittest.TestCase):
             (3, [4, 3, 5]),
             (3, [4, 3, 5]),
             (3, [4, 3, 5]),
-            (3, [4, 3, 5])
+            (3, [4, 3, 5]),
         ]
         self.num_loci = [3, 3, 3, 3, 3, 3]
         self.marker_len = [2, 3, 2, 3, 3, 2]
@@ -83,7 +83,7 @@ class FileParserTest(unittest.TestCase):
             (3, [4, 3, 5]),
             (3, [4, 3, 5]),
             (3, [4, 3, 5]),
-            (3, [4, 3, 5])
+            (3, [4, 3, 5]),
         ]
         self.num_loci = [3, 3, 3, 3, 3, 3]
 

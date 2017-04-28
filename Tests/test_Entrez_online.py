@@ -194,7 +194,7 @@ class EntrezOnlineCase(unittest.TestCase):
         citation = {
             "journal_title": "proc natl acad sci u s a",
             "year": "1991", "volume": "88", "first_page": "3248",
-            "author_name": "mann bj", "key": "citation_1"
+            "author_name": "mann bj", "key": "citation_1",
         }
         handle = Entrez.ecitmatch(db="pubmed", bdata=[citation])
         self.assertIn("retmode=xml", handle.url)

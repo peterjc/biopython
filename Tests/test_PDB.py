@@ -78,7 +78,7 @@ class A_ExceptionTest(unittest.TestCase):
                     "Residue (' ', 16, ' ') redefined at line 135.",
                     "Residue (' ', 80, ' ') redefined at line 633.",
                     "Residue (' ', 81, ' ') redefined at line 646.",
-                    'Atom O defined twice in residue <Residue HOH het=W resseq=67 icode= > at line 822.'
+                    'Atom O defined twice in residue <Residue HOH het=W resseq=67 icode= > at line 822.',
                     ]):
                 self.assertIn(msg, str(wrn))
 
@@ -389,7 +389,7 @@ class ParseTest(unittest.TestCase):
                        (('W', 74, ' '), 1),
                        (('W', 75, ' '), 1),
                        (('W', 77, ' '), 1),
-                       ])
+                       ]),
         ]
 
         for c_idx, chn in enumerate(chain_data):

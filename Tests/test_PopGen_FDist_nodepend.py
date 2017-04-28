@@ -16,9 +16,7 @@ from Bio.PopGen.FDist.Utils import convert_genepop_to_fdist
 
 class RecordTest(unittest.TestCase):
     def test_record_basic(self):
-        """Basic test on Record
-        """
-
+        """Basic test on Record."""
         r = FDist.Record()
         assert isinstance(r.data_org, int)
         assert isinstance(r.num_pops, int)
@@ -33,19 +31,10 @@ class ParserTest(unittest.TestCase):
         for filename in files:
             self.handles.append(open(os.path.join("PopGen", filename)))
 
-        self.pops_loci = [
-            (3, 4)
-        ]
-        self.num_markers = [
-            [2, 3, 4, 2]
-        ]
+        self.pops_loci = [(3, 4)]
+        self.num_markers = [[2, 3, 4, 2]]
         # format is locus, pop, position, value
-        self.test_pos = [
-            [
-                (0, 0, 0, 5),
-                (3, 2, 0, 5)
-            ]
-        ]
+        self.test_pos = [[(0, 0, 0, 5), (3, 2, 0, 5)]]
 
     def tearDown(self):
         for handle in self.handles:
