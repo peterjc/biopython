@@ -46,7 +46,7 @@ You can run the tool ``flake8`` directly as follows. This includes the checks
 from  ``pycodestyle`` (formerly ``pep8``) and uses the ``pydocstyle`` plugin
 (``flake8-docstrings``) for checking the docstrings within the Python code::
 
-    $ pip install flake8 flake8-docstrings flake8-blind-except
+    $ pip install flake8 flake8-docstrings flake8-rst-docstrings flake8-blind-except
     $ flake8 Bio/
     $ flake8 BioSQL/
     $ flake8 Tests/
@@ -65,7 +65,6 @@ tool (also known as ``rst-lint``)::
 More simply we currently suggest you install the git pre-commit hook described
 here which will check our basic coding conventions as you work:
 https://github.com/biopython/biopython/issues/493
-
 
 
 Testing
