@@ -18,6 +18,11 @@ cache: pip
 matrix:
   include:
     - stage: basics
+      python: 2.7
+      env: TOXENV=style
+      before_install: echo "Going to run basic checks"
+    - stage: basics
+      python: 3.6
       env: TOXENV=style
       before_install: echo "Going to run basic checks"
     - stage: basics
@@ -107,6 +112,7 @@ install:
   - "pip install tox"
   - "tox -c .travis-tox.ini -e $TOXENV --notest"
 
+# This is minimal and used under all stages
 script:
   - "tox -c .travis-tox.ini -e $TOXENV"
 
