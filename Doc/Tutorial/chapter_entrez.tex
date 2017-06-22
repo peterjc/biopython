@@ -599,7 +599,7 @@ Three things can go wrong when parsing an XML file:
 \end{itemize}
 
 The first case occurs if, for example, you try to parse a Fasta file as if it were an XML file:
-%doctest ../Tests/GenBank
+%TODO Exception difference on Python 2.7 Windows/AppVeyor: doctest ../Tests/GenBank
 \begin{verbatim}
 >>> from Bio import Entrez
 >>> handle = open("NC_005816.fna") # a Fasta file
@@ -670,7 +670,7 @@ The third type of error occurs if the XML file contains tags that do not have a 
 
 In this file, for some reason the tag \verb|<DocsumList>| (and several others) are not listed in the DTD file \verb|eInfo_020511.dtd|, which is specified on the second line as the DTD for this XML file. By default, the parser will stop and raise a ValidationError if it cannot find some tag in the DTD:
 
-%doctest ../Tests/Entrez/
+%TODO Exception difference on Python 2.7 Windows/AppVeyor: doctest ../Tests/Entrez/
 \begin{verbatim}
 >>> from Bio import Entrez
 >>> handle = open("einfo3.xml")
