@@ -22,19 +22,20 @@ matrix:
       addons:
         apt:
           packages:
-      before_install: echo "Going to run basic checks"
+      before_install: echo "Going to run style checks"
     - stage: basics
       env: TOXENV=sdist
       addons:
         apt:
           packages:
-      before_install: echo "Going to run basic checks"
+          - python-epydoc
+      before_install: echo "Going to run sdist and epydoc"
     - stage: basics
       env: TOXENV=bdist_wheel
       addons:
         apt:
           packages:
-      before_install: echo "Going to run basic checks"
+      before_install: echo "Going to run bdist_wheel"
     - stage: basics
       env: TOXENV=docs
       addons:
@@ -50,6 +51,19 @@ matrix:
       script:
       - cd Doc
       - make
+    - stage: basics
+      env: TOXENV=epydoc
+      addons:
+        apt:
+          packages:
+          - python-epydoc
+      before_install:
+      - echo "Going to run epydoc"
+      install:
+      - echo "TODO Compile and install biopython before calling epydoc"
+      - pip install docutils
+      script:
+      - epydoc --fail-on-error -v -o ~/api/ -u http://biopython.org -n Biopython --docformat restructuredtext Bio BioSQL
     - stage: test
       python: 2.7
       env: TOXENV=py27-cover
