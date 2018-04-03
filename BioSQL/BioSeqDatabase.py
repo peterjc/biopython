@@ -305,7 +305,7 @@ class DBServer(object):
             # don't use the last item, it's blank
             for sql_line in sql_parts[:-1]:
                 try:
-                    self.adaptor.cursor.execute(sql_line.replace("\n", " "))
+                    self.adaptor.cursor.execute(sql_line.replace("\n", " ").strip())
                 except Exception as e:
                     raise RuntimeError("Got %r from %r" % (str(e), sql_line))
         else:
