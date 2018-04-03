@@ -51,7 +51,7 @@ matrix:
       python: 3.6
       env: TOXENV=py36-cover
     - stage: test
-      python: pypy-5.7.1
+      python: pypy
       env: TOXENV=pypy-nocov
     - stage: test
       python: pypy3
