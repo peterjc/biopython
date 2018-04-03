@@ -12,7 +12,7 @@ The latest news is at the top of this file.
 ==============================================
 
 This release of Biopython supports Python 2.7, 3.4, 3.5 and 3.6.
-It has also been tested on PyPy v5.7, PyPy3.5 v5.8 beta, and Jython 2.7
+It has also been tested on PyPy2 v5.8, PyPy3.5 v5.8 beta, and Jython 2.7
 (although support for Jython is deprecated).
 
 Python 3 is the primary development platform for Biopython. We will drop
