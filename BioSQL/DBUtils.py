@@ -97,6 +97,17 @@ class Mysql_dbutils(Generic_dbutils):
 _dbutils["MySQLdb"] = Mysql_dbutils
 
 
+class _Mysql_connectorl_dbutils(Mysql_dbutils):
+    """Custom database utilities for MySQL connector."""
+
+    def executemany(self, cursor, sql, seq):
+        """Execute many sql statements."""
+        # Seems with the mysql-connector that cursor.execute(SQL, multi=True)
+        # returns an iterator and you MUST loop over it to execute it!
+        for row in cursor.execute(sql, seq, multi=True):
+            pass
+
+
 class _PostgreSQL_dbutils(Generic_dbutils):
     """Base class for any PostgreSQL adaptor."""
 
