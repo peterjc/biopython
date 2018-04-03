@@ -304,7 +304,10 @@ class DBServer(object):
             sql_parts = sql.split(";")  # one line per sql command
             # don't use the last item, it's blank
             for sql_line in sql_parts[:-1]:
-                self.adaptor.cursor.execute(sql_line)
+                try:
+                    self.adaptor.cursor.execute(sql_line.replace("\n", " "))
+                except Exception as e:
+                    raise RuntimeError("Got %r from %r" % (str(e), sql_line))
         else:
             raise ValueError("Module %s not supported by the loader." %
                              (self.module_name))
