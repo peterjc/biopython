@@ -199,12 +199,18 @@ from Bio._py3k import basestring
 
 import sys
 import warnings
-from collections import OrderedDict
 
 from Bio import BiopythonExperimentalWarning
 from Bio.File import as_handle
 from Bio.SearchIO._model import QueryResult, Hit, HSP, HSPFragment
 from Bio.SearchIO._utils import get_processor
+
+
+if sys.version_info < (3, 6):
+    from collections import OrderedDict as _dict
+else:
+    # Default dict is sorted in Python 3.6 onwards
+    _dict = dict
 
 
 warnings.warn('Bio.SearchIO is an experimental submodule which may undergo '
@@ -411,11 +417,12 @@ def to_dict(qresults, key_function=lambda rec: rec.id):
     unsuitable for dealing with files containing many queries. In that case, it
     is recommended that you use either `index` or `index_db`.
 
-    As of Biopython 1.69, this will return an OrderedDict, where the record
-    order provided is preserved. Earlier versions of Python used the typical
-    built-in dictionary class, which as of Python 3.6 also preserves the order.
+    Since Python 3.6, the default dict class maintains key order, meaning
+    this dictionary will reflect the order of records given to it. As of
+    Biopython 1.72, on older versions of Python we explicitly use an
+    OrderedDict so that you can always assume the record order is preserved.
     """
-    qdict = OrderedDict()
+    qdict = _dict()
     for qresult in qresults:
         key = key_function(qresult)
         if key in qdict:
