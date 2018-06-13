@@ -374,7 +374,8 @@ from Bio._py3k import basestring
 from Bio.File import as_handle
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
-from Bio.Alphabet import Alphabet, AlphabetEncoder, _get_base_alphabet
+from Bio.Alphabet import Alphabet, AlphabetEncoder
+from Bio.Seq import _consensus_alphabet_type
 
 from . import AbiIO
 from . import AceIO
@@ -548,7 +549,7 @@ def parse(handle, format, alphabet=None):
      - handle   - handle to the file, or the filename as a string
        (note older versions of Biopython only took a handle).
      - format   - lower case string describing the file format.
-     - alphabet - optional Alphabet object, useful when the sequence type
+     - alphabet - optional alphabet, useful when the sequence type
        cannot be automatically inferred from the file itself
        (e.g. format="fasta" or "tab")
 
@@ -562,21 +563,20 @@ def parse(handle, format, alphabet=None):
     ...    print("Sequence alphabet %s" % record.seq.alphabet)
     ID gi|3176602|gb|U78617.1|LOU78617
     Sequence length 309
-    Sequence alphabet SingleLetterAlphabet()
+    Sequence alphabet None
 
     For file formats like FASTA where the alphabet cannot be determined, it
     may be useful to specify the alphabet explicitly:
 
     >>> from Bio import SeqIO
-    >>> from Bio.Alphabet import generic_dna
     >>> filename = "Fasta/sweetpea.nu"
-    >>> for record in SeqIO.parse(filename, "fasta", generic_dna):
+    >>> for record in SeqIO.parse(filename, "fasta", "DNA"):
     ...    print("ID %s" % record.id)
     ...    print("Sequence length %i" % len(record))
     ...    print("Sequence alphabet %s" % record.seq.alphabet)
     ID gi|3176602|gb|U78617.1|LOU78617
     Sequence length 309
-    Sequence alphabet DNAAlphabet()
+    Sequence alphabet DNA
 
     If you have a string 'data' containing the file contents, you must
     first turn this into a handle in order to parse it:
@@ -614,8 +614,9 @@ def parse(handle, format, alphabet=None):
         raise ValueError("Format required (lower case string)")
     if format != format.lower():
         raise ValueError("Format string '%s' should be lower case" % format)
-    if alphabet is not None and not (isinstance(alphabet, Alphabet) or
-                                     isinstance(alphabet, AlphabetEncoder)):
+    if not (alphabet is None
+            or alphabet in ("nucleotide", "RNA", "DNA", "protein")
+            or isinstance(alphabet, (Alphabet, AlphabetEncoder))):
         raise ValueError("Invalid alphabet, %r" % alphabet)
 
     with as_handle(handle, mode) as fp:
@@ -644,16 +645,15 @@ def parse(handle, format, alphabet=None):
 def _force_alphabet(record_iterator, alphabet):
     """Iterate over records, over-riding the alphabet (PRIVATE)."""
     # Assume the alphabet argument has been pre-validated
-    given_base_class = _get_base_alphabet(alphabet).__class__
     for record in record_iterator:
-        if isinstance(_get_base_alphabet(record.seq.alphabet),
-                      given_base_class):
-            record.seq.alphabet = alphabet
-            yield record
-        else:
+        try:
+            a = _consensus_alphabet_type(alphabet, record.seq.alphabet)
+        except TypeError:
             raise ValueError("Specified alphabet %r clashes with "
                              "that determined from the file, %r"
                              % (alphabet, record.seq.alphabet))
+        record.seq.alphabet = alphabet
+        yield record
 
 
 def read(handle, format, alphabet=None):
@@ -663,7 +663,7 @@ def read(handle, format, alphabet=None):
      - handle   - handle to the file, or the filename as a string
        (note older versions of Biopython only took a handle).
      - format   - string describing the file format.
-     - alphabet - optional Alphabet object, useful when the sequence type
+     - alphabet - optional alphabet, useful when the sequence type
        cannot be automatically inferred from the file itself
        (e.g. format="fasta" or "tab")
 
@@ -677,7 +677,7 @@ def read(handle, format, alphabet=None):
     >>> print("Sequence length %i" % len(record))
     Sequence length 86436
     >>> print("Sequence alphabet %s" % record.seq.alphabet)
-    Sequence alphabet IUPACAmbiguousDNA()
+    Sequence alphabet DNA
 
     If the handle contains no records, or more than one record,
     an exception is raised.  For example:
@@ -784,7 +784,7 @@ def index(filename, format, alphabet=None, key_function=None):
     Arguments:
      - filename - string giving name of file to be indexed
      - format   - lower case string describing the file format
-     - alphabet - optional Alphabet object, useful when the sequence type
+     - alphabet - optional alphabet, useful when the sequence type
        cannot be automatically inferred from the file itself
        (e.g. format="fasta" or "tab")
      - key_function - Optional callback function which when given a
@@ -897,8 +897,9 @@ def index(filename, format, alphabet=None, key_function=None):
         raise ValueError("Format required (lower case string)")
     if format != format.lower():
         raise ValueError("Format string '%s' should be lower case" % format)
-    if alphabet is not None and not (isinstance(alphabet, Alphabet) or
-                                     isinstance(alphabet, AlphabetEncoder)):
+    if not (alphabet is None
+            or alphabet in ("nucleotide", "RNA", "DNA", "protein")
+            or isinstance(alphabet, (Alphabet, AlphabetEncoder))):
         raise ValueError("Invalid alphabet, %r" % alphabet)
 
     # Map the file format to a sequence iterator:
@@ -938,7 +939,6 @@ def index_db(index_filename, filenames=None, format=None, alphabet=None,
     This indexing function will return a dictionary like object, giving the
     SeqRecord objects as values:
 
-    >>> from Bio.Alphabet import generic_protein
     >>> from Bio import SeqIO
     >>> files = ["GenBank/NC_000932.faa", "GenBank/NC_005816.faa"]
     >>> def get_gi(name):
@@ -947,7 +947,7 @@ def index_db(index_filename, filenames=None, format=None, alphabet=None,
     ...     assert i != -1
     ...     return parts[i+1]
     >>> idx_name = ":memory:" #use an in memory SQLite DB for this test
-    >>> records = SeqIO.index_db(idx_name, files, "fasta", generic_protein, get_gi)
+    >>> records = SeqIO.index_db(idx_name, files, "fasta", "protein", get_gi)
     >>> len(records)
     95
     >>> records["7525076"].description
@@ -979,8 +979,9 @@ def index_db(index_filename, filenames=None, format=None, alphabet=None,
         raise TypeError("Need a string for the file format (lower case)")
     if format and format != format.lower():
         raise ValueError("Format string '%s' should be lower case" % format)
-    if alphabet is not None and not (isinstance(alphabet, Alphabet) or
-                                     isinstance(alphabet, AlphabetEncoder)):
+    if not (alphabet is None
+            or alphabet in ("nucleotide", "RNA", "DNA", "protein")
+            or isinstance(alphabet, (Alphabet, AlphabetEncoder))):
         raise ValueError("Invalid alphabet, %r" % alphabet)
 
     # Map the file format to a sequence iterator:
