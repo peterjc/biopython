@@ -311,19 +311,18 @@ class SeqFeature(object):
         here reverse strand features are not permitted.
 
         >>> from Bio.Seq import Seq
-        >>> from Bio.Alphabet import generic_protein
         >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
-        >>> seq = Seq("MKQHKAMIVALIVICITAVVAAL", generic_protein)
+        >>> seq = Seq("MKQHKAMIVALIVICITAVVAAL", "protein")
         >>> f = SeqFeature(FeatureLocation(8, 15), type="domain")
         >>> f.extract(seq)
-        Seq('VALIVIC')
+        Seq('VALIVIC', 'protein')
 
         If the FeatureLocation is None, e.g. when parsing invalid locus
         locations in the GenBank parser, extract() will raise a ValueError.
 
         >>> from Bio.Seq import Seq
         >>> from Bio.SeqFeature import SeqFeature
-        >>> seq = Seq("MKQHKAMIVALIVICITAVVAAL", generic_protein)
+        >>> seq = Seq("MKQHKAMIVALIVICITAVVAAL", "protein")
         >>> f = SeqFeature(None, type="domain")
         >>> f.extract(seq)
         Traceback (most recent call last):
@@ -431,14 +430,13 @@ class SeqFeature(object):
         """Return the length of the region where the feature is located.
 
         >>> from Bio.Seq import Seq
-        >>> from Bio.Alphabet import generic_protein
         >>> from Bio.SeqFeature import SeqFeature, FeatureLocation
-        >>> seq = Seq("MKQHKAMIVALIVICITAVVAAL", generic_protein)
+        >>> seq = Seq("MKQHKAMIVALIVICITAVVAAL", "protein")
         >>> f = SeqFeature(FeatureLocation(8, 15), type="domain")
         >>> len(f)
         7
         >>> f.extract(seq)
-        Seq('VALIVIC')
+        Seq('VALIVIC', 'protein')
         >>> len(f.extract(seq))
         7
 
@@ -1044,12 +1042,11 @@ class FeatureLocation(object):
         a MutableSeq as the parent sequence will return a Seq object.
 
         >>> from Bio.Seq import Seq
-        >>> from Bio.Alphabet import generic_protein
         >>> from Bio.SeqFeature import FeatureLocation
-        >>> seq = Seq("MKQHKAMIVALIVICITAVVAAL", generic_protein)
+        >>> seq = Seq("MKQHKAMIVALIVICITAVVAAL", "protein")
         >>> feature_loc = FeatureLocation(8, 15)
         >>> feature_loc.extract(seq)
-        Seq('VALIVIC')
+        Seq('VALIVIC', 'protein')
 
         """
         if self.ref or self.ref_db:
@@ -1459,14 +1456,13 @@ class CompoundLocation(object):
         a MutableSeq as the parent sequence will return a Seq object.
 
         >>> from Bio.Seq import Seq
-        >>> from Bio.Alphabet import generic_protein
         >>> from Bio.SeqFeature import FeatureLocation, CompoundLocation
-        >>> seq = Seq("MKQHKAMIVALIVICITAVVAAL", generic_protein)
+        >>> seq = Seq("MKQHKAMIVALIVICITAVVAAL", "protein")
         >>> fl1 = FeatureLocation(2, 8)
         >>> fl2 = FeatureLocation(10, 15)
         >>> fl3 = CompoundLocation([fl1,fl2])
         >>> fl3.extract(seq)
-        Seq('QHKAMILIVIC')
+        Seq('QHKAMILIVIC', 'protein')
 
         """
         # This copes with mixed strand features & all on reverse:
