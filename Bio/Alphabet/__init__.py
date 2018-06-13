@@ -268,6 +268,27 @@ def _get_base_alphabet(alphabet):
     return a
 
 
+def _get_alphabet_type(alphabet):
+    """Map Alphabet object to 'nucleotide', 'DNA', 'RNA', 'protein' or None.
+
+    This is used from the Bio.Seq object __init__ methods to map legacy
+    Alphabet objects to this reduced type system.
+
+    Non-alphabet objects will raise a TypeError exception.
+    """
+    a = _get_base_alphabet(alphabet)
+    if isinstance(a, ProteinAlphabet):
+        return "protein"
+    elif isinstance(a, DNAAlphabet):
+        return "DNA"
+    elif isinstance(a, RNAAlphabet):
+        return "RNA"
+    elif isinstance(a, NucleotideAlphabet):
+        return "nucleotide"
+    else:
+        return None
+
+
 def _ungap(alphabet):
     """Return the alphabet without any gap encoder (PRIVATE)."""
     # TODO - Handle via method of the objects?
