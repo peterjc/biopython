@@ -5,7 +5,7 @@
 # choice of the "Biopython License Agreement" or the "BSD 3-Clause License".
 # Please see the LICENSE file that should have been included as part of this
 # package.
-"""Reduced alphabets which lump together several amino-acids into one letter.
+"""Reduced alphabets which lump together several amino-acids into one letter (OBSOLETE).
 
 Reduced (redundant or simplified) alphabets are used to represent protein
 sequences using an alternative alphabet which lumps together several
@@ -29,7 +29,7 @@ removed from Biopython. You can use this is alphabets and tables like this:
     >>> from Bio.Seq import Seq
     >>> from Bio import Alphabet
     >>> from Bio.Alphabet import Reduced
-    >>> my_protein = Seq('MAGSKEWKRFCELTINEA', Alphabet.ProteinAlphabet())
+    >>> my_protein = Seq('MAGSKEWKRFCELTINEA', 'protein')
 
 Now, we convert this sequence into a sequence which only recognizes polar (P)
 or hydrophobic (H) residues:
@@ -38,9 +38,7 @@ or hydrophobic (H) residues:
     >>> for aa in my_protein:
     ...     new_protein += Alphabet.Reduced.hp_model_tab[aa]
     >>> new_protein
-    Seq('HPPPPPHPPHHPHPHPPP')
-    >>> new_protein.alphabet
-    HPModel()
+    Seq('HPPPPPHPPHHPHPHPPP', 'protein')
 
 The following Alphabet classes are available:
 
