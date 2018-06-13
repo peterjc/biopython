@@ -1301,7 +1301,7 @@ def QualPhredIterator(handle, alphabet=single_letter_alphabet, title2ids=None):
     >>> from Bio import SeqIO
     >>> from Bio.Alphabet import generic_dna
     >>> with open("Quality/example.qual", "rU") as handle:
-    ...     for record in SeqIO.parse(handle, "qual", alphabet=generic_dna):
+    ...     for record in SeqIO.parse(handle, "qual", alphabet="DNA"):
     ...         print("%s %s" % (record.id, record.seq))
     EAS54_6_R1_2_1_413_324 NNNNNNNNNNNNNNNNNNNNNNNNN
     EAS54_6_R1_2_1_540_792 NNNNNNNNNNNNNNNNNNNNNNNNN

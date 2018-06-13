@@ -99,7 +99,7 @@ def read(handle, format):
     >>> with open("motifs/SRF.pfm") as handle:
     ...     m = motifs.read(handle, "pfm")
     >>> m.consensus
-    Seq('GCCCATATATGG')
+    Seq('GCCCATATATGG', 'DNA')
 
     Or a single-motif MEME file,
 
@@ -107,7 +107,7 @@ def read(handle, format):
     >>> with open("motifs/meme.out") as handle:
     ...     m = motifs.read(handle, "meme")
     >>> m.consensus
-    Seq('CTCAATCGTA')
+    Seq('CTCAATCGTA', 'DNA')
 
     If the handle contains no records, or more than one record,
     an exception is raised:

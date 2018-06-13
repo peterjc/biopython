@@ -49,7 +49,6 @@ import sys
 from Bio.SeqUtils import ProtParamData  # Local
 from Bio.SeqUtils import IsoelectricPoint  # Local
 from Bio.Seq import Seq
-from Bio.Alphabet import IUPAC
 from Bio.Data import IUPACData
 from Bio.SeqUtils import molecular_weight
 
@@ -74,9 +73,9 @@ class ProteinAnalysis(object):
     def __init__(self, prot_sequence, monoisotopic=False):
         """Initialize the class."""
         if prot_sequence.islower():
-            self.sequence = Seq(prot_sequence.upper(), IUPAC.protein)
+            self.sequence = Seq(prot_sequence.upper(), "protein")
         else:
-            self.sequence = Seq(prot_sequence, IUPAC.protein)
+            self.sequence = Seq(prot_sequence, "protein")
         self.amino_acids_content = None
         self.amino_acids_percent = None
         self.length = len(self.sequence)
