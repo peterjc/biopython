@@ -379,22 +379,14 @@ def molecular_weight(seq, seq_type=None, double_stranded=False, circular=False,
     # Find the alphabet type
     tmp_type = ''
     if isinstance(seq, (Seq, MutableSeq)):
-        base_alphabet = Alphabet._get_base_alphabet(seq.alphabet)
-        if isinstance(base_alphabet, Alphabet.DNAAlphabet):
-            tmp_type = 'DNA'
-        elif isinstance(base_alphabet, Alphabet.RNAAlphabet):
-            tmp_type = 'RNA'
-        elif isinstance(base_alphabet, Alphabet.ProteinAlphabet):
-            tmp_type = 'protein'
-        elif isinstance(base_alphabet, Alphabet.ThreeLetterProtein):
-            tmp_type = 'protein'
-            # Convert to one-letter sequence. Have to use a string for seq1
-            seq = Seq(seq1(str(seq)), alphabet=Alphabet.ProteinAlphabet())
-        elif not isinstance(base_alphabet, Alphabet.Alphabet):
-            raise TypeError("%s is not a valid alphabet for mass calculations"
-                            % base_alphabet)
-        else:
+        if seq.alphabet in ("DNA", "RNA", "protein"):
+            tmp_type = seq.alphabet
+        elif seq.alphabet is None:
             tmp_type = 'DNA'  # backward compatibity
+        else:
+            # i.e. nucleotide
+            raise TypeError("%s is not a valid alphabet for mass calculations"
+                            % seq.alphabet)
         if seq_type and tmp_type and tmp_type != seq_type:
             raise ValueError("seq_type=%r contradicts %s from seq alphabet"
                              % (seq_type, tmp_type))
