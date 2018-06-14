@@ -392,8 +392,7 @@ def check_simple_write_read(records, indent=" "):
                 print("Failed: Probably len() of None")
             else:
                 print(indent + "Failed: %s" % str(e))
-            if records[0].seq.alphabet.letters is not None:
-                assert format != t_format, \
+            assert format != t_format, \
                     "Should be able to re-write in the original format!"
             # Carry on to the next format:
             continue
@@ -607,13 +606,7 @@ for (t_format, t_alignment, t_filename, t_count) in test_files:
 
         # Check alphabets
         for record in records:
-            base_alpha = Alphabet._get_base_alphabet(record.seq.alphabet)
-            if isinstance(base_alpha, Alphabet.SingleLetterAlphabet):
-                if t_format in no_alpha_formats:
-                    # Too harsh?
-                    assert base_alpha == Alphabet.single_letter_alphabet
-            else:
-                base_alpha = None
+            base_alpha = None
         if base_alpha is None:
             good = []
             bad = []
