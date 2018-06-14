@@ -15,7 +15,7 @@ class, used in the Bio.AlignIO module.
 from __future__ import print_function
 
 import sys  # Only needed to check if we are using Python 2 or 3
-from Bio.Seq import Seq
+from Bio.Seq import Seq, _consensus_alphabet_type
 from Bio.SeqRecord import SeqRecord, _RestrictedDict
 from Bio import Alphabet
 
@@ -178,13 +178,11 @@ class MultipleSeqAlignment(object):
                               "alphabet argument", BiopythonDeprecationWarning)
             else:
                 raise ValueError("Invalid records argument")
-        if alphabet is not None:
-            if not isinstance(alphabet, (Alphabet.Alphabet, Alphabet.AlphabetEncoder)):
-                raise ValueError("Invalid alphabet argument")
-            self._alphabet = alphabet
-        else:
-            # Default while we add sequences, will take a consensus later
-            self._alphabet = Alphabet.single_letter_alphabet
+        if not (alphabet is None
+                or alphabet not in ("nucleotide", "DNA", "RNA", "protein")
+                or isinstance(alphabet, (Alphabet.Alphabet, Alphabet.AlphabetEncoder))):
+            raise ValueError("Invalid alphabet argument")
+        self._alphabet = alphabet
 
         self._records = []
         if records:
