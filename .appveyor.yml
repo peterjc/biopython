@@ -53,5 +53,5 @@ test_script:
   - cd ..
 
 after_test:
-  - conda install -c conda-forge codecov
+  - conda install -c conda-forge codecov=2.0.9
   - codecov --file Tests/coverage.xml -X pycov -X gcov
