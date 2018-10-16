@@ -115,7 +115,7 @@ class SeqRecordMethods(unittest.TestCase):
         f2 = SeqFeature(FeatureLocation(WithinPosition(12, left=12, right=15), BeforePosition(22)))
         f3 = SeqFeature(FeatureLocation(AfterPosition(16),
                                         OneOfPosition(26, [ExactPosition(25), AfterPosition(26)])))
-        self.record = SeqRecord(Seq("ABCDEFGHIJKLMNOPQRSTUVWZYX", generic_protein),
+        self.record = SeqRecord(Seq("ABCDEFGHIJKLMNOPQRSTUVWZYX", "protein"),
                                 id="TestID", name="TestName", description="TestDescr",
                                 dbxrefs=["TestXRef"], annotations={"k": "v"},
                                 letter_annotations={"fake": "X" * 26},
@@ -138,11 +138,11 @@ Database cross-references: TestXRef
 Number of features: 4
 /k=v
 Per letter annotation for: fake
-Seq('ABCDEFGHIJKLMNOPQRSTUVWZYX')"""
+Seq('ABCDEFGHIJKLMNOPQRSTUVWZYX', 'protein')"""
         self.assertEqual(expected.lstrip(), str(self.record))
 
     def test_repr(self):
-        expected = "SeqRecord(seq=Seq('ABCDEFGHIJKLMNOPQRSTUVWZYX'), " \
+        expected = "SeqRecord(seq=Seq('ABCDEFGHIJKLMNOPQRSTUVWZYX', 'protein'), " \
                    "id='TestID', name='TestName', description='TestDescr', dbxrefs=['TestXRef'])"
         self.assertEqual(expected, repr(self.record))
 
