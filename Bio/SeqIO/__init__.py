@@ -375,6 +375,7 @@ from Bio.File import as_handle
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
 from Bio.Alphabet import Alphabet, AlphabetEncoder
+from Bio.Alphabet import _get_alphabet_type
 from Bio.Seq import _consensus_alphabet_type
 
 from . import AbiIO
@@ -614,10 +615,8 @@ def parse(handle, format, alphabet=None):
         raise ValueError("Format required (lower case string)")
     if format != format.lower():
         raise ValueError("Format string '%s' should be lower case" % format)
-    if not (alphabet is None
-            or alphabet in ("nucleotide", "RNA", "DNA", "protein")
-            or isinstance(alphabet, (Alphabet, AlphabetEncoder))):
-        raise ValueError("Invalid alphabet, %r" % alphabet)
+
+    alphabet = _get_alphabet_type(alphabet)
 
     with as_handle(handle, mode) as fp:
         # Map the file format to a sequence iterator:
@@ -897,10 +896,8 @@ def index(filename, format, alphabet=None, key_function=None):
         raise ValueError("Format required (lower case string)")
     if format != format.lower():
         raise ValueError("Format string '%s' should be lower case" % format)
-    if not (alphabet is None
-            or alphabet in ("nucleotide", "RNA", "DNA", "protein")
-            or isinstance(alphabet, (Alphabet, AlphabetEncoder))):
-        raise ValueError("Invalid alphabet, %r" % alphabet)
+
+    alphabet = _get_alphabet_type(alphabet)
 
     # Map the file format to a sequence iterator:
     from ._index import _FormatToRandomAccess  # Lazy import
@@ -979,10 +976,8 @@ def index_db(index_filename, filenames=None, format=None, alphabet=None,
         raise TypeError("Need a string for the file format (lower case)")
     if format and format != format.lower():
         raise ValueError("Format string '%s' should be lower case" % format)
-    if not (alphabet is None
-            or alphabet in ("nucleotide", "RNA", "DNA", "protein")
-            or isinstance(alphabet, (Alphabet, AlphabetEncoder))):
-        raise ValueError("Invalid alphabet, %r" % alphabet)
+
+    alphabet = _get_alphabet_type(alphabet)
 
     # Map the file format to a sequence iterator:
     from ._index import _FormatToRandomAccess  # Lazy import
@@ -1045,6 +1040,8 @@ def convert(in_file, in_format, out_file, out_format, alphabet=None):
         out_mode = 'wb'
     else:
         out_mode = 'w'
+
+    alphabet = _get_alphabet_type(alphabet)
 
     # This will check the arguments and issue error messages,
     # after we have opened the file which is a shame.
