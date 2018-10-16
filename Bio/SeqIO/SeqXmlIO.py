@@ -345,16 +345,17 @@ class SeqXmlWriter(SequentialSequenceWriter):
         if not len(seq) > 0:
             raise ValueError("The sequence length should be greater than 0")
 
-        # Get the base alphabet (underneath any Gapped or StopCodon encoding)
-        alpha = Alphabet._get_base_alphabet(record.seq.alphabet)
-        if isinstance(alpha, Alphabet.RNAAlphabet):
+        alpha = record.seq.alphabet
+        if alpha == "RNA":
             seqElem = "RNAseq"
-        elif isinstance(alpha, Alphabet.DNAAlphabet):
+        elif alpha == "DNA":
             seqElem = "DNAseq"
-        elif isinstance(alpha, Alphabet.ProteinAlphabet):
+        elif alpha == "protein":
             seqElem = "AAseq"
         else:
-            raise ValueError("Need a DNA, RNA or Protein alphabet")
+            # Should be None or 'nucleotide'
+            raise ValueError("Need a DNA, RNA or Protein alphabet."
+                             " Got %r" % alpha)
 
         self.xml_generator.startElement(seqElem, AttributesImpl({}))
         self.xml_generator.characters(seq)
