@@ -139,7 +139,7 @@ class Seq(object):
         Seq('MKQHKAMIVALIVICITAVVAALVTRKDLCEVHIRTGQTEVAVF*', 'protein')
 
         Code written for older versions of Biopython will still work, but
-        simplify the alphabet object give. For example:
+        simplify the alphabet object given. For example:
 
         >>> from Bio.Seq import Seq
         >>> from Bio.Alphabet import HasStopCodon
@@ -2269,12 +2269,11 @@ class MutableSeq(object):
 
         No return value.
         """
-        if isinstance(Alphabet._get_base_alphabet(self.alphabet),
-                      Alphabet.ProteinAlphabet):
+        if self.alphabet == "protein":
             raise ValueError("Proteins do not have complements!")
-        if self.alphabet in (IUPAC.ambiguous_dna, IUPAC.unambiguous_dna):
+        if self.alphabet == "DNA":
             d = ambiguous_dna_complement
-        elif self.alphabet in (IUPAC.ambiguous_rna, IUPAC.unambiguous_rna):
+        elif self.alphabet == "RNA":
             d = ambiguous_rna_complement
         elif 'U' in self.data and 'T' in self.data:
             # TODO - Handle this cleanly?
