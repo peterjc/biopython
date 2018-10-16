@@ -131,21 +131,16 @@ class NexusWriter(AlignmentWriter):
 
         Raises an exception if this is not possible.
         """
-        # Get the base alphabet (underneath any Gapped or StopCodon encoding)
-        a = Alphabet._get_base_alphabet(alphabet)
-
-        if not isinstance(a, Alphabet.Alphabet):
-            raise TypeError("Invalid alphabet")
-        elif isinstance(a, Alphabet.ProteinAlphabet):
+        if alphabet == "protein":
             return "protein"
-        elif isinstance(a, Alphabet.DNAAlphabet):
+        elif alphabet == "DNA":
             return "dna"
-        elif isinstance(a, Alphabet.RNAAlphabet):
+        elif alphabet == "RNA":
             return "rna"
         else:
-            # Must be something like NucleotideAlphabet or
-            # just the generic Alphabet (default for fasta files)
-            raise ValueError("Need a DNA, RNA or Protein alphabet")
+            # Should be None or 'nucleotide'
+            raise ValueError("Need a DNA, RNA or Protein alphabet."
+                             " Got %r" % alphabet)
 
 
 if __name__ == "__main__":
