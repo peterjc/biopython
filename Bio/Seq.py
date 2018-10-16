@@ -360,14 +360,14 @@ class Seq(object):
         >>> Seq("ACGT", "DNA") + Seq("ACGU", "RNA")
         Traceback (most recent call last):
            ...
-        TypeError: Incompatible alphabets DNA and RNA
+        TypeError: Incompatible alphabets 'DNA' and 'RNA'
 
         You can't add nucleotide and protein sequences:
 
         >>> Seq("ACGT", "DNA") + Seq("MELKI", "protein")
         Traceback (most recent call last):
            ...
-        TypeError: Incompatible alphabets DNA and protein
+        TypeError: Incompatible alphabets 'DNA' and 'protein'
 
         However, you can add generic nucleotide sequences to either
         DNA or RNA:
@@ -624,11 +624,11 @@ class Seq(object):
         >>> Seq("AAA", generic_rna) in my_dna
         Traceback (most recent call last):
            ...
-        TypeError: Incompatible alphabets DNAAlphabet() and RNAAlphabet()
+        TypeError: Incompatible alphabets 'DNA' and 'RNA'
         >>> Seq("AAA", generic_protein) in my_dna
         Traceback (most recent call last):
            ...
-        TypeError: Incompatible alphabets DNAAlphabet() and ProteinAlphabet()
+        TypeError: Incompatible alphabets 'DNA' and 'protein'
         """
         # If it has one, check the alphabet:
         sub_str = self._get_seq_str_and_check_alphabet(char)
