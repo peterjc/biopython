@@ -393,7 +393,7 @@ def check_simple_write_read(records, indent=" "):
             else:
                 print(indent + "Failed: %s" % str(e))
             assert format != t_format, \
-                    "Should be able to re-write in the original format!"
+                "Should be able to re-write in the original format!"
             # Carry on to the next format:
             continue
 
