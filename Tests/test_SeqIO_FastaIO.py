@@ -12,6 +12,7 @@ from Bio._py3k import StringIO
 from Bio import SeqIO
 from Bio.SeqIO.FastaIO import FastaIterator
 from Bio.Alphabet import generic_nucleotide, generic_dna
+from Bio.Alphabet import _get_alphabet_type
 from Bio.SeqIO.FastaIO import SimpleFastaParser, FastaTwoLineParser
 
 
@@ -104,14 +105,14 @@ class TitleFunctions(unittest.TestCase):
         self.assertEqual(record.name, name)
         self.assertEqual(record.description, descr)
         self.assertEqual(str(record.seq), seq)
-        self.assertEqual(record.seq.alphabet, alphabet)
+        self.assertEqual(record.seq.alphabet, _get_alphabet_type(alphabet))
         # Now check using Bio.SeqIO (default settings)
         record = SeqIO.read(filename, "fasta", alphabet)
         self.assertEqual(record.id, title.split()[0])
         self.assertEqual(record.name, title.split()[0])
         self.assertEqual(record.description, title)
         self.assertEqual(str(record.seq), seq)
-        self.assertEqual(record.seq.alphabet, alphabet)
+        self.assertEqual(record.seq.alphabet, _get_alphabet_type(alphabet))
         # Uncomment this for testing the methods are calling the right files:
         # print("{%s done}" % filename)
 
