@@ -45,16 +45,26 @@ def _consensus_alphabet_type(a, b):
     This aims to match the behaviour of the deprecated function
     Bio.Alphabet._check_type_compatible(...)
 
-    >>> _consensus_alphabet_type("DNA", None)
+    >>> print(_consensus_alphabet_type("DNA", None))
     None
     >>> _consensus_alphabet_type("DNA", "nucleotide")
     'nucleotide'
-    >>> _consensus_alphabet_type("DNA", "RNA")
+    >>> _consensus_alphabet_type("RNA", "nucleotide")
     'nucleotide'
+
+    However,
+
+    >>> _consensus_alphabet_type("DNA", "RNA")
+    Traceback (most recent call last):
+       ...
+    TypeError: Incompatible alphabets 'DNA' and 'RNA'
+
+    And:
+
     >>> _consensus_alphabet_type("DNA", "protein")
     Traceback (most recent call last):
        ...
-    Incompatible alphabets DNA and protein
+    TypeError: Incompatible alphabets 'DNA' and 'protein'
     """
     if a is None or b is None:
         # One or both is generic
@@ -62,8 +72,9 @@ def _consensus_alphabet_type(a, b):
     elif a == b:
         # Easy, they are the same
         return a
-    elif (a in ("nucleotide", "DNA", "DNA") and
-          b in ("nucleotide", "DNA", "DNA")):
+    elif (a in ("nucleotide", "RNA") and b in ("nucleotide", "RNA")):
+        return "nucleotide"  # both nucleotide, special case
+    elif (a in ("nucleotide", "DNA") and b in ("nucleotide", "DNA")):
         return "nucleotide"  # both nucleotide, special case
     else:
         raise TypeError("Incompatible alphabets {0!r} and {1!r}".format(a, b))
