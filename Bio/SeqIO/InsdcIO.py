@@ -617,18 +617,15 @@ class GenBankWriter(_InsdcWriter):
             # the length field can take eleven digits
             raise ValueError("Sequence too long!")
 
-        # Get the base alphabet (underneath any Gapped or StopCodon encoding)
-        a = Alphabet._get_base_alphabet(record.seq.alphabet)
-        if not isinstance(a, Alphabet.Alphabet):
-            raise TypeError("Invalid alphabet")
-        elif isinstance(a, Alphabet.ProteinAlphabet):
+        a = record.seq.alphabet
+        if a == "protein":
             units = "aa"
-        elif isinstance(a, Alphabet.NucleotideAlphabet):
+        elif a in ("nucleotide", "RNA", "DNA"):
             units = "bp"
         else:
-            # Must be something like NucleotideAlphabet or
-            # just the generic Alphabet (default for fasta files)
-            raise ValueError("Need a Nucleotide or Protein alphabet")
+            # Should be None
+            raise ValueError("Need Nucleotide (including RNA or DNA) or Protein alphabet."
+                             " Got %r" % a)
 
         # Get the molecule type
         mol_type = self._get_annotation_str(record, "molecule_type", default=None)
@@ -644,16 +641,16 @@ class GenBankWriter(_InsdcWriter):
 
         if mol_type:
             pass
-        elif isinstance(a, Alphabet.ProteinAlphabet):
+        elif a == "protein":
             mol_type = ""
-        elif isinstance(a, Alphabet.DNAAlphabet):
+        elif a == "DNA":
             mol_type = "DNA"
-        elif isinstance(a, Alphabet.RNAAlphabet):
+        elif a == "RNA":
             mol_type = "RNA"
         else:
-            # Must be something like NucleotideAlphabet or
-            # just the generic Alphabet (default for fasta files)
-            raise ValueError("Need a DNA, RNA or Protein alphabet")
+            # Should be None or 'nucleotide'
+            raise ValueError("Need a DNA, RNA or Protein alphabet."
+                             " Got %r" % a)
 
         topology = self._get_topology(record)
 
@@ -1060,22 +1057,20 @@ class EmblWriter(_InsdcWriter):
 
         # Get the molecule type
         # TODO - record this explicitly in the parser?
-        # Get the base alphabet (underneath any Gapped or StopCodon encoding)
-        a = Alphabet._get_base_alphabet(record.seq.alphabet)
-        if not isinstance(a, Alphabet.Alphabet):
-            raise TypeError("Invalid alphabet")
-        elif isinstance(a, Alphabet.DNAAlphabet):
+        a = record.seq.alphabet
+        if a == "DNA":
             mol_type = "DNA"
             units = "BP"
-        elif isinstance(a, Alphabet.RNAAlphabet):
+        elif a == "RNA":
             mol_type = "RNA"
             units = "BP"
-        elif isinstance(a, Alphabet.ProteinAlphabet):
+        elif a == "protein":
             mol_type = "PROTEIN"
             units = "AA"
         else:
-            # Must be something like NucleotideAlphabet
-            raise ValueError("Need a DNA, RNA or Protein alphabet")
+            # Should be None or 'nucleotide'
+            raise ValueError("Need a DNA, RNA or Protein alphabet."
+                             " Got %r" % a)
 
         if record.annotations.get("molecule_type", None):
             # Note often get RNA vs DNA discrepancy in real EMBL/NCBI files
