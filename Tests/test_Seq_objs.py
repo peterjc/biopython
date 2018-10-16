@@ -543,10 +543,11 @@ class StringMethodTests(unittest.TestCase):
                 continue
             str1 = str(example1)
             # This only does the unambiguous cases
-            if any(("U" in str1, "u" in str1, example1.alphabet == generic_rna)):
+            if any(("U" in str1, "u" in str1, example1.alphabet == "RNA")):
                 mapping = maketrans("ACGUacgu", "UGCAugca")
-            elif any(("T" in str1, "t" in str1, example1.alphabet == generic_dna,
-                     example1.alphabet == generic_nucleotide)):
+            elif any(("T" in str1, "t" in str1,
+                      example1.alphabet == "DNA",
+                      example1.alphabet == "nucleotide")):
                 mapping = maketrans("ACGTacgt", "TGCAtgca")
             elif "A" not in str1 and "a" not in str1:
                 mapping = maketrans("CGcg", "GCgc")
@@ -569,10 +570,11 @@ class StringMethodTests(unittest.TestCase):
                 continue
             str1 = str(example1)
             # This only does the unambiguous cases
-            if any(("U" in str1, "u" in str1, example1.alphabet == generic_rna)):
+            if any(("U" in str1, "u" in str1, example1.alphabet == "RNA")):
                 mapping = maketrans("ACGUacgu", "UGCAugca")
-            elif any(("T" in str1, "t" in str1, example1.alphabet == generic_dna,
-                     example1.alphabet == generic_nucleotide)):
+            elif any(("T" in str1, "t" in str1,
+                      example1.alphabet == "DNA",
+                      example1.alphabet == "nucleotide")):
                 mapping = maketrans("ACGTacgt", "TGCAtgca")
             elif "A" not in str1 and "a" not in str1:
                 mapping = maketrans("CGcg", "GCgc")
@@ -601,7 +603,7 @@ class StringMethodTests(unittest.TestCase):
                     # TODO - Check for or silence the expected warning?
                     continue
                 self.assertEqual(str1.replace("T", "U").replace("t", "u"), str(tran))
-                self.assertEqual(tran.alphabet, generic_rna)  # based on limited examples
+                self.assertEqual(tran.alphabet, "RNA")
 
     def test_the_back_transcription(self):
             """Check obj.back_transcribe() method."""
@@ -619,7 +621,7 @@ class StringMethodTests(unittest.TestCase):
                     raise e
                 str1 = str(example1)
                 self.assertEqual(str1.replace("U", "T").replace("u", "t"), str(tran))
-                self.assertEqual(tran.alphabet, generic_dna)  # based on limited examples
+                self.assertEqual(tran.alphabet, "DNA")
 
     def test_the_translate(self):
             """Check obj.translate() method."""
@@ -637,7 +639,7 @@ class StringMethodTests(unittest.TestCase):
                         continue
                     raise e
                 # This is based on the limited example not having stop codons:
-                if tran.alphabet not in [extended_protein, protein, generic_protein]:
+                if tran.alphabet != "protein":
                     print(tran.alphabet)
                     self.fail()
                 # TODO - check the actual translation, and all the optional args
