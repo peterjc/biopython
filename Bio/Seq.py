@@ -262,8 +262,12 @@ class Seq(object):
         """
         if hasattr(other, "alphabet"):
             # other could be a Seq or a MutableSeq
-            _consensus_alphabet_type(self.alphabet, other.alphabet)  # ignore return value
-
+            try:
+                _consensus_alphabet_type(self.alphabet, other.alphabet)  # ignore return value
+            except TypeError as e:
+                warnings.warn("Incompatible alphabets {0!r} and {1!r}".format(
+                              self.alphabet, other.alphabet),
+                              BiopythonWarning)
         return str(self) == str(other)
 
     def __ne__(self, other):
