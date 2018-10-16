@@ -439,22 +439,22 @@ def _check_type_compatible(alphabets):
     """
     dna, rna, nucl, protein = False, False, False, False
     for alpha in alphabets:
-        a = _get_base_alphabet(alpha)
-        if isinstance(a, DNAAlphabet):
+        a = _get_alphabet_type(alpha)
+        if a == "DNA":
             dna = True
             nucl = True
             if rna or protein:
                 return False
-        elif isinstance(a, RNAAlphabet):
+        elif a == "RNA":
             rna = True
             nucl = True
             if dna or protein:
                 return False
-        elif isinstance(a, NucleotideAlphabet):
+        elif a == "nucleotide":
             nucl = True
             if protein:
                 return False
-        elif isinstance(a, ProteinAlphabet):
+        elif a == "protein":
             protein = True
             if nucl:
                 return False
