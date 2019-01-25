@@ -162,7 +162,6 @@ DOCTEST_MODULES = [
     "Bio.Graphics.GenomeDiagram._GraphSet",
     "Bio.Graphics.GenomeDiagram._LinearDrawer",
     "Bio.Graphics.GenomeDiagram._Track",
-    "Bio.Graphics.KGML_vis",
     "Bio.HMM",
     "Bio.HMM.DynamicProgramming",
     "Bio.HMM.MarkovModel",
