@@ -723,8 +723,8 @@ usertype matrix_test stepmatrix=5
 [T]    2.43     2.12     2.31      .       2.14     
 [-]    2.43     2.14     2.31     2.14      .       
 ;
-""",
-        )  # noqa : W291
+""",  # noqa : W291
+        )
 
     def test_write_alignment(self):
         # Default causes no interleave (columns <= 1000)
@@ -1124,8 +1124,8 @@ class TestSelf(unittest.TestCase):
         CYS1_DICDI          -----MKVIL LFVLAVFTVF VSS------- --------RG IPPEEQ---X
         ;
         end;
-        """
-        )  # noqa : W291
+        """  # noqa : W291
+        )
         for a in NexusIterator(handle):
             print(a)
             for r in a:
@@ -1154,8 +1154,8 @@ class TestSelf(unittest.TestCase):
         CYS1_DICDI          -----MKVIL LFVLAVFTVF VSS------- --------RG IPPEEQ---X
         ;
         end;
-        """
-        )  # noqa : W291
+        """  # noqa : W291
+        )
         for a in NexusIterator(handle):
             print(a)
             for r in a:
