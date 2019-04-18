@@ -1,14 +1,13 @@
 [flake8]
-doctests = True
-ignore =
+# Matching the black default line length of 88,
+# rather than the flake8 default of 79:
+max-line-length = 88
+extend-ignore =
     # =======================
     # flake: E###, F###, W###
     # =======================
-    # pycodestyle v2.4.0 default ignore is E121,E123,E126,E226,E24,E704,W503,W504
-    # flake8 v3.6.0 default ignore is      E121,E123,E126,E226,E24,E704,W503,W504
-    #
-    # These are ignored by default:
-    E122,E123,E126,E241,W503,W504,
+    # See https://github.com/PyCQA/pycodestyle/issues/373
+    E203,
     # These are not ignored by default:
     # E402	module level import not at top of file
     # E501	line too long (XX > 79 characters)
@@ -52,8 +51,3 @@ ignore =
     # =========================================
     # C812	missing trailing comma
     C812,
-    # ========================================
-    # flake8-black (in case installed locally)
-    # ========================================
-    # BLK100 Black would make changes.
-    BLK100,
