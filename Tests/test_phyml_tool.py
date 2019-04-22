@@ -14,11 +14,12 @@ from Bio.Phylo.Applications import PhymlCommandline
 from Bio import MissingExternalDependencyError
 
 # Try to avoid problems when the OS is in another language
-os.environ['LANG'] = 'C'
+os.environ["LANG"] = "C"
 
 phyml_exe = None
 exe_name = "PhyML-3.1_win32.exe" if sys.platform == "win32" else "phyml"
 from Bio._py3k import getoutput
+
 try:
     output = getoutput(exe_name + " --version")
     if "not found" not in output and ("20" in output or "PhyML" in output):
@@ -34,11 +35,12 @@ except OSError:
 if not phyml_exe:
     raise MissingExternalDependencyError(
         "Install PhyML 3.0 or later if you want to use the "
-        "Bio.Phylo.Applications wrapper.")
+        "Bio.Phylo.Applications wrapper."
+    )
 
 
 # Example Phylip file with 4 aligned protein sequences
-EX_PHYLIP = 'Phylip/interlaced2.phy'
+EX_PHYLIP = "Phylip/interlaced2.phy"
 
 
 class AppTests(unittest.TestCase):
@@ -46,25 +48,29 @@ class AppTests(unittest.TestCase):
 
     def test_phyml(self):
         """Run PhyML using the wrapper."""
-        cmd = PhymlCommandline(phyml_exe, input=EX_PHYLIP, datatype='aa')
+        cmd = PhymlCommandline(phyml_exe, input=EX_PHYLIP, datatype="aa")
         # Smoke test
         try:
             out, err = cmd()
             self.assertTrue(len(out) > 0)
             self.assertEqual(len(err), 0)
             # Check the output tree
-            outfname = EX_PHYLIP + '_phyml_tree.txt'
+            outfname = EX_PHYLIP + "_phyml_tree.txt"
             if not os.path.isfile(outfname):
                 # NB: Briefly, PhyML dropped the .txt suffix (#919)
                 outfname = outfname[:-4]
-            tree = Phylo.read(outfname, 'newick')
+            tree = Phylo.read(outfname, "newick")
             self.assertEqual(tree.count_terminals(), 4)
         except Exception as exc:
             self.fail("PhyML wrapper error: %s" % exc)
         finally:
             # Clean up generated files
-            for suffix in ['_phyml_tree.txt', '_phyml_tree',
-                           '_phyml_stats.txt', '_phyml_stats']:
+            for suffix in [
+                "_phyml_tree.txt",
+                "_phyml_tree",
+                "_phyml_stats.txt",
+                "_phyml_stats",
+            ]:
                 fname = EX_PHYLIP + suffix
                 if os.path.isfile(fname):
                     os.remove(fname)
@@ -72,6 +78,6 @@ class AppTests(unittest.TestCase):
 
 # ---------------------------------------------------------
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     runner = unittest.TextTestRunner(verbosity=2)
     unittest.main(testRunner=runner)

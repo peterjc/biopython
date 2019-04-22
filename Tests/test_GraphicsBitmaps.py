@@ -22,18 +22,22 @@ from Bio import MissingPythonDependencyError
 try:
     # Skip the test if reportlab is not installed
     import reportlab as r
+
     del r
 except Exception:
     raise MissingPythonDependencyError(
-        "Install ReportLab if you want to use Bio.Graphics.")
+        "Install ReportLab if you want to use Bio.Graphics."
+    )
 try:
     # Skip the test if reportlab is not installed
     from reportlab.graphics import renderPM
+
     del renderPM
 except Exception:
     raise MissingPythonDependencyError(
         "Install ReportLab's renderPM module if you want to create "
-        "bitmaps with Bio.Graphics.")
+        "bitmaps with Bio.Graphics."
+    )
 try:
     # Skip the test if PIL is not installed
     # The preferred PIL import has changed over time:
@@ -45,7 +49,8 @@ try:
 except Exception:
     raise MissingPythonDependencyError(
         "Install Pillow or its predecessor PIL (Python Imaging Library) "
-        "if you want to create bitmaps with Bio.Graphics.")
+        "if you want to create bitmaps with Bio.Graphics."
+    )
 
 from reportlab.graphics.renderPM import RenderPMError
 
@@ -92,7 +97,8 @@ def real_test():
     except IOError as err:
         if "encoder zip not available" in str(err):
             raise MissingExternalDependencyError(
-                "Check zip encoder installed for PIL and ReportLab renderPM")
+                "Check zip encoder installed for PIL and ReportLab renderPM"
+            )
         else:
             raise err
     except RenderPMError as err:
@@ -101,7 +107,8 @@ def real_test():
             # is run? That way it can be skipped in run_tests.py
             raise MissingExternalDependencyError(
                 "Check the fonts needed by ReportLab if you want "
-                "bitmaps from Bio.Graphics\n" + str(err))
+                "bitmaps from Bio.Graphics\n" + str(err)
+            )
         else:
             raise err
 

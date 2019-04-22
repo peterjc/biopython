@@ -17,6 +17,7 @@ from Bio.Alphabet.IUPAC import extended_protein
 from Bio.Seq import Seq
 
 import requires_internet
+
 requires_internet.check()
 
 
@@ -36,18 +37,24 @@ class TestotifWeblogo(unittest.TestCase):
 
     def test_dna(self):
         """Test Bio.Motif.weblogo with a DNA sequence."""
-        self.check(["TACAA", "TACGC", "TACAC", "TACCC",
-                    "AACCC", "AATGC", "AATGC"], extended_dna)
+        self.check(
+            ["TACAA", "TACGC", "TACAC", "TACCC", "AACCC", "AATGC", "AATGC"],
+            extended_dna,
+        )
 
     def test_rna(self):
         """Test Bio.Motif.weblogo with an RNA sequence."""
-        self.check(["UACAA", "UACGC", "UACAC", "UACCC",
-                    "AACCC", "AAUGC", "AAUGC"], unambiguous_rna)
+        self.check(
+            ["UACAA", "UACGC", "UACAC", "UACCC", "AACCC", "AAUGC", "AAUGC"],
+            unambiguous_rna,
+        )
 
     def test_protein(self):
         """Test Bio.Motif.weblogo with a protein sequence."""
-        self.check(["ACDEG", "AYCRN", "HYLID", "AYHEL",
-                    "ACDEH", "AYYRN", "HYIID"], extended_protein)
+        self.check(
+            ["ACDEG", "AYCRN", "HYLID", "AYHEL", "ACDEH", "AYYRN", "HYIID"],
+            extended_protein,
+        )
 
 
 if __name__ == "__main__":

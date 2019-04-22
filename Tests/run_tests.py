@@ -53,6 +53,7 @@ except ImportError:
 
 try:
     import numpy
+
     try:
         # NumPy 1.14 changed repr output breaking our doctests,
         # request the legacy 1.13 style
@@ -67,8 +68,9 @@ except ImportError:
 
 def is_pypy():
     import platform
+
     try:
-        if platform.python_implementation() == 'PyPy':
+        if platform.python_implementation() == "PyPy":
             return True
     except AttributeError:
         # New in Python 2.6, not in Jython yet either
@@ -82,90 +84,90 @@ VERBOSITY = 0
 # Following modules have historic failures. If you fix one of these
 # please remove here!
 EXCLUDE_DOCTEST_MODULES = [
-    'Bio.AlignIO.MauveIO',
-    'Bio.Data.CodonTable',
-    'Bio.ExPASy',
-    'Bio.ExPASy.cellosaurus',
-    'Bio.File',
-    'Bio.Medline',
-    'Bio.motifs.jaspar.db',
-    'Bio.motifs.mast',
-    'Bio.motifs.meme',
-    'Bio.motifs.minimal',
-    'Bio.PDB',
-    'Bio.PDB.AbstractPropertyMap',
-    'Bio.PDB.Atom',
-    'Bio.PDB.DSSP',
-    'Bio.PDB.Entity',
-    'Bio.PDB.FragmentMapper',
-    'Bio.PDB.mmcifio',
-    'Bio.PDB.PDBIO',
-    'Bio.PDB.ResidueDepth',
-    'Bio.PDB.vectors',
-    'Bio.phenotype',
-    'Bio.phenotype.parse',
-    'Bio.phenotype.phen_micro',
-    'Bio.Phylo.Applications._Fasttree',
-    'Bio.Phylo._io',
-    'Bio.Phylo.TreeConstruction',
-    'Bio.Phylo._utils',
-    'Bio.SearchIO.ExonerateIO._base',
-    'Bio.SubsMat',
-    'Bio.SubsMat.FreqTable',
-    'BioSQL.BioSeqDatabase',
+    "Bio.AlignIO.MauveIO",
+    "Bio.Data.CodonTable",
+    "Bio.ExPASy",
+    "Bio.ExPASy.cellosaurus",
+    "Bio.File",
+    "Bio.Medline",
+    "Bio.motifs.jaspar.db",
+    "Bio.motifs.mast",
+    "Bio.motifs.meme",
+    "Bio.motifs.minimal",
+    "Bio.PDB",
+    "Bio.PDB.AbstractPropertyMap",
+    "Bio.PDB.Atom",
+    "Bio.PDB.DSSP",
+    "Bio.PDB.Entity",
+    "Bio.PDB.FragmentMapper",
+    "Bio.PDB.mmcifio",
+    "Bio.PDB.PDBIO",
+    "Bio.PDB.ResidueDepth",
+    "Bio.PDB.vectors",
+    "Bio.phenotype",
+    "Bio.phenotype.parse",
+    "Bio.phenotype.phen_micro",
+    "Bio.Phylo.Applications._Fasttree",
+    "Bio.Phylo._io",
+    "Bio.Phylo.TreeConstruction",
+    "Bio.Phylo._utils",
+    "Bio.SearchIO.ExonerateIO._base",
+    "Bio.SubsMat",
+    "Bio.SubsMat.FreqTable",
+    "BioSQL.BioSeqDatabase",
 ]
 
 # Exclude modules with online activity
-EXCLUDE_DOCTEST_MODULES.extend([
-    'Bio.Entrez',
-    'Bio.TogoWS',
-    ])
+EXCLUDE_DOCTEST_MODULES.extend(["Bio.Entrez", "Bio.TogoWS"])
 
 # Silently ignore any doctests for modules requiring numpy!
 if numpy is None:
-    EXCLUDE_DOCTEST_MODULES.extend([
-        "Bio.Affy.CelFile",
-        "Bio.Cluster",
-        "Bio.KDTree",
-        "Bio.KDTree.KDTree",
-        "Bio.kNN",
-        "Bio.LogisticRegression",
-        "Bio.MarkovModel",
-        "Bio.MaxEntropy",
-        "Bio.NaiveBayes",
-        "Bio.PDB.Chain",
-        "Bio.PDB.Dice",
-        "Bio.PDB.HSExposure",
-        "Bio.PDB.MMCIF2Dict",
-        "Bio.PDB.MMCIFParser",
-        "Bio.PDB.mmtf.DefaultParser",
-        "Bio.PDB.mmtf",
-        "Bio.PDB.Model",
-        "Bio.PDB.NACCESS",
-        "Bio.PDB.NeighborSearch",
-        "Bio.PDB.parse_pdb_header",
-        "Bio.PDB.PDBExceptions",
-        "Bio.PDB.PDBList",
-        "Bio.PDB.PDBParser",
-        "Bio.PDB.Polypeptide",
-        "Bio.PDB.PSEA",
-        "Bio.PDB.QCPSuperimposer",
-        "Bio.PDB.Residue",
-        "Bio.PDB.Selection",
-        "Bio.PDB.StructureAlignment",
-        "Bio.PDB.StructureBuilder",
-        "Bio.PDB.Structure",
-        "Bio.PDB.Superimposer",
-        "Bio.PDB.Vector",
-        "Bio.phenotype.pm_fitting",
-        "Bio.SeqIO.PdbIO",
-        "Bio.Statistics.lowess",
-        "Bio.SVDSuperimposer",
-    ])
+    EXCLUDE_DOCTEST_MODULES.extend(
+        [
+            "Bio.Affy.CelFile",
+            "Bio.Cluster",
+            "Bio.KDTree",
+            "Bio.KDTree.KDTree",
+            "Bio.kNN",
+            "Bio.LogisticRegression",
+            "Bio.MarkovModel",
+            "Bio.MaxEntropy",
+            "Bio.NaiveBayes",
+            "Bio.PDB.Chain",
+            "Bio.PDB.Dice",
+            "Bio.PDB.HSExposure",
+            "Bio.PDB.MMCIF2Dict",
+            "Bio.PDB.MMCIFParser",
+            "Bio.PDB.mmtf.DefaultParser",
+            "Bio.PDB.mmtf",
+            "Bio.PDB.Model",
+            "Bio.PDB.NACCESS",
+            "Bio.PDB.NeighborSearch",
+            "Bio.PDB.parse_pdb_header",
+            "Bio.PDB.PDBExceptions",
+            "Bio.PDB.PDBList",
+            "Bio.PDB.PDBParser",
+            "Bio.PDB.Polypeptide",
+            "Bio.PDB.PSEA",
+            "Bio.PDB.QCPSuperimposer",
+            "Bio.PDB.Residue",
+            "Bio.PDB.Selection",
+            "Bio.PDB.StructureAlignment",
+            "Bio.PDB.StructureBuilder",
+            "Bio.PDB.Structure",
+            "Bio.PDB.Superimposer",
+            "Bio.PDB.Vector",
+            "Bio.phenotype.pm_fitting",
+            "Bio.SeqIO.PdbIO",
+            "Bio.Statistics.lowess",
+            "Bio.SVDSuperimposer",
+        ]
+    )
 
 
 try:
     import sqlite3
+
     del sqlite3
 except ImportError:
     # Missing on Jython or Python 2.4
@@ -182,15 +184,15 @@ def find_modules(path):
     modules = set()
     for pkg in find_packages(path):
         modules.add(pkg)
-        pkgpath = path + '/' + pkg.replace('.', '/')
+        pkgpath = path + "/" + pkg.replace(".", "/")
         if sys.version_info < (3, 6):
             for _, name, ispkg in iter_modules([pkgpath]):
                 if not ispkg:
-                    modules.add(pkg + '.' + name)
+                    modules.add(pkg + "." + name)
         else:
             for info in iter_modules([pkgpath]):
                 if not info.ispkg:
-                    modules.add(pkg + '.' + info.name)
+                    modules.add(pkg + "." + info.name)
     return modules
 
 
@@ -201,15 +203,19 @@ def _have_bug17666():
     Checks for http://bugs.python.org/issue17666 expected in Python 2.7.4,
     3.2.4 and 3.3.1 only.
     """
-    if os.name == 'java':
+    if os.name == "java":
         # Jython not affected
         return False
     import gzip
+
     # Would like to use byte literal here:
-    bgzf_eof = "\x1f\x8b\x08\x04\x00\x00\x00\x00\x00\xff\x06\x00BC" + \
-               "\x02\x00\x1b\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+    bgzf_eof = (
+        "\x1f\x8b\x08\x04\x00\x00\x00\x00\x00\xff\x06\x00BC"
+        + "\x02\x00\x1b\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+    )
     if sys.version_info[0] >= 3:
         import codecs
+
         bgzf_eof = codecs.latin_1_encode(bgzf_eof)[0]
     handle = gzip.GzipFile(fileobj=BytesIO(bgzf_eof))
     try:
@@ -226,7 +232,7 @@ def _have_bug17666():
 if _have_bug17666():
     EXCLUDE_DOCTEST_MODULES.append("Bio.bgzf")
 
-SYSTEM_LANG = os.environ.get('LANG', 'C')  # Cache this
+SYSTEM_LANG = os.environ.get("LANG", "C")  # Cache this
 
 
 def main(argv):
@@ -241,8 +247,10 @@ def main(argv):
     test_path = sys.path[0] or "."
     source_path = os.path.abspath("%s/.." % test_path)
     sys.path.insert(1, source_path)
-    build_path = os.path.abspath("%s/../build/lib.%s-%s" % (
-        test_path, distutils.util.get_platform(), sys.version[:3]))
+    build_path = os.path.abspath(
+        "%s/../build/lib.%s-%s"
+        % (test_path, distutils.util.get_platform(), sys.version[:3])
+    )
     if os.access(build_path, os.F_OK):
         sys.path.insert(1, build_path)
 
@@ -255,8 +263,9 @@ def main(argv):
 
     # get the command line options
     try:
-        opts, args = getopt.getopt(argv, 'gv', ["generate", "verbose",
-                                                "doctest", "help", "offline"])
+        opts, args = getopt.getopt(
+            argv, "gv", ["generate", "verbose", "doctest", "help", "offline"]
+        )
     except getopt.error as msg:
         print(msg)
         print(__doc__)
@@ -273,12 +282,15 @@ def main(argv):
             print("Skipping any tests requiring internet access")
             # This is a bit of a hack...
             import requires_internet
+
             requires_internet.check.available = False
             # Monkey patch for urlopen()
             import Bio._py3k
 
             def dummy_urlopen(url):
-                raise RuntimeError("Internal test suite error, attempting to use internet despite --offline setting")
+                raise RuntimeError(
+                    "Internal test suite error, attempting to use internet despite --offline setting"
+                )
 
             Bio._py3k.urlopen = dummy_urlopen
         if opt == "-g" or opt == "--generate":
@@ -348,8 +360,7 @@ class ComparisonTestCase(unittest.TestCase):
             else:
                 expected = open(outputfile, "rU")
         except IOError:
-            self.fail("Warning: Can't open %s for test %s" %
-                      (outputfile, self.name))
+            self.fail("Warning: Can't open %s for test %s" % (outputfile, self.name))
 
         self.output.seek(0)
         # first check that we are dealing with the right output
@@ -358,8 +369,9 @@ class ComparisonTestCase(unittest.TestCase):
 
         if expected_test != self.name:
             expected.close()
-            raise ValueError("\nOutput:   %s\nExpected: %s"
-                             % (self.name, expected_test))
+            raise ValueError(
+                "\nOutput:   %s\nExpected: %s" % (self.name, expected_test)
+            )
 
         # Track the line number. Starts at 1 to account for the output file
         # header line.
@@ -374,8 +386,8 @@ class ComparisonTestCase(unittest.TestCase):
             # stop looping if either of the info handles reach the end
             if (not expected_line) or (not output_line):
                 # make sure both have no information left
-                assert expected_line == '', "Unread: %s" % expected_line
-                assert output_line == '', "Extra output: %s" % output_line
+                assert expected_line == "", "Unread: %s" % expected_line
+                assert output_line == "", "Extra output: %s" % output_line
                 break
 
             # normalize the newlines in the two lines
@@ -390,9 +402,10 @@ class ComparisonTestCase(unittest.TestCase):
             # otherwise make sure the two lines are the same
             elif expected_line != output_line:
                 expected.close()
-                raise ValueError("\nOutput  : %s\nExpected: %s\n%s line %s"
-                                 % (repr(output_line), repr(expected_line),
-                                    outputfile, line_number))
+                raise ValueError(
+                    "\nOutput  : %s\nExpected: %s\n%s line %s"
+                    % (repr(output_line), repr(expected_line), outputfile, line_number)
+                )
 
         expected.close()
 
@@ -401,7 +414,7 @@ class ComparisonTestCase(unittest.TestCase):
         outputdir = os.path.join(TestRunner.testdir, "output")
         outputfile = os.path.join(outputdir, self.name)
 
-        output_handle = open(outputfile, 'w')
+        output_handle = open(outputfile, "w")
 
         # write the test name as the first line of the output
         output_handle.write(self.name + "\n")
@@ -420,7 +433,7 @@ class ComparisonTestCase(unittest.TestCase):
 
 class TestRunner(unittest.TextTestRunner):
 
-    if __name__ == '__main__':
+    if __name__ == "__main__":
         file = sys.argv[0]
     else:
         file = __file__
@@ -448,22 +461,22 @@ class TestRunner(unittest.TextTestRunner):
             self.tests.append("doctest")
         if "doctest" in self.tests:
             self.tests.remove("doctest")
-            modules = find_modules(self.testdir + '/..')
+            modules = find_modules(self.testdir + "/..")
             modules.difference_update(set(EXCLUDE_DOCTEST_MODULES))
             self.tests.extend(sorted(list(modules)))
         stream = StringIO()
-        unittest.TextTestRunner.__init__(self, stream,
-                                         verbosity=verbosity)
+        unittest.TextTestRunner.__init__(self, stream, verbosity=verbosity)
 
     def runTest(self, name):
         from Bio import MissingPythonDependencyError
         from Bio import MissingExternalDependencyError
+
         result = self._makeResult()
         output = StringIO()
         # Restore the language and thus default encoding (in case a prior
         # test changed this, e.g. to help with detecting command line tools)
         global SYSTEM_LANG
-        os.environ['LANG'] = SYSTEM_LANG
+        os.environ["LANG"] = SYSTEM_LANG
         # Always run tests from the Tests/ folder where run_tests.py
         # should be located (as we assume this with relative paths etc)
         os.chdir(self.testdir)
@@ -479,11 +492,13 @@ class TestRunner(unittest.TextTestRunner):
                     # New in Python 3.5, don't always get an exception anymore
                     # Instead this is a list of error messages as strings
                     for msg in loader.errors:
-                        if "Bio.MissingExternalDependencyError: " in msg or \
-                                "Bio.MissingPythonDependencyError: " in msg:
+                        if (
+                            "Bio.MissingExternalDependencyError: " in msg
+                            or "Bio.MissingPythonDependencyError: " in msg
+                        ):
                             # Remove the traceback etc
-                            msg = msg[msg.find("Bio.Missing"):]
-                            msg = msg[msg.find("Error: "):]
+                            msg = msg[msg.find("Bio.Missing") :]
+                            msg = msg[msg.find("Error: ") :]
                             sys.stderr.write("skipping. %s\n" % msg)
                             return True
                     # Looks like a real failure
@@ -509,8 +524,7 @@ class TestRunner(unittest.TextTestRunner):
                     result.stream.write("ERROR while importing %s: %s\n" % (name, e))
                     result.printErrors()
                     return False
-                suite = doctest.DocTestSuite(module,
-                                             optionflags=doctest.ELLIPSIS)
+                suite = doctest.DocTestSuite(module, optionflags=doctest.ELLIPSIS)
                 del module
             suite.run(result)
             if self.testdir != os.path.abspath("."):
@@ -575,9 +589,11 @@ class TestRunner(unittest.TextTestRunner):
         stop_time = time.time()
         time_taken = stop_time - start_time
         sys.stderr.write(self.stream.getvalue())
-        sys.stderr.write('-' * 70 + "\n")
-        sys.stderr.write("Ran %d test%s in %.3f seconds\n" %
-                         (total, total != 1 and "s" or "", time_taken))
+        sys.stderr.write("-" * 70 + "\n")
+        sys.stderr.write(
+            "Ran %d test%s in %.3f seconds\n"
+            % (total, total != 1 and "s" or "", time_taken)
+        )
         sys.stderr.write("\n")
         if failures:
             sys.stderr.write("FAILED (failures = %d)\n" % failures)

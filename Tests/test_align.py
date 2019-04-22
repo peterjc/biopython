@@ -64,8 +64,8 @@ del alignment
 del letters
 
 print("testing reading and writing clustal format...")
-test_dir = os.path.join(os.getcwd(), 'Clustalw')
-test_names = ['opuntia.aln', 'cw02.aln']
+test_dir = os.path.join(os.getcwd(), "Clustalw")
+test_names = ["opuntia.aln", "cw02.aln"]
 
 test_files = []
 for name in test_names:
@@ -78,82 +78,84 @@ for test_file in test_files:
     # print the alignment back out
     print(alignment.format("clustal"))
 
-alignment = AlignIO.read(os.path.join(test_dir, test_names[0]), "clustal",
-                         alphabet=Alphabet.Gapped(IUPAC.unambiguous_dna))
+alignment = AlignIO.read(
+    os.path.join(test_dir, test_names[0]),
+    "clustal",
+    alphabet=Alphabet.Gapped(IUPAC.unambiguous_dna),
+)
 
 # test the base alignment stuff
-print('all_seqs...')
+print("all_seqs...")
 for seq_record in alignment:
-    print('description: %s' % seq_record.description)
-    print('seq: %r' % seq_record.seq)
-print('length: %i' % alignment.get_alignment_length())
+    print("description: %s" % seq_record.description)
+    print("seq: %r" % seq_record.seq)
+print("length: %i" % alignment.get_alignment_length())
 
-print('Calculating summary information...')
+print("Calculating summary information...")
 align_info = AlignInfo.SummaryInfo(alignment)
 consensus = align_info.dumb_consensus()
 assert isinstance(consensus, Seq)
-print('consensus: %r' % consensus)
+print("consensus: %r" % consensus)
 
 
-print('Replacement dictionary')
-ks = sorted(align_info.replacement_dictionary(['N']))
+print("Replacement dictionary")
+ks = sorted(align_info.replacement_dictionary(["N"]))
 for key in ks:
-    print("%s : %s" % (key, align_info.replacement_dictionary(['N'])[key]))
+    print("%s : %s" % (key, align_info.replacement_dictionary(["N"])[key]))
 
-print('position specific score matrix.')
-print('with a supplied consensus sequence...')
-print(align_info.pos_specific_score_matrix(consensus, ['N']))
+print("position specific score matrix.")
+print("with a supplied consensus sequence...")
+print(align_info.pos_specific_score_matrix(consensus, ["N"]))
 
-print('defaulting to a consensus sequence...')
-print(align_info.pos_specific_score_matrix(chars_to_ignore=['N']))
+print("defaulting to a consensus sequence...")
+print(align_info.pos_specific_score_matrix(chars_to_ignore=["N"]))
 
-print('with a selected sequence...')
+print("with a selected sequence...")
 second_seq = alignment[1].seq
-print(align_info.pos_specific_score_matrix(second_seq, ['N']))
+print(align_info.pos_specific_score_matrix(second_seq, ["N"]))
 
-print('information content')
-print('part of alignment: %0.2f'
-      % align_info.information_content(5, 50, chars_to_ignore=['N']))
-print('entire alignment: %0.2f'
-      % align_info.information_content(chars_to_ignore=['N']))
+print("information content")
+print(
+    "part of alignment: %0.2f"
+    % align_info.information_content(5, 50, chars_to_ignore=["N"])
+)
+print("entire alignment: %0.2f" % align_info.information_content(chars_to_ignore=["N"]))
 
-print('relative information content')
-e_freq = {'G': 0.25,
-          'C': 0.25,
-          'A': 0.25,
-          'T': 0.25}
+print("relative information content")
+e_freq = {"G": 0.25, "C": 0.25, "A": 0.25, "T": 0.25}
 
-e_freq_table = FreqTable.FreqTable(e_freq, FreqTable.FREQ,
-                                   IUPAC.unambiguous_dna)
+e_freq_table = FreqTable.FreqTable(e_freq, FreqTable.FREQ, IUPAC.unambiguous_dna)
 
-print('relative information: %0.2f'
-      % align_info.information_content(e_freq_table=e_freq_table,
-                                       chars_to_ignore=['N']))
+print(
+    "relative information: %0.2f"
+    % align_info.information_content(e_freq_table=e_freq_table, chars_to_ignore=["N"])
+)
 
-print('Column 1: %s' % align_info.get_column(1))
-print('IC for column 1: %0.2f' % align_info.ic_vector[1])
-print('Column 7: %s' % align_info.get_column(7))
-print('IC for column 7: %0.2f' % align_info.ic_vector[7])
-print('test print_info_content')
+print("Column 1: %s" % align_info.get_column(1))
+print("IC for column 1: %0.2f" % align_info.ic_vector[1])
+print("Column 7: %s" % align_info.get_column(7))
+print("IC for column 7: %0.2f" % align_info.ic_vector[7])
+print("test print_info_content")
 AlignInfo.print_info_content(align_info)
 print("testing reading and writing fasta format...")
 
-to_parse = os.path.join(os.curdir, 'Quality', 'example.fasta')
+to_parse = os.path.join(os.curdir, "Quality", "example.fasta")
 
-alignment = AlignIO.read(to_parse, "fasta",
-                         alphabet=Alphabet.Gapped(IUPAC.ambiguous_dna))
+alignment = AlignIO.read(
+    to_parse, "fasta", alphabet=Alphabet.Gapped(IUPAC.ambiguous_dna)
+)
 
 # test the base alignment stuff
-print('all_seqs...')
+print("all_seqs...")
 for seq_record in alignment:
-    print('description: %s' % seq_record.description)
-    print('seq: %r' % seq_record.seq)
+    print("description: %s" % seq_record.description)
+    print("seq: %r" % seq_record.seq)
 
-print('length: %i' % alignment.get_alignment_length())
+print("length: %i" % alignment.get_alignment_length())
 align_info = AlignInfo.SummaryInfo(alignment)
 consensus = align_info.dumb_consensus(ambiguous="N", threshold=0.6)
 assert isinstance(consensus, Seq)
-print('consensus: %r' % consensus)
+print("consensus: %r" % consensus)
 
 print(alignment)
 
@@ -161,8 +163,7 @@ print(alignment)
 print("Test format conversion...")
 
 # parse the alignment file and get an aligment object
-alignment = AlignIO.read(os.path.join(os.curdir, 'Clustalw', 'opuntia.aln'),
-                         'clustal')
+alignment = AlignIO.read(os.path.join(os.curdir, "Clustalw", "opuntia.aln"), "clustal")
 
 print("As FASTA:")
 print(alignment.format("fasta"))

@@ -11,27 +11,27 @@ from Bio import AlignIO, SeqIO, MissingExternalDependencyError
 from Bio.Align.Applications import TCoffeeCommandline
 
 # Try to avoid problems when the OS is in another language
-os.environ['LANG'] = 'C'
+os.environ["LANG"] = "C"
 
 t_coffee_exe = None
 if sys.platform == "win32":
-    raise MissingExternalDependencyError(
-        "Testing TCOFFEE on Windows not supported yet")
+    raise MissingExternalDependencyError("Testing TCOFFEE on Windows not supported yet")
 else:
     from Bio._py3k import getoutput
+
     output = getoutput("t_coffee -version")
-    if "not found" not in output \
-       and ("t_coffee" in output.lower()
-            or "t-coffee" in output.lower()):
+    if "not found" not in output and (
+        "t_coffee" in output.lower() or "t-coffee" in output.lower()
+    ):
         t_coffee_exe = "t_coffee"
 
 if not t_coffee_exe:
     raise MissingExternalDependencyError(
-        "Install TCOFFEE if you want to use the Bio.Align.Applications wrapper.")
+        "Install TCOFFEE if you want to use the Bio.Align.Applications wrapper."
+    )
 
 
 class TCoffeeApplication(unittest.TestCase):
-
     def setUp(self):
         self.infile1 = "Fasta/fa01"
         self.outfile1 = "fa01.aln"
@@ -60,7 +60,9 @@ class TCoffeeApplication(unittest.TestCase):
         self.assertEqual(len(records), len(align))
         for old, new in zip(records, align):
             self.assertEqual(old.id, new.id)
-            self.assertEqual(str(new.seq).replace("-", ""), str(old.seq).replace("-", ""))
+            self.assertEqual(
+                str(new.seq).replace("-", ""), str(old.seq).replace("-", "")
+            )
 
     def test_TCoffee_2(self):
         """Round-trip through app and read pir alignment from file."""
@@ -68,8 +70,11 @@ class TCoffeeApplication(unittest.TestCase):
         cmdline.infile = self.infile1
         cmdline.outfile = self.outfile3
         cmdline.output = "pir_aln"
-        self.assertEqual(str(cmdline), t_coffee_exe + " -output pir_aln "
-                         "-infile Fasta/fa01 -outfile Fasta/tc_out.pir -quiet")
+        self.assertEqual(
+            str(cmdline),
+            t_coffee_exe + " -output pir_aln "
+            "-infile Fasta/fa01 -outfile Fasta/tc_out.pir -quiet",
+        )
         stdout, stderr = cmdline()
         # Can get warnings in stderr output
         self.assertNotIn("error", stderr.lower(), stderr)
@@ -78,7 +83,9 @@ class TCoffeeApplication(unittest.TestCase):
         self.assertEqual(len(records), len(align))
         for old, new in zip(records, align):
             self.assertEqual(old.id, new.id)
-            self.assertEqual(str(new.seq).replace("-", ""), str(old.seq).replace("-", ""))
+            self.assertEqual(
+                str(new.seq).replace("-", ""), str(old.seq).replace("-", "")
+            )
 
     def test_TCoffee_3(self):
         """Round-trip through app and read clustalw alignment from file."""
@@ -89,9 +96,12 @@ class TCoffeeApplication(unittest.TestCase):
         cmdline.outorder = "input"
         cmdline.set_parameter("gapext", -5)
         cmdline.type = "protein"
-        self.assertEqual(str(cmdline), t_coffee_exe + " -output clustalw_aln "
-                         "-infile Fasta/fa01 -outfile Fasta/tc_out.phy "
-                         "-type protein -outorder input -gapopen -2 -gapext -5")
+        self.assertEqual(
+            str(cmdline),
+            t_coffee_exe + " -output clustalw_aln "
+            "-infile Fasta/fa01 -outfile Fasta/tc_out.phy "
+            "-type protein -outorder input -gapopen -2 -gapext -5",
+        )
         stdout, stderr = cmdline()
         self.assertTrue(stderr.strip().startswith("PROGRAM: T-COFFEE"))
         align = AlignIO.read(self.outfile4, "clustal")
@@ -99,7 +109,9 @@ class TCoffeeApplication(unittest.TestCase):
         self.assertEqual(len(records), len(align))
         for old, new in zip(records, align):
             self.assertEqual(old.id, new.id)
-            self.assertEqual(str(new.seq).replace("-", ""), str(old.seq).replace("-", ""))
+            self.assertEqual(
+                str(new.seq).replace("-", ""), str(old.seq).replace("-", "")
+            )
 
 
 if __name__ == "__main__":

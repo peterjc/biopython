@@ -17,6 +17,7 @@ from Bio.KEGG.REST import kegg_info, kegg_link, kegg_list
 from Bio import SeqIO
 
 import requires_internet
+
 requires_internet.check()
 
 # TODO - revert to using with statements once we drop
@@ -119,29 +120,25 @@ class KEGGTests(unittest.TestCase):
     def test_find_compound_C7H10O5_formula(self):
         h = kegg_find("compound", "C7H10O5", "formula")
         h.read()
-        self.assertEqual(h.url,
-                         "http://rest.kegg.jp/find/compound/C7H10O5/formula")
+        self.assertEqual(h.url, "http://rest.kegg.jp/find/compound/C7H10O5/formula")
         h.close()
 
     def test_find_compound_O5C7_formula(self):
         h = kegg_find("compound", "O5C7", "formula")
         h.read()
-        self.assertEqual(h.url,
-                         "http://rest.kegg.jp/find/compound/O5C7/formula")
+        self.assertEqual(h.url, "http://rest.kegg.jp/find/compound/O5C7/formula")
         h.close()
 
     def test_find_compound_exact_mass(self):
         h = kegg_find("compound", "174.05", "exact_mass")
         h.read()
-        self.assertEqual(h.url,
-                         "http://rest.kegg.jp/find/compound/174.05/exact_mass")
+        self.assertEqual(h.url, "http://rest.kegg.jp/find/compound/174.05/exact_mass")
         h.close()
 
     def test_find_compound_weight(self):
         h = kegg_find("compound", "300-310", "mol_weight")
         h.read()
-        self.assertEqual(h.url,
-                         "http://rest.kegg.jp/find/compound/300-310/mol_weight")
+        self.assertEqual(h.url, "http://rest.kegg.jp/find/compound/300-310/mol_weight")
         h.close()
 
     def test_get_cpd_C01290_plus_gl_G00092(self):
@@ -182,33 +179,29 @@ class KEGGTests(unittest.TestCase):
 
     def test_get_hsa_10458_plus_ece_Z5100_as_aaseq(self):
         h = kegg_get("hsa:10458+ece:Z5100", "aaseq")
-        self.assertEqual(h.url,
-                         "http://rest.kegg.jp/get/hsa:10458+ece:Z5100/aaseq")
-        data = SeqIO.parse(h, 'fasta')
+        self.assertEqual(h.url, "http://rest.kegg.jp/get/hsa:10458+ece:Z5100/aaseq")
+        data = SeqIO.parse(h, "fasta")
         self.assertEqual(len(list(data)), 2)
         h.close()
 
     def test_get_hsa_10458_list_ece_Z5100_as_aaseq(self):
         h = kegg_get(["hsa:10458", "ece:Z5100"], "aaseq")
-        self.assertEqual(h.url,
-                         "http://rest.kegg.jp/get/hsa:10458+ece:Z5100/aaseq")
-        data = SeqIO.parse(h, 'fasta')
+        self.assertEqual(h.url, "http://rest.kegg.jp/get/hsa:10458+ece:Z5100/aaseq")
+        data = SeqIO.parse(h, "fasta")
         self.assertEqual(len(list(data)), 2)
         h.close()
 
     def test_get_hsa_10458_plus_ece_Z5100_as_ntseq(self):
         h = kegg_get("hsa:10458+ece:Z5100", "ntseq")
-        self.assertEqual(h.url,
-                         "http://rest.kegg.jp/get/hsa:10458+ece:Z5100/ntseq")
-        data = SeqIO.parse(h, 'fasta')
+        self.assertEqual(h.url, "http://rest.kegg.jp/get/hsa:10458+ece:Z5100/ntseq")
+        data = SeqIO.parse(h, "fasta")
         self.assertEqual(len(list(data)), 2)
         h.close()
 
     def test_get_hsa_10458_list_ece_Z5100_as_ntseq(self):
         h = kegg_get(["hsa:10458", "ece:Z5100"], "ntseq")
-        self.assertEqual(h.url,
-                         "http://rest.kegg.jp/get/hsa:10458+ece:Z5100/ntseq")
-        data = SeqIO.parse(h, 'fasta')
+        self.assertEqual(h.url, "http://rest.kegg.jp/get/hsa:10458+ece:Z5100/ntseq")
+        data = SeqIO.parse(h, "fasta")
         self.assertEqual(len(list(data)), 2)
         h.close()
 
@@ -234,15 +227,13 @@ class KEGGTests(unittest.TestCase):
     def test_conv_ncbi_gi_hsa_10458_plus_ece_Z5100(self):
         h = kegg_conv("ncbi-gi", "hsa:10458+ece:Z5100")
         h.read()
-        self.assertEqual(h.url,
-                         "http://rest.kegg.jp/conv/ncbi-gi/hsa:10458+ece:Z5100")
+        self.assertEqual(h.url, "http://rest.kegg.jp/conv/ncbi-gi/hsa:10458+ece:Z5100")
         h.close()
 
     def test_conv_ncbi_gi_hsa_10458_list_ece_Z5100(self):
         h = kegg_conv("ncbi-gi", ["hsa:10458", "ece:Z5100"])
         h.read()
-        self.assertEqual(h.url,
-                         "http://rest.kegg.jp/conv/ncbi-gi/hsa:10458+ece:Z5100")
+        self.assertEqual(h.url, "http://rest.kegg.jp/conv/ncbi-gi/hsa:10458+ece:Z5100")
         h.close()
 
     def test_link_pathway_hsa(self):
@@ -260,15 +251,13 @@ class KEGGTests(unittest.TestCase):
     def test_pathway_hsa_10458_plus_ece_Z5100(self):
         h = kegg_link("pathway", "hsa:10458+ece:Z5100")
         h.read()
-        self.assertEqual(h.url,
-                         "http://rest.kegg.jp/link/pathway/hsa:10458+ece:Z5100")
+        self.assertEqual(h.url, "http://rest.kegg.jp/link/pathway/hsa:10458+ece:Z5100")
         h.close()
 
     def test_pathway_hsa_10458_list_ece_Z5100(self):
         h = kegg_link("pathway", ["hsa:10458", "ece:Z5100"])
         h.read()
-        self.assertEqual(h.url,
-                         "http://rest.kegg.jp/link/pathway/hsa:10458+ece:Z5100")
+        self.assertEqual(h.url, "http://rest.kegg.jp/link/pathway/hsa:10458+ece:Z5100")
         h.close()
 
 
@@ -283,6 +272,6 @@ class KGMLPathwayTests(unittest.TestCase):
         h.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     runner = unittest.TextTestRunner(verbosity=2)
     unittest.main(testRunner=runner)

@@ -11,8 +11,9 @@ from Bio import File
 
 import warnings
 from Bio import BiopythonWarning
+
 with warnings.catch_warnings():
-    warnings.simplefilter('ignore', BiopythonWarning)
+    warnings.simplefilter("ignore", BiopythonWarning)
     from Bio.SearchIO._legacy import ParserSupport
 
 # pyUnit
@@ -22,6 +23,7 @@ def pb(b):
     if b:
         return 1
     return 0
+
 
 # TaggingConsumer
 
@@ -37,27 +39,26 @@ class TestHandle(object):
 h = TestHandle()
 tc = ParserSupport.TaggingConsumer(handle=h, colwidth=5)
 tc.start_section()  # '***** start_section\n'
-tc.test1('myline')  # 'test1: myline\n'
-tc.end_section()    # '***** end_section\n'
+tc.test1("myline")  # 'test1: myline\n'
+tc.end_section()  # '***** end_section\n'
 
 
 # is_blank_line
 
 print("Running tests on is_blank_line")
 
-is_blank_line = lambda *args, **keywds: \
-                pb(ParserSupport.is_blank_line(*args, **keywds))
+is_blank_line = lambda *args, **keywds: pb(ParserSupport.is_blank_line(*args, **keywds))
 
-print(is_blank_line('\n'))                              # 1
-print(is_blank_line('\r\n'))                            # 1
-print(is_blank_line('\r'))                              # 1
-print(is_blank_line(''))                                # 1
-print(is_blank_line('', allow_spaces=1))                # 1
-print(is_blank_line('', allow_spaces=0))                # 1
+print(is_blank_line("\n"))  # 1
+print(is_blank_line("\r\n"))  # 1
+print(is_blank_line("\r"))  # 1
+print(is_blank_line(""))  # 1
+print(is_blank_line("", allow_spaces=1))  # 1
+print(is_blank_line("", allow_spaces=0))  # 1
 print(is_blank_line(string.whitespace, allow_spaces=1))  # 1
-print(is_blank_line('hello'))                           # 0
-print(is_blank_line('hello', allow_spaces=1))           # 0
-print(is_blank_line('hello', allow_spaces=0))           # 0
+print(is_blank_line("hello"))  # 0
+print(is_blank_line("hello", allow_spaces=1))  # 0
+print(is_blank_line("hello", allow_spaces=0))  # 0
 print(is_blank_line(string.whitespace, allow_spaces=0))  # 0
 
 
@@ -71,8 +72,8 @@ file"""
 h = File.UndoHandle(StringIO(data))
 
 safe_readline = ParserSupport.safe_readline
-print(safe_readline(h))    # "This"
-print(safe_readline(h))    # "file"
+print(safe_readline(h))  # "This"
+print(safe_readline(h))  # "file"
 try:
     safe_readline(h)
 except ValueError:
@@ -101,7 +102,7 @@ except ValueError:
     print("correctly failed")
 else:
     print("ERROR, should have failed")
-h.saveline('hello')
+h.saveline("hello")
 print(safe_peekline(h))  # 'hello'
 
 
@@ -130,8 +131,8 @@ def m(line):
 
 
 rac(h, m)
-print(lines[-1][:10])   # '>gi|132871'
-rac(h, m, start='MAKLE', end='KEQ', contains='SVIG')
+print(lines[-1][:10])  # '>gi|132871'
+rac(h, m, start="MAKLE", end="KEQ", contains="SVIG")
 rac(h, m, blank=0)
 
 # These should be errors.  If they're not, then complain.
@@ -143,21 +144,21 @@ else:
     print("ERROR, should have failed")
 
 try:
-    rac(h, m, start='foobar')
+    rac(h, m, start="foobar")
 except ValueError:
     print("correctly failed")
 else:
     print("ERROR, should have failed")
 
 try:
-    rac(h, m, end='foobar')
+    rac(h, m, end="foobar")
 except ValueError:
     print("correctly failed")
 else:
     print("ERROR, should have failed")
 
 try:
-    rac(h, m, contains='foobar')
+    rac(h, m, contains="foobar")
 except ValueError:
     print("correctly failed")
 else:
@@ -184,8 +185,7 @@ GTAEVI"""
 
 h = File.UndoHandle(StringIO(data))
 
-arac = lambda *args, **keywds: \
-       pb(ParserSupport.attempt_read_and_call(*args, **keywds))
+arac = lambda *args, **keywds: pb(ParserSupport.attempt_read_and_call(*args, **keywds))
 lines = []
 
 
@@ -193,7 +193,7 @@ def m(line):
     lines.append(line)
 
 
-print(arac(h, m, contains="RIBOSOMAL PROTEIN"))   # 1
-print(arac(h, m, start="foobar"))                 # 0
-print(arac(h, m, blank=1))                        # 0
-print(arac(h, m, end="LVSVKEQ"))                  # 1
+print(arac(h, m, contains="RIBOSOMAL PROTEIN"))  # 1
+print(arac(h, m, start="foobar"))  # 0
+print(arac(h, m, blank=1))  # 0
+print(arac(h, m, end="LVSVKEQ"))  # 1

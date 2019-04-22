@@ -11,10 +11,11 @@ from common_BioSQL import *  # noqa
 from common_BioSQL_online import *  # noqa
 
 import requires_internet
+
 requires_internet.check()
 
-DBDRIVER = 'psycopg2'
-DBTYPE = 'pg'
+DBDRIVER = "psycopg2"
+DBTYPE = "pg"
 DBHOST, DBUSER, DBPASSWD, TESTDB = load_biosql_ini(DBTYPE)
 
 # This will abort if driver not installed etc:

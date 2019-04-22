@@ -26,6 +26,7 @@ from Bio.Blast import NCBIWWW
 from Bio.Blast import NCBIXML
 
 import requires_internet
+
 requires_internet.check()
 
 #####################################################################
@@ -42,28 +43,49 @@ print("Checking Bio.Blast.NCBIWWW.qblast() with various queries")
 
 
 class TestQblast(unittest.TestCase):
-
     def test_blastp_nr_actin(self):
         # Simple protein blast filtered for rat only, using protein
         # GI:160837788 aka NP_075631.2
         # the actin related protein 2/3 complex, subunit 1B [Mus musculus]
-        self.run_qblast("blastp", "nr", "NP_075631.2", 0.001,
-                        "rat [ORGN]", {'megablast': 'FALSE'},
-                        ['9506405', '13592137', '37589612', '149064087', '56912225'])
+        self.run_qblast(
+            "blastp",
+            "nr",
+            "NP_075631.2",
+            0.001,
+            "rat [ORGN]",
+            {"megablast": "FALSE"},
+            ["9506405", "13592137", "37589612", "149064087", "56912225"],
+        )
 
     def test_pcr_primers(self):
         # This next example finds PCR primer matches in Chimpanzees, e.g. BRCA1:
-        self.run_qblast("blastn", "nr", "GTACCTTGATTTCGTATTC" + ("N" * 30) + "GACTCTACTACCTTTACCC",
-                        10, "pan [ORGN]", {'megablast': 'FALSE'},
-                        ["XM_009432096.3", "XM_009432102.3", "XM_009432101.3",
-                         "XM_016930487.2", "XM_009432104.3", "XM_009432099.3",
-                         "XR_001710553.2", "XM_016930485.2", "XM_009432089.3",
-                         "XM_016930484.2"])
+        self.run_qblast(
+            "blastn",
+            "nr",
+            "GTACCTTGATTTCGTATTC" + ("N" * 30) + "GACTCTACTACCTTTACCC",
+            10,
+            "pan [ORGN]",
+            {"megablast": "FALSE"},
+            [
+                "XM_009432096.3",
+                "XM_009432102.3",
+                "XM_009432101.3",
+                "XM_016930487.2",
+                "XM_009432104.3",
+                "XM_009432099.3",
+                "XR_001710553.2",
+                "XM_016930485.2",
+                "XM_009432089.3",
+                "XM_016930484.2",
+            ],
+        )
 
     def test_orchid_est(self):
         # Try an orchid EST (nucleotide) sequence against NR using BLASTX
-        self.run_qblast("blastx", "nr",
-                        """>gi|116660609|gb|EG558220.1|EG558220 CR02019H04 Leaf CR02 cDNA library Catharanthus roseus cDNA clone CR02019H04 5', mRNA sequence
+        self.run_qblast(
+            "blastx",
+            "nr",
+            """>gi|116660609|gb|EG558220.1|EG558220 CR02019H04 Leaf CR02 cDNA library Catharanthus roseus cDNA clone CR02019H04 5', mRNA sequence
                         CTCCATTCCCTCTCTATTTTCAGTCTAATCAAATTAGAGCTTAAAAGAATGAGATTTTTAACAAATAAAA
                         AAACATAGGGGAGATTTCATAAAAGTTATATTAGTGATTTGAAGAATATTTTAGTCTATTTTTTTTTTTT
                         TCTTTTTTTGATGAAGAAAGGGTATATAAAATCAAGAATCTGGGGTGTTTGTGTTGACTTGGGTCGGGTG
@@ -73,12 +95,17 @@ class TestQblast(unittest.TestCase):
                         AGCCATGGATTTCTCAGAAGAAAATGATTATACTTCTTAATCAGGCAACTGATATTATCAATTTATGGCA
                         GCAGAGTGGTGGCTCCTTGTCCCAGCAGCAGTAATTACTTTTTTTTCTCTTTTTGTTTCCAAATTAAGAA
                         ACATTAGTATCATATGGCTATTTGCTCAATTGCAGATTTCTTTCTTTTGTGAATG""",
-                        0.0000001, None, {'megablast': 'FALSE'},
-                        ["21554275", "18409071", "296087288", "566183510"])
+            0.0000001,
+            None,
+            {"megablast": "FALSE"},
+            ["21554275", "18409071", "296087288", "566183510"],
+        )
 
     def test_discomegablast(self):
-        self.run_qblast("blastn", "nr",
-                        """>some sequence
+        self.run_qblast(
+            "blastn",
+            "nr",
+            """>some sequence
                         ATGAAGATCTTCCAGATCCAGTGCAGCAGCTTCAAGGAGAGCAGGTGGCAGAAGAGCAAGTGCGACAACT
                         GCCTGAAGTTCCACATCGACATCAACAACAACAGCAAGACCAGCAACACCGACACCGACTTCGACGCCAA
                         CACCAACATCAACAGCAACATCAACAGCAACATCAACAGCAACATCAACATCAACAACAGCGGCAACAAC
@@ -118,29 +145,48 @@ class TestQblast(unittest.TestCase):
                         CTGAACAGCAACAGCAGCGGCAGCGGCAACAACAGCAACGACAACAGCGGCAGCAGCAGCCCCAGCAGCA
                         GCAAGACCAACACCCTGAACCAGCAGAGCATCTGCATCAAGAGCGAGATCCAACGATACGTTGAAATTCG
                         CTTGTGTGCCACTGGTAAATCCACCCCCCCTAAGCCTCTAATAGGGAGACCTTAG""",
-                        0.0000001, None, {
-                            'template_type': 0,
-                            'template_length': 18,
-                            'megablast': 'on',
-                        }, ['XM_635681.1', 'XM_008496783.1'])
+            0.0000001,
+            None,
+            {"template_type": 0, "template_length": 18, "megablast": "on"},
+            ["XM_635681.1", "XM_008496783.1"],
+        )
 
-    def run_qblast(self, program, database, query, e_value, entrez_filter, additional_args, expected_hits):
+    def run_qblast(
+        self,
+        program,
+        database,
+        query,
+        e_value,
+        entrez_filter,
+        additional_args,
+        expected_hits,
+    ):
         try:
             if program == "blastn":
                 # Check the megablast parameter is accepted
-                handle = NCBIWWW.qblast(program, database, query,
-                                        alignments=10, descriptions=10,
-                                        hitlist_size=10,
-                                        entrez_query=entrez_filter,
-                                        expect=e_value,
-                                        **additional_args)
+                handle = NCBIWWW.qblast(
+                    program,
+                    database,
+                    query,
+                    alignments=10,
+                    descriptions=10,
+                    hitlist_size=10,
+                    entrez_query=entrez_filter,
+                    expect=e_value,
+                    **additional_args
+                )
             else:
-                handle = NCBIWWW.qblast(program, database, query,
-                                        alignments=10, descriptions=10,
-                                        hitlist_size=10,
-                                        entrez_query=entrez_filter,
-                                        expect=e_value,
-                                        **additional_args)
+                handle = NCBIWWW.qblast(
+                    program,
+                    database,
+                    query,
+                    alignments=10,
+                    descriptions=10,
+                    hitlist_size=10,
+                    entrez_query=entrez_filter,
+                    expect=e_value,
+                    **additional_args
+                )
         except HTTPError:
             # e.g. a proxy error
             raise MissingExternalDependencyError("internet connection failed")
@@ -153,13 +199,18 @@ class TestQblast(unittest.TestCase):
             # We used a FASTA record as the query
             expected = query[1:].split("\n", 1)[0]
             self.assertEqual(expected, record.query)
-        elif record.query_id.startswith("Query_") and len(query) == record.query_letters:
+        elif (
+            record.query_id.startswith("Query_") and len(query) == record.query_letters
+        ):
             # We used a sequence as the entry and it was given a placeholder name
             pass
         else:
             # We used an identifier as the query
-            self.assertIn(query, record.query_id.split("|"),
-                          "Expected %r within query_id %r" % (query, record.query_id))
+            self.assertIn(
+                query,
+                record.query_id.split("|"),
+                "Expected %r within query_id %r" % (query, record.query_id),
+            )
 
         # Check the recorded input parameters agree with those requested
         self.assertEqual(float(record.expect), e_value)
@@ -182,10 +233,14 @@ class TestQblast(unittest.TestCase):
                 print("Update this test to have some redundancy...")
                 for alignment in record.alignments:
                     print(alignment.hit_id)
-            self.assertTrue(found_result,
-                            "Missing all expected hits (%s), instead have: %s"
-                            % (", ".join(expected_hits),
-                               ", ".join(a.hit_id for a in record.alignments)))
+            self.assertTrue(
+                found_result,
+                "Missing all expected hits (%s), instead have: %s"
+                % (
+                    ", ".join(expected_hits),
+                    ", ".join(a.hit_id for a in record.alignments),
+                ),
+            )
 
         # Check the expected result(s) are found in the descriptions
         if expected_hits is None:
@@ -195,8 +250,13 @@ class TestQblast(unittest.TestCase):
             found_result = False
             for expected_hit in expected_hits:
                 for descr in record.descriptions:
-                    if expected_hit == descr.accession \
-                            or expected_hit in descr.title.split(None, 1)[0].split("|"):
+                    if expected_hit == descr.accession or expected_hit in descr.title.split(
+                        None, 1
+                    )[
+                        0
+                    ].split(
+                        "|"
+                    ):
                         found_result = True
                         break
             assert found_result, "Missing all of %s in descriptions" % expected_hit

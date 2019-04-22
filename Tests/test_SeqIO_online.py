@@ -17,6 +17,7 @@ Goals:
 import unittest
 
 import requires_internet
+
 requires_internet.check()
 
 # We want to test these:
@@ -61,37 +62,41 @@ class EntrezTests(unittest.TestCase):
             record = SeqIO.read(handle, f)
             handle.close()
             # NCBI still takes GI on input, but phasing it out in output
-            gi_to_acc = {
-                "6273291": "AF191665.1",
-                "16130152": "NP_416719.1",
-            }
+            gi_to_acc = {"6273291": "AF191665.1", "16130152": "NP_416719.1"}
             if entry in gi_to_acc:
                 entry = gi_to_acc[entry]
-            self.assertTrue((entry in record.name) or
-                            (entry in record.id) or
-                            ("gi" in record.annotations and
-                             record.annotations["gi"] == entry),
-                            "%s got %s, %s" % (entry, record.name, record.id))
+            self.assertTrue(
+                (entry in record.name)
+                or (entry in record.id)
+                or ("gi" in record.annotations and record.annotations["gi"] == entry),
+                "%s got %s, %s" % (entry, record.name, record.id),
+            )
             self.assertEqual(len(record), length)
             self.assertEqual(seguid(record.seq), checksum)
 
 
 for database, formats, entry, length, checksum in [
-        ("nuccore", ["fasta", "gb"], "X52960", 248,
-         "Ktxz0HgMlhQmrKTuZpOxPZJ6zGU"),
-        ("nucleotide", ["fasta", "gb"], "6273291", 902,
-         "bLhlq4mEFJOoS9PieOx4nhGnjAQ"),
-        ("protein", ["fasta", "gbwithparts"], "16130152", 367,
-         "fCjcjMFeGIrilHAn6h+yju267lg"),
-        ]:
+    ("nuccore", ["fasta", "gb"], "X52960", 248, "Ktxz0HgMlhQmrKTuZpOxPZJ6zGU"),
+    ("nucleotide", ["fasta", "gb"], "6273291", 902, "bLhlq4mEFJOoS9PieOx4nhGnjAQ"),
+    (
+        "protein",
+        ["fasta", "gbwithparts"],
+        "16130152",
+        367,
+        "fCjcjMFeGIrilHAn6h+yju267lg",
+    ),
+]:
 
     def funct(d, f, e, l, c):
         method = lambda x: x.simple(d, f, e, l, c)
         method.__doc__ = "Bio.Entrez.efetch(%r, id=%r, ...)" % (d, e)
         return method
 
-    setattr(EntrezTests, "test_%s_%s" % (database, entry),
-            funct(database, formats, entry, length, checksum))
+    setattr(
+        EntrezTests,
+        "test_%s_%s" % (database, entry),
+        funct(database, formats, entry, length, checksum),
+    )
     del funct
 del database, formats, entry, length, checksum
 

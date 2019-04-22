@@ -19,12 +19,13 @@ from Bio.PDB.NACCESS import NACCESS
 
 # Check if NACCESS is installed
 try:
-    subprocess.check_call(["naccess", "-q"],
-                          stdout=subprocess.PIPE,
-                          stderr=subprocess.STDOUT)
+    subprocess.check_call(
+        ["naccess", "-q"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+    )
 except OSError:
     raise MissingExternalDependencyError(
-        "Install naccess if you want to use it from Biopython.")
+        "Install naccess if you want to use it from Biopython."
+    )
 
 
 class NACCESS_test(unittest.TestCase):
@@ -39,6 +40,6 @@ class NACCESS_test(unittest.TestCase):
         self.assertEqual(len(naccess), 66)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     runner = unittest.TextTestRunner(verbosity=2)
     unittest.main(testRunner=runner)

@@ -9,8 +9,8 @@ import unittest
 
 from common_BioSQL import *  # noqa
 
-DBDRIVER = 'psycopg2'
-DBTYPE = 'pg'
+DBDRIVER = "psycopg2"
+DBTYPE = "pg"
 DBHOST, DBUSER, DBPASSWD, TESTDB = load_biosql_ini(DBTYPE)
 
 # This will abort if driver not installed etc:

@@ -9,8 +9,8 @@ import unittest
 
 from common_BioSQL import *  # noqa
 
-DBDRIVER = 'MySQLdb'
-DBTYPE = 'mysql'
+DBDRIVER = "MySQLdb"
+DBTYPE = "mysql"
 
 DBHOST, DBUSER, DBPASSWD, TESTDB = load_biosql_ini(DBTYPE)
 

@@ -6,26 +6,29 @@ import unittest
 
 try:
     import numpy
+
     del numpy
 except ImportError:
     from Bio import MissingExternalDependencyError
-    raise MissingExternalDependencyError(
-        "Install NumPy if you want to use Bio.KDTree.")
+
+    raise MissingExternalDependencyError("Install NumPy if you want to use Bio.KDTree.")
 
 from numpy import sum, sqrt, array
 from numpy import random
 
 import warnings
 from Bio import BiopythonDeprecationWarning
+
 with warnings.catch_warnings():
-    warnings.simplefilter('ignore', BiopythonDeprecationWarning)
+    warnings.simplefilter("ignore", BiopythonDeprecationWarning)
     try:
         from Bio.KDTree import _CKDTree
+
         del _CKDTree
     except ImportError:
         from Bio import MissingExternalDependencyError
-        raise MissingExternalDependencyError(
-            "C module in Bio.KDTree not compiled")
+
+        raise MissingExternalDependencyError("C module in Bio.KDTree not compiled")
     from Bio.KDTree.KDTree import KDTree
 
 
@@ -181,12 +184,13 @@ def test_all_search(nr_points, dim, bucket_size, query_radius):
 
 
 class KDTreeTest(unittest.TestCase):
-
     def test_KDTree_exceptions(self):
         kdt = KDTree(dim, bucket_size)
         with self.assertRaises(Exception) as context:
             kdt.set_coords(random.random((nr_points, dim)) * 100000000000000)
-        self.assertTrue("Points should lie between -1e6 and 1e6" in str(context.exception))
+        self.assertTrue(
+            "Points should lie between -1e6 and 1e6" in str(context.exception)
+        )
         with self.assertRaises(Exception) as context:
             kdt.set_coords(random.random((nr_points, dim - 2)))
         self.assertTrue("Expected a Nx%i NumPy array" % dim in str(context.exception))
@@ -204,7 +208,9 @@ class KDTreeTest(unittest.TestCase):
 
     def test_all_search(self):
         for i in range(0, 5):
-            self.assertTrue(test_all_search((nr_points // 10), dim, bucket_size, query_radius))
+            self.assertTrue(
+                test_all_search((nr_points // 10), dim, bucket_size, query_radius)
+            )
 
     def test_search(self):
         for i in range(0, 5):

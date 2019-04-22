@@ -14,8 +14,10 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
 test_write_read_alignment_formats = sorted(AlignIO._FormatToWriter)
-test_write_read_align_with_seq_count = test_write_read_alignment_formats \
-                                     + ["fasta", "tab"]
+test_write_read_align_with_seq_count = test_write_read_alignment_formats + [
+    "fasta",
+    "tab",
+]
 
 # test_files is a list of tuples containing:
 # - string:  file format
@@ -26,54 +28,54 @@ test_write_read_align_with_seq_count = test_write_read_alignment_formats \
 # Most of the input files are also used by test_SeqIO.py,
 # and by other additional tests as noted below.
 test_files = [
-# Following examples are also used in test_Clustalw.py
-    ("clustal", 2, 1, 'Clustalw/cw02.aln'),
-    ("clustal", 7, 1, 'Clustalw/opuntia.aln'),
-    ("clustal", 5, 1, 'Clustalw/hedgehog.aln'),
-    ("clustal", 2, 1, 'Clustalw/odd_consensus.aln'),
-    ("clustal", 20, 1, 'Clustalw/protein.aln'),  # Used in the tutorial
-    ("clustal", 20, 1, 'Clustalw/promals3d.aln'),  # Nonstandard header
-# Following examples are also used in test_GFF.py
-    ("fasta", 3, 1, 'GFF/multi.fna'),  # Trivial nucleotide alignment
-# Following example is also used in test_Nexus.py
-    ("nexus", 9, 1, 'Nexus/test_Nexus_input.nex'),
-    ("nexus", 2, 1, 'Nexus/codonposset.nex'),
-    ("stockholm", 2, 1, 'Stockholm/simple.sth'),
-    ("stockholm", 6, 1, 'Stockholm/funny.sth'),
-    ("phylip", 6, 1, 'Phylip/reference_dna.phy'),
-    ("phylip", 6, 1, 'Phylip/reference_dna2.phy'),
-    ("phylip", 10, 1, 'Phylip/hennigian.phy'),
-    ("phylip", 10, 1, 'Phylip/horses.phy'),
-    ("phylip", 10, 1, 'Phylip/random.phy'),
-    ("phylip", 3, 1, 'Phylip/interlaced.phy'),
-    ("phylip", 4, 1, 'Phylip/interlaced2.phy'),
-    ("phylip-relaxed", 12, 1, 'ExtendedPhylip/primates.phyx'),
-    ("phylip-sequential", 3, 1, 'Phylip/sequential.phy'),
-    ("phylip-sequential", 4, 1, 'Phylip/sequential2.phy'),
-    ("emboss", 4, 1, 'Emboss/alignret.txt'),
-    ("emboss", 2, 5, 'Emboss/needle.txt'),
-    ("emboss", 2, 1, 'Emboss/needle_asis.txt'),
-    ("emboss", 2, 1, 'Emboss/water.txt'),
-    ("emboss", 2, 1, 'Emboss/water2.txt'),
-    ("emboss", 2, 1, 'Emboss/matcher_simple.txt'),
-    ("emboss", 2, 5, 'Emboss/matcher_pair.txt'),
-    ("emboss", 2, 1, 'Emboss/emboss_pair_aln_full_blank_line.txt'),
-    ("fasta-m10", 2, 4, 'Fasta/output001.m10'),
-    ("fasta-m10", 2, 6, 'Fasta/output002.m10'),
-    ("fasta-m10", 2, 3, 'Fasta/output003.m10'),
-    ("fasta-m10", 2, 1, 'Fasta/output004.m10'),
-    ("fasta-m10", 2, 1, 'Fasta/output005.m10'),
-    ("fasta-m10", 2, 1, 'Fasta/output006.m10'),
-    ("fasta-m10", 2, 9, 'Fasta/output007.m10'),
-    ("fasta-m10", 2, 12, 'Fasta/output008.m10'),
-    ("ig", 16, 1, 'IntelliGenetics/VIF_mase-pro.txt'),
-    ("pir", 2, 1, 'NBRF/clustalw.pir'),
-    ("maf", 3, 2, 'MAF/humor.maf'),
+    # Following examples are also used in test_Clustalw.py
+    ("clustal", 2, 1, "Clustalw/cw02.aln"),
+    ("clustal", 7, 1, "Clustalw/opuntia.aln"),
+    ("clustal", 5, 1, "Clustalw/hedgehog.aln"),
+    ("clustal", 2, 1, "Clustalw/odd_consensus.aln"),
+    ("clustal", 20, 1, "Clustalw/protein.aln"),  # Used in the tutorial
+    ("clustal", 20, 1, "Clustalw/promals3d.aln"),  # Nonstandard header
+    # Following examples are also used in test_GFF.py
+    ("fasta", 3, 1, "GFF/multi.fna"),  # Trivial nucleotide alignment
+    # Following example is also used in test_Nexus.py
+    ("nexus", 9, 1, "Nexus/test_Nexus_input.nex"),
+    ("nexus", 2, 1, "Nexus/codonposset.nex"),
+    ("stockholm", 2, 1, "Stockholm/simple.sth"),
+    ("stockholm", 6, 1, "Stockholm/funny.sth"),
+    ("phylip", 6, 1, "Phylip/reference_dna.phy"),
+    ("phylip", 6, 1, "Phylip/reference_dna2.phy"),
+    ("phylip", 10, 1, "Phylip/hennigian.phy"),
+    ("phylip", 10, 1, "Phylip/horses.phy"),
+    ("phylip", 10, 1, "Phylip/random.phy"),
+    ("phylip", 3, 1, "Phylip/interlaced.phy"),
+    ("phylip", 4, 1, "Phylip/interlaced2.phy"),
+    ("phylip-relaxed", 12, 1, "ExtendedPhylip/primates.phyx"),
+    ("phylip-sequential", 3, 1, "Phylip/sequential.phy"),
+    ("phylip-sequential", 4, 1, "Phylip/sequential2.phy"),
+    ("emboss", 4, 1, "Emboss/alignret.txt"),
+    ("emboss", 2, 5, "Emboss/needle.txt"),
+    ("emboss", 2, 1, "Emboss/needle_asis.txt"),
+    ("emboss", 2, 1, "Emboss/water.txt"),
+    ("emboss", 2, 1, "Emboss/water2.txt"),
+    ("emboss", 2, 1, "Emboss/matcher_simple.txt"),
+    ("emboss", 2, 5, "Emboss/matcher_pair.txt"),
+    ("emboss", 2, 1, "Emboss/emboss_pair_aln_full_blank_line.txt"),
+    ("fasta-m10", 2, 4, "Fasta/output001.m10"),
+    ("fasta-m10", 2, 6, "Fasta/output002.m10"),
+    ("fasta-m10", 2, 3, "Fasta/output003.m10"),
+    ("fasta-m10", 2, 1, "Fasta/output004.m10"),
+    ("fasta-m10", 2, 1, "Fasta/output005.m10"),
+    ("fasta-m10", 2, 1, "Fasta/output006.m10"),
+    ("fasta-m10", 2, 9, "Fasta/output007.m10"),
+    ("fasta-m10", 2, 12, "Fasta/output008.m10"),
+    ("ig", 16, 1, "IntelliGenetics/VIF_mase-pro.txt"),
+    ("pir", 2, 1, "NBRF/clustalw.pir"),
+    ("maf", 3, 2, "MAF/humor.maf"),
     ("maf", None, 3, "MAF/bug2453.maf"),  # Have 5, 5, 4 sequences
     ("maf", None, 3, "MAF/ucsc_test.maf"),  # Have 5, 5, 4 sequences
     ("maf", None, 48, "MAF/ucsc_mm9_chr10.maf"),
-    ("mauve", None, 5, 'Mauve/simple.xmfa'),
-    ]
+    ("mauve", None, 5, "Mauve/simple.xmfa"),
+]
 
 
 def str_summary(text, max_len=40):
@@ -81,7 +83,7 @@ def str_summary(text, max_len=40):
     if len(text) <= max_len:
         return text
     else:
-        return text[:max_len - 4] + "..." + text[-3:]
+        return text[: max_len - 4] + "..." + text[-3:]
 
 
 def alignment_summary(alignment, index="  ", vertical_threshold=5):
@@ -92,23 +94,22 @@ def alignment_summary(alignment, index="  ", vertical_threshold=5):
     if rec_count < vertical_threshold:
         # Show each sequence row horizontally
         for record in alignment:
-            answer.append("%s%s %s" % (
-                index, str_summary(str(record.seq)), record.id))
+            answer.append("%s%s %s" % (index, str_summary(str(record.seq)), record.id))
         for key, value in alignment.column_annotations.items():
             if isinstance(value, str):
-                answer.append("%s%s %s" %
-                              (index, str_summary(str(value)), key))
+                answer.append("%s%s %s" % (index, str_summary(str(value)), key))
     else:
         # Show each sequence row vertically
         for i in range(min(5, alignment_len)):
-            answer.append(index + str_summary(alignment[:, i]) +
-                          " alignment column %i" % i)
+            answer.append(
+                index + str_summary(alignment[:, i]) + " alignment column %i" % i
+            )
         if alignment_len > 5:
             i = alignment_len - 1
-            answer.append(index + str_summary("|" * rec_count) +
-                          " ...")
-            answer.append(index + str_summary(alignment[:, i]) +
-                          " alignment column %i" % i)
+            answer.append(index + str_summary("|" * rec_count) + " ...")
+            answer.append(
+                index + str_summary(alignment[:, i]) + " alignment column %i" % i
+            )
     return "\n".join(answer)
 
 
@@ -120,8 +121,10 @@ def check_simple_write_read(alignments, indent=" "):
             if records_per_alignment != len(a):
                 records_per_alignment = None
         # Can we expect this format to work?
-        if not records_per_alignment \
-                and format not in test_write_read_alignment_formats:
+        if (
+            not records_per_alignment
+            and format not in test_write_read_alignment_formats
+        ):
             continue
 
         print(indent + "Checking can write/read as '%s' format" % format)
@@ -144,17 +147,19 @@ def check_simple_write_read(alignments, indent=" "):
             handle.flush()
             handle.seek(0)
             try:
-                alignments2 = list(AlignIO.parse(
-                    handle=handle,
-                    format=format,
-                    seq_count=records_per_alignment))
+                alignments2 = list(
+                    AlignIO.parse(
+                        handle=handle, format=format, seq_count=records_per_alignment
+                    )
+                )
             except ValueError as e:
                 # This is BAD.  We can't read our own output.
                 # I want to see the output when called from the test harness,
                 # run_tests.py (which can be funny about new lines on Windows)
                 handle.seek(0)
-                raise ValueError("%s\n\n%s\n\n%s" % (
-                    str(e), repr(handle.read()), repr(alignments2)))
+                raise ValueError(
+                    "%s\n\n%s\n\n%s" % (str(e), repr(handle.read()), repr(alignments2))
+                )
             simple_alignment_comparison(alignments, alignments2, format)
 
         if format in test_write_read_alignment_formats:
@@ -168,8 +173,9 @@ def check_simple_write_read(alignments, indent=" "):
                 # I want to see the output when called from the test harness,
                 # run_tests.py (which can be funny about new lines on Windows)
                 handle.seek(0)
-                raise ValueError("%s\n\n%s\n\n%s" % (
-                    str(e), repr(handle.read()), repr(alignments2)))
+                raise ValueError(
+                    "%s\n\n%s\n\n%s" % (str(e), repr(handle.read()), repr(alignments2))
+                )
             simple_alignment_comparison(alignments, alignments2, format)
 
         if len(alignments) > 1:
@@ -194,22 +200,24 @@ def simple_alignment_comparison(alignments, alignments2, format):
             # Beware of different quirks and limitations in the
             # valid character sets and the identifier lengths!
             if format in ["phylip", "phylip-sequential"]:
-                assert r1.id.replace("[", "").replace("]", "")[:10] == r2.id, \
-                       "'%s' vs '%s'" % (r1.id, r2.id)
+                assert (
+                    r1.id.replace("[", "").replace("]", "")[:10] == r2.id
+                ), "'%s' vs '%s'" % (r1.id, r2.id)
             elif format == "phylip-relaxed":
-                assert r1.id.replace(" ", "").replace(':', '|') == r2.id, \
-                        "'%s' vs '%s'" % (r1.id, r2.id)
+                assert (
+                    r1.id.replace(" ", "").replace(":", "|") == r2.id
+                ), "'%s' vs '%s'" % (r1.id, r2.id)
             elif format == "clustal":
-                assert r1.id.replace(" ", "_")[:30] == r2.id, \
-                       "'%s' vs '%s'" % (r1.id, r2.id)
+                assert r1.id.replace(" ", "_")[:30] == r2.id, "'%s' vs '%s'" % (
+                    r1.id,
+                    r2.id,
+                )
             elif format in ["stockholm", "maf"]:
-                assert r1.id.replace(" ", "_") == r2.id, \
-                       "'%s' vs '%s'" % (r1.id, r2.id)
+                assert r1.id.replace(" ", "_") == r2.id, "'%s' vs '%s'" % (r1.id, r2.id)
             elif format == "fasta":
                 assert r1.id.split()[0] == r2.id
             else:
-                assert r1.id == r2.id, \
-                       "'%s' vs '%s'" % (r1.id, r2.id)
+                assert r1.id == r2.id, "'%s' vs '%s'" % (r1.id, r2.id)
     return True
 
 
@@ -217,13 +225,15 @@ def simple_alignment_comparison(alignments, alignments2, format):
 def check_phylip_reject_duplicate():
     """Check writing post-truncation duplicated IDs fails for PHYLIP."""
     handle = StringIO()
-    sequences = [SeqRecord(Seq('AAAA'), id='longsequencename1'),
-                 SeqRecord(Seq('AAAA'), id='longsequencename2'),
-                 SeqRecord(Seq('AAAA'), id='other_sequence'), ]
+    sequences = [
+        SeqRecord(Seq("AAAA"), id="longsequencename1"),
+        SeqRecord(Seq("AAAA"), id="longsequencename2"),
+        SeqRecord(Seq("AAAA"), id="other_sequence"),
+    ]
     alignment = MultipleSeqAlignment(sequences)
     try:
         # This should raise a ValueError
-        AlignIO.write(alignment, handle, 'phylip')
+        AlignIO.write(alignment, handle, "phylip")
         raise ValueError("Duplicate IDs after truncation are not allowed.")
     except ValueError as err:
         # Expected - check the error
@@ -251,8 +261,7 @@ for t_format in list(AlignIO._FormatToWriter) + list(SeqIO._FormatToWriter):
     handle = StringIO()
     try:
         AlignIO.write([list_of_records], handle, t_format)
-        raise ValueError("Writing non-alignment to %s format should fail!"
-                         % t_format)
+        raise ValueError("Writing non-alignment to %s format should fail!" % t_format)
     except (TypeError, AttributeError, ValueError):
         pass
     handle.close()
@@ -261,8 +270,10 @@ del list_of_records, t_format
 
 # Main tests...
 for (t_format, t_per, t_count, t_filename) in test_files:
-    print("Testing reading %s format file %s with %i alignments"
-          % (t_format, t_filename, t_count))
+    print(
+        "Testing reading %s format file %s with %i alignments"
+        % (t_format, t_filename, t_count)
+    )
     assert os.path.isfile(t_filename), t_filename
 
     # Try as an iterator using handle
@@ -272,9 +283,9 @@ for (t_format, t_per, t_count, t_filename) in test_files:
     assert len(alignments) == t_count, msg
     if t_per is not None:
         for alignment in alignments:
-            assert len(alignment) == t_per, \
-                "Expected %i records per alignment, got %i" \
-                % (t_per, len(alignment))
+            assert (
+                len(alignment) == t_per
+            ), "Expected %i records per alignment, got %i" % (t_per, len(alignment))
 
     # Try using the iterator with a for loop and a filename not handle
     alignments2 = []
@@ -337,10 +348,10 @@ for (t_format, t_per, t_count, t_filename) in test_files:
     # Show the alignment
     for i, alignment in enumerate(alignments):
         if i < 3 or i + 1 == t_count:
-            print(" Alignment %i, with %i sequences of length %i"
-                  % (i,
-                     len(alignment),
-                     alignment.get_alignment_length()))
+            print(
+                " Alignment %i, with %i sequences of length %i"
+                % (i, len(alignment), alignment.get_alignment_length())
+            )
             print(alignment_summary(alignment))
         elif i == 3:
             print(" ...")
@@ -356,7 +367,10 @@ for (t_format, t_per, t_count, t_filename) in test_files:
         try:
             info_content = summary.information_content()
         except ValueError as err:
-            if str(err) != "Error in alphabet: not Nucleotide or Protein, supply expected frequencies":
+            if (
+                str(err)
+                != "Error in alphabet: not Nucleotide or Protein, supply expected frequencies"
+            ):
                 raise err
 
     if t_count == 1 and t_format not in ["nexus", "emboss", "fasta-m10"]:
@@ -366,7 +380,10 @@ for (t_format, t_per, t_count, t_filename) in test_files:
         handle = StringIO()
         handle.write(data + "\n\n" + data + "\n\n" + data)
         handle.seek(0)
-        assert len(list(AlignIO.parse(handle=handle, format=t_format, seq_count=t_per))) == 3
+        assert (
+            len(list(AlignIO.parse(handle=handle, format=t_format, seq_count=t_per)))
+            == 3
+        )
         handle.close()
 
     # Some alignment file formats have magic characters which mean

@@ -12,8 +12,8 @@ try:
     import numpy
 except ImportError:
     from Bio import MissingPythonDependencyError
-    raise MissingPythonDependencyError(
-        "Install NumPy if you want to use Bio.PDB.")
+
+    raise MissingPythonDependencyError("Install NumPy if you want to use Bio.PDB.")
 
 from Bio.PDB import PDBParser
 from Bio.PDB import FragmentMapper
@@ -35,6 +35,6 @@ class FragmentMapperTests(unittest.TestCase):
                 self.assertTrue(str(fm[r]).startswith("<Fragment length=5 id="))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     runner = unittest.TextTestRunner(verbosity=2)
     unittest.main(testRunner=runner)

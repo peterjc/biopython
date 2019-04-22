@@ -11,11 +11,12 @@ import warnings
 
 try:
     import numpy
+
     del numpy
 except ImportError:
     from Bio import MissingPythonDependencyError
-    raise MissingPythonDependencyError(
-        "Install NumPy if you want to use Bio.PDB.")
+
+    raise MissingPythonDependencyError("Install NumPy if you want to use Bio.PDB.")
 
 from Bio import BiopythonDeprecationWarning
 
@@ -31,6 +32,7 @@ class LegacyImportTests(unittest.TestCase):
             from Bio.PDB.Vector import calc_angle, calc_dihedral
             from Bio.PDB.Vector import m2rotaxis, refmat, rotaxis2m, rotmat
             from Bio.PDB.Vector import vector_to_axis, Vector
+
             del calc_angle, calc_dihedral
             del m2rotaxis, refmat, rotaxis2m, rotmat
             del vector_to_axis, Vector
@@ -42,6 +44,7 @@ class VectorTests(unittest.TestCase):
     def test_division(self):
         """Confirm division works."""
         from Bio.PDB.Vector import Vector
+
         v = Vector(1, 1, 1) / 2
         self.assertEqual(repr(v), "<Vector 0.50, 0.50, 0.50>")
 

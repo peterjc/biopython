@@ -21,17 +21,24 @@ class ParseMMTF(unittest.TestCase):
         for i, e in enumerate(self.mmcif_atoms):
             mmtf_atom = self.mmtf_atoms[i]
             mmcif_atom = self.mmcif_atoms[i]
-            self.assertEqual(mmtf_atom.name, mmcif_atom.name)  # eg. CA, spaces are removed from atom name
-            self.assertEqual(mmtf_atom.fullname, mmcif_atom.fullname)  # e.g. " CA ", spaces included
+            self.assertEqual(
+                mmtf_atom.name, mmcif_atom.name
+            )  # eg. CA, spaces are removed from atom name
+            self.assertEqual(
+                mmtf_atom.fullname, mmcif_atom.fullname
+            )  # e.g. " CA ", spaces included
             self.assertAlmostEqual(mmtf_atom.coord[0], mmcif_atom.coord[0], places=3)
             self.assertAlmostEqual(mmtf_atom.coord[1], mmcif_atom.coord[1], places=3)
             self.assertAlmostEqual(mmtf_atom.coord[2], mmcif_atom.coord[2], places=3)
             self.assertEqual(mmtf_atom.bfactor, mmcif_atom.bfactor)
             self.assertEqual(mmtf_atom.occupancy, mmcif_atom.occupancy)
             self.assertEqual(mmtf_atom.altloc, mmcif_atom.altloc)
-            self.assertEqual(mmtf_atom.full_id,
-                             mmcif_atom.full_id)  # (structure id, model id, chain id, residue id, atom id)
-            self.assertEqual(mmtf_atom.id, mmcif_atom.name)  # id of atom is the atom name (e.g. "CA")
+            self.assertEqual(
+                mmtf_atom.full_id, mmcif_atom.full_id
+            )  # (structure id, model id, chain id, residue id, atom id)
+            self.assertEqual(
+                mmtf_atom.id, mmcif_atom.name
+            )  # id of atom is the atom name (e.g. "CA")
             # self.assertEqual(mmtf_atom.serial_number,mmcif_atom.serial_number) # mmCIF serial number is none
             self.assertEqual(mmtf_atom - mmtf_atom, 0)
             self.assertEqual(mmtf_atom - mmcif_atom, 0)
@@ -53,7 +60,7 @@ class ParseMMTF(unittest.TestCase):
     def check_mmtf_vs_cif(self, mmtf_filename, cif_filename):
         """Compare parsed structures for MMTF and CIF files."""
         with warnings.catch_warnings():
-            warnings.simplefilter('ignore', PDBConstructionWarning)
+            warnings.simplefilter("ignore", PDBConstructionWarning)
             mmtf_struct = MMTFParser.get_structure(mmtf_filename)
         mmcif_parser = MMCIFParser()
         mmcif_struct = mmcif_parser.get_structure("4CUP", cif_filename)
@@ -71,11 +78,15 @@ class ParseMMTF(unittest.TestCase):
         self.mmcif_res = [x for x in mmcif_struct.get_residues()]
         self.mmtf_res = [x for x in mmtf_struct.get_residues()]
         self.check_residues()
-        self.assertEqual(len([x for x in mmcif_struct.get_models()]), len([x for x in mmtf_struct.get_models()]))
+        self.assertEqual(
+            len([x for x in mmcif_struct.get_models()]),
+            len([x for x in mmtf_struct.get_models()]),
+        )
 
     def test_4CUP(self):
         """Compare parsing 4CUP.mmtf and 4CUP.cif."""
         self.check_mmtf_vs_cif("PDB/4CUP.mmtf", "PDB/4CUP.cif")
+
 
 # TODO:
 #    def test_1A8O(self):
@@ -94,13 +105,13 @@ class SimpleParseMMTF(unittest.TestCase):
     def test_4ZHL(self):
         """Parse 4ZHL.mmtf."""
         with warnings.catch_warnings():
-            warnings.simplefilter('ignore', PDBConstructionWarning)
+            warnings.simplefilter("ignore", PDBConstructionWarning)
             structure = MMTFParser.get_structure("PDB/4ZHL.mmtf")
 
     def test_1A80(self):
         """Parse 1A8O.mmtf."""
         with warnings.catch_warnings():
-            warnings.simplefilter('ignore', PDBConstructionWarning)
+            warnings.simplefilter("ignore", PDBConstructionWarning)
             structure = MMTFParser.get_structure("PDB/1A8O.mmtf")
 
 

@@ -12,15 +12,17 @@ from io import BytesIO
 
 import warnings
 from Bio import BiopythonDeprecationWarning
+
 with warnings.catch_warnings():
-    warnings.simplefilter('ignore', BiopythonDeprecationWarning)
-    warnings.simplefilter('ignore', RuntimeWarning)  # for the trie module
+    warnings.simplefilter("ignore", BiopythonDeprecationWarning)
+    warnings.simplefilter("ignore", RuntimeWarning)  # for the trie module
     try:
         from Bio import trie
         from Bio import triefind
     except ImportError:
         import os
         from Bio import MissingPythonDependencyError
+
         if os.name == "java":
             message = "Not available on Jython, Bio.trie requires compiled C code."
         else:
@@ -29,7 +31,6 @@ with warnings.catch_warnings():
 
 
 class TestTrie(unittest.TestCase):
-
     def test_get_set(self):
         trieobj = trie.trie()
         trieobj["hello world"] = "s1"
@@ -82,7 +83,7 @@ class TestTrie(unittest.TestCase):
         v = list(trieobj.values())
         self.assertEqual(v, [1])
         self.assertEqual(trieobj.get("bar", 99), 99)
-        trieobj["hello"] = '55a'
+        trieobj["hello"] = "55a"
         self.assertEqual(trieobj.get_approximate("foo", 0), [("foo", 1, 0)])
         self.assertEqual(trieobj.get_approximate("foo", 1), [("foo", 1, 0)])
         self.assertEqual(trieobj.get_approximate("foa", 0), [])
@@ -99,7 +100,7 @@ class TestTrie(unittest.TestCase):
         for z in x:
             y[z] = y.get(z, 0) + 1
         x = sorted(y.items())
-        self.assertEqual(x, [(('foo', 1, 0), 1), (('hello', '55a', 4), 6)])
+        self.assertEqual(x, [(("foo", 1, 0), 1), (("hello", "55a", 4), 6)])
         h = BytesIO()
         trie.save(h, trieobj)
         h.seek(0)
@@ -107,18 +108,18 @@ class TestTrie(unittest.TestCase):
         k = list(trieobj.keys())
         self.assertIn("foo", k)
         self.assertIn("hello", k)
-        self.assertEqual(repr(trieobj["foo"]), '1')
+        self.assertEqual(repr(trieobj["foo"]), "1")
         self.assertEqual(repr(trieobj["hello"]), "'55a'")
 
     def test_get_approximate(self):
         # Found bug, doesn't handle insertions and deletions at end properly.
         trieobj = trie.trie()
         trieobj["hello"] = 1
-        self.assertEqual(trieobj.get_approximate('he', 2), [])
-        self.assertEqual(trieobj.get_approximate('he', 3), [('hello', 1, 3)])
-        self.assertEqual(trieobj.get_approximate('hello me!', 3), [])
-        self.assertEqual(trieobj.get_approximate('hello me!', 4), [('hello', 1, 4)])
-        self.assertEqual(trieobj.get_approximate('hello me!', 5), [('hello', 1, 4)])
+        self.assertEqual(trieobj.get_approximate("he", 2), [])
+        self.assertEqual(trieobj.get_approximate("he", 3), [("hello", 1, 3)])
+        self.assertEqual(trieobj.get_approximate("hello me!", 3), [])
+        self.assertEqual(trieobj.get_approximate("hello me!", 4), [("hello", 1, 4)])
+        self.assertEqual(trieobj.get_approximate("hello me!", 5), [("hello", 1, 4)])
 
     def test_with_prefix(self):
         trieobj = trie.trie()
@@ -127,16 +128,13 @@ class TestTrie(unittest.TestCase):
             trieobj[s[i:]] = i
             self.assertEqual(trieobj[s[i:]], i)
         self.assertEqual(set(trieobj.values()), set(range(6)))
-        self.assertEqual(set(['A', 'ANA', 'ANANA', 'BANANA', 'NA', 'NANA']),
-                         set(trieobj.keys()))
-        self.assertEqual(set(['NA', 'NANA']),
-                         set(trieobj.with_prefix("N")))
-        self.assertEqual(set(['NA', 'NANA']),
-                         set(trieobj.with_prefix("NA")))
-        self.assertEqual(set(['A', 'ANA', 'ANANA']),
-                         set(trieobj.with_prefix("A")))
-        self.assertEqual(set(['ANA', 'ANANA']),
-                         set(trieobj.with_prefix("AN")))
+        self.assertEqual(
+            set(["A", "ANA", "ANANA", "BANANA", "NA", "NANA"]), set(trieobj.keys())
+        )
+        self.assertEqual(set(["NA", "NANA"]), set(trieobj.with_prefix("N")))
+        self.assertEqual(set(["NA", "NANA"]), set(trieobj.with_prefix("NA")))
+        self.assertEqual(set(["A", "ANA", "ANANA"]), set(trieobj.with_prefix("A")))
+        self.assertEqual(set(["ANA", "ANANA"]), set(trieobj.with_prefix("AN")))
 
     def test_large_save_load(self):
         """Generate random key/val pairs in three length categories.
@@ -151,14 +149,18 @@ class TestTrie(unittest.TestCase):
         for max_str_len in [100, 1000, 10000]:
             cmp_dict = {}
             for i in range(1000):
-                key = ''.join([random.choice(ascii_lowercase) for _ in range(max_str_len)])
-                val = ''.join([random.choice(ascii_lowercase) for _ in range(max_str_len)])
+                key = "".join(
+                    [random.choice(ascii_lowercase) for _ in range(max_str_len)]
+                )
+                val = "".join(
+                    [random.choice(ascii_lowercase) for _ in range(max_str_len)]
+                )
                 trieobj[key] = val
                 cmp_dict[key] = val
             for key in cmp_dict:
                 self.assertEqual(trieobj[key], cmp_dict[key])
 
-        with tempfile.TemporaryFile(mode='w+b') as f:
+        with tempfile.TemporaryFile(mode="w+b") as f:
             trie.save(f, trieobj)
             f.seek(0)
             trieobj = trie.load(f)
@@ -167,7 +169,6 @@ class TestTrie(unittest.TestCase):
 
 
 class TestTrieFind(unittest.TestCase):
-
     def test_find(self):
         trieobj = trie.trie()
         trieobj["hello"] = 5
@@ -184,7 +185,9 @@ class TestTrieFind(unittest.TestCase):
         self.assertEqual(k, [("hello", 0, 5)])
         trieobj["world"] = "full"
         k = sorted(triefind.find("hello world!", trieobj))
-        self.assertEqual(k, [("he", 0, 2), ("hello", 0, 5), ("wor", 6, 9), ("world", 6, 11)])
+        self.assertEqual(
+            k, [("he", 0, 2), ("hello", 0, 5), ("wor", 6, 9), ("world", 6, 11)]
+        )
         k = sorted(triefind.find_words("hello world!", trieobj))
         self.assertEqual(k, [("hello", 0, 5), ("world", 6, 11)])
 

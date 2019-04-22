@@ -25,17 +25,40 @@ from Bio.Alphabet import _get_base_alphabet, ProteinAlphabet
 
 gb_file_dir = os.path.join(os.getcwd(), "GenBank")
 
-test_files = ["noref.gb", "cor6_6.gb", "iro.gb", "pri1.gb", "arab1.gb",
-              "protein_refseq.gb", "extra_keywords.gb", "one_of.gb",
-              "NT_019265.gb", "origin_line.gb", "blank_seq.gb",
-              "dbsource_wrap.gb", "gbvrl1_start.seq", "NC_005816.gb",
-              "no_end_marker.gb", "wrong_sequence_indent.gb",
-              "invalid_locus_line_spacing.gb", "empty_feature_qualifier.gb",
-              "invalid_misc_feature.gb", "1MRR_A.gp"]
+test_files = [
+    "noref.gb",
+    "cor6_6.gb",
+    "iro.gb",
+    "pri1.gb",
+    "arab1.gb",
+    "protein_refseq.gb",
+    "extra_keywords.gb",
+    "one_of.gb",
+    "NT_019265.gb",
+    "origin_line.gb",
+    "blank_seq.gb",
+    "dbsource_wrap.gb",
+    "gbvrl1_start.seq",
+    "NC_005816.gb",
+    "no_end_marker.gb",
+    "wrong_sequence_indent.gb",
+    "invalid_locus_line_spacing.gb",
+    "empty_feature_qualifier.gb",
+    "invalid_misc_feature.gb",
+    "1MRR_A.gp",
+]
 
 # We only test writing on a subset of the examples:
-write_format_files = ["noref.gb", "cor6_6.gb", "iro.gb", "pri1.gb", "arab1.gb",
-                      "extra_keywords.gb", "one_of.gb", "origin_line.gb"]
+write_format_files = [
+    "noref.gb",
+    "cor6_6.gb",
+    "iro.gb",
+    "pri1.gb",
+    "arab1.gb",
+    "extra_keywords.gb",
+    "one_of.gb",
+    "origin_line.gb",
+]
 # don't test writing on protein_refseq, since it is horribly nasty
 # don't test writing on the CONTIG refseq, because the wrapping of
 # locations won't work exactly
@@ -79,8 +102,10 @@ for parser in all_parsers:
                 break
 
             if isinstance(parser, GenBank.FeatureParser):
-                print("***Record from %s with the FeatureParser"
-                      % filename.split(os.path.sep)[-1])
+                print(
+                    "***Record from %s with the FeatureParser"
+                    % filename.split(os.path.sep)[-1]
+                )
                 print("Seq: %r" % cur_record.seq)
                 print("Id: %s" % cur_record.id)
                 print("Name: %s" % cur_record.name)
@@ -90,8 +115,7 @@ for parser in all_parsers:
                 for ann_key in ann_keys:
                     if ann_key != "references":
                         print("Key: %s" % ann_key)
-                        print("Value: %s" %
-                              cur_record.annotations[ann_key])
+                        print("Value: %s" % cur_record.annotations[ann_key])
                     else:
                         print("References*")
                         for reference in cur_record.annotations[ann_key]:
@@ -99,16 +123,19 @@ for parser in all_parsers:
                 print("Features")
                 for feature in cur_record.features:
                     print(feature)
-                    if isinstance(_get_base_alphabet(cur_record.seq.alphabet),
-                                  ProteinAlphabet):
+                    if isinstance(
+                        _get_base_alphabet(cur_record.seq.alphabet), ProteinAlphabet
+                    ):
                         assert feature.strand is None
                     else:
                         # Assuming no mixed strand examples...
                         assert feature.strand is not None
                 print("DB cross refs %s" % cur_record.dbxrefs)
             elif isinstance(parser, GenBank.RecordParser):
-                print("***Record from %s with the RecordParser"
-                      % filename.split(os.path.sep)[-1])
+                print(
+                    "***Record from %s with the RecordParser"
+                    % filename.split(os.path.sep)[-1]
+                )
                 print("sequence length: %i" % len(cur_record.sequence))
                 print("locus: %s" % cur_record.locus)
                 print("definition: %s" % cur_record.definition)
@@ -150,8 +177,10 @@ def do_comparison(good_record, test_record):
             raise AssertionError("Extra info in Expected: %r" % good_line)
         test_normalized = " ".join(x for x in test_line.split() if x)
         good_normalized = " ".join(x for x in good_line.split() if x)
-        assert test_normalized == good_normalized, \
-            "Expected does not match Test.\nExpect: %r\nTest:   %r\n" % (good_line, test_line)
+        assert test_normalized == good_normalized, (
+            "Expected does not match Test.\nExpect: %r\nTest:   %r\n"
+            % (good_line, test_line)
+        )
 
 
 def t_write_format():

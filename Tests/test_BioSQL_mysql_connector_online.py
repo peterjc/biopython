@@ -11,10 +11,11 @@ from common_BioSQL import *  # noqa
 from common_BioSQL_online import *  # noqa
 
 import requires_internet
+
 requires_internet.check()
 
-DBDRIVER = 'mysql.connector'
-DBTYPE = 'mysql'
+DBDRIVER = "mysql.connector"
+DBTYPE = "mysql"
 
 DBHOST, DBUSER, DBPASSWD, TESTDB = load_biosql_ini(DBTYPE)
 

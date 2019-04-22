@@ -23,13 +23,16 @@ import random
 import unittest
 
 from Bio import MissingExternalDependencyError
+
 try:
     # Skip the test if reportlab is not installed
     import reportlab as r
+
     del r
 except ImportError:
     raise MissingExternalDependencyError(
-        "Install reportlab if you want to use Bio.Graphics.")
+        "Install reportlab if you want to use Bio.Graphics."
+    )
 
 # the stuff we're testing
 from Bio.Graphics.Comparative import ComparativeScatterPlot
@@ -50,13 +53,10 @@ class ComparativeTest(unittest.TestCase):
         plot_info = []
         for two_d_list in range(num_two_d_lists):
             cur_list = []
-            num_points = random.randrange(self.min_num_points,
-                                          self.max_num_points)
+            num_points = random.randrange(self.min_num_points, self.max_num_points)
             for point in range(num_points):
-                x_point = random.randrange(self.min_point_num,
-                                           self.max_point_num)
-                y_point = random.randrange(self.min_point_num,
-                                           self.max_point_num)
+                x_point = random.randrange(self.min_point_num, self.max_point_num)
+                y_point = random.randrange(self.min_point_num, self.max_point_num)
 
                 cur_list.append((x_point, y_point))
 

@@ -11,14 +11,15 @@ from common_BioSQL import *  # noqa
 from common_BioSQL_online import *  # noqa
 
 import requires_internet
+
 requires_internet.check()
 
 # Constants for the database driver
-DBDRIVER = 'sqlite3'
-DBTYPE = 'sqlite'
+DBDRIVER = "sqlite3"
+DBTYPE = "sqlite"
 
 DBHOST = None
-DBUSER = 'root'
+DBUSER = "root"
 DBPASSWD = None
 TESTDB = temp_db_filename()
 

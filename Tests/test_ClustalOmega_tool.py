@@ -18,10 +18,11 @@ from Bio.Application import ApplicationError
 #################################################################
 
 # Try to avoid problems when the OS is in another language
-os.environ['LANG'] = 'C'
+os.environ["LANG"] = "C"
 
 clustalo_exe = None
 from Bio._py3k import getoutput
+
 try:
     output = getoutput("clustalo --help")
     if output.startswith("Clustal Omega"):
@@ -32,11 +33,11 @@ except OSError:
 
 if not clustalo_exe:
     raise MissingExternalDependencyError(
-        "Install clustalo if you want to use Clustal Omega from Biopython.")
+        "Install clustalo if you want to use Clustal Omega from Biopython."
+    )
 
 
 class ClustalOmegaTestCase(unittest.TestCase):
-
     def setUp(self):
         self.files_to_clean = set()
 
@@ -61,14 +62,18 @@ class ClustalOmegaTestCase(unittest.TestCase):
         self.assertTrue(not output or output.strip().startswith("CLUSTAL"))
 
         # Test if ClustalOmega executed successfully.
-        self.assertTrue(error.strip() == "" or
-                        error.startswith("WARNING: Sequence type is DNA.") or
-                        error.startswith("WARNING: DNA alignment is still experimental."))
+        self.assertTrue(
+            error.strip() == ""
+            or error.startswith("WARNING: Sequence type is DNA.")
+            or error.startswith("WARNING: DNA alignment is still experimental.")
+        )
 
         # Check the output...
         align = AlignIO.read(cline.outfile, "clustal")
         output_records = SeqIO.to_dict(SeqIO.parse(cline.outfile, "clustal"))
-        self.assertEqual(len(set(input_records.keys())), len(set(output_records.keys())))
+        self.assertEqual(
+            len(set(input_records.keys())), len(set(output_records.keys()))
+        )
         for record in align:
             self.assertEqual(str(record.seq), str(output_records[record.id].seq))
 
@@ -80,11 +85,11 @@ class ClustalOmegaTestCase(unittest.TestCase):
         """Add a file for deferred removal by the tearDown routine."""
         self.files_to_clean.add(filename)
 
+
 #################################################################
 
 
 class ClustalOmegaTestErrorConditions(ClustalOmegaTestCase):
-
     def test_empty_file(self):
         """Test an empty file."""
         input_file = "does_not_exist.fasta"
@@ -93,9 +98,12 @@ class ClustalOmegaTestErrorConditions(ClustalOmegaTestCase):
         try:
             stdout, stderr = cline()
         except ApplicationError as err:
-            self.assertTrue("Cannot open sequence file" in str(err) or
-                            "Cannot open input file" in str(err) or
-                            "Non-zero return code" in str(err), str(err))
+            self.assertTrue(
+                "Cannot open sequence file" in str(err)
+                or "Cannot open input file" in str(err)
+                or "Non-zero return code" in str(err),
+                str(err),
+            )
         else:
             self.fail("Should have failed, returned:\n%s\n%s" % (stdout, stderr))
 
@@ -126,20 +134,19 @@ class ClustalOmegaTestErrorConditions(ClustalOmegaTestCase):
         else:
             self.fail("Should have failed, returned:\n%s\n%s" % (stdout, stderr))
 
+
 #################################################################
 
 
 class ClustalOmegaTestNormalConditions(ClustalOmegaTestCase):
-
     def test_simple_fasta(self):
         """Test a simple fasta file."""
         input_file = "Registry/seqs.fasta"
         output_file = "temp_test.aln"
 
-        cline = ClustalOmegaCommandline(clustalo_exe,
-                                        infile=input_file,
-                                        outfile=output_file,
-                                        outfmt="clustal")
+        cline = ClustalOmegaCommandline(
+            clustalo_exe, infile=input_file, outfile=output_file, outfmt="clustal"
+        )
 
         self.standard_test_procedure(cline)
 
@@ -163,10 +170,9 @@ class ClustalOmegaTestNormalConditions(ClustalOmegaTestCase):
         handle.close()
         output_file = "temp_test.aln"
 
-        cline = ClustalOmegaCommandline(clustalo_exe,
-                                        infile=input_file,
-                                        outfile=output_file,
-                                        outfmt="clustal")
+        cline = ClustalOmegaCommandline(
+            clustalo_exe, infile=input_file, outfile=output_file, outfmt="clustal"
+        )
 
         self.add_file_to_clean(input_file)
         self.standard_test_procedure(cline)
@@ -176,10 +182,9 @@ class ClustalOmegaTestNormalConditions(ClustalOmegaTestCase):
         input_file = "Registry/seqs.fasta"
         output_file = "temp with spaces.aln"
 
-        cline = ClustalOmegaCommandline(clustalo_exe,
-                                        infile=input_file,
-                                        outfile=output_file,
-                                        outfmt="clustal")
+        cline = ClustalOmegaCommandline(
+            clustalo_exe, infile=input_file, outfile=output_file, outfmt="clustal"
+        )
 
         self.standard_test_procedure(cline)
 
@@ -198,10 +203,9 @@ class ClustalOmegaTestNormalConditions(ClustalOmegaTestCase):
         del handle, records
         output_file = "temp_cw_prot.aln"
 
-        cline = ClustalOmegaCommandline(clustalo_exe,
-                                        infile=input_file,
-                                        outfile=output_file,
-                                        outfmt="clustal")
+        cline = ClustalOmegaCommandline(
+            clustalo_exe, infile=input_file, outfile=output_file, outfmt="clustal"
+        )
 
         self.add_file_to_clean(input_file)
         self.standard_test_procedure(cline)
@@ -212,11 +216,13 @@ class ClustalOmegaTestNormalConditions(ClustalOmegaTestCase):
         output_file = "temp_test.aln"
         newtree_file = "temp_test.dnd"
 
-        cline = ClustalOmegaCommandline(clustalo_exe,
-                                        infile=input_file,
-                                        outfile=output_file,
-                                        guidetree_out=newtree_file,
-                                        outfmt="clustal")
+        cline = ClustalOmegaCommandline(
+            clustalo_exe,
+            infile=input_file,
+            outfile=output_file,
+            guidetree_out=newtree_file,
+            outfmt="clustal",
+        )
 
         self.standard_test_procedure(cline)
         cline.guidetree_out = "temp with space.dnd"

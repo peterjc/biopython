@@ -12,24 +12,25 @@ from Bio import AlignIO, SeqIO, MissingExternalDependencyError
 from Bio.Align.Applications import ProbconsCommandline
 
 # Try to avoid problems when the OS is in another language
-os.environ['LANG'] = 'C'
+os.environ["LANG"] = "C"
 
 probcons_exe = None
 if sys.platform == "win32":
     raise MissingExternalDependencyError("PROBCONS not available on Windows")
 else:
     from Bio._py3k import getoutput
+
     output = getoutput("probcons")
     if "not found" not in output and "probcons" in output.lower():
         probcons_exe = "probcons"
 
 if not probcons_exe:
     raise MissingExternalDependencyError(
-        "Install PROBCONS if you want to use the Bio.Align.Applications wrapper.")
+        "Install PROBCONS if you want to use the Bio.Align.Applications wrapper."
+    )
 
 
 class ProbconsApplication(unittest.TestCase):
-
     def setUp(self):
         self.infile1 = "Fasta/fa01"
         self.annotation_outfile = "Fasta/probcons_annot.out"
@@ -50,7 +51,9 @@ class ProbconsApplication(unittest.TestCase):
         self.assertEqual(len(records), len(align))
         for old, new in zip(records, align):
             self.assertEqual(old.id, new.id)
-            self.assertEqual(str(new.seq).replace("-", ""), str(old.seq).replace("-", ""))
+            self.assertEqual(
+                str(new.seq).replace("-", ""), str(old.seq).replace("-", "")
+            )
 
     def test_Probcons_alignment_clustalw(self):
         """Round-trip through app and read clustalw alignment from stdout."""
@@ -66,7 +69,9 @@ class ProbconsApplication(unittest.TestCase):
         self.assertEqual(len(records), len(align))
         for old, new in zip(records, align):
             self.assertEqual(old.id, new.id)
-            self.assertEqual(str(new.seq).replace("-", ""), str(old.seq).replace("-", ""))
+            self.assertEqual(
+                str(new.seq).replace("-", ""), str(old.seq).replace("-", "")
+            )
 
     def test_Probcons_complex_commandline(self):
         """Round-trip through app with complex command line and output file."""
@@ -76,9 +81,11 @@ class ProbconsApplication(unittest.TestCase):
         cmdline.set_parameter("--iterative-refinement", 222)
         cmdline.set_parameter("a", True)
         cmdline.annot = self.annotation_outfile
-        self.assertEqual(str(cmdline), probcons_exe +
-                         " -c 4 -ir 222 -pre 1 -annot Fasta/probcons_annot.out"
-                         " -a Fasta/fa01")
+        self.assertEqual(
+            str(cmdline),
+            probcons_exe + " -c 4 -ir 222 -pre 1 -annot Fasta/probcons_annot.out"
+            " -a Fasta/fa01",
+        )
         stdout, stderr = cmdline()
         self.assertTrue(stderr.startswith("\nPROBCONS"))
         self.assertTrue(stdout.startswith(">AK1H_ECOLI/1-378"))

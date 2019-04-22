@@ -7,7 +7,6 @@ import unittest
 
 
 class TestUniGene(unittest.TestCase):
-
     def test_parse(self):
 
         # Start of the UniGene file for Equus caballus downloaded from:
@@ -822,13 +821,27 @@ class TestUniGene(unittest.TestCase):
 
         record = UniGene.read(handle)
         self.assertEqual(record.ID, "Hs.2")
-        self.assertEqual(record.title, "N-acetyltransferase 2 (arylamine N-acetyltransferase)")
+        self.assertEqual(
+            record.title, "N-acetyltransferase 2 (arylamine N-acetyltransferase)"
+        )
         self.assertEqual(record.symbol, "NAT2")
         self.assertEqual(record.cytoband, "8p22")
         self.assertEqual(record.gene_id, "10")
         self.assertEqual(record.locuslink, "10")
         self.assertEqual(record.homol, True)
-        self.assertEqual(record.express, ["bone", "connective tissue", "intestine", "liver", "liver tumor", "normal", "soft tissue/muscle tissue tumor", "adult"])
+        self.assertEqual(
+            record.express,
+            [
+                "bone",
+                "connective tissue",
+                "intestine",
+                "liver",
+                "liver tumor",
+                "normal",
+                "soft tissue/muscle tissue tumor",
+                "adult",
+            ],
+        )
         self.assertEqual(record.restr_expr, ["adult"])
         self.assertEqual(record.chromosome, "8")
         self.assertEqual(len(record.sts), 7)

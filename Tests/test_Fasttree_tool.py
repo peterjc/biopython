@@ -25,7 +25,7 @@ from Bio.Application import ApplicationError
 #################################################################
 
 # Try to avoid problems when the OS is in another language
-os.environ['LANG'] = 'C'
+os.environ["LANG"] = "C"
 
 fasttree_exe = None
 if sys.platform == "win32":
@@ -51,6 +51,7 @@ if sys.platform == "win32":
                 break
 else:
     from Bio._py3k import getoutput
+
     # Website uses 'FastTree', Nate's system had 'fasttree'
     likely_exes = ["FastTree", "fasttree"]
     for filename in likely_exes:
@@ -58,15 +59,19 @@ else:
         output = getoutput("%s -help" % filename)
         # Since "is not recognized" may be in another language, try and be sure this
         # is really the fasttree tool's output
-        if "is not recognized" not in output and "protein_alignment" in output \
-        and "nucleotide_alignment" in output:
+        if (
+            "is not recognized" not in output
+            and "protein_alignment" in output
+            and "nucleotide_alignment" in output
+        ):
             fasttree_exe = filename
             break
 
 if not fasttree_exe:
     raise MissingExternalDependencyError(
         "Install FastTree and correctly set the file path to the program "
-        "if you want to use it from Biopython.")
+        "if you want to use it from Biopython."
+    )
 
 #################################################################
 
@@ -85,9 +90,11 @@ except ApplicationError as err:
     print("Failed (good)")
     # Python 2.3 on Windows gave (0, 'Error')
     # Python 2.5 on Windows gives [Errno 0] Error
-    if "Cannot open sequence file" not in str(err) or \
-            "Cannot open input file" not in str(err) or \
-            "Non-zero return code " not in str(err):
+    if (
+        "Cannot open sequence file" not in str(err)
+        or "Cannot open input file" not in str(err)
+        or "Non-zero return code " not in str(err)
+    ):
         raise ValueError("Unknown ApplicationError raised: %s" % str(err))
 
 print("")
@@ -122,10 +129,12 @@ except ApplicationError as err:
     # Note:
     # Python 2.3 on Windows gave (0, 'Error')
     # Python 2.5 on Windows gives [Errno 0] Error
-    if "invalid format" not in str(err) \
-            or "not produced" not in str(err) \
-            or "No sequences in file" not in str(err) \
-            or "Non-zero return code " not in str(err):
+    if (
+        "invalid format" not in str(err)
+        or "not produced" not in str(err)
+        or "No sequences in file" not in str(err)
+        or "Non-zero return code " not in str(err)
+    ):
         raise ValueError("Unknown ApplicationError raised: %s" % str(err))
 
 #################################################################
@@ -142,8 +151,10 @@ handle.close()
 for input_file in ["Quality/example.fasta", "Clustalw/temp horses.fasta"]:
     input_records = SeqIO.to_dict(SeqIO.parse(input_file, "fasta"))
     print("")
-    print("Calling fasttree on %s (with %i records)"
-          % (repr(input_file), len(input_records)))
+    print(
+        "Calling fasttree on %s (with %i records)"
+        % (repr(input_file), len(input_records))
+    )
 
     # Any filesnames with spaces should get escaped with quotes automatically.
     # Using keyword arguments here.
@@ -155,7 +166,7 @@ for input_file in ["Quality/example.fasta", "Clustalw/temp horses.fasta"]:
 
     print("")
     print("Checking generation of tree terminals")
-    tree = Phylo.read(StringIO(out), 'newick')
+    tree = Phylo.read(StringIO(out), "newick")
 
     def lookup_by_names(tree):
         names = {}
@@ -176,12 +187,15 @@ for input_file in ["Quality/example.fasta", "Clustalw/temp horses.fasta"]:
 
     def terminal_neighbor_dists(self):
         """Return a list of distances between adjacent terminals."""
+
         def generate_pairs(self):
             pairs = itertools.tee(self)
             next(pairs[1])  # Advance second iterator one step
             return zip(pairs[0], pairs[1])
-        return [self.distance(*i) for i in
-                generate_pairs(self.find_clades(terminal=True))]
+
+        return [
+            self.distance(*i) for i in generate_pairs(self.find_clades(terminal=True))
+        ]
 
     for dist in terminal_neighbor_dists(tree):
         assert dist > 0.0

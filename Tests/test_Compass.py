@@ -17,7 +17,8 @@ class CompassTest(unittest.TestCase):
         file_dir = os.path.join("Compass")
         self.test_files = [
             os.path.join(file_dir, "comtest1"),
-            os.path.join(file_dir, "comtest2")]
+            os.path.join(file_dir, "comtest2"),
+        ]
 
     def testCompassScanAndConsume(self):
         handle = open(self.test_files[0])
@@ -62,15 +63,15 @@ class CompassTest(unittest.TestCase):
 
         com_record = next(records)
         self.assertEqual("allscop//14982.blo.gz.aln", com_record.hit)
-        self.assertEqual(float('1.01e+03'), com_record.evalue)
+        self.assertEqual(float("1.01e+03"), com_record.evalue)
 
         com_record = next(records)
         self.assertEqual("allscop//14983.blo.gz.aln", com_record.hit)
-        self.assertEqual(float('1.01e+03'), com_record.evalue)
+        self.assertEqual(float("1.01e+03"), com_record.evalue)
 
         com_record = next(records)
         self.assertEqual("allscop//14984.blo.gz.aln", com_record.hit)
-        self.assertEqual(float('5.75e+02'), com_record.evalue)
+        self.assertEqual(float("5.75e+02"), com_record.evalue)
 
         handle.close()
 

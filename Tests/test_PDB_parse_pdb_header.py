@@ -14,8 +14,8 @@ try:
     import numpy
 except ImportError:
     from Bio import MissingPythonDependencyError
-    raise MissingPythonDependencyError(
-        "Install NumPy if you want to use Bio.PDB.")
+
+    raise MissingPythonDependencyError("Install NumPy if you want to use Bio.PDB.")
 
 from Bio.PDB.parse_pdb_header import parse_pdb_header, _parse_remark_465
 
@@ -26,11 +26,19 @@ class ParseReal(unittest.TestCase):
     def test_parse_pdb_with_remark_465(self):
         """Tests that parse_pdb_header now can identify some REMARK 465 entries."""
         header = parse_pdb_header("PDB/2XHE.pdb")
-        self.assertEqual(header['idcode'], '2XHE')
+        self.assertEqual(header["idcode"], "2XHE")
         self.assertTrue(header["has_missing_residues"])
         self.assertEqual(len(header["missing_residues"]), 142)
-        self.assertIn({"model": None, "res_name": "GLN", "chain": "B", "ssseq": 267, "insertion": None},
-                      header["missing_residues"])
+        self.assertIn(
+            {
+                "model": None,
+                "res_name": "GLN",
+                "chain": "B",
+                "ssseq": 267,
+                "insertion": None,
+            },
+            header["missing_residues"],
+        )
         header = parse_pdb_header("PDB/1A8O.pdb")
         self.assertFalse(header["has_missing_residues"])
         self.assertEqual(header["missing_residues"], [])
@@ -38,18 +46,42 @@ class ParseReal(unittest.TestCase):
     def test_parse_remark_465(self):
         """A UNIT-test for the private function _parse_remark_465."""
         info = _parse_remark_465("GLU B   276")
-        self.assertEqual(info, {"model": None, "res_name": "GLU",
-                                "chain": "B", "ssseq": 276, "insertion": None})
+        self.assertEqual(
+            info,
+            {
+                "model": None,
+                "res_name": "GLU",
+                "chain": "B",
+                "ssseq": 276,
+                "insertion": None,
+            },
+        )
 
         info = _parse_remark_465("2 GLU B   276B")
-        self.assertEqual(info, {"model": 2, "res_name": "GLU",
-                                "chain": "B", "ssseq": 276, "insertion": "B"})
+        self.assertEqual(
+            info,
+            {
+                "model": 2,
+                "res_name": "GLU",
+                "chain": "B",
+                "ssseq": 276,
+                "insertion": "B",
+            },
+        )
 
         info = _parse_remark_465("A 2    11")
-        self.assertEqual(info, {"model": None, "res_name": "A",
-                                "chain": "2", "ssseq": 11, "insertion": None})
+        self.assertEqual(
+            info,
+            {
+                "model": None,
+                "res_name": "A",
+                "chain": "2",
+                "ssseq": 11,
+                "insertion": None,
+            },
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     runner = unittest.TextTestRunner(verbosity=2)
     unittest.main(testRunner=runner)

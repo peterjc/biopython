@@ -48,27 +48,32 @@ class ConvertTests(unittest.TestCase):
 
 
 tests = [
-    ('Clustalw/hedgehog.aln', "clustal", None),
-    ('Nexus/test_Nexus_input.nex', "nexus", None),
-    ('Stockholm/simple.sth', "stockholm", None),
-    ('GFF/multi.fna', "fasta", generic_nucleotide),
+    ("Clustalw/hedgehog.aln", "clustal", None),
+    ("Nexus/test_Nexus_input.nex", "nexus", None),
+    ("Stockholm/simple.sth", "stockholm", None),
+    ("GFF/multi.fna", "fasta", generic_nucleotide),
     ("Quality/example.fastq", "fastq", None),
     ("Quality/example.fastq", "fastq-sanger", generic_dna),
-    ('Fasta/output001.m10', "fasta-m10", None),
-    ('IntelliGenetics/VIF_mase-pro.txt', "ig", generic_protein),
-    ('NBRF/clustalw.pir', "pir", None),
-    ]
+    ("Fasta/output001.m10", "fasta-m10", None),
+    ("IntelliGenetics/VIF_mase-pro.txt", "ig", generic_protein),
+    ("NBRF/clustalw.pir", "pir", None),
+]
 output_formats = ["fasta"] + sorted(AlignIO._FormatToWriter)
 
 for filename, in_format, alphabet in tests:
     for out_format in output_formats:
+
         def funct(fn, fmt1, fmt2, alpha):
             f = lambda x: x.simple_check(fn, fmt1, fmt2, alpha)
             f.__doc__ = "Convert %s from %s to %s" % (fn, fmt1, fmt2)
             return f
-        setattr(ConvertTests, "test_%s_%s_to_%s"
-                % (filename.replace("/", "_").replace(".", "_"), in_format, out_format),
-                funct(filename, in_format, out_format, alphabet))
+
+        setattr(
+            ConvertTests,
+            "test_%s_%s_to_%s"
+            % (filename.replace("/", "_").replace(".", "_"), in_format, out_format),
+            funct(filename, in_format, out_format, alphabet),
+        )
     del funct
 
 if __name__ == "__main__":

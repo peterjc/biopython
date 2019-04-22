@@ -21,12 +21,16 @@ assert str(rna) == "AUA"
 s = "GAAAATTCATTTTCTTTGGACTTTCTCTGAAATCCGAGTCCTAGGAAAGATGCGTGAGATTCTTCATATT"
 dna = Seq.Seq(s, IUPAC.unambiguous_dna)
 rna = dna.transcribe()
-assert str(rna) == 'GAAAAUUCAUUUUCUUUGGACUUUCUCUGAAAUCCGAGUCCUAGGAAAGAUGCGUGAGAUUCUUCAUAUU'
+assert (
+    str(rna) == "GAAAAUUCAUUUUCUUUGGACUUUCUCUGAAAUCCGAGUCCUAGGAAAGAUGCGUGAGAUUCUUCAUAUU"
+)
 
 s = "GAAAAUUCAUUUUCUUUGGACUUUCUCUGAAAUCCGAGUCCUAGGAAAGAUGCGUGAGAUUCUUCAUAUU"
 rna = Seq.Seq(s, IUPAC.unambiguous_rna)
 dna = rna.back_transcribe()
-assert str(dna) == 'GAAAATTCATTTTCTTTGGACTTTCTCTGAAATCCGAGTCCTAGGAAAGATGCGTGAGATTCTTCATATT'
+assert (
+    str(dna) == "GAAAATTCATTTTCTTTGGACTTTCTCTGAAATCCGAGTCCTAGGAAAGATGCGTGAGATTCTTCATATT"
+)
 
 
 # use the standard table
@@ -45,7 +49,7 @@ assert str(protein) == ""
 s = "GAAAATTCATTTTCTTTGGACTTTCTCTGAAATCCGAGTCCTAGGAAAGATGCGTGAGATTCTTCA"
 dna = Seq.Seq(s, IUPAC.unambiguous_dna)
 protein = dna.translate(to_stop=True)
-assert str(protein) == 'ENSFSLDFL'
+assert str(protein) == "ENSFSLDFL"
 
 s = "GAA"
 dna = Seq.Seq(s, IUPAC.unambiguous_dna)
@@ -54,13 +58,13 @@ assert str(protein) == "E"
 
 s = "ATA"
 dna = Seq.Seq(s, IUPAC.unambiguous_dna)
-protein = dna.translate('Vertebrate Mitochondrial', to_stop=True)
+protein = dna.translate("Vertebrate Mitochondrial", to_stop=True)
 assert str(protein) == "M"
 
 s = "GAAAATTCATTTTCTTTGGACTTTCTCTGAAATCCGAGTCCTAGGAAAGATGCGTGAGATTCTTCATAT"
 dna = Seq.Seq(s, IUPAC.unambiguous_dna)
-protein = dna.translate('SGC8', to_stop=True)
-assert str(protein) == 'ENSFSLDFLWNPSPSNDAWDSSY'
+protein = dna.translate("SGC8", to_stop=True)
+assert str(protein) == "ENSFSLDFLWNPSPSNDAWDSSY"
 
 # use the standard table
 
@@ -113,9 +117,9 @@ print("Forward ambiguous")
 s = "RATGATTARAATYTA"
 #     B  D  *  N  L
 dna = Seq.Seq(s, IUPAC.ambiguous_dna)
-protein = dna.translate('Vertebrate Mitochondrial')
+protein = dna.translate("Vertebrate Mitochondrial")
 print(str(protein))
-stop_protein = dna.translate('SGC1', to_stop=True)
+stop_protein = dna.translate("SGC1", to_stop=True)
 print(str(stop_protein))
 
 # XXX (Backwards with ambiguity code is unfinished!)
