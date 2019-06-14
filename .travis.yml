@@ -47,6 +47,8 @@ matrix:
     - stage: test
       python: 2.7
       env: TOXENV=api
+      # Doctr deploy key for biopython/docs
+      secure: "FESLSraf70KdiYneQjKcIluexDznbuEJsMnkG42HcPlwKj7C82VbekMWLgYDia6t4iMQYJBK3us8sSgJhwnGrj40LekQvkgkYHHTIT7u01F+ppizfAI2nRdRrb0S6xVBeZHpAqiX+Q7K9+8lNb49V/UR8j3YjB6Tcst9EKYlbuA="
       services:
       addons:
         apt:
