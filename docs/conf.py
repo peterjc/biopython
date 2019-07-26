@@ -8,8 +8,9 @@ human readable documentation.
 """
 
 import os
+import re
 import shutil
-# import sys
+import sys
 import tempfile
 
 from Bio import __version__
@@ -19,35 +20,37 @@ from Bio import __version__
 # If your documentation needs a minimal Sphinx version, state it here.
 #
 # needs_sphinx = '1.0'
-needs_sphinx = '1.8'
+needs_sphinx = "1.8"
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc',
-              'sphinx.ext.todo',
-              # Don't want to include source code in the API docs
-              # 'sphinx.ext.viewcode',
-              'sphinx.ext.autosummary',
-              'numpydoc']
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.todo",
+    # Don't want to include source code in the API docs
+    # 'sphinx.ext.viewcode',
+    "sphinx.ext.autosummary",
+    "numpydoc",
+]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = 'Biopython'
-copyright = '1999-2017, The Biopython Contributors'
-author = 'The Biopython Contributors'
-document = 'Biopython API Documentation'
+project = "Biopython"
+copyright = "1999-2017, The Biopython Contributors"
+author = "The Biopython Contributors"
+document = "Biopython API Documentation"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -63,15 +66,15 @@ release = __version__
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = 'en'
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
@@ -80,16 +83,16 @@ todo_include_todos = True
 
 # This requires Sphinx 1.8.0b1 or later:
 autodoc_default_values = {
-    'members': None,
-    'undoc-members': None,
-    'special-members': None,
-    'show-inheritance': None,
-    'member-order': 'bysource',
-    'exclude-members': '__dict__,__weakref__,__module__',
+    "members": None,
+    "undoc-members": None,
+    "special-members": None,
+    "show-inheritance": None,
+    "member-order": "bysource",
+    "exclude-members": "__dict__,__weakref__,__module__",
 }
 
 # To avoid import errors.
-autodoc_mock_imports = ['MySQLdb', 'Bio.Restriction.Restriction']
+autodoc_mock_imports = ["MySQLdb", "Bio.Restriction.Restriction"]
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -115,7 +118,7 @@ html_copy_source = False
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -123,20 +126,20 @@ html_static_path = ['_static']
 # This is required for the alabaster theme
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
 html_sidebars = {
-    '**': [
-        'about.html',
-        'navigation.html',
-        'relations.html',  # needs 'show_related': True theme option to display
-        'searchbox.html',
-        'donate.html',
-    ],
+    "**": [
+        "about.html",
+        "navigation.html",
+        "relations.html",  # needs 'show_related': True theme option to display
+        "searchbox.html",
+        "donate.html",
+    ]
 }
 
 
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Biopython_doc'
+htmlhelp_basename = "Biopython_doc"
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -145,15 +148,12 @@ latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     #
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
-
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
@@ -162,18 +162,14 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (master_doc, 'Biopython.tex', document, author, 'manual'),
-]
+latex_documents = [(master_doc, "Biopython.tex", document, author, "manual")]
 
 
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'biopython', document, [author], 1),
-]
+man_pages = [(master_doc, "biopython", document, [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -182,9 +178,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Biopython', document, author, 'Biopython',
-     'Collection of modules for dealing with biological data in Python.',
-     'Miscellaneous'),
+    (
+        master_doc,
+        "Biopython",
+        document,
+        author,
+        "Biopython",
+        "Collection of modules for dealing with biological data in Python.",
+        "Miscellaneous",
+    )
 ]
 
 
@@ -206,11 +208,106 @@ epub_copyright = copyright
 # epub_uid = ''
 
 # A list of files that should not be packed into the epub file.
-epub_exclude_files = ['search.html']
+epub_exclude_files = ["search.html"]
 
 # -- Options for numpydoc -------------------------------------------------
 
 numpydoc_class_members_toctree = False
+
+# -- Magic to run pandoc automatically ------------------------------------
+
+# re_link = re.compile(r"`\[(.+)\] <#(.+)>`__")
+re_link = re.compile(r"`\[([A-Za-z0-9_:\-.]+)\] <#([A-Za-z0-9_:\-.]+)>`__")
+
+assert re_link.findall(
+    r"Chapter \ `[chapter:quick_start] <#chapter:quick_start>`__ before\n"
+)
+assert re_link.findall(
+    r"(see Section `[sec:appendix-handles] <#sec:appendix-handles>`__):"
+)
+assert re_link.findall(
+    r"Section `[sec:Bio.SeqIO-and-StringIO] <#sec:Bio.SeqIO-and-StringIO>`__):"
+)
+assert re_link.findall(r"Figure `[fig:three_track_cl2] <#fig:three_track_cl2>`__.")
+assert list(
+    re_link.finditer(
+        r"in Chapter \ `[chapter:seq_annot] <#chapter:seq_annot>`__. This aims to"
+    )
+)
+assert (
+    len(
+        list(
+            re_link.finditer(
+                r"functions (`[eq:OP] <#eq:OP>`__) and (`[eq:NOP] <#eq:NOP>`__)."
+            )
+        )
+    )
+    == 2
+)
+
+re_section = re.compile(r"`[0-9.]+ <#([A-Za-z0-9_:\-.]+)>`__")
+
+assert re_section.findall(
+    r"the label’s color (used in Section `1.1.9 <#sec:gd_nice_example>`__)."
+)
+
+
+def ref_fix_line(line):
+    """Reformat RST section references in a line of text."""
+    # e.g. Chapter \ `[chapter:quick_start] <#chapter:quick_start>`__
+    line = line.replace("\xa0\\ ", " ")
+    for match in re_link.finditer(line):
+        old = match.group()
+        ref = match.group(1)
+        assert ref == match.group(2), old
+        new = r":ref:`%s`" % ref
+        line = line.replace(old, new)
+        # print("%s -> %s" % (old, new))
+    for match in re_section.finditer(line):
+        old = match.group()
+        ref = match.group(1)
+        assert old.endswith("<#%s>`__" % ref), old
+        new = r":ref:`%s`" % ref
+        line = line.replace(old, new)
+        # print("%s -> %s" % (old, new))
+    return line
+
+
+def ref_fix_file(filename):
+    """Reformat RST section references in a file."""
+    with open(filename) as handle:
+        lines = list(handle)
+    with open(filename, "w") as handle:
+        for line in lines:
+            handle.write(ref_fix_line(line))
+
+
+def run_pandoc(_):
+    """Run pandoc, applying ad hoc fixes to conversion."""
+    cur_dir = os.path.abspath(os.path.dirname(__file__))
+    source_dir = os.path.join(cur_dir, "../Doc/Tutorial")
+    for latex in os.listdir(source_dir):
+        if not latex.startswith("chapter_"):
+            continue
+        if not latex.endswith(".tex"):
+            continue
+        old = os.path.join(source_dir, latex)
+        new = "tutorial/%s.rst" % latex[8:-4]
+        sys.stderr.write("Converting LaTex for %s\n" % new)
+        # pandoc would discard our comment lines, but with this trick it
+        # discards the unknown LaTeX command leaving the text following it
+        cmd = (
+            r'cat "%s" | '
+            r'sed "s/^%%cont-doctest/\\\pandocignoreme .. cont-doctest/g" | '
+            r'sed "s/^%%doctest/\\\pandocignoreme .. doctest/g" | '
+            r'pandoc -f latex -t rst -o "%s"' % (old, new)
+        )
+        sys.stderr.write(cmd + "\n")
+        rc = os.system(cmd)
+        if rc:
+            sys.exit(rc)
+        ref_fix_file(new)
+
 
 # -- Magic to run sphinx-apidoc automatically -----------------------------
 
@@ -221,6 +318,7 @@ numpydoc_class_members_toctree = False
 def run_apidoc(_):
     """Call sphinx-apidoc on Bio and BioSQL modules."""
     from sphinx.ext.apidoc import main as apidoc_main
+
     cur_dir = os.path.abspath(os.path.dirname(__file__))
     # Can't see a better way than running apidoc twice, for Bio & BioSQL
     # We don't care about the index.rst / conf.py (we have our own)
@@ -228,16 +326,23 @@ def run_apidoc(_):
     # $ sphinx-apidoc -e -F -o /tmp/api/BioSQL BioSQL
     # $ sphinx-apidoc -e -F -o /tmp/api/Bio Bio
     tmp_path = tempfile.mkdtemp()
-    apidoc_main(['-e', '-F', '-o', tmp_path, '../BioSQL'])
-    apidoc_main(['-e', '-F', '-o', tmp_path, '../Bio'])
-    os.remove(os.path.join(tmp_path, 'index.rst'))  # Using our own
+    apidoc_main(["-e", "-F", "-o", tmp_path, "../BioSQL"])
+    apidoc_main(["-e", "-F", "-o", tmp_path, "../Bio"])
+    os.remove(os.path.join(tmp_path, "index.rst"))  # Using our own
     for filename in os.listdir(tmp_path):
         if filename.endswith(".rst"):
-            shutil.move(os.path.join(tmp_path, filename),
-                        os.path.join(cur_dir, "api", filename))
+            shutil.move(
+                os.path.join(tmp_path, filename), os.path.join(cur_dir, "api", filename)
+            )
     shutil.rmtree(tmp_path)
 
 
+def run_pandoc_and_apidoc(_):
+    """Run pandoc and sphinx apidoc to make RST files."""
+    run_pandoc(_)
+    run_apidoc(_)
+
+
 def setup(app):
-    """Over-ride Sphinx setup to trigger sphinx-apidoc."""
-    app.connect('builder-inited', run_apidoc)
+    """Over-ride Sphinx setup to trigger pandoc and sphinx-apidoc."""
+    app.connect("builder-inited", run_pandoc_and_apidoc)
