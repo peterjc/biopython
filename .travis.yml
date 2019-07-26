@@ -52,6 +52,7 @@ matrix:
       addons:
         apt:
           packages:
+          - pandoc
       before_install: echo "Going to build API docs"
       deploy:
         provider: script
