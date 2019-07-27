@@ -109,7 +109,7 @@ html_theme_options = {
     "logo_only": True,
 }
 
-html_logo = "images/biopython_logo.svg"
+html_logo = "tutorial/images/biopython_logo.svg"
 
 # The RST source is transient, don't need/want to include it
 html_show_sourcelink = False
