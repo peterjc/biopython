@@ -59,7 +59,9 @@ matrix:
         script: .github/deploy_docs.sh
         skip_cleanup: true
         on:
-          branch: master
+          branch:
+          - master
+          - pandoc
     - stage: test
       python: 2.7
       env: TOXENV=py27-cover
