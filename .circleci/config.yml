@@ -13,8 +13,13 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Setup hevea
+          command: |
+            echo -e '#!/bin/bash\necho "No hevea installed"' > ~/bin/hevea
+            chmod a+x ~/bin/hevea
+            export PATH=$HOME/bin/:$PATH
+            which hevea
+      - run:
           name: Compile LaTeX Tutorial
           command: |
-            # TODO - Can we easily install hevea?
-            alias hevea="echo 'Hevea is not installed'"
             make -C Doc/
