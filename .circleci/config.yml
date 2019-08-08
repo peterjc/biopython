@@ -17,6 +17,8 @@ jobs:
           command: |
             echo -e '#!/bin/bash\necho "No hevea installed"' > ~/bin/hevea
             chmod a+x ~/bin/hevea
+            echo $PATH
+            ~/bin/hevea
             export PATH=$HOME/bin/:$PATH
             which hevea
       - run:
