@@ -1,0 +1,20 @@
+# This is a special configuration file to run tests on Circle-CI via
+# GitHub notifications when changes are committed.
+#
+# This file is not intended for end users of Biopython.
+
+version: 2
+jobs:
+  build:
+    docker:
+      # A docker image with pdflatex preinstalled for speed
+      # See https://github.com/samtools/hts-specs/tree/master/.circleci
+      - image: htsspecs/circle-ci-image:0.6
+    steps:
+      - checkout
+      - run:
+          name: Compile LaTeX Tutorial
+          command: |
+            # TODO - Can we easily install hevea?
+            alias hevea="echo 'Hevea is not installed'"
+            make -C Doc/
