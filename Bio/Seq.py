@@ -1316,12 +1316,19 @@ class UnknownSeq(Seq):
         if self._length < 0:
             # TODO - Block zero length UnknownSeq?  You can just use a Seq!
             raise ValueError("Length must not be negative.")
+
         try:
-            alphabet = alphabet._as_enum
-            # That will only work on legacy alphabets, give a warning?
+            # Is this a legacy Bio.Alphabet object...
+            self.alphabet = alphabet._as_enum
         except AttributeError:
-            pass
-        self.alphabet = alphabet
+            if not isinstance(alphabet, Alphabets):
+                raise TypeError(
+                    "Alphabet argument should be from the enum, "
+                    "or a legacy object from Bio.Alphabet, "
+                    "not %r" % alphabet
+                )
+            self.alphabet = alphabet
+
         if character:
             if len(character) != 1:
                 raise ValueError("character argument should be a single letter string.")
@@ -1864,7 +1871,18 @@ class MutableSeq:
             )
         else:
             self.data = data  # assumes the input is an array
-        self.alphabet = alphabet
+
+        try:
+            # Is this a legacy Bio.Alphabet object...
+            self.alphabet = alphabet._as_enum
+        except AttributeError:
+            if not isinstance(alphabet, Alphabets):
+                raise TypeError(
+                    "Alphabet argument should be from the enum, "
+                    "or a legacy object from Bio.Alphabet, "
+                    "not %r" % alphabet
+                )
+            self.alphabet = alphabet
 
     def __repr__(self):
         """Return (truncated) representation of the sequence for debugging."""
