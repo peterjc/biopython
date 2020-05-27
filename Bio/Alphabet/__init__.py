@@ -19,6 +19,8 @@ https://github.com/biopython/biopython/issues/2046
 
 import warnings
 
+from Bio.alphabets import Alphabets  # Replacement for this file
+
 warnings.warn(
     "We intend to remove or replace Bio.Alphabet in 2020, "
     "ideally avoid using it explicitly in your code. Please "
@@ -47,6 +49,8 @@ class Alphabet:
     # assuming letters are single characters, use a
     # string. This is expected for use with Seq like
     # objects.
+
+    _as_enum = Alphabets.Other  # Default replacement
 
     def __repr__(self):
         """Represent the alphabet class as a string for debugging."""
@@ -115,7 +119,7 @@ single_letter_alphabet = SingleLetterAlphabet()
 class ProteinAlphabet(SingleLetterAlphabet):
     """Generic single letter protein alphabet."""
 
-    pass
+    _as_enum = Alphabets.Protein
 
 
 generic_protein = ProteinAlphabet()
@@ -126,7 +130,7 @@ generic_protein = ProteinAlphabet()
 class NucleotideAlphabet(SingleLetterAlphabet):
     """Generic single letter nucleotide alphabet."""
 
-    pass
+    _as_enum = Alphabets.Nucleotide
 
 
 generic_nucleotide = NucleotideAlphabet()
@@ -135,7 +139,7 @@ generic_nucleotide = NucleotideAlphabet()
 class DNAAlphabet(NucleotideAlphabet):
     """Generic single letter DNA alphabet."""
 
-    pass
+    _as_enum = Alphabets.DNA
 
 
 generic_dna = DNAAlphabet()
@@ -147,7 +151,7 @@ generic_dna = DNAAlphabet()
 class RNAAlphabet(NucleotideAlphabet):
     """Generic single letter RNA alphabet."""
 
-    pass
+    _as_enum = Alphabets.RNA
 
 
 generic_rna = RNAAlphabet()
@@ -195,6 +199,8 @@ class ThreeLetterProtein(Alphabet):
         "Glx",
     ]
 
+    _as_enum = Alphabets.Protein
+
     def _upper(self):
         raise NotImplementedError(
             "We don't have an uppercase three letter protein alphabet."
@@ -222,6 +228,7 @@ class AlphabetEncoder:
             self.letters = alphabet.letters + new_letters
         else:
             self.letters = None
+        self._as_enum = alphabet._as_enum
 
     def __getattr__(self, key):
         """Proxy method for accessing attributes of the wrapped alphabet."""
