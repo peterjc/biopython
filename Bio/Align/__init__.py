@@ -16,6 +16,7 @@ class, used in the Bio.AlignIO module.
 
 import warnings
 
+from Bio.alphabets import Alphabets
 from Bio import Alphabet
 from Bio import BiopythonDeprecationWarning
 from Bio.Align import _aligners
@@ -158,8 +159,15 @@ class MultipleSeqAlignment:
         {'stats': 'CCCXCCC'}
         """
         if alphabet is not None:
-            if not isinstance(alphabet, (Alphabet.Alphabet, Alphabet.AlphabetEncoder)):
-                raise ValueError("Invalid alphabet argument")
+            if not isinstance(
+                alphabet, (Alphabets, Alphabet.Alphabet, Alphabet.AlphabetEncoder)
+            ):
+                raise ValueError("Invalid alphabet argument %r" % alphabet)
+            try:
+                alphabet = alphabet._to_enum
+                # Works on legacy classes only
+            except AttributeError:
+                pass
             self._alphabet = alphabet
         else:
             # Default while we add sequences, will take a consensus later

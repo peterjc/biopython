@@ -143,6 +143,7 @@ same length.
 #   http://www.bioperl.org/wiki/MSF_multiple_alignment_format
 
 from Bio.Align import MultipleSeqAlignment
+from Bio.alphabets import Alphabets
 from Bio.Alphabet import Alphabet, AlphabetEncoder, _get_base_alphabet
 from Bio.File import as_handle
 
@@ -357,7 +358,7 @@ def parse(handle, format, seq_count=None, alphabet=None):
     if format != format.lower():
         raise ValueError("Format string '%s' should be lower case" % format)
     if alphabet is not None and not (
-        isinstance(alphabet, Alphabet) or isinstance(alphabet, AlphabetEncoder)
+        isinstance(alphabet, (Alphabets, Alphabet, AlphabetEncoder))
     ):
         raise ValueError("Invalid alphabet, %s" % repr(alphabet))
     if seq_count is not None and not isinstance(seq_count, int):

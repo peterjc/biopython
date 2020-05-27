@@ -1,4 +1,4 @@
-# Copyright 2006-2018 by Peter Cock.  All rights reserved.
+# Copyright 2006-2022 by Peter Cock.  All rights reserved.
 # This file is part of the Biopython distribution and governed by your
 # choice of the "Biopython License Agreement" or the "BSD 3-Clause License".
 # Please see the LICENSE file that should have been included as part of this
@@ -381,6 +381,7 @@ from Bio.File import as_handle
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
 from Bio.Alphabet import Alphabet, AlphabetEncoder, _get_base_alphabet
+from Bio.alphabets import Alphabets
 
 from . import AbiIO
 from . import AceIO
@@ -555,15 +556,15 @@ def write(sequences, handle, format):
     raise ValueError("Unknown format '%s'" % format)
 
 
-def parse(handle, format, alphabet=None):
+def parse(handle, format, alphabet=Alphabets.Other):
     r"""Turn a sequence file into an iterator returning SeqRecords.
 
     Arguments:
      - handle   - handle to the file, or the filename as a string
        (note older versions of Biopython only took a handle).
      - format   - lower case string describing the file format.
-     - alphabet - optional Alphabet object, useful when the sequence type
-       cannot be automatically inferred from the file itself
+     - alphabet - optional Alphabets enum, useful when the sequence
+       type cannot be automatically inferred from the file itself
        (e.g. format="fasta" or "tab")
 
     Typical usage, opening a file to read in, and looping over the record(s):
@@ -618,7 +619,9 @@ def parse(handle, format, alphabet=None):
         raise ValueError("Format required (lower case string)")
     if not format.islower():
         raise ValueError("Format string '%s' should be lower case" % format)
-    if alphabet is not None and not isinstance(alphabet, (Alphabet, AlphabetEncoder)):
+    if alphabet is not None and not isinstance(
+        alphabet, (Alphabets, Alphabet, AlphabetEncoder)
+    ):
         raise ValueError("Invalid alphabet, %r" % alphabet)
 
     iterator_generator = _FormatToIterator.get(format)
@@ -791,7 +794,7 @@ def to_dict(sequences, key_function=None):
     return d
 
 
-def index(filename, format, alphabet=None, key_function=None):
+def index(filename, format, alphabet=Alphabets.Other, key_function=None):
     """Indexes a sequence file and returns a dictionary like object.
 
     Arguments:
@@ -909,7 +912,9 @@ def index(filename, format, alphabet=None, key_function=None):
         raise ValueError("Format required (lower case string)")
     if not format.islower():
         raise ValueError("Format string '%s' should be lower case" % format)
-    if alphabet is not None and not isinstance(alphabet, (Alphabet, AlphabetEncoder)):
+    if alphabet is not None and not isinstance(
+        alphabet, (Alphabets, Alphabet, AlphabetEncoder)
+    ):
         raise ValueError("Invalid alphabet, %r" % alphabet)
 
     # Map the file format to a sequence iterator:
@@ -932,7 +937,11 @@ def index(filename, format, alphabet=None, key_function=None):
 
 
 def index_db(
-    index_filename, filenames=None, format=None, alphabet=None, key_function=None
+    index_filename,
+    filenames=None,
+    format=None,
+    alphabet=Alphabets.Other,
+    key_function=None,
 ):
     """Index several sequence files and return a dictionary like object.
 
@@ -996,7 +1005,9 @@ def index_db(
         raise TypeError("Need a string for the file format (lower case)")
     if format and not format.islower():
         raise ValueError("Format string '%s' should be lower case" % format)
-    if alphabet is not None and not isinstance(alphabet, (Alphabet, AlphabetEncoder)):
+    if alphabet is not None and not isinstance(
+        alphabet, (Alphabets, Alphabet, AlphabetEncoder)
+    ):
         raise ValueError("Invalid alphabet, %r" % alphabet)
 
     # Map the file format to a sequence iterator:
