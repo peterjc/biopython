@@ -105,3 +105,5 @@ class Alphabets(enum.Enum):
                 f"Incompatible alphabets {self.name} and {other.name}"
             )
         return self | other
+
+    letters = property(fget=lambda self: None, doc="Legacy read only letters property, always None (DEPRECATED).")
