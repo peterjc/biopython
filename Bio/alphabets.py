@@ -102,6 +102,6 @@ class Alphabets(enum.Enum):
             raise TypeError(f"Incompatible alphabets {self.name} and {other.name}")
         elif self is Alphabets.Nucleotide and other is Alphabets.Protein:
             raise TypeError(
-                f"Incompatible alphabets {self.alphabet!r} and {other.alphabet!r}"
+                f"Incompatible alphabets {self.name} and {other.name}"
             )
         return self | other
