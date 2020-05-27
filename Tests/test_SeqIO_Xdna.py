@@ -9,7 +9,9 @@
 import unittest
 from io import BytesIO
 
-from Bio import Alphabet, SeqIO, BiopythonWarning
+from Bio.alphabets import Alphabets
+from Bio import SeqIO
+from Bio import BiopythonWarning
 from Bio.Seq import Seq
 from Bio.SeqFeature import SeqFeature, FeatureLocation, BeforePosition
 from Bio.SeqRecord import SeqRecord
@@ -180,7 +182,7 @@ class TestXdnaWriter(unittest.TestCase):
         record = SeqRecord(Seq("ACGT"))
 
         for alphabet, expected_byte in [
-                (Alphabet.generic_alphabet, 0),
+                (Alphabets.Other, 0),
                 (Alphabets.DNA, 1),
                 (Alphabets.RNA, 3),
                 (Alphabets.Protein, 4)]:
