@@ -12,7 +12,7 @@ import os
 import unittest
 import math
 
-from Bio.Alphabet import generic_dna
+from Bio.alphabets import Alphabets
 from Bio.Alphabet import Gapped
 from Bio.Alphabet import IUPAC
 from Bio import motifs
@@ -2281,7 +2281,7 @@ class MotifTestPWM(unittest.TestCase):
             Seq("TACCC", Gapped(IUPAC.unambiguous_dna)),
             Seq("AACCC", IUPAC.unambiguous_dna),
             Seq("AATGC", IUPAC.unambiguous_dna),
-            Seq("AATGC", generic_dna),
+            Seq("AATGC", Alphabets.DNA),
         ]
         # ValueError: Alphabets are inconsistent
         self.assertRaises(ValueError, motifs.create, seqs)

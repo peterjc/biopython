@@ -738,7 +738,7 @@ class DupLoadTest(unittest.TestCase):
 
     def test_duplicate_load(self):
         """Make sure can't import a single record twice (in one go)."""
-        record = SeqRecord(Seq("ATGCTATGACTAT", Alphabet.generic_dna), id="Test1")
+        record = SeqRecord(Seq("ATGCTATGACTAT", Alphabets.DNA), id="Test1")
         try:
             count = self.db.load([record, record])
         except Exception as err:
@@ -760,7 +760,7 @@ class DupLoadTest(unittest.TestCase):
 
     def test_duplicate_load2(self):
         """Make sure can't import a single record twice (in steps)."""
-        record = SeqRecord(Seq("ATGCTATGACTAT", Alphabet.generic_dna), id="Test2")
+        record = SeqRecord(Seq("ATGCTATGACTAT", Alphabets.DNA), id="Test2")
         count = self.db.load([record])
         self.assertEqual(count, 1)
         try:
@@ -777,8 +777,8 @@ class DupLoadTest(unittest.TestCase):
 
     def test_duplicate_id_load(self):
         """Make sure can't import records with same ID (in one go)."""
-        record1 = SeqRecord(Seq("ATGCTATGACTAT", Alphabet.generic_dna), id="TestA")
-        record2 = SeqRecord(Seq("GGGATGCGACTAT", Alphabet.generic_dna), id="TestA")
+        record1 = SeqRecord(Seq("ATGCTATGACTAT", Alphabets.DNA), id="TestA")
+        record2 = SeqRecord(Seq("GGGATGCGACTAT", Alphabets.DNA), id="TestA")
         try:
             count = self.db.load([record1, record2])
         except Exception as err:

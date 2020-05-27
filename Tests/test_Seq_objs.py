@@ -10,8 +10,7 @@ import unittest
 
 from Bio import BiopythonWarning
 from Bio import SeqIO
-from Bio.Alphabet import generic_protein, generic_nucleotide
-from Bio.Alphabet import generic_dna, generic_rna
+from Bio.alphabets import Alphabets
 from Bio.Alphabet.IUPAC import protein, extended_protein
 from Bio.Alphabet.IUPAC import unambiguous_dna, ambiguous_dna, ambiguous_rna
 from Bio.Data.IUPACData import ambiguous_dna_values, ambiguous_rna_values
@@ -74,27 +73,27 @@ Chilodonella_uncinata_table = CodonTable(forward_table={
 class StringMethodTests(unittest.TestCase):
     _examples = [
         # These are length 9, a multiple of 3 for translation tests:
-        Seq("ACGTGGGGT", generic_protein),
-        Seq("ACGTGGGGT", generic_nucleotide),
-        Seq("ACGTGGGGT", generic_dna),
-        Seq("ACGUGGGGU", generic_rna),
-        Seq("GG", generic_protein),
-        Seq("GG", generic_nucleotide),
-        Seq("GG", generic_dna),
-        Seq("GG", generic_rna),
-        Seq("A", generic_protein),
-        Seq("A", generic_nucleotide),
-        Seq("A", generic_dna),
-        Seq("A", generic_rna),
+        Seq("ACGTGGGGT", Alphabets.Protein),
+        Seq("ACGTGGGGT", Alphabets.Nucleotide),
+        Seq("ACGTGGGGT", Alphabets.DNA),
+        Seq("ACGUGGGGU", Alphabets.RNA),
+        Seq("GG", Alphabets.Protein),
+        Seq("GG", Alphabets.Nucleotide),
+        Seq("GG", Alphabets.DNA),
+        Seq("GG", Alphabets.RNA),
+        Seq("A", Alphabets.Protein),
+        Seq("A", Alphabets.Nucleotide),
+        Seq("A", Alphabets.DNA),
+        Seq("A", Alphabets.RNA),
         UnknownSeq(1),
         UnknownSeq(1, character="n"),
-        UnknownSeq(1, generic_rna),
-        UnknownSeq(1, generic_rna, "n"),
-        UnknownSeq(1, generic_rna, "N"),
-        UnknownSeq(12, generic_rna, "N"),
-        UnknownSeq(12, generic_dna, "N"),
-        UnknownSeq(12, generic_nucleotide, "N"),
-        UnknownSeq(12, generic_protein, "X"),
+        UnknownSeq(1, Alphabets.RNA),
+        UnknownSeq(1, Alphabets.RNA, "n"),
+        UnknownSeq(1, Alphabets.RNA, "N"),
+        UnknownSeq(12, Alphabets.RNA, "N"),
+        UnknownSeq(12, Alphabets.DNA, "N"),
+        UnknownSeq(12, Alphabets.Nucleotide, "N"),
+        UnknownSeq(12, Alphabets.Protein, "X"),
         UnknownSeq(12, character="X"),
         UnknownSeq(12),
     ]
@@ -295,11 +294,11 @@ class StringMethodTests(unittest.TestCase):
 
         # Testing UnknownSeq() with variable start and end arguments
         alphabet_char_start_end_exp = [
-            (generic_rna, "N", 1, 7, 0),
-            (generic_dna, "N", 1, 7, 0),
-            (generic_rna, "N", -4, None, 0),
-            (generic_dna, "N", -4, None, 0),
-            (generic_protein, "X", 1, 7, 0),
+            (Alphabets.RNA, "N", 1, 7, 0),
+            (Alphabets.DNA, "N", 1, 7, 0),
+            (Alphabets.RNA, "N", -4, None, 0),
+            (Alphabets.DNA, "N", -4, None, 0),
+            (Alphabets.Protein, "X", 1, 7, 0),
         ]
 
         for alpha, char, start, end, exp in alphabet_char_start_end_exp:
@@ -410,11 +409,11 @@ class StringMethodTests(unittest.TestCase):
 
         # Testing UnknownSeq() with variable start and end arguments
         alphabet_char_start_end_exp = [
-            (generic_rna, "N", 1, 7, 5),
-            (generic_dna, "N", 1, 7, 5),
-            (generic_rna, "N", -4, None, 3),
-            (generic_dna, "N", -4, None, 3),
-            (generic_protein, "X", 1, 7, 0),
+            (Alphabets.RNA, "N", 1, 7, 5),
+            (Alphabets.DNA, "N", 1, 7, 5),
+            (Alphabets.RNA, "N", -4, None, 3),
+            (Alphabets.DNA, "N", -4, None, 3),
+            (Alphabets.Protein, "X", 1, 7, 0),
         ]
 
         for alpha, char, start, end, exp in alphabet_char_start_end_exp:
@@ -688,14 +687,14 @@ class StringMethodTests(unittest.TestCase):
                 continue
             str1 = str(example1)
             # This only does the unambiguous cases
-            if any(("U" in str1, "u" in str1, example1.alphabet == generic_rna)):
+            if any(("U" in str1, "u" in str1, example1.alphabet == Alphabets.RNA)):
                 mapping = str.maketrans("ACGUacgu", "UGCAugca")
             elif any(
                 (
                     "T" in str1,
                     "t" in str1,
-                    example1.alphabet == generic_dna,
-                    example1.alphabet == generic_nucleotide,
+                    example1.alphabet == Alphabets.DNA,
+                    example1.alphabet == Alphabets.Nucleotide,
                 )
             ):
                 mapping = str.maketrans("ACGTacgt", "TGCAtgca")
@@ -720,14 +719,14 @@ class StringMethodTests(unittest.TestCase):
                 continue
             str1 = str(example1)
             # This only does the unambiguous cases
-            if any(("U" in str1, "u" in str1, example1.alphabet == generic_rna)):
+            if any(("U" in str1, "u" in str1, example1.alphabet == Alphabets.RNA)):
                 mapping = str.maketrans("ACGUacgu", "UGCAugca")
             elif any(
                 (
                     "T" in str1,
                     "t" in str1,
-                    example1.alphabet == generic_dna,
-                    example1.alphabet == generic_nucleotide,
+                    example1.alphabet == Alphabets.DNA,
+                    example1.alphabet == Alphabets.Nucleotide,
                 )
             ):
                 mapping = str.maketrans("ACGTacgt", "TGCAtgca")
@@ -758,7 +757,7 @@ class StringMethodTests(unittest.TestCase):
                 # TODO - Check for or silence the expected warning?
                 continue
             self.assertEqual(str1.replace("T", "U").replace("t", "u"), str(tran))
-            self.assertEqual(tran.alphabet, generic_rna)  # based on limited examples
+            self.assertEqual(tran.alphabet, Alphabets.RNA)  # based on limited examples
 
     def test_the_back_transcription(self):
         """Check obj.back_transcribe() method."""
@@ -776,7 +775,7 @@ class StringMethodTests(unittest.TestCase):
                 raise
             str1 = str(example1)
             self.assertEqual(str1.replace("U", "T").replace("u", "t"), str(tran))
-            self.assertEqual(tran.alphabet, generic_dna)  # based on limited examples
+            self.assertEqual(tran.alphabet, Alphabets.DNA)  # based on limited examples
 
     def test_the_translate(self):
         """Check obj.translate() method."""
@@ -794,7 +793,7 @@ class StringMethodTests(unittest.TestCase):
                     continue
                 raise
             # This is based on the limited example not having stop codons:
-            if tran.alphabet not in [extended_protein, protein, generic_protein]:
+            if tran.alphabet not in [extended_protein, protein, Alphabets.Protein]:
                 print(tran.alphabet)
                 self.fail()
             # TODO - check the actual translation, and all the optional args
@@ -804,8 +803,8 @@ class StringMethodTests(unittest.TestCase):
         misc_stops = "TAATAGTGAAGAAGG"
         for nuc in [
             Seq(misc_stops),
-            Seq(misc_stops, generic_nucleotide),
-            Seq(misc_stops, generic_dna),
+            Seq(misc_stops, Alphabets.Nucleotide),
+            Seq(misc_stops, Alphabets.DNA),
             Seq(misc_stops, unambiguous_dna),
         ]:
             self.assertEqual("***RR", str(nuc.translate()))
@@ -853,8 +852,8 @@ class StringMethodTests(unittest.TestCase):
         for codon in ["TA?", "N-N", "AC_", "Ac_"]:
             for nuc in [
                 Seq(codon),
-                Seq(codon, generic_nucleotide),
-                Seq(codon, generic_dna),
+                Seq(codon, Alphabets.Nucleotide),
+                Seq(codon, Alphabets.DNA),
                 Seq(codon, unambiguous_dna),
             ]:
                 try:
@@ -903,7 +902,7 @@ class StringMethodTests(unittest.TestCase):
         """Check Seq __init__ gives TypeError exceptions."""
         # Only expect it to take strings and unicode - not Seq objects!
         self.assertRaises(TypeError, Seq, (1066))
-        self.assertRaises(TypeError, Seq, (Seq("ACGT", generic_dna)))
+        self.assertRaises(TypeError, Seq, (Seq("ACGT", Alphabets.DNA)))
 
     def test_MutableSeq_init_typeerror(self):
         """Check MutableSeq __init__ gives TypeError exceptions."""
@@ -947,60 +946,60 @@ class StringMethodTests(unittest.TestCase):
 
     def test_join_Seq_TypeError(self):
         """Checks that a TypeError is thrown for incompatible alphabets."""
-        spacer = Seq("NNNNN", generic_dna)
+        spacer = Seq("NNNNN", Alphabets.DNA)
         self.assertRaises(
             TypeError,
             spacer.join,
-            [Seq("NNNNN", generic_rna), Seq("NNNNN", generic_rna)],
+            [Seq("NNNNN", Alphabets.RNA), Seq("NNNNN", Alphabets.RNA)],
         )
         self.assertRaises(
             TypeError,
             spacer.join,
-            [Seq("NNNNN", generic_protein), Seq("NNNNN", generic_protein)],
+            [Seq("NNNNN", Alphabets.Protein), Seq("NNNNN", Alphabets.Protein)],
         )
 
     def test_join_UnknownSeq_TypeError(self):
         """Checks that a TypeError is thrown for incompatible alphabets."""
-        spacer = UnknownSeq(5, character="-", alphabet=generic_dna)
+        spacer = UnknownSeq(5, character="-", alphabet=Alphabets.DNA)
         self.assertRaises(
             TypeError,
             spacer.join,
             [
-                UnknownSeq(5, character="-", alphabet=generic_rna),
-                UnknownSeq(5, character="-", alphabet=generic_rna),
+                UnknownSeq(5, character="-", alphabet=Alphabets.RNA),
+                UnknownSeq(5, character="-", alphabet=Alphabets.RNA),
             ],
         )
         self.assertRaises(
             TypeError,
             spacer.join,
             [
-                Seq("NNNNN", generic_protein),
-                UnknownSeq(5, character="-", alphabet=generic_protein),
+                Seq("NNNNN", Alphabets.Protein),
+                UnknownSeq(5, character="-", alphabet=Alphabets.Protein),
             ],
         )
 
     def test_join_MutableSeq_TypeError(self):
         """Checks that a TypeError is thrown for incompatible alphabets."""
-        spacer = MutableSeq("NNNNN", generic_dna)
+        spacer = MutableSeq("NNNNN", Alphabets.DNA)
         self.assertRaises(
             TypeError,
             spacer.join,
-            [MutableSeq("NNNNN", generic_rna), MutableSeq("NNNNN", generic_rna)],
+            [MutableSeq("NNNNN", Alphabets.RNA), MutableSeq("NNNNN", Alphabets.RNA)],
         )
         self.assertRaises(
             TypeError,
             spacer.join,
-            [Seq("NNNNN", generic_protein), MutableSeq("NNNNN", generic_protein)],
+            [Seq("NNNNN", Alphabets.Protein), MutableSeq("NNNNN", Alphabets.Protein)],
         )
 
     def test_join_Seq(self):
         """Checks if Seq join correctly concatenates sequence with the spacer."""
         # Only expect it to take Seq objects and/or strings in an iterable!
 
-        spacer1 = Seq("", generic_dna)
-        spacers = [spacer1, Seq("NNNNN", generic_dna), Seq("GGG", generic_nucleotide)]
+        spacer1 = Seq("", Alphabets.DNA)
+        spacers = [spacer1, Seq("NNNNN", Alphabets.DNA), Seq("GGG", Alphabets.Nucleotide)]
         example_strings = ["ATG", "ATG", "ATG", "ATG"]
-        example_strings_seqs = ["ATG", "ATG", Seq("ATG", generic_dna), "ATG"]
+        example_strings_seqs = ["ATG", "ATG", Seq("ATG", Alphabets.DNA), "ATG"]
 
         # strings with empty spacer
         str_concatenated = spacer1.join(example_strings)
@@ -1039,15 +1038,15 @@ class StringMethodTests(unittest.TestCase):
         """Checks if UnknownSeq join correctly concatenates sequence with the spacer."""
         # Only expect it to take Seq objects and/or strings in an iterable!
 
-        spacer1 = UnknownSeq(0, character="-", alphabet=generic_dna)
+        spacer1 = UnknownSeq(0, character="-", alphabet=Alphabets.DNA)
         spacers = [
             spacer1,
-            UnknownSeq(5, character="-", alphabet=generic_dna),
-            UnknownSeq(5, character="-", alphabet=generic_nucleotide),
+            UnknownSeq(5, character="-", alphabet=Alphabets.DNA),
+            UnknownSeq(5, character="-", alphabet=Alphabets.Nucleotide),
         ]
 
         example_strings = ["ATG", "ATG", "ATG", "ATG"]
-        example_strings_seqs = ["ATG", "ATG", Seq("ATG", generic_dna), "ATG"]
+        example_strings_seqs = ["ATG", "ATG", Seq("ATG", Alphabets.DNA), "ATG"]
 
         # strings with empty spacer
         str_concatenated = spacer1.join(example_strings)
@@ -1066,8 +1065,8 @@ class StringMethodTests(unittest.TestCase):
         seqlist = [record.seq for record in SeqIO.parse(filename, "fasta")]
         seqlist_as_strings = [str(_) for _ in seqlist]
 
-        spacer = UnknownSeq(0, character="-", alphabet=generic_dna)
-        spacer1 = UnknownSeq(5, character="-", alphabet=generic_dna)
+        spacer = UnknownSeq(0, character="-", alphabet=Alphabets.DNA)
+        spacer1 = UnknownSeq(5, character="-", alphabet=Alphabets.DNA)
         # seq objects with spacer
         seq_concatenated = spacer.join(seqlist)
         # seq objects with empty spacer
@@ -1086,14 +1085,14 @@ class StringMethodTests(unittest.TestCase):
         """Checks if MutableSeq join correctly concatenates sequence with the spacer."""
         # Only expect it to take Seq objects and/or strings in an iterable!
 
-        spacer1 = MutableSeq("", generic_dna)
+        spacer1 = MutableSeq("", Alphabets.DNA)
         spacers = [
             spacer1,
-            MutableSeq("NNNNN", generic_dna),
-            MutableSeq("GGG", generic_nucleotide),
+            MutableSeq("NNNNN", Alphabets.DNA),
+            MutableSeq("GGG", Alphabets.Nucleotide),
         ]
         example_strings = ["ATG", "ATG", "ATG", "ATG"]
-        example_strings_seqs = ["ATG", "ATG", Seq("ATG", generic_dna), "ATG"]
+        example_strings_seqs = ["ATG", "ATG", Seq("ATG", Alphabets.DNA), "ATG"]
 
         # strings with empty spacer
         str_concatenated = spacer1.join(example_strings)

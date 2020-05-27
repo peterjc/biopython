@@ -16,7 +16,7 @@ from Bio import SeqIO
 from Bio import AlignIO
 from Bio import MissingExternalDependencyError
 from Bio.Application import _escape_filename
-from Bio.Alphabet import generic_protein, generic_dna, generic_nucleotide
+from Bio.alphabets import Alphabets
 from Bio.Seq import Seq, translate
 from Bio.SeqRecord import SeqRecord
 
@@ -361,7 +361,7 @@ class SeqRetSeqIOTests(unittest.TestCase):
         self.check_SeqIO_to_EMBOSS(
             "IntelliGenetics/VIF_mase-pro.txt",
             "ig",
-            alphabet=generic_protein,
+            alphabet=Alphabets.Protein,
             skip_formats=["genbank", "embl"],
         )
         # TODO - What does a % in an ig sequence mean?
@@ -954,26 +954,26 @@ class TranslationTests(unittest.TestCase):
         examples = [
             Seq("ACGTGACTGACGTAGCATGCCACTAGG"),
             # Unamibguous TA? codons:
-            Seq("TAATACTATTAG", generic_dna),
+            Seq("TAATACTATTAG", Alphabets.DNA),
             # Most of the ambiguous TA? codons:
-            Seq("TANTARTAYTAMTAKTAHTABTADTAV", generic_dna),
+            Seq("TANTARTAYTAMTAKTAHTABTADTAV", Alphabets.DNA),
             # Problem cases,
             #
-            # Seq("TAW", generic_dna),
+            # Seq("TAW", Alphabets.DNA),
             # W = A or T, but EMBOSS does TAW -> X
             # TAA -> Y, TAT ->Y, so in Biopython TAW -> Y
             #
-            # Seq("TAS", generic_dna),
+            # Seq("TAS", Alphabets.DNA),
             # S = C or G, but EMBOSS does TAS -> Y
             # TAG -> *, TAC ->Y, so in Biopython TAS -> X (Y or *)
             #
-            # Seq("AAS", generic_dna),
+            # Seq("AAS", Alphabets.DNA),
             # On table 9, EMBOSS gives N, we give X.
             # S = C or G, so according to my reading of
             # table 9 on the NCBI page, AAC=N, AAG=K
             # suggesting this is a bug in EMBOSS.
             #
-            Seq("ACGGGGGGGGTAAGTGGTGTGTGTGTAGT", generic_dna),
+            Seq("ACGGGGGGGGTAAGTGGTGTGTGTGTAGT", Alphabets.DNA),
         ]
 
         for sequence in examples:
@@ -1000,7 +1000,7 @@ class TranslationTests(unittest.TestCase):
     def translate_all_codons(self, letters):
         sequence = Seq(
             "".join(c1 + c3 + c3 for c1 in letters for c2 in letters for c3 in letters),
-            generic_nucleotide,
+            Alphabets.Nucleotide,
         )
         self.check(sequence)
 

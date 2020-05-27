@@ -11,7 +11,7 @@ from io import StringIO
 
 from Bio import SeqIO
 from Bio.SeqIO.FastaIO import FastaIterator
-from Bio.Alphabet import generic_nucleotide, generic_dna
+from Bio.alphabets import Alphabets
 from Bio.SeqIO.FastaIO import SimpleFastaParser, FastaTwoLineParser
 
 
@@ -146,13 +146,13 @@ class TitleFunctions(unittest.TestCase):
                  "Fasta/f001",
                  )
         for path in paths:
-            self.simple_check(path, generic_nucleotide)
+            self.simple_check(path, Alphabets.Nucleotide)
 
     def test_multi_dna_files(self):
         """Test Fasta files containing multiple nucleotide sequences."""
         paths = ("Quality/example.fasta", )
         for path in paths:
-            self.multi_check(path, generic_dna)
+            self.multi_check(path, Alphabets.DNA)
 
     def test_single_proteino_files(self):
         """Test Fasta files containing a single protein sequence."""
@@ -162,13 +162,13 @@ class TitleFunctions(unittest.TestCase):
                  "Fasta/loveliesbleeding.pro",
                  )
         for path in paths:
-            self.simple_check(path, generic_nucleotide)
+            self.simple_check(path, Alphabets.Nucleotide)
 
     def test_multi_protein_files(self):
         """Test Fasta files containing multiple protein sequences."""
         paths = ("Fasta/f002", "Fasta/fa01")
         for path in paths:
-            self.multi_check(path, generic_dna)
+            self.multi_check(path, Alphabets.DNA)
 
 
 class TestSimpleFastaParsers(unittest.TestCase):

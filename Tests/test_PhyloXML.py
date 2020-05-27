@@ -685,7 +685,7 @@ class MethodTests(unittest.TestCase):
         self.assertIsInstance(aln, MultipleSeqAlignment)
         self.assertEqual(len(aln), 0)
         # Add sequences to the terminals
-        alphabet = Alphabet.Gapped(Alphabet.generic_dna)
+        alphabet = Alphabet.Gapped(Alphabets.DNA)
         for tip, seqstr in zip(tree.get_terminals(), ("AA--TTA", "AA--TTG", "AACCTTC")):
             tip.sequences.append(
                 PX.Sequence.from_seqrecord(

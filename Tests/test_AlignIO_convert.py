@@ -8,7 +8,7 @@ import unittest
 from io import StringIO
 
 from Bio import AlignIO
-from Bio.Alphabet import generic_protein, generic_nucleotide, generic_dna
+from Bio.alphabets import Alphabets
 
 
 class ConvertTests(unittest.TestCase):
@@ -45,11 +45,11 @@ class ConvertTests(unittest.TestCase):
         tests = [("Clustalw/hedgehog.aln", "clustal", None),
                  ("Nexus/test_Nexus_input.nex", "nexus", None),
                  ("Stockholm/simple.sth", "stockholm", None),
-                 ("GFF/multi.fna", "fasta", generic_nucleotide),
+                 ("GFF/multi.fna", "fasta", Alphabets.Nucleotide),
                  ("Quality/example.fastq", "fastq", None),
-                 ("Quality/example.fastq", "fastq-sanger", generic_dna),
+                 ("Quality/example.fastq", "fastq-sanger", Alphabets.DNA),
                  ("Fasta/output001.m10", "fasta-m10", None),
-                 ("IntelliGenetics/VIF_mase-pro.txt", "ig", generic_protein),
+                 ("IntelliGenetics/VIF_mase-pro.txt", "ig", Alphabets.Protein),
                  ("NBRF/clustalw.pir", "pir", None),
                  ]
         output_formats = ["fasta"] + sorted(AlignIO._FormatToWriter)

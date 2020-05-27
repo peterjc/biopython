@@ -14,7 +14,7 @@ from io import StringIO
 from io import BytesIO
 
 from Bio import BiopythonWarning, BiopythonParserWarning
-from Bio.Alphabet import generic_dna, generic_nucleotide
+from Bio.alphabets import Alphabets
 from Bio.SeqIO import QualityIO
 from Bio import SeqIO
 from Bio.Seq import Seq, UnknownSeq, MutableSeq
@@ -435,7 +435,7 @@ class TestWriteRead(QualityIOTestBaseClass):
     def test_generated(self):
         """Write and read back odd SeqRecord objects."""
         record1 = SeqRecord(
-            Seq("ACGT" * 500, generic_dna),
+            Seq("ACGT" * 500, Alphabets.DNA),
             id="Test",
             description="Long " * 500,
             letter_annotations={"phred_quality": [40, 30, 20, 10] * 500},
@@ -460,7 +460,7 @@ class TestWriteRead(QualityIOTestBaseClass):
             letter_annotations={"phred_quality": [40, 50, 60, 62] * 500},
         )
         record5 = SeqRecord(
-            Seq("", generic_dna),
+            Seq("", Alphabets.DNA),
             id="empty_p",
             description="(could have been trimmed lots)",
             letter_annotations={"phred_quality": []},
@@ -1035,12 +1035,12 @@ class TestsConverter(SeqIOConverterTestBaseClass, QualityIOTestBaseClass):
     def test_conversion(self):
         tests = [
             ("Quality/example.fastq", "fastq", None),
-            ("Quality/example.fastq", "fastq-sanger", generic_dna),
-            ("Quality/tricky.fastq", "fastq", generic_nucleotide),
+            ("Quality/example.fastq", "fastq-sanger", Alphabets.DNA),
+            ("Quality/tricky.fastq", "fastq", Alphabets.Nucleotide),
             ("Quality/sanger_93.fastq", "fastq-sanger", None),
-            ("Quality/sanger_faked.fastq", "fastq-sanger", generic_dna),
-            ("Quality/solexa_faked.fastq", "fastq-solexa", generic_dna),
-            ("Quality/illumina_faked.fastq", "fastq-illumina", generic_dna),
+            ("Quality/sanger_faked.fastq", "fastq-sanger", Alphabets.DNA),
+            ("Quality/solexa_faked.fastq", "fastq-solexa", Alphabets.DNA),
+            ("Quality/illumina_faked.fastq", "fastq-illumina", Alphabets.DNA),
         ]
         for filename, fmt, alphabet in tests:
             for (in_format, out_format) in self.formats:
@@ -1066,12 +1066,12 @@ class TestsConverter(SeqIOConverterTestBaseClass, QualityIOTestBaseClass):
             ("Quality/error_trunc_at_plus.fastq", "fastq", None),
             ("Quality/error_trunc_at_qual.fastq", "fastq", None),
             ("Quality/error_trunc_at_seq.fastq", "fastq", None),
-            ("Quality/error_trunc_in_title.fastq", "fastq", generic_dna),
-            ("Quality/error_trunc_in_seq.fastq", "fastq", generic_nucleotide),
+            ("Quality/error_trunc_in_title.fastq", "fastq", Alphabets.DNA),
+            ("Quality/error_trunc_in_seq.fastq", "fastq", Alphabets.Nucleotide),
             ("Quality/error_trunc_in_plus.fastq", "fastq", None),
-            ("Quality/error_trunc_in_qual.fastq", "fastq", generic_dna),
-            ("Quality/error_double_seq.fastq", "fastq", generic_dna),
-            ("Quality/error_double_qual.fastq", "fastq", generic_dna),
+            ("Quality/error_trunc_in_qual.fastq", "fastq", Alphabets.DNA),
+            ("Quality/error_double_seq.fastq", "fastq", Alphabets.DNA),
+            ("Quality/error_double_qual.fastq", "fastq", Alphabets.DNA),
         ]
         for filename, fmt, alphabet in tests:
             for (in_format, out_format) in self.formats:

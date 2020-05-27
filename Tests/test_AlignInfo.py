@@ -6,7 +6,7 @@
 """Bio.Align.AlignInfo related tests."""
 import unittest
 
-from Bio.Alphabet import DNAAlphabet, generic_protein
+from Bio.alphabets import Alphabets
 from Bio.Alphabet import HasStopCodon, Gapped
 from Bio.Alphabet.IUPAC import unambiguous_dna
 from Bio.Align import MultipleSeqAlignment
@@ -63,7 +63,7 @@ N  0.0 2.0 1.0 0.0
         self.assertAlmostEqual(ic, 7.32029999423075, places=6)
 
     def test_proteins(self):
-        alpha = HasStopCodon(Gapped(generic_protein, "-"), "*")
+        alpha = HasStopCodon(Gapped(Alphabets.Protein, "-"), "*")
         a = MultipleSeqAlignment([
             SeqRecord(Seq("MHQAIFIYQIGYP*LKSGYIQSIRSPEYDNW-", alpha), id="ID001"),
             SeqRecord(Seq("MH--IFIYQIGYAYLKSGYIQSIRSPEY-NW*", alpha), id="ID002"),

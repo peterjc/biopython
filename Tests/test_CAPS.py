@@ -30,7 +30,7 @@ class TestCAPS(unittest.TestCase):
     def test_trivial(self):
         enzymes = [EcoRI]
         alignment = ["gaattc", "gaactc"]
-        align = createAlignment(alignment, Alphabet.generic_dna)
+        align = createAlignment(alignment, Alphabets.DNA)
         map = CAPS.CAPSMap(align, enzymes)
 
         self.assertEqual(len(map.dcuts), 1)
@@ -59,7 +59,7 @@ class TestCAPS(unittest.TestCase):
         ]
         self.assertEqual(len(alignment), 3)
         enzymes = [EcoRI, AluI]
-        align = createAlignment(alignment, Alphabet.generic_dna)
+        align = createAlignment(alignment, Alphabets.DNA)
         map = CAPS.CAPSMap(align, enzymes)
 
         self.assertEqual(len(map.dcuts), 2)
@@ -75,7 +75,7 @@ class TestCAPS(unittest.TestCase):
     def testNoCAPS(self):
         alignment = ["aaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaa"]
         enzymes = []
-        align = createAlignment(alignment, Alphabet.generic_nucleotide)
+        align = createAlignment(alignment, Alphabets.Nucleotide)
         map = CAPS.CAPSMap(align, enzymes)
         self.assertEqual(map.dcuts, [])
 
@@ -85,7 +85,7 @@ class TestCAPS(unittest.TestCase):
             "aaaaaaaaaaaaaa",  # we'll change this below
             "aaaaaaaaaaaaaa",
         ]
-        align = createAlignment(alignment, Alphabet.generic_nucleotide)
+        align = createAlignment(alignment, Alphabets.Nucleotide)
         align[1].seq = align[1].seq[:8]  # evil
         self.assertRaises(CAPS.AlignmentHasDifferentLengthsError, CAPS.CAPSMap, align)
 

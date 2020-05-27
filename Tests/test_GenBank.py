@@ -24,7 +24,7 @@ from Bio import BiopythonParserWarning
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
-from Bio.Alphabet import generic_dna
+from Bio.alphabets import Alphabets
 
 # GenBank stuff to test:
 from Bio import GenBank
@@ -6799,7 +6799,7 @@ KEYWORDS    """
 
     def test_genbank_date_default(self):
         """Check if default date is handled correctly."""
-        sequence_object = Seq("ATGC", generic_dna)
+        sequence_object = Seq("ATGC", Alphabets.DNA)
         # check if default value is inserted correctly
         record = SeqRecord(
             sequence_object,
@@ -6815,7 +6815,7 @@ KEYWORDS    """
 
     def test_genbank_date_correct(self):
         """Check if user provided date is inserted correctly."""
-        sequence_object = Seq("ATGC", generic_dna)
+        sequence_object = Seq("ATGC", Alphabets.DNA)
         record = SeqRecord(
             sequence_object,
             id="123456789",
@@ -6831,7 +6831,7 @@ KEYWORDS    """
 
     def test_genbank_date_list(self):
         """Check if date lists are handled correctly."""
-        sequence_object = Seq("ATGC", generic_dna)
+        sequence_object = Seq("ATGC", Alphabets.DNA)
         record = SeqRecord(
             sequence_object,
             id="123456789",
@@ -6860,7 +6860,7 @@ KEYWORDS    """
 
     def test_genbank_date_datetime(self):
         """Check if datetime objects are handled correctly."""
-        sequence_object = Seq("ATGC", generic_dna)
+        sequence_object = Seq("ATGC", Alphabets.DNA)
         record = SeqRecord(
             sequence_object,
             id="123456789",
@@ -6878,7 +6878,7 @@ KEYWORDS    """
         """Check if invalid dates are treated as default."""
         invalid_dates = ("invalid date", "29-2-1981", "35-1-2018", "1-1-80", "1-9-99")
 
-        sequence_object = Seq("ATGC", generic_dna)
+        sequence_object = Seq("ATGC", Alphabets.DNA)
         for invalid_date in invalid_dates:
             record = SeqRecord(
                 sequence_object,
@@ -7159,7 +7159,7 @@ class OutputTests(unittest.TestCase):
         """Writing and reading back accesssion.version variants."""
         for identifier in ["example", "example.1a", "example.1.2", "example.1-2"]:
             old = SeqRecord(
-                Seq("ACGT", generic_dna),
+                Seq("ACGT", Alphabets.DNA),
                 id=identifier,
                 name=identifier,
                 description="mad dots",
@@ -7172,7 +7172,7 @@ class OutputTests(unittest.TestCase):
 
     def test_seqrecord_default_description(self):
         """Read in file using SeqRecord default description."""
-        old = SeqRecord(Seq("ACGT", generic_dna), id="example", name="short")
+        old = SeqRecord(Seq("ACGT", Alphabets.DNA), id="example", name="short")
         self.assertEqual(old.description, "<unknown description>")
         txt = old.format("gb")
         self.assertIn("DEFINITION  .\n", txt)

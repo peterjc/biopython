@@ -24,7 +24,7 @@ class TestXdna(unittest.TestCase):
             "id": "Sample",
             "description": "Sample sequence A",
             "length": 1000,
-            "alphabet": Alphabet.generic_dna,
+            "alphabet": Alphabets.DNA,
             "topology": "linear",
             "features": [
                 {
@@ -49,7 +49,7 @@ class TestXdna(unittest.TestCase):
             "id": "Sample",
             "description": "Sample sequence B",
             "length": 1000,
-            "alphabet": Alphabet.generic_dna,
+            "alphabet": Alphabets.DNA,
             "topology": "circular",
             "features": [
                 {
@@ -74,7 +74,7 @@ class TestXdna(unittest.TestCase):
             "id": "Sample",
             "description": "Sample Sequence C",
             "length": 1000,
-            "alphabet": Alphabet.generic_protein,
+            "alphabet": Alphabets.Protein,
             "topology": "linear",
             "features": [
                 {
@@ -181,9 +181,9 @@ class TestXdnaWriter(unittest.TestCase):
 
         for alphabet, expected_byte in [
                 (Alphabet.generic_alphabet, 0),
-                (Alphabet.generic_dna, 1),
-                (Alphabet.generic_rna, 3),
-                (Alphabet.generic_protein, 4)]:
+                (Alphabets.DNA, 1),
+                (Alphabets.RNA, 3),
+                (Alphabets.Protein, 4)]:
             record.seq.alphabet = alphabet
             h.seek(0, 0)
             SeqIO.write([record], h, "xdna")

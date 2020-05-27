@@ -17,6 +17,7 @@ from io import BytesIO
 from Bio import BiopythonWarning, BiopythonParserWarning
 from Bio import SeqIO
 from Bio import AlignIO
+from Bio.alphabets import Alphabets
 from Bio.AlignIO import PhylipIO
 from Bio.PDB.PDBExceptions import PDBConstructionWarning
 from Bio.SeqRecord import SeqRecord
@@ -30,13 +31,10 @@ from Bio import StreamModeError
 # warnings to stdout and verifying via the print-and-compare check. However,
 # there was some frustrating cross-platform inconsistency I couldn't resolve.
 
-protein_alphas = [Alphabet.generic_protein]
-dna_alphas = [Alphabet.generic_dna]
-rna_alphas = [Alphabet.generic_rna]
-nucleotide_alphas = [
-    Alphabet.generic_nucleotide,
-    Alphabet.Gapped(Alphabet.generic_nucleotide),
-]
+protein_alphas = [Alphabets.Protein]
+dna_alphas = [Alphabets.DNA]
+rna_alphas = [Alphabets.RNA]
+nucleotide_alphas = [Alphabets.Nucleotide]
 no_alpha_formats = {
     "clustal",
     "emboss",
