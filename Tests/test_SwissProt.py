@@ -30,7 +30,7 @@ class TestSwissProt(unittest.TestCase):
         self.assertEqual(seq_record.description, "N33 PROTEIN.")
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MGARGAPSRRRQAGRRLRYLPTGSFPFLLLLLLLCIQLGGGQKKKENLLAEKVE...DFE', ProteinAlphabet())",
+            "Seq('MGARGAPSRRRQAGRRLRYLPTGSFPFLLLLLLLCIQLGGGQKKKENLLAEKVE...DFE', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:
@@ -161,7 +161,7 @@ class TestSwissProt(unittest.TestCase):
         self.assertEqual(seq_record.description, "CYSTEINE STRING PROTEIN (CSP).")
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MADQRQRSLSTSGESLYHVLGLDKNATSDDIKKSYRKLALKYHPDKNPDNPEAA...GFN', ProteinAlphabet())",
+            "Seq('MADQRQRSLSTSGESLYHVLGLDKNATSDDIKKSYRKLALKYHPDKNPDNPEAA...GFN', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:
@@ -279,7 +279,7 @@ class TestSwissProt(unittest.TestCase):
         )
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MDDREDLVYQAKLAEQAERYDEMVESMKKVAGMDVELTVEERNLLSVAYKNVIG...ENQ', ProteinAlphabet())",
+            "Seq('MDDREDLVYQAKLAEQAERYDEMVESMKKVAGMDVELTVEERNLLSVAYKNVIG...ENQ', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:
@@ -502,7 +502,7 @@ class TestSwissProt(unittest.TestCase):
         )
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MTVKWIEAVALSDILEGDVLGVTVEGKELALYEVEGEIYATDNLCTHGSARMSD...DLS', ProteinAlphabet())",
+            "Seq('MTVKWIEAVALSDILEGDVLGVTVEGKELALYEVEGEIYATDNLCTHGSARMSD...DLS', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:
@@ -650,7 +650,7 @@ class TestSwissProt(unittest.TestCase):
         )
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MNLLLTLLTNTTLALLLVFIAFWLPQLNVYAEKTSPYECGFDPMGSARLPFSMK...WAE', ProteinAlphabet())",
+            "Seq('MNLLLTLLTNTTLALLLVFIAFWLPQLNVYAEKTSPYECGFDPMGSARLPFSMK...WAE', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:
@@ -753,7 +753,7 @@ class TestSwissProt(unittest.TestCase):
         )
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MTPHTHVRGPGDILQLTMAFYGSRALISAVELDLFTLLAGKPLPLGELCERAGI...KPR', ProteinAlphabet())",
+            "Seq('MTPHTHVRGPGDILQLTMAFYGSRALISAVELDLFTLLAGKPLPLGELCERAGI...KPR', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:
@@ -846,7 +846,7 @@ class TestSwissProt(unittest.TestCase):
         )
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MANAGLQLLGFILAFLGWIGAIVSTALPQWRIYSYAGDNIVTAQAMYEGLWMSC...DYV', ProteinAlphabet())",
+            "Seq('MANAGLQLLGFILAFLGWIGAIVSTALPQWRIYSYAGDNIVTAQAMYEGLWMSC...DYV', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:
@@ -983,7 +983,7 @@ class TestSwissProt(unittest.TestCase):
         )
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MAVMAPRTLVLLLSGALALTQTWAGSHSMRYFFTSVSRPGRGEPRFIAVGYVDD...CKV', ProteinAlphabet())",
+            "Seq('MAVMAPRTLVLLLSGALALTQTWAGSHSMRYFFTSVSRPGRGEPRFIAVGYVDD...CKV', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:
@@ -1782,7 +1782,7 @@ class TestSwissProt(unittest.TestCase):
         )
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MAPAMEEIRQAQRAEGPAAVLAIGTSTPPNALYQADYPDYYFRITKSEHLTELK...GAE', ProteinAlphabet())",
+            "Seq('MAPAMEEIRQAQRAEGPAAVLAIGTSTPPNALYQADYPDYYFRITKSEHLTELK...GAE', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:
@@ -1881,7 +1881,7 @@ class TestSwissProt(unittest.TestCase):
         )
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MDKLDANVSSEEGFGSVEKVVLLTFLSTVILMAILGNLLVMVAVCWDRQLRKIK...SDT', ProteinAlphabet())",
+            "Seq('MDKLDANVSSEEGFGSVEKVVLLTFLSTVILMAILGNLLVMVAVCWDRQLRKIK...SDT', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:
@@ -2194,7 +2194,7 @@ class TestSwissProt(unittest.TestCase):
         )
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MDKLDANVSSEEGFGSVEKVVLLTFLSTVILMAILGNLLVMVAVCWDRQLRKIK...SDT', ProteinAlphabet())",
+            "Seq('MDKLDANVSSEEGFGSVEKVVLLTFLSTVILMAILGNLLVMVAVCWDRQLRKIK...SDT', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:
@@ -2600,7 +2600,7 @@ class TestSwissProt(unittest.TestCase):
         )
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MGRRVPALRQLLVLAVLLLKPSQLQSRELSGSRCPEPCDCAPDGALRCPGPRAG...LTH', ProteinAlphabet())",
+            "Seq('MGRRVPALRQLLVLAVLLLKPSQLQSRELSGSRCPEPCDCAPDGALRCPGPRAG...LTH', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:
@@ -3133,7 +3133,7 @@ class TestSwissProt(unittest.TestCase):
         self.assertEqual(seq_record.description, "UBIQUITIN.")
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MQIFVKTLTGKTITLEVESSDTIDNVKTKIQDKEGIPPDQQRLIFAGKQLEDGR...GGN', ProteinAlphabet())",
+            "Seq('MQIFVKTLTGKTITLEVESSDTIDNVKTKIQDKEGIPPDQQRLIFAGKQLEDGR...GGN', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:
@@ -3228,7 +3228,7 @@ class TestSwissProt(unittest.TestCase):
         )
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MGSKMASASRVVQVVKPHTPLIRFPDRRDNPKPNVSEALRSAGLPSHSSVISQH...GPE', ProteinAlphabet())",
+            "Seq('MGSKMASASRVVQVVKPHTPLIRFPDRRDNPKPNVSEALRSAGLPSHSSVISQH...GPE', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:
@@ -3324,7 +3324,7 @@ class TestSwissProt(unittest.TestCase):
         )
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MTQSNPNEQNVELNRTSLYWGLLLIFVLAVLFSNYFFN', ProteinAlphabet())",
+            "Seq('MTQSNPNEQNVELNRTSLYWGLLLIFVLAVLFSNYFFN', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:
@@ -3454,7 +3454,7 @@ class TestSwissProt(unittest.TestCase):
         self.assertEqual(seq_record.description, "")
         self.assertEqual(
             repr(seq_record.seq),
-            "Seq('MSFQAPRRLLELAGQSLLRDQALAISVLDELPRELFPRLFVEAFTSRRCEVLKV...TPC', ProteinAlphabet())",
+            "Seq('MSFQAPRRLLELAGQSLLRDQALAISVLDELPRELFPRLFVEAFTSRRCEVLKV...TPC', Alphabets.Protein)",
         )
 
         with open(datafile) as test_handle:

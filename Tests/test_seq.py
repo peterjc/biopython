@@ -1013,11 +1013,11 @@ class TestUnknownSeq(unittest.TestCase):
         self.assertRaises(ValueError, seq.translate)
 
     def test_ungap(self):
-        seq = Seq.UnknownSeq(7, alphabet=Alphabet.Gapped(Alphabet.DNAAlphabet(), "-"))
+        seq = Seq.UnknownSeq(7, alphabet=Alphabet.Gapped(Alphabets.DNA, "-"))
         self.assertEqual("NNNNNNN", str(seq.ungap("-")))
 
         seq = Seq.UnknownSeq(
-            20, alphabet=Alphabet.Gapped(Alphabet.DNAAlphabet(), "-"), character="-"
+            20, alphabet=Alphabet.Gapped(Alphabets.DNA, "-"), character="-"
         )
         self.assertEqual("", seq.ungap("-"))
 
@@ -1523,7 +1523,7 @@ class TestStopCodons(unittest.TestCase):
             self.misc_stops,
             Seq.Seq(self.misc_stops),
             Seq.Seq(self.misc_stops, Alphabet.generic_nucleotide),
-            Seq.Seq(self.misc_stops, Alphabet.DNAAlphabet()),
+            Seq.Seq(self.misc_stops, Alphabets.DNA),
             Seq.Seq(self.misc_stops, IUPAC.unambiguous_dna),
         ]:
             self.assertEqual("***RR", str(Seq.translate(nucleotide_seq)))
