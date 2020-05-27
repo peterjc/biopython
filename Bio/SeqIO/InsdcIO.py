@@ -1,4 +1,4 @@
-# Copyright 2007-2016 by Peter Cock.  All rights reserved.
+# Copyright 2007-2020 by Peter Cock.  All rights reserved.
 #
 # This file is part of the Biopython distribution and governed by your
 # choice of the "Biopython License Agreement" or the "BSD 3-Clause License".
@@ -35,9 +35,9 @@ import warnings
 from datetime import datetime
 from Bio import BiopythonWarning
 
+from Bio.alphabets import Alphabets
 from Bio.Seq import UnknownSeq
 from Bio.GenBank.Scanner import GenBankScanner, EmblScanner, _ImgtScanner
-from Bio import Alphabet
 from Bio import SeqIO
 from Bio import SeqFeature
 from .Interfaces import SequenceIterator, SequenceWriter
@@ -177,7 +177,7 @@ class ImgtIterator(SequenceIterator):
 class GenBankCdsFeatureIterator(SequenceIterator):
     """Parser for GenBank files, creating a SeqRecord for each CDS feature."""
 
-    def __init__(self, source, alphabet=Alphabet.generic_protein):
+    def __init__(self, source, alphabet=Alphabets.Protein):
         """Break up a Genbank file into SeqRecord objects for each CDS feature.
 
         Argument source is a file-like object opened in text mode or a path to a file.
@@ -198,7 +198,7 @@ class GenBankCdsFeatureIterator(SequenceIterator):
 class EmblCdsFeatureIterator(SequenceIterator):
     """Parser for EMBL files, creating a SeqRecord for each CDS feature."""
 
-    def __init__(self, source, alphabet=Alphabet.generic_protein):
+    def __init__(self, source, alphabet=Alphabets.Protein):
         """Break up a EMBL file into SeqRecord objects for each CDS feature.
 
         Argument source is a file-like object opened in text mode or a path to a file.
@@ -743,18 +743,13 @@ class GenBankWriter(_InsdcWriter):
                 BiopythonWarning,
             )
 
-        # Get the base alphabet (underneath any Gapped or StopCodon encoding)
-        a = Alphabet._get_base_alphabet(record.seq.alphabet)
-        if not isinstance(a, Alphabet.Alphabet):
-            raise TypeError("Invalid alphabet")
-        elif isinstance(a, Alphabet.ProteinAlphabet):
-            units = "aa"
-        elif isinstance(a, Alphabet.NucleotideAlphabet):
-            units = "bp"
-        else:
-            # Must be something like NucleotideAlphabet or
-            # just the generic Alphabet (default for fasta files)
+        a = record.seq.alphabet
+        if a is Alphabets.Other:
             raise ValueError("Need a Nucleotide or Protein alphabet")
+        elif a is Alphabets.Protein:
+            units = "aa"
+        else:
+            units = "bp"
 
         # Get the molecule type
         mol_type = self._get_annotation_str(record, "molecule_type", default=None)
@@ -769,15 +764,14 @@ class GenBankWriter(_InsdcWriter):
 
         if mol_type:
             pass
-        elif isinstance(a, Alphabet.ProteinAlphabet):
+        elif a is Alphabets.Protein:
             mol_type = ""
-        elif isinstance(a, Alphabet.DNAAlphabet):
+        elif a is Alphabets.DNA:
             mol_type = "DNA"
-        elif isinstance(a, Alphabet.RNAAlphabet):
+        elif a is Alphabets.RNA:
             mol_type = "RNA"
         else:
-            # Must be something like NucleotideAlphabet or
-            # just the generic Alphabet (default for fasta files)
+            # Must be Nucleotide or Other (default for FASTA files)
             raise ValueError("Need a DNA, RNA or Protein alphabet")
 
         topology = self._get_topology(record)
@@ -896,8 +890,7 @@ class GenBankWriter(_InsdcWriter):
             data = str(number)
             # TODO - support more complex record reference locations?
             if ref.location and len(ref.location) == 1:
-                a = Alphabet._get_base_alphabet(record.seq.alphabet)
-                if isinstance(a, Alphabet.ProteinAlphabet):
+                if record.seq.alphabet is Alphabets.Protein:
                     units = "residues"
                 else:
                     units = "bases"
@@ -1164,9 +1157,8 @@ class EmblWriter(_InsdcWriter):
         data = self._get_seq_string(record).lower()
         seq_len = len(data)
 
-        # Get the base alphabet (underneath any Gapped or StopCodon encoding)
-        a = Alphabet._get_base_alphabet(record.seq.alphabet)
-        if isinstance(a, Alphabet.DNAAlphabet):
+        a = record.seq.alphabet
+        if a is Alphabets.DNA:
             # TODO - What if we have RNA?
             a_count = data.count("A") + data.count("a")
             c_count = data.count("C") + data.count("c")
@@ -1247,17 +1239,14 @@ class EmblWriter(_InsdcWriter):
 
         # Get the molecule type
         # TODO - record this explicitly in the parser?
-        # Get the base alphabet (underneath any Gapped or StopCodon encoding)
-        a = Alphabet._get_base_alphabet(record.seq.alphabet)
-        if not isinstance(a, Alphabet.Alphabet):
-            raise TypeError("Invalid alphabet")
-        elif isinstance(a, Alphabet.DNAAlphabet):
+        a = record.seq.alphabet
+        if a is Alphabets.DNA:
             mol_type = "DNA"
             units = "BP"
-        elif isinstance(a, Alphabet.RNAAlphabet):
+        elif a is Alphabets.RNA:
             mol_type = "RNA"
             units = "BP"
-        elif isinstance(a, Alphabet.ProteinAlphabet):
+        elif a is Alphabets.Protein:
             mol_type = "PROTEIN"
             units = "AA"
         else:
