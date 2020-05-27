@@ -116,6 +116,8 @@ class Seq:
                 "be a string (not another Seq object etc)"
             )
         self._data = data
+        if alphabet is None:
+            alphabet = Alphabets.Other  # Warning? Allow this?
         try:
             # Is this a legacy Bio.Alphabet object...
             self.alphabet = alphabet._as_enum
