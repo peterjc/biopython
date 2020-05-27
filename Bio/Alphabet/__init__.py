@@ -316,6 +316,9 @@ class HasStopCodon(AlphabetEncoder):
 def _get_base_alphabet(alphabet):
     """Return the non-gapped non-stop-codon Alphabet object (PRIVATE)."""
     a = alphabet
+    if isinstance(a, Alphabets):
+        # This is a new style enum - give a warning?
+        return a
     while isinstance(a, AlphabetEncoder):
         a = a.alphabet
     if not isinstance(a, Alphabet):
