@@ -39,6 +39,14 @@ matrix:
       before_install: echo "Going to run basic checks"
     - stage: basics
       python: 3.7
+      env: TOXENV=black
+      services:
+      addons:
+        apt:
+          packages:
+      before_install: echo "Going to run basic checks"
+    - stage: basics
+      python: 3.7
       env: TOXENV=sdist,bdist_wheel
       services:
       addons:
