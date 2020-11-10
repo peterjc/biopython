@@ -1,30 +1,43 @@
 This file provides documentation for modules in Biopython that have been moved
 or deprecated in favor of other modules. This provides some quick and easy
-to find documentation about how to update your code to work again.
-Python releases go first, then code (modules, methods, functions).
+to find documentation about how to update your code to work again. Python
+releases go first, then code (modules, methods, functions). Newest first.
 
 Python
 ======
 
-Python 2.3
+Python 3.8
 ----------
-No longer supported as of Release 1.51, having triggered a warning with
-Release 1.50, with a mention in the release notes for Release 1.49.
+First supported in release 1.75.
 
-Python 2.4
+Python 3.7
 ----------
-No longer supported as of Release 1.59, having triggered a warning since
-Release 1.55, with advance notice in the release notes for Release 1.54.
+First supported in release 1.73.
 
-Python 2.5
+Python 3.6
 ----------
-No longer supported as of Release 1.63, having triggered a warning with
-Release 1.62, with advance notice in the release notes for Release 1.61.
+Triggers a deprecation warning as of release 1.79.
+First supported in release 1.69.
 
-Python 2.6
+Python 3.5
 ----------
-No longer supported as of Release 1.69, having triggered a warning with
-release 1.66 onwards.
+No longer supported as of Release 1.77. First supported in release 1.66.
+
+Python 3.4
+----------
+No longer supported as of Release 1.75, having triggered a deprecation
+warning in release 1.74. First supported in release 1.64.
+
+Python 3.3
+----------
+No longer supported as of Release 1.70, having triggered a warning with
+release 1.67 onwards.
+
+Python 3.0, 3.1, 3.2
+--------------------
+Never officially supported, these triggered a warning in Release 1.62
+recommending Python 3.3 or later. As of Biopython Release 1.63 onwards,
+installation simply aborts with an error message.
 
 Python 2.7
 ----------
@@ -32,38 +45,25 @@ No longer supported as of Release 1.77 (2020, in line with end-of-life or
 sunset date for Python 2.7 itself), having triggered a warning in prior
 releases.
 
-Python 3.0, 3.1, 3.2
---------------------
-Never officially supported, these triggered a warning in Release 1.62
-recommending Python 3.3 or later. As of Biopython Release 1.63 onwards,
-installation simply aborts with a error message.
-
-Python 3.3
+Python 2.6
 ----------
-No longer supported as of Release 1.70, having triggered a warning with
-release 1.67 onwards.
+No longer supported as of Release 1.69, having triggered a warning with
+release 1.66 onwards.
 
-Python 3.4
+Python 2.5
 ----------
-No longer supported as of Release 1.75, having triggered a deprecation
-warning in release 1.74. First supported in release 1.64.
+No longer supported as of Release 1.63, having triggered a warning with
+Release 1.62, with advance notice in the release notes for Release 1.61.
 
-Python 3.5
+Python 2.4
 ----------
-No longer supported as of Release 1.77. First supported in release 1.66.
+No longer supported as of Release 1.59, having triggered a warning since
+Release 1.55, with advance notice in the release notes for Release 1.54.
 
-Python 3.6
+Python 2.3
 ----------
-Triggers a deprecation warning as of release 1.79.
-First supported in release 1.69.
-
-Python 3.7
-----------
-First supported in release 1.73.
-
-Python 3.8
-----------
-First supported in release 1.75.
+No longer supported as of Release 1.51, having triggered a warning with
+Release 1.50, with a mention in the release notes for Release 1.49.
 
 Jython
 ------
@@ -71,8 +71,54 @@ No longer supported as of Release 1.77 with the end of Python 2 support.
 Biopython was mostly working under Jython 2.7.0, but support for Jython
 was deprecated as of Release 1.70.
 
+PyPy
+----
+For some years now, as long as you use their most recent releases, the PyPy
+implementation matches the CPython reference implementation so well that
+almost everything just works.
+
 Biopython modules, methods, functions
 =====================================
+
+BioSQL.BioSeqDatabase
+---------------------
+The ``remove_database`` and ``get_all_primary_ids`` methods were removed from
+the ``DBServer`` class in Release 1.79.
+The ``get_Seq_by_primary_id`` method was removed from the ``BioSeqDatabase``
+class in Release 1.79.
+
+Bio.PDB.Residue
+---------------
+The ``sort`` and ``get_atom`` methods of the ``Residue`` class were removed in
+Release 1.79.
+
+Bio.PDB.ResidueDepth
+--------------------
+Use of the ``PDB_TO_XYZR`` bash script was removed from ``get_surface`` in
+Release 1.79.
+
+Bio.Phylo._utils
+----------------
+The ``draw_graphviz`` function was removed in Release 1.79.
+
+Scripts/Restriction/ranacompiler.py
+-----------------------------------
+The ``is_palindrom`` function was removed in Release 1.79.
+
+Bio.Phylo.BaseTree.Tree
+-----------------------
+The format method was deprecated in Release 1.79 in favor of the __format__
+method, which supports Python's built-in format function.
+
+Bio.File
+--------
+The UndoHandle class was deprecated in Release 1.77, and moved to
+Bio/SearchIO/_legacy/ParserSupport.py, which was the only module in
+Biopython still using this class.
+
+Bio.FSSP
+-----------
+Deprecated in release 1.77.
 
 Bio.Index
 ---------
@@ -83,6 +129,11 @@ Bio.Crystal
 -----------
 Declared obsolete in release 1.75, deprecated in release 1.76, removed in
 release 1.79. PDB NDB files can be opened with Bio.PDB.
+
+Bio.Statistics
+--------------
+This module was declared obsolete in Release 1.74, deprecated in Release 1.76,
+and removed in Release 1.79.
 
 Bio.motifs
 ----------
@@ -122,6 +173,19 @@ Bio.ExPASy.sprot_search_ful and ExPASy.sprot_search_de
 ------------------------------------------------------
 These two functions were labelled as broken in Release 1.70, and removed in
 Release 1.73, since the underlying web-server API no longer exists.
+
+Bio.KDTree
+----------
+This module was declared obsolete in Release 1.72, deprecated in Release 1.74,
+and removed in Release 1.77. As of Release 1.72, KDTree data structures and
+the functionality previously available in ``Bio.KDTree`` are provided in a new
+module ``Bio.PDB.kdtrees``.
+
+Bio.trie, Bio.triefind
+----------------------
+These modules were declared obsolete in Release 1.72, deprecated in Release
+1.73, and removed in Release 1.77. We suggest pygtrie as an alternative library
+implementing a trie data structure.
 
 Bio.GA
 ------
@@ -188,6 +252,18 @@ Deprecated in release 1.79.
 Instead of myseq.tomutable() or mymutableseq.toseq(), you should now use
 Bio.Seq.MutableSeq(myseq) or Bio.Seq.Seq(mymutableseq), respectively.
 
+Bio.Compass
+-----------
+The RecordParser and Iterator classes were declared obsolete in Release 1.54,
+deprecated in Release 1.55, removed in Release 1.59. Their functionality is
+now available through a read() and a parse() function, respectively.
+
+Bio.Affy.CelFile
+----------------
+The CelScanner, CelConsumer, CelRecord, and CelParser were declared obsolete
+in Release 1.54, deprecated in Release 1.55 and removed in Release 1.59.
+Their functionality is now available through a read() function.
+
 Iterator .next() methods
 ------------------------
 The .next() method defined for any Biopython iterator is deprecated as of
@@ -227,6 +303,24 @@ We expect this to have no impact for the majority of users, unless you do
 something like ``from Bio.PDB.Vector import calc_dihedral`` in which case
 use ``from Bio.PDB import calc_dihedral`` (which will work on older versions
 of Biopython as well).
+
+Bio.PopGen.Async
+----------------
+``Bio.PopGen.Async`` was deprecated in Release 1.68, removed in Release 1.70.
+
+Bio.PopGen.FDist
+----------------
+``Bio.PopGen.FDist`` was deprecated in Release 1.68, removed in Release 1.70.
+
+Prior to this, the ``RecordParser``, ``_Scanner``, and ``_RecordConsumer``
+classes were declared obsolete in Release 1.54, deprecated in Release 1.55,
+and removed in Release 1.58. Their functionality is now available through
+a ``read()`` function.
+
+Bio.PopGen.SimCoal
+------------------
+``Bio.PopGen.SimCoal`` was deprecated in Release 1.68, and removed in Release
+1.70.
 
 Bio.PDB.mmCIF
 -------------
@@ -295,6 +389,15 @@ Bio.Search
 Long obsolete file Bio/Search.py was deprecated in Release 1.61, and removed
 in Release 1.64.
 
+Bio.ParserSupport
+-----------------
+``Bio.ParserSupport`` was declared obsolete in Release 1.59, and deprecated in
+Release 1.63. The Martel specific ``EventGenerator`` was removed in Release
+1.67, and the entire module was removed in Release 1.72.
+
+``Bio.ParserSupport.SGMLStrippingConsumer`` was deprecated in Release 1.59, and
+removed in Release 1.61.
+
 Bio.Pathway.Rep.HashSet
 -----------------------
 Deprecated in Release 1.59, removed in Release 1.62. Use Python's built in
@@ -303,6 +406,27 @@ set object.
 Bio.SeqFeature.WithinPosition and OneOfPosition
 -----------------------------------------------
 The arguments to create these fuzzy positions changed in Release 1.59.
+
+Bio.SubsMat
+-----------
+The methods ``letter_sum`` and ``all_letters_sum`` were removed from the
+in Bio.SubsMat in Release 1.57.	``SeqMat`` class in Bio.SubsMat in Release 1.57.
+The methods ``print_full_mat`` and ``print_mat`` were removed from the
+`SeqMat`` class in Bio.SubsMat in Release 1.79.
+The Bio.SubsMat module was deprecated in Release 1.78. As an alternative,
+please consider using Bio.Align.substitution_matrices.
+
+Bio.Align
+---------
+The methods get_column and add_sequence of the MultipleSeqAlignment class were
+deprecated in Release 1.57 and removed in Release 1.69.
+The format method of the MultipleSeqAlignment class and the PairwiseAlignment
+class were deprecated in Release 1.76, and removed in Release 1.79.
+
+Bio.Align.Generic
+-----------------
+This module which defined to original (Multiple-Sequence) Alignment class was
+deprecated in Release 1.57 and removed in Release 1.69.
 
 Bio.Encodings
 -------------
@@ -335,6 +459,17 @@ Bio.Parsers and Bio.Parsers.spark
 This module was a copy of John Aycock's SPARK parser included with Biopython
 solely for use in Bio.GenBank.LocationParser. Declared obsolete in Release
 1.55, deprecated in Release 1.56, and removed in Release 1.59.
+
+Bio.UniGene
+-----------
+The classes UnigeneSequenceRecord, UnigeneProtsimRecord, UnigeneSTSRecord,
+UnigeneRecord, _RecordConsumer, _Scanner, RecordParser, and Iterator in
+Bio.UniGene were declared obsolete in Release 1.54, deprecated in Release 1.55,
+and removed in Release 1.59. Their functionality is now available through a
+read() and a parse() function in Bio.UniGene.
+
+Submodule Bio.UniGene.UniGene which was an HTML parser was declared obsolete
+in Release 1.59, deprecated in Release 1.61, and removed in Release 1.64.
 
 Bio.Restriction.DNAUtils and check_bases
 ----------------------------------------
@@ -445,6 +580,14 @@ Bio.AlignAce and Bio.MEME
 -------------------------
 Declared obsolete in Release 1.50, deprecated in Release 1.52, and removed
 in Release 1.56. Please use Bio.Motif instead.
+
+Bio.utils
+---------
+Functions 'translate', 'translate_to_stop', 'back_translate', 'transcribe',
+and 'back_transcribe' were deprecated in Release 1.49, and removed in Release
+1.53. Function 'ungap' was deprecated in Release 1.53. Use Bio.Seq instead.
+The whole of Bio.utils was declared obsolete in Release 1.55, deprecated in
+Release 1.56, and removed in Release 1.57.
 
 Numeric support
 ---------------
@@ -634,6 +777,17 @@ Bio.ECell
 Deprecated as of Release 1.47, as it appears to have no users, and the code
 does not seem relevant for ECell 3.  Removed in Release 1.49.
 
+Bio.SCOP
+--------
+The module Bio.SCOP.FileIndex was deprecated in Release 1.46, and removed in
+Release 1.53. The class Parser in Bio.SCOP.Dom was removed in Release 1.55
+final. The class Iterator in Bio.SCOP.Dom was removed in Release 1.56.
+
+Dictionary to_one_letter_code in module Bio.SCOP.three_to_one_dict was moved
+to protein_letters_3to1 in module Bio.Data.SCOPData in Release 1.62. The old
+alias was preserved with a deprecation warning, until it was removed in
+Release 1.66.
+
 Bio.Ais
 -------
 Deprecated as of Release 1.45, removed in Release 1.49.
@@ -770,133 +924,4 @@ Deprecated as of Release 1.30, removed in Release 1.42.  Instead, please use
 the function kcluster in Bio.Cluster which performs k-means or k-medians
 clustering.
 
-Bio.SCOP
---------
-The module Bio.SCOP.FileIndex was deprecated in Release 1.46, and removed in
-Release 1.53. The class Parser in Bio.SCOP.Dom was removed in Release 1.55
-final. The class Iterator in Bio.SCOP.Dom was removed in Release 1.56.
-
-Dictionary to_one_letter_code in module Bio.SCOP.three_to_one_dict was moved
-to protein_letters_3to1 in module Bio.Data.SCOPData in Release 1.62. The old
-alias was preserved with a deprecation warning, until it was removed in
-Release 1.66.
-
-Bio.utils
----------
-Functions 'translate', 'translate_to_stop', 'back_translate', 'transcribe',
-and 'back_transcribe' were deprecated in Release 1.49, and removed in Release
-1.53. Function 'ungap' was deprecated in Release 1.53. Use Bio.Seq instead.
-The whole of Bio.utils was declared obsolete in Release 1.55, deprecated in
-Release 1.56, and removed in Release 1.57.
-
-Bio.Compass
------------
-The RecordParser and Iterator classes were declared obsolete in Release 1.54,
-deprecated in Release 1.55, removed in Release 1.59. Their functionality is
-now available through a read() and a parse() function, respectively.
-
-Bio.Affy.CelFile
-----------------
-The CelScanner, CelConsumer, CelRecord, and CelParser were declared obsolete
-in Release 1.54, deprecated in Release 1.55 and removed in Release 1.59.
-Their functionality is now available through a read() function.
-
-Bio.PopGen.Async
-----------------
-``Bio.PopGen.Async`` was deprecated in Release 1.68, removed in Release 1.70.
-
-Bio.PopGen.FDist
-----------------
-``Bio.PopGen.FDist`` was deprecated in Release 1.68, removed in Release 1.70.
-
-Prior to this, the ``RecordParser``, ``_Scanner``, and ``_RecordConsumer``
-classes were declared obsolete in Release 1.54, deprecated in Release 1.55,
-and removed in Release 1.58. Their functionality is now available through
-a ``read()`` function.
-
-Bio.PopGen.SimCoal
-------------------
-``Bio.PopGen.SimCoal`` was deprecated in Release 1.68, and removed in Release
-1.70.
-
-Bio.UniGene
------------
-The classes UnigeneSequenceRecord, UnigeneProtsimRecord, UnigeneSTSRecord,
-UnigeneRecord, _RecordConsumer, _Scanner, RecordParser, and Iterator in
-Bio.UniGene were declared obsolete in Release 1.54, deprecated in Release 1.55,
-and removed in Release 1.59. Their functionality is now available through a
-read() and a parse() function in Bio.UniGene.
-
-Submodule Bio.UniGene.UniGene which was an HTML parser was declared obsolete
-in Release 1.59, deprecated in Release 1.61, and removed in Release 1.64.
-
-Bio.SubsMat
------------
-The methods ``letter_sum`` and ``all_letters_sum`` were removed from the
-``SeqMat`` class in Bio.SubsMat in Release 1.57.
-The methods ``print_full_mat`` and ``print_mat`` were removed from the
-`SeqMat`` class in Bio.SubsMat in Release 1.79.
-The Bio.SubsMat module was deprecated in Release 1.78. As an alternative,
-please consider using Bio.Align.substitution_matrices.
-
-Bio.Align
----------
-The methods get_column and add_sequence of the MultipleSeqAlignment class were
-deprecated in Release 1.57 and removed in Release 1.69.
-The format method of the MultipleSeqAlignment class and the PairwiseAlignment
-class were deprecated in Release 1.76, and removed in Release 1.79.
-
-Bio.Align.Generic
------------------
-This module which defined to original (Multiple-Sequence) Alignment class was
-deprecated in Release 1.57 and removed in Release 1.69.
-
-Bio.ParserSupport
------------------
-``Bio.ParserSupport`` was declared obsolete in Release 1.59, and deprecated in
-Release 1.63. The Martel specific ``EventGenerator`` was removed in Release
-1.67, and the entire module was removed in Release 1.72.
-
-``Bio.ParserSupport.SGMLStrippingConsumer`` was deprecated in Release 1.59, and
-removed in Release 1.61.
-
-Bio.KDTree
-----------
-This module was declared obsolete in Release 1.72, deprecated in Release 1.74,
-and removed in Release 1.77. As of Release 1.72, KDTree data structures and
-the functionality previously available in ``Bio.KDTree`` are provided in a new
-module ``Bio.PDB.kdtrees``.
-
-Bio.trie, Bio.triefind
-----------------------
-These modules were declared obsolete in Release 1.72, deprecated in Release
-1.73, and removed in Release 1.77. We suggest pygtrie as an alternative library
-implementing a trie data structure.
-
-Bio.Statistics
---------------
-This module was declared obsolete in Release 1.74, deprecated in Release 1.76,
-and removed in Release 1.79.
-
-Bio.File
---------
-The UndoHandle class was deprecated in Release 1.77, and moved to
-Bio/SearchIO/_legacy/ParserSupport.py, which was the only module in
-Biopython still using this class.
-
-Bio.FSSP
------------
-Deprecated in release 1.77.
-
-Bio.Phylo.BaseTree.Tree
------------------------
-The format method was deprecated in Release 1.79 in favor of the __format__
-method, which supports Python's built-in format function.
-
-Bio.Phylo._utils
-----------------
-The ``draw_graphviz`` function was removed in Release 1.79.
-
-Scripts/Restriction/ranacompiler.py
------------------------------------
-The ``is_palindrom`` function was removed in Release 1.79.
+*Even older changes are not recorded here.*
