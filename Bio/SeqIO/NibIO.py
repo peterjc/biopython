@@ -38,15 +38,14 @@ the format name "nib":
 For detailed information on the file format, please see the UCSC
 description at https://genome.ucsc.edu/FAQ/FAQformat.html.
 """
-
+import struct
+import sys
 
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
-from .Interfaces import SequenceIterator, SequenceWriter
 
-
-import struct
-import sys
+from .Interfaces import SequenceIterator
+from .Interfaces import SequenceWriter
 
 
 class NibIterator(SequenceIterator):

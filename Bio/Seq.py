@@ -19,16 +19,17 @@ See also the Seq_ wiki and the chapter in our tutorial:
 .. _`PDF Tutorial`: http://biopython.org/DIST/docs/tutorial/Tutorial.pdf
 
 """
-
 import array
 import sys
 import warnings
 
-from Bio import BiopythonWarning, BiopythonDeprecationWarning
-from Bio.Data.IUPACData import ambiguous_dna_complement, ambiguous_rna_complement
-from Bio.Data.IUPACData import ambiguous_dna_letters as _ambiguous_dna_letters
-from Bio.Data.IUPACData import ambiguous_rna_letters as _ambiguous_rna_letters
+from Bio import BiopythonDeprecationWarning
+from Bio import BiopythonWarning
 from Bio.Data import CodonTable
+from Bio.Data.IUPACData import ambiguous_dna_complement
+from Bio.Data.IUPACData import ambiguous_dna_letters as _ambiguous_dna_letters
+from Bio.Data.IUPACData import ambiguous_rna_complement
+from Bio.Data.IUPACData import ambiguous_rna_letters as _ambiguous_rna_letters
 
 
 def _maketrans(complement_mapping):
