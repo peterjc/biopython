@@ -451,35 +451,23 @@ An important consideration for extracting information from a BLAST report is the
 
 Here are my attempts at UML class diagrams for the \verb|Blast| and \verb|PSIBlast| record classes. If you are good at UML and see mistakes/improvements that can be made, please let me know. The Blast class diagram is shown in Figure~\ref{fig:blastrecord}.
 
-\begin{htmlonly}
-\label{fig:blastrecord}
-\imgsrc[width=650, height=750]{images/BlastRecord.png}
-\end{htmlonly}
 
-\begin{latexonly}
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{images/BlastRecord.png}
 \caption{Class diagram for the Blast Record class representing all of the info in a BLAST report}
 \label{fig:blastrecord}
 \end{figure}
-\end{latexonly}
 
 The PSIBlast record object is similar, but has support for the rounds that are used in the iteration steps of PSIBlast. The class diagram for PSIBlast is shown in Figure~\ref{fig:psiblastrecord}.
 
-\begin{htmlonly}
-\label{fig:psiblastrecord}
-\imgsrc[width=650, height=750]{images/PSIBlastRecord.png}
-\end{htmlonly}
 
-\begin{latexonly}
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{images/PSIBlastRecord.png}
 \caption{Class diagram for the PSIBlast Record class.}
 \label{fig:psiblastrecord}
 \end{figure}
-\end{latexonly}
 
 
 \section{Dealing with PSI-BLAST}
