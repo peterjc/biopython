@@ -26,7 +26,7 @@ def to_networkx(tree):
     Requires NetworkX version 0.99 or later.
     """
     try:
-        import networkx
+        import networkx as nx
     except ImportError:
         raise MissingPythonDependencyError(
             "Install NetworkX if you want to use to_networkx."
@@ -37,7 +37,7 @@ def to_networkx(tree):
     # 0.99: edges accept weight as a string, nothing else
     # pre-0.99: edges accept no additional data
     # Ubuntu Lucid LTS uses v0.99, let's support everything
-    if networkx.__version__ >= "1.0":
+    if nx.__version__ >= "1.0":
 
         def add_edge(graph, n1, n2):
             graph.add_edge(n1, n2, weight=n2.branch_length or 1.0)
@@ -56,7 +56,7 @@ def to_networkx(tree):
                 graph[n1][n2]["width"] = n1.width
                 n2.width = n1.width
 
-    elif networkx.__version__ >= "0.99":
+    elif nx.__version__ >= "0.99":
 
         def add_edge(graph, n1, n2):
             graph.add_edge(n1, n2, (n2.branch_length or 1.0))
@@ -74,9 +74,9 @@ def to_networkx(tree):
             build_subgraph(graph, clade)
 
     if tree.rooted:
-        G = networkx.DiGraph()
+        G = nx.DiGraph()
     else:
-        G = networkx.Graph()
+        G = nx.Graph()
     G.add_node(tree.root)
     build_subgraph(G, tree.root)
     return G

@@ -221,11 +221,11 @@ def GC_skew(seq, window=100):
 
 def xGC_skew(seq, window=1000, zoom=100, r=300, px=100, py=100):
     """Calculate and plot normal and accumulated GC skew (GRAPHICS !!!)."""
-    import tkinter
+    import tkinter as tk
 
-    yscroll = tkinter.Scrollbar(orient=tkinter.VERTICAL)
-    xscroll = tkinter.Scrollbar(orient=tkinter.HORIZONTAL)
-    canvas = tkinter.Canvas(
+    yscroll = tk.Scrollbar(orient=tk.VERTICAL)
+    xscroll = tk.Scrollbar(orient=tk.HORIZONTAL)
+    canvas = tk.Canvas(
         yscrollcommand=yscroll.set, xscrollcommand=xscroll.set, background="white"
     )
     win = canvas.winfo_toplevel()
@@ -233,9 +233,9 @@ def xGC_skew(seq, window=1000, zoom=100, r=300, px=100, py=100):
 
     yscroll.config(command=canvas.yview)
     xscroll.config(command=canvas.xview)
-    yscroll.pack(side=tkinter.RIGHT, fill=tkinter.Y)
-    xscroll.pack(side=tkinter.BOTTOM, fill=tkinter.X)
-    canvas.pack(fill=tkinter.BOTH, side=tkinter.LEFT, expand=1)
+    yscroll.pack(side=tk.RIGHT, fill=tk.Y)
+    xscroll.pack(side=tk.BOTTOM, fill=tk.X)
+    canvas.pack(fill=tk.BOTH, side=tk.LEFT, expand=1)
     canvas.update()
 
     X0, Y0 = r + px, r + py
@@ -277,7 +277,7 @@ def xGC_skew(seq, window=1000, zoom=100, r=300, px=100, py=100):
         canvas.update()
         start += window
 
-    canvas.configure(scrollregion=canvas.bbox(tkinter.ALL))
+    canvas.configure(scrollregion=canvas.bbox(tk.ALL))
 
 
 def nt_search(seq, subseq):

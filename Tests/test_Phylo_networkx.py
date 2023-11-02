@@ -14,7 +14,7 @@ from Bio import Phylo
 from Bio import MissingExternalDependencyError
 
 try:
-    import networkx
+    import networkx as nx
 except ImportError:
     raise MissingExternalDependencyError(
         "Install networkx if you wish to use it with Bio.Phylo"

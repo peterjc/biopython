@@ -14,7 +14,7 @@ from Bio import Phylo
 from Bio import MissingExternalDependencyError
 
 try:
-    import matplotlib
+    import matplotlib as mpl
 except ImportError:
     raise MissingExternalDependencyError(
         "Install matplotlib if you want to use Bio.Phylo._utils."
@@ -24,9 +24,9 @@ except ImportError:
 # backend -- we're not going to display or save the plot anyway, so it
 # doesn't matter much, as long as it's not Wx.  See:
 # http://lists.open-bio.org/pipermail/biopython-dev/2012-April/009559.html
-matplotlib.use("ps")
+mpl.use("ps")
 try:
-    from matplotlib import pyplot
+    from matplotlib import pyplot as plt
 except ImportError:
     # Can fail here with font problems
     raise MissingExternalDependencyError(
@@ -44,7 +44,7 @@ class UtilTests(unittest.TestCase):
 
     def test_draw(self):
         """Run the tree layout algorithm, but don't display it."""
-        pyplot.ioff()  # Turn off interactive display
+        plt.ioff()  # Turn off interactive display
         dollo = Phylo.read(EX_DOLLO, "phyloxml")
         apaf = Phylo.read(EX_APAF, "phyloxml")
         Phylo.draw(dollo, do_show=False)
@@ -61,7 +61,7 @@ class UtilTests(unittest.TestCase):
         Run the tree layout algorithm with a label_colors argument passed in
         as a dictionary. Don't display tree.
         """
-        pyplot.ioff()  # Turn off interactive display
+        plt.ioff()  # Turn off interactive display
         dollo = Phylo.read(EX_DOLLO, "phyloxml")
         apaf = Phylo.read(EX_APAF, "phyloxml")
         label_colors_dollo = {"f_50": "red", "f_34": "blue"}
@@ -75,7 +75,7 @@ class UtilTests(unittest.TestCase):
         Run the tree layout algorithm with a label_colors argument passed in
         as a callable. Don't display tree.
         """
-        pyplot.ioff()  # Turn off interactive display
+        plt.ioff()  # Turn off interactive display
         dollo = Phylo.read(EX_DOLLO, "phyloxml")
         apaf = Phylo.read(EX_APAF, "phyloxml")
 
