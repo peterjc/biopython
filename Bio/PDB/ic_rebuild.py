@@ -22,7 +22,7 @@ from Bio.PDB.internal_coords import IC_Residue
 from Bio.PDB.PICIO import write_PIC, read_PIC, enumerate_atoms, pdb_date
 
 # for typing
-from typing import Dict, Union, Any, Tuple
+from typing import Dict, Union, Any, Tuple, Optional
 from Bio.PDB.Atom import Atom
 from Bio.PDB.Residue import Residue, DisorderedResidue
 from Bio.PDB.Model import Model
@@ -70,7 +70,7 @@ def structure_rebuild_test(entity, verbose: bool = False, quick: bool = False) -
 
 def report_IC(
     entity: Union[Structure, Model, Chain, Residue],
-    reportDict: Dict[str, Any] = None,
+    reportDict: Optional[Dict[str, Any]] = None,
     verbose: bool = False,
 ) -> Dict[str, Any]:
     """Generate dict with counts of ic data elements for each entity level.
@@ -210,8 +210,8 @@ def _cmp_atm(
     a1: Atom,
     verbose: bool,
     cmpdict: Dict,
-    rtol: float = None,
-    atol: float = None,
+    rtol: Optional[float] = None,
+    atol: Optional[float] = None,
 ) -> None:
     cmpdict["aCount"] += 1
     if a0 is None:
@@ -270,8 +270,8 @@ def _cmp_res(
     r1: Residue,
     verbose: bool,
     cmpdict: Dict,
-    rtol: float = None,
-    atol: float = None,
+    rtol: Optional[float] = None,
+    atol: Optional[float] = None,
 ) -> None:
     r0id, r0fid, r1fid = r0.id, r0.full_id, r1.full_id
     chn = r0.parent.id
@@ -343,8 +343,8 @@ def compare_residues(
     e1: Union[Structure, Model, Chain],
     verbose: bool = False,
     quick: bool = False,
-    rtol: float = None,
-    atol: float = None,
+    rtol: Optional[float] = None,
+    atol: Optional[float] = None,
 ) -> Dict[str, Any]:
     """Compare full IDs and atom coordinates for 2 Biopython PDB entities.
 
@@ -474,7 +474,10 @@ def compare_residues(
 
 
 def write_PDB(
-    entity: Structure, file: str, pdbid: str = None, chainid: str = None
+    entity: Structure,
+    file: str,
+    pdbid: Optional[str] = None,
+    chainid: Optional[str] = None,
 ) -> None:
     """Write PDB file with HEADER and TITLE if available."""
     enumerate_atoms(entity)

@@ -823,9 +823,9 @@ def read_PIC(
 
 def read_PIC_seq(
     seqRec: "SeqIO.SeqRecord",
-    pdbid: str = None,
-    title: str = None,
-    chain: str = None,
+    pdbid: Optional[str] = None,
+    title: Optional[str] = None,
+    chain: Optional[str] = None,
 ) -> Structure:
     """Read :class:`.SeqRecord` into Structure with default internal coords."""
     read_pdbid, read_title, read_chain = None, None, None
