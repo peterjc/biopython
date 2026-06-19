@@ -17,6 +17,11 @@ This release of Biopython supports Python 3.10, 3.11, 3.12, 3.13, 3.14 and the
 Python 3.15 release candidate. It has also been tested on PyPy3.10 v7.3.19.
 Python 3.10 is approaching end of life, our support for it is now deprecated.
 
+Biopython has adopted an explicit **No AI** policy, rejecting changes written
+using large language models (LLM) or generative artificial intelligence
+(GenAI) like Claude, OpenAI or ChatGPT. Please see our ``CONTRIBUTING.rst``
+file for full details.
+
 6 August 2026: Biopython 1.88
 =============================
 
