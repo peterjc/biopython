@@ -19,8 +19,8 @@ Python 3.10 is approaching end of life, our support for it is now deprecated.
 
 Biopython has adopted an explicit **No AI** policy, rejecting changes written
 using large language models (LLM) or generative artificial intelligence
-(GenAI) like Claude, OpenAI or ChatGPT. Please see our ``CONTRIBUTING.rst``
-file for full details.
+(GenAI) like Claude, or ChatGPT. Please see our ``CONTRIBUTING.rst`` file for
+full details.
 
 6 August 2026: Biopython 1.88
 =============================
