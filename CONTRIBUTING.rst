@@ -29,7 +29,8 @@ tools, including the international copyright status of the output and if it
 can legitimately be included in Biopython under our open source licensing.
 We are also concerned by the review and maintenance burden.
 
-Accounts making such pull requests may be banned without warning.
+Accounts making pull requests contrary to these guidelines may be banned
+without warning.
 
 Some of the acceptable uses of generative AI include:
 
